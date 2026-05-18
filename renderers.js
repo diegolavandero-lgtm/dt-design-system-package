@@ -375,33 +375,94 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── INPUTS ── */
   inputs(data) {
-    const stateClass = {default:'', focus:'foc', error:'er', success:'ok'};
-    const examples = (data.examples || []).map(ex => {
-      const cls = stateClass[ex.state] || '';
-      let iconHtml = '';
-      if (ex.icon === 'search') iconHtml = `<svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>`;
-      if (ex.icon === 'x-circle') iconHtml = `<svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DE350B" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>`;
-      if (ex.icon === 'check-circle') iconHtml = `<svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`;
+    const IC = {
+      search:       'M11 11m-7 0a7 7 0 1 0 14 0a7 7 0 1 0-14 0M21 21 16.65 16.65',
+      'x-circle':   'M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM15 9l-6 6M9 9l6 6',
+      'check-circle':'M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM9 12l2 2 4-4',
+    };
+    const IC_COLOR = { 'x-circle': '#DE350B', 'check-circle': '#00875A' };
 
-      const helperHtml = ex.helper ? `<div class="hlp">${escHtml(ex.helper)}</div>` : '';
-      const errorHtml = ex.error ? `<div class="err">${escHtml(ex.error)}</div>` : '';
-      return `<div class="fld">
-        <label>${escHtml(ex.label)}${ex.required ? ' <span class="req">*</span>' : ''}</label>
-        <div class="inp ${cls}">
-          ${ex.icon && (ex.icon === 'search') ? iconHtml : ''}
-          <input ${ex.value ? `value="${escHtml(ex.value)}"` : ''} ${ex.placeholder ? `placeholder="${escHtml(ex.placeholder)}"` : ''} style="width:100%">
-          ${ex.icon && ex.icon !== 'search' ? iconHtml : ''}
-        </div>
-        ${helperHtml}${errorHtml}
-      </div>`;
+    function trailingIcon(name) {
+      const p = IC[name] || IC.search;
+      const c = IC_COLOR[name] || 'currentColor';
+      return `<span class="hp-text-field__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${p}"/></svg></span>`;
+    }
+
+    const cards = (data.variants || []).map(v => {
+      const p = v.props;
+      const hasValue  = !!p.value;
+      const isFocused = !!p.focused;
+      const isActive  = hasValue || isFocused;
+
+      const mods = [
+        p.dark      && 'dark',
+        isFocused   && 'focused',
+        p.textArea  && 'textarea',
+        p.fullWidth && 'fullwidth',
+        p.error     && 'error',
+        p.dense     && 'dense',
+        p.disabled  && 'disabled',
+        p.readOnly  && 'read-only',
+        p.trailingIcon && 'with-trailing-icon',
+        !p.label    && 'no-label',
+      ].filter(Boolean).map(m => `hp-text-field--${m}`).join(' ');
+
+      const labelActiveCls = isActive ? 'hp-text-field__label--active' : '';
+      const labelErrorCls  = p.error  ? 'hp-text-field__label--error'  : '';
+
+      const fieldAttrs = [
+        p.disabled ? 'disabled' : '',
+        p.readOnly ? 'readonly' : '',
+        p.placeholder ? `placeholder="${escHtml(p.placeholder)}"` : '',
+        p.textArea && p.rows ? `rows="${p.rows}"` : '',
+      ].filter(Boolean).join(' ');
+
+      const fieldHtml = p.textArea
+        ? `<textarea class="hp-text-field__input" ${fieldAttrs}>${escHtml(p.value || '')}</textarea>`
+        : `<input class="hp-text-field__input" type="text" ${fieldAttrs} value="${escHtml(p.value || '')}">`;
+
+      const labelHtml = p.label
+        ? `<label class="hp-text-field__label ${labelActiveCls} ${labelErrorCls}">
+            ${p.required ? '<span class="hp-text-field__required-mark">*</span>' : ''}${escHtml(p.label)}
+          </label>`
+        : '';
+
+      const iconHtml  = p.trailingIcon ? trailingIcon(p.trailingIcon) : '';
+      const helperHtml = `<div class="hp-text-field__helper-text">${escHtml(p.helperText || '')}</div>`;
+      const wrapStyle = p.dark ? 'background:var(--indigo);padding:14px;border-radius:6px;display:inline-block' : '';
+
+      return `
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font:600 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">${escHtml(v.label)}</div>
+          <div style="${wrapStyle}">
+            <div class="hp-text-field ${mods}">
+              <div class="hp-text-field__content">
+                ${fieldHtml}
+                ${labelHtml}
+                ${iconHtml}
+              </div>
+              ${helperHtml}
+            </div>
+          </div>
+          <div style="font:400 11px var(--font-sans);color:var(--n45);line-height:1.4">${escHtml(v.description)}</div>
+        </div>`;
     }).join('');
 
-    const previewTab = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;padding:20px">${examples}</div>`;
-    const codeTab = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
+    const tokenRows = Object.entries(data.tokens || {}).map(([k, v]) =>
+      `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
+    ).join('');
+
+    const previewTab = `<div style="padding:20px;background:var(--n1)"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px 28px">${cards}</div></div>`;
+    const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
+    const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
 
     return `
       ${sectionHeader(data)}
-      ${tabCard([{label:'Preview', content: previewTab}, {label:'Code', content: codeTab}])}`;
+      ${tabCard([
+        {label:'Preview', content: previewTab},
+        {label:'Code',    content: codeTab},
+        {label:'Tokens',  content: tokensTab},
+      ])}`;
   },
 
   /* ── SELECTION ── */

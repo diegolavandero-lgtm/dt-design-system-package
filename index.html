@@ -305,6 +305,39 @@ button,input,select{font-family:inherit}
 .badge.bt{background:#E6FCFF;color:#006B7D}
 .badge.bp{background:#EAE6FF;color:#5243AA}
 
+/* ── HP TEXT FIELD ── */
+.hp-text-field{position:relative;display:inline-flex;flex-direction:column;min-width:0;width:220px}
+.hp-text-field--fullwidth{width:100%}
+.hp-text-field__content{position:relative;display:flex;align-items:center;height:56px;border:1px solid #E1E6ED;border-radius:4px;background:#fff;padding:0 14px;cursor:text;transition:border-color .15s,background .15s,box-shadow .15s}
+.hp-text-field--dense .hp-text-field__content{height:40px}
+.hp-text-field--textarea .hp-text-field__content{height:auto;min-height:80px;align-items:flex-start;padding-top:24px;padding-bottom:10px}
+.hp-text-field--focused .hp-text-field__content{border-color:#4B82FA;background:#EDF5FF;box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.hp-text-field--error .hp-text-field__content{border-color:#DE350B}
+.hp-text-field--disabled .hp-text-field__content{background:#E1E6ED;cursor:not-allowed}
+.hp-text-field--read-only .hp-text-field__content{background:#F5F6FA;cursor:default}
+.hp-text-field--dark .hp-text-field__content{background:#39414D;border-color:#4B5564}
+.hp-text-field__input{border:0;outline:0;flex:1;font:400 14px/1.4 var(--font-sans);color:#39414D;background:transparent;padding-top:16px;padding-bottom:4px;min-width:0;width:100%;align-self:flex-end}
+.hp-text-field--no-label .hp-text-field__input{padding-top:0;padding-bottom:0;align-self:center}
+.hp-text-field--dense .hp-text-field__input{padding-top:10px;padding-bottom:2px;font-size:13px}
+.hp-text-field--dark .hp-text-field__input{color:#fff}
+.hp-text-field--disabled .hp-text-field__input{color:#8FA0BA;cursor:not-allowed;pointer-events:none}
+.hp-text-field--read-only .hp-text-field__input{pointer-events:none}
+textarea.hp-text-field__input{resize:vertical;padding-top:0;align-self:auto;min-height:60px}
+.hp-text-field__label{position:absolute;left:14px;right:36px;top:50%;transform:translateY(-50%);font:400 14px/1 var(--font-sans);color:#8FA0BA;transition:top .15s,transform .15s,font-size .15s,color .15s,font-weight .15s;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hp-text-field--textarea .hp-text-field__label{top:9px;transform:none}
+.hp-text-field__label--active{top:9px;transform:none;font-size:11px;font-weight:500;color:#67768D}
+.hp-text-field--focused .hp-text-field__label{top:9px;transform:none;font-size:11px;font-weight:500;color:#1F60ED}
+.hp-text-field--focused.hp-text-field--error .hp-text-field__label,.hp-text-field__label--active.hp-text-field__label--error{color:#DE350B!important}
+.hp-text-field--dense .hp-text-field__label--active,.hp-text-field--dense.hp-text-field--focused .hp-text-field__label{top:5px;font-size:10px}
+.hp-text-field__label--error{color:#DE350B!important}
+.hp-text-field--dark .hp-text-field__label{color:rgba(255,255,255,.4)}
+.hp-text-field--dark .hp-text-field__label--active,.hp-text-field--dark.hp-text-field--focused .hp-text-field__label{color:rgba(255,255,255,.75)}
+.hp-text-field__icon{display:flex;align-items:center;flex-shrink:0;color:#8FA0BA;margin-left:6px}
+.hp-text-field--error .hp-text-field__icon{color:#DE350B}
+.hp-text-field__helper-text{font:400 11px var(--font-sans);color:#67768D;margin-top:4px;padding:0 14px;min-height:16px}
+.hp-text-field--error .hp-text-field__helper-text{color:#DE350B}
+.hp-text-field__required-mark{color:#DE350B;margin-right:2px}
+
 /* ── LOADING ── */
 .loading-state{padding:60px;text-align:center;color:var(--n5);font:400 14px var(--font-sans)}
 
@@ -678,6 +711,46 @@ document.addEventListener('keydown', e => {
     }
     gsearch.blur();
   }
+});
+
+/* ================================================================
+   HP TEXT FIELD — event delegation (works after innerHTML injection)
+================================================================ */
+document.addEventListener('focusin', e => {
+  const inp = e.target.closest('.hp-text-field__input');
+  if (!inp) return;
+  const f = inp.closest('.hp-text-field');
+  if (!f || f.classList.contains('hp-text-field--disabled') || f.classList.contains('hp-text-field--read-only')) return;
+  f.classList.add('hp-text-field--focused');
+  const lbl = f.querySelector('.hp-text-field__label');
+  if (lbl) lbl.classList.add('hp-text-field__label--active');
+});
+document.addEventListener('focusout', e => {
+  const inp = e.target.closest('.hp-text-field__input');
+  if (!inp) return;
+  const f = inp.closest('.hp-text-field');
+  if (!f) return;
+  f.classList.remove('hp-text-field--focused');
+  const lbl = f.querySelector('.hp-text-field__label');
+  if (lbl && !inp.value) lbl.classList.remove('hp-text-field__label--active');
+});
+document.addEventListener('input', e => {
+  const inp = e.target.closest('.hp-text-field__input');
+  if (!inp) return;
+  const f = inp.closest('.hp-text-field');
+  if (!f) return;
+  const lbl = f.querySelector('.hp-text-field__label');
+  if (!lbl) return;
+  if (inp.value) lbl.classList.add('hp-text-field__label--active');
+  else if (!f.classList.contains('hp-text-field--focused')) lbl.classList.remove('hp-text-field__label--active');
+});
+document.addEventListener('click', e => {
+  const content = e.target.closest('.hp-text-field__content');
+  if (!content) return;
+  const f = content.closest('.hp-text-field');
+  if (!f || f.classList.contains('hp-text-field--disabled') || f.classList.contains('hp-text-field--read-only')) return;
+  const inp = f.querySelector('.hp-text-field__input');
+  if (inp && document.activeElement !== inp) inp.focus();
 });
 
 /* ================================================================
