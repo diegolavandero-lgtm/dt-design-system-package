@@ -1,0 +1,32 @@
+{
+  "title": "Sidebar",
+  "titleKey": "nav.sidebar",
+  "description": "Collapsed 52px ($hp-sidebar-width-closed) / expanded 224px ($hp-sidebar-width). Item height 40px. Ink: $dt-primary-main (#4B82FA). Selected: $dt-primary-8 bg + 3px $dt-primary-dark border. border-radius: 30px. Source: styles/packages/sidebar/src/",
+  "keywords": ["sidebar", "navigation", "left", "menu", "collapsed", "expanded"],
+  "tokens": {
+    "width": "224px",
+    "widthClosed": "52px",
+    "borderRadius": "30px",
+    "itemHeight": "40px",
+    "ink": "#4B82FA",
+    "inkHover": "#0052CC",
+    "itemHoverBg": "#EDF5FF",
+    "itemSelectedBg": "rgba(34,46,63,0.4)",
+    "itemSelectedBorder": "#0052CC",
+    "surfaceBg": "#fff"
+  },
+  "preview": {
+    "header": { "brand": "DT", "productName": "last", "productAccent": "mile", "accentColor": "#F27B42" },
+    "items": [
+      { "label": "Actividad", "state": "default", "icon": "activity" },
+      { "label": "Rutas", "state": "default", "icon": "route" },
+      { "label": "Órdenes", "state": "selected", "icon": "package" },
+      { "label": "Flota", "state": "hover", "icon": "truck" },
+      { "label": "Estadísticas", "state": "default", "icon": "chart-bar" },
+      { "label": "Alertas", "state": "default", "icon": "bell" },
+      { "label": "Clientes", "state": "default", "icon": "user" },
+      { "divider": true },
+      { "label": "Ajustes", "state": "default", "icon": "settings" }
+    ]
+  }
+}

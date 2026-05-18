@@ -1,0 +1,17 @@
+{
+  "title": "Spacing",
+  "titleKey": "nav.spacing",
+  "description": "Grid base de 4px. 8 tokens nombrados hasta 32px. Source: styles/packages/tokens/src/spacing.scss",
+  "keywords": ["spacing", "scale", "padding", "gap", "margin", "4px", "grid"],
+  "baseUnit": 4,
+  "scale": [
+    { "token": "$hp-basic-space", "px": 4, "use": "base unit — nunca usar directamente" },
+    { "token": "$hp-space-x-micro", "px": 8, "use": "gap de iconos inline, badge padding" },
+    { "token": "$hp-space-micro", "px": 12, "use": "gap de toolbar (mobile), inner padding" },
+    { "token": "$hp-space-x-small", "px": 16, "use": "gap entre componentes en sección" },
+    { "token": "$hp-space-small", "px": 20, "use": "gutter de grilla" },
+    { "token": "$hp-space-medium", "px": 24, "use": "padding de card / modal ($modal-padding)" },
+    { "token": "$hp-space-large", "px": 28, "use": "gaps de sección interna" },
+    { "token": "$hp-space-x-large", "px": 32, "use": "padding horizontal de botón ($hp-button)" }
+  ]
+}

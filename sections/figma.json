@@ -1,0 +1,14 @@
+{
+  "title": "Figma source",
+  "titleKey": "nav.figma",
+  "description": "Master Figma file con todos los componentes, tokens y guías de uso.",
+  "keywords": ["figma", "design", "source", "file"],
+  "files": [
+    {
+      "name": "Design-System-Global-General",
+      "fileKey": "HP52ZT33bgqV25E9ROfy9A",
+      "nodeId": "18572:5658",
+      "updated": "2026-04-21"
+    }
+  ]
+}

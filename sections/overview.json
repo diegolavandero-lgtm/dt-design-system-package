@@ -1,0 +1,25 @@
+{
+  "title": "DispatchTrack Design System",
+  "description": "The master design system for DispatchTrack — the logistics platform used globally and in LATAM for last-mile delivery, route-planning, and on-demand commerce dispatch.",
+  "keywords": ["readme", "overview", "dispatchtrack", "getting started", "install"],
+  "version": "v2.4",
+  "install": {
+    "caption": "Install — agregar en el root de tu stylesheet",
+    "npm": "@beetrack/hp-tokens-style",
+    "tokens": "$dt-neutral-indigo: #132045;\n$dt-primary-main:   #4B82FA;\n$dt-primary-middle: #1F60ED;\n$dt-primary-dark:   #0052CC;\n$dt-neutral-n7:     #39414D;\n$dt-neutral-n5:     #67768D;\n$dt-neutral-n4:     #C5D2E7;\n$dt-neutral-n2:     #F0F2F5;\n$dt-success:        #00875A;\n$dt-error:          #DE350B;\n$dt-warning:        #FFAB00;"
+  },
+  "repoStructure": [
+    { "icon": "📄", "name": "README.md", "desc": "this overview" },
+    { "icon": "🎨", "name": "colors_and_type.css", "desc": "all design tokens (CSS)" },
+    { "icon": "📁", "name": "sections/foundations/", "desc": "colors, typography, spacing, radii, shadows, icons" },
+    { "icon": "📁", "name": "sections/components/", "desc": "buttons, inputs, badges, modal, table, sidebar, topbar..." },
+    { "icon": "📁", "name": "sections/data/", "desc": "dataviz palette, service units" },
+    { "icon": "📁", "name": "sections/assets/", "desc": "logos, product marks, SVGs" }
+  ],
+  "products": [
+    { "name": "LastMile", "hex": "#F27B42", "description": "Core last-mile delivery ops" },
+    { "name": "FirstMile", "hex": "#FF3E50", "description": "First-mile pickup & inbound" },
+    { "name": "Planner", "hex": "#47D09A", "description": "Route planning & optimization" },
+    { "name": "OnDemand", "hex": "#6B9AFF", "description": "On-demand / same-day dispatch" }
+  ]
+}

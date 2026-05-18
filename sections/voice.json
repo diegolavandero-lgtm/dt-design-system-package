@@ -1,0 +1,20 @@
+{
+  "title": "Voice & content",
+  "titleKey": "nav.voice",
+  "description": "Operacional, directo, bilingüe (ES/EN), producto-primero. Para dispatchers, fleet managers y drivers — no consumidores.",
+  "keywords": ["voice", "content", "copy", "tone", "writing", "spanish", "english"],
+  "guidelines": [
+    { "text": "<strong>Imperativo y concreto.</strong> Las acciones son verbos: \"Crear orden\", \"Bloquear usuario\", \"Exportar a Planner\"." },
+    { "text": "<strong>Segunda persona (tú/you).</strong> \"Tienes cambios sin guardar. Si cierras este modal, los cambios se perderán.\"" },
+    { "text": "<strong>Sentence case</strong> para todo el copy de UI. UPPERCASE solo para títulos de sección internos del DS." },
+    { "text": "<strong>Sin emoji, sin exclamaciones.</strong> El status es factual: \"Activo\", \"Bloqueado\", \"Recogido\"." },
+    { "text": "<strong>Los errores describen la condición, no la culpa.</strong> \"No pudimos geolocalizar esta dirección.\"" },
+    { "text": "<strong>Los números son first-class.</strong> \"1–25 de 340\", \"10-10-25 10:35 hrs\", \"200/200 (100%)\"." }
+  ],
+  "examples": [
+    { "type": "do", "text": "\"Tienes cambios sin guardar. Si cierras este modal, los cambios se perderán.\"" },
+    { "type": "dont", "text": "\"¡Atención! Tu información se perderá!! Por favor guarda antes de salir 😊\"" },
+    { "type": "do", "text": "\"No pudimos geolocalizar esta dirección.\"" },
+    { "type": "dont", "text": "\"Has ingresado una dirección incorrecta — por favor revísala.\"" }
+  ]
+}

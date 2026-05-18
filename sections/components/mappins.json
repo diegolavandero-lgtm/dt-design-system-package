@@ -1,0 +1,31 @@
+{
+  "title": "Map pins",
+  "titleKey": "nav.mappins",
+  "description": "Map pin SVGs generados dinámicamente. Fill principal usa $dt-primary-dark (#0C47C7). Sin asignar usa $dt-disabled-3 (#8FA0BA). Badge de cluster usa $dt-primary-main (#4B82FA).",
+  "keywords": ["map", "pins", "markers", "location", "cluster"],
+  "defaultFill": "#0C47C7",
+  "unassignedFill": "#8FA0BA",
+  "badgeFill": "#4B82FA",
+  "groups": [
+    {
+      "label": "Row 1 — Default states (no badge)",
+      "pins": [
+        { "fill": "#0C47C7", "selected": false, "inner": null, "cap": "Default · Asignado" },
+        { "fill": "#8FA0BA", "selected": false, "inner": null, "cap": "Default · Sin asignar" },
+        { "fill": "#0C47C7", "selected": true, "inner": "circle", "cap": "Selected · Asignado" },
+        { "fill": "#8FA0BA", "selected": true, "inner": "circle", "cap": "Selected · Sin asignar" },
+        { "fill": "#0C47C7", "selected": true, "inner": "x", "cap": "Selected + close" },
+        { "fill": "#0C47C7", "selected": true, "inner": "plus", "cap": "Selected + add" }
+      ]
+    },
+    {
+      "label": "Row 2 — With cluster badge",
+      "pins": [
+        { "fill": "#0C47C7", "selected": false, "inner": null, "badge": 10, "cap": "Default + cluster" },
+        { "fill": "#8FA0BA", "selected": false, "inner": null, "badge": 10, "cap": "Sin asignar + cluster" },
+        { "fill": "#0C47C7", "selected": true, "inner": "circle", "badge": 10, "cap": "Selected + cluster" },
+        { "fill": "#0C47C7", "selected": true, "inner": "x", "badge": 10, "cap": "Selected + close + cluster" }
+      ]
+    }
+  ]
+}

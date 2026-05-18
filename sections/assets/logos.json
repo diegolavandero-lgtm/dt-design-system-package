@@ -1,0 +1,11 @@
+{
+  "title": "Logos",
+  "titleKey": "nav.logos",
+  "description": "Logo assets — SVG only. Siempre usar la versión SVG. No escalar por debajo de 18px de altura.",
+  "keywords": ["logos", "brand", "svg", "assets"],
+  "logos": [
+    { "name": "DT Primary Light", "variant": "light", "bg": "#fff" },
+    { "name": "DT Primary Dark", "variant": "dark", "bg": "#132045" },
+    { "name": "DT Icon Only", "variant": "icon", "bg": "#fff" }
+  ]
+}

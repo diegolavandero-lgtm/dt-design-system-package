@@ -1,0 +1,19 @@
+{
+  "title": "Shadows",
+  "titleKey": "nav.shadows",
+  "description": "5 niveles de elevación. Color base: rgba(0,0,0,0.15) light · rgba(0,0,0,0.5) dark. Source: styles/packages/elevation/src/variables.scss",
+  "keywords": ["shadows", "elevation", "depth", "focus", "ring"],
+  "colorLight": "rgba(0,0,0,0.15)",
+  "colorDark": "rgba(0,0,0,0.5)",
+  "levels": [
+    { "token": "$hp-elevation-z1", "name": "z1 · Raised", "css": "0 1px 2px rgba(0,0,0,0.15)", "description": "Hover row lift, raised elements" },
+    { "token": "$hp-elevation-z2", "name": "z2 · Overlay", "css": "0 4px 8px rgba(0,0,0,0.15)", "description": "Dropdown panel" },
+    { "token": "$hp-elevation-z3", "name": "z3 · Sticky Nav", "css": "0 6px 12px rgba(0,0,0,0.15)", "description": "Sticky headers" },
+    { "token": "$hp-elevation-z4", "name": "z4 · Temp Nav", "css": "0 8px 16px rgba(0,0,0,0.15)", "description": "Modal, temporary drawers" },
+    { "token": "$hp-elevation-z5", "name": "z5 · Pop-out", "css": "0 12px 24px rgba(0,0,0,0.15)", "description": "Floating menus, toasts" }
+  ],
+  "focusRing": {
+    "css": "0 0 0 3px rgba(75,130,250,0.25)",
+    "description": "Todos los elementos interactivos"
+  }
+}

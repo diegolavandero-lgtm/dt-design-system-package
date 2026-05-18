@@ -1,0 +1,26 @@
+{
+  "title": "Badges & tags",
+  "titleKey": "nav.badges",
+  "description": "Pill-shaped, 11px semibold. Status badges llevan un dot cuando el estado es live. Chips con avatares referencian usuarios o productos.",
+  "keywords": ["badges", "tags", "pills", "chips", "status", "activo", "bloqueado"],
+  "badges": [
+    { "label": "Activo", "type": "success", "dot": true },
+    { "label": "Bloqueado", "type": "danger", "dot": true },
+    { "label": "Aproximado", "type": "warning", "dot": true },
+    { "label": "En ruta", "type": "info" },
+    { "label": "Borrador", "type": "neutral" },
+    { "label": "Pendiente", "type": "outline" }
+  ],
+  "chips": [
+    { "label": "Maya Jonson", "initials": "MJ", "avatarBg": "#1F60ED", "avatarColor": "#fff" },
+    { "label": "Planner", "initials": "PL", "avatarBg": "#47D09A", "avatarColor": "#fff", "chipBg": "#EDF5FF", "chipColor": "#0052CC" }
+  ],
+  "tokenMap": {
+    "success": { "bg": "#E3FCEF", "color": "#00875A" },
+    "danger": { "bg": "#FFEBE6", "color": "#DE350B" },
+    "warning": { "bg": "#FFFAE6", "color": "#FF8B00" },
+    "info": { "bg": "#EDF5FF", "color": "#0052CC" },
+    "neutral": { "bg": "#F0F2F5", "color": "#39414D" },
+    "outline": { "bg": "#fff", "color": "#39414D", "border": "#C5D2E7" }
+  }
+}

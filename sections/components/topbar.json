@@ -1,0 +1,20 @@
+{
+  "title": "Topbar",
+  "titleKey": "nav.topbar",
+  "description": "Height 52px ($hp-top-bar-height), bg $hp-dt-indigo (#132045). Customer slot 100px, border-radius 25px 0 0 0. Icon order invariable. Source: styles/packages/top-bar/src/",
+  "keywords": ["topbar", "header", "navigation", "top", "bar"],
+  "tokens": {
+    "height": "52px",
+    "bg": "#132045",
+    "ink": "#fff",
+    "customerWidth": "100px",
+    "customerRadius": "25px 0 0 0",
+    "productColors": {
+      "lastmile": "#F27B42",
+      "firstmile": "#FF3E50",
+      "planner": "#47D09A",
+      "ondemand": "#6B9AFF"
+    }
+  },
+  "iconOrder": ["apps", "help", "messages", "alerts", "user"]
+}

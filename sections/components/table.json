@@ -1,0 +1,22 @@
+{
+  "title": "Tables",
+  "titleKey": "nav.table",
+  "description": "Header N3 bg (#E1E6ED), rows white. Hover → N1, selected → B1 con stripe de Service Unit a la izquierda. Cell height 44px. Source: styles/packages/table/src/",
+  "keywords": ["table", "rows", "hover", "selected", "columns", "pagination"],
+  "tokens": {
+    "cellHeight": "44px",
+    "radius": "8px",
+    "headerBg": "#E1E6ED",
+    "rowBg": "#fff",
+    "rowHover": "#F5F6FA",
+    "rowSelected": "#F0F2F5",
+    "divider": "#E1E6ED"
+  },
+  "columns": ["", "Nombre", "Estado", "Usuario", "Rol", "Última conexión"],
+  "rows": [
+    { "state": "default", "cells": ["", "Maya Jonson", { "badge": "Activo", "type": "success" }, "mayaj", "Admin Master", "10-10-25 10:35 hrs"] },
+    { "state": "hover", "cells": ["", "Lucas Martínez", { "badge": "Bloqueado", "type": "danger" }, "lucasm", "Personalizado", "—"] },
+    { "state": "selected", "cells": ["", "Liam Smith", { "badge": "Activo", "type": "success" }, "liams", "Admin 2", "10-10-25 11:30 hrs"] },
+    { "state": "default", "cells": ["", "Aisha Patel", { "badge": "Activo", "type": "success" }, "aishap", "QC", "10-10-25 09:11 hrs"] }
+  ]
+}

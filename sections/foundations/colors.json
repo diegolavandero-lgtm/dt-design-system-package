@@ -1,0 +1,105 @@
+{
+  "title": "Colors",
+  "titleKey": "nav.colors",
+  "description": "One dark surface (Indigo, topbar only). Two surfaces stacked (N2 page · white card). Cobalt primary. Four semantic intents. Color is never decoration — every hue carries a role.",
+  "descKey": "section.colors.desc",
+  "keywords": ["colors", "palette", "tokens", "semantic", "primary", "neutral"],
+  "semanticTokens": [
+    { "hex": "#1F60ED", "name": "$dt-primary-middle", "sub": "B6", "use": "Botones primarios (hover state)" },
+    { "hex": "#4B82FA", "name": "$dt-primary-main", "sub": "B5", "use": "Selección, highlight, focus" },
+    { "hex": "#0052CC", "name": "$dt-primary-dark", "sub": "B7", "use": "Links de texto, active" },
+    { "hex": "#EDF5FF", "name": "$dt-primary-8", "sub": "B1", "use": "Fondo hover / selección ligera" },
+    { "hex": "#DE350B", "name": "$dt-error", "sub": "R6", "use": "Eliminar, errores" },
+    { "hex": "#00875A", "name": "$dt-success", "sub": "G6", "use": "Confirmación, activo" },
+    { "hex": "#FFAB00", "name": "$dt-warning", "sub": "O5", "use": "Advertencias" },
+    { "hex": "#39414D", "name": "$dt-neutral-n7", "sub": "N7", "use": "Texto principal" },
+    { "hex": "#67768D", "name": "$dt-neutral-n5", "sub": "N5", "use": "Texto secundario" },
+    { "hex": "#C5D2E7", "name": "$dt-neutral-n4", "sub": "N4", "use": "Bordes, divisores" },
+    { "hex": "#E1E6ED", "name": "$dt-neutral-n3", "sub": "N3", "use": "Bordes suaves, separadores" },
+    { "hex": "#F0F2F5", "name": "$dt-neutral-n2", "sub": "N2", "use": "Background de página" },
+    { "hex": "#132045", "name": "$dt-neutral-indigo / $hp-dt-indigo", "sub": "", "use": "Topbar — solo topbar" },
+    { "hex": "#F5B63E", "name": "$hp-primary", "sub": "", "use": "Marca Honeypot / Beetrack (brand)" }
+  ],
+  "groups": [
+    {
+      "id": "neutral", "label": "Neutrals — $dt-neutral-* + $hp-black",
+      "swatches": [
+        { "hex": "#FFFFFF", "label": "White · $white" },
+        { "hex": "#F8F8F8", "label": "$hp-gray-10" },
+        { "hex": "#F5F6FA", "label": "N1 · $dt-neutral-n1" },
+        { "hex": "#F0F2F5", "label": "N2 · $dt-neutral-n2" },
+        { "hex": "#E1E6ED", "label": "N3 · $dt-neutral-n3" },
+        { "hex": "#C5D2E7", "label": "N4 · $dt-neutral-n4" },
+        { "hex": "#8FA0BA", "label": "$dt-disabled-3" },
+        { "hex": "#67768D", "label": "N5 · $dt-neutral-n5" },
+        { "hex": "#4B5564", "label": "N6 · $dt-neutral-n6" },
+        { "hex": "#39414D", "label": "N7 · $dt-neutral-n7" },
+        { "hex": "#2D2926", "label": "$hp-black" },
+        { "hex": "#132045", "label": "Indigo · $dt-neutral-indigo" }
+      ]
+    },
+    {
+      "id": "blue", "label": "Blue · primary — $dt-primary-*",
+      "swatches": [
+        { "hex": "#EDF5FF", "label": "B1 · $dt-primary-8" },
+        { "hex": "#D1E0FF", "label": "B2 · $dt-primary-7" },
+        { "hex": "#ADC7FF", "label": "B3 · $dt-primary-6" },
+        { "hex": "#6B9AFF", "label": "B4 · ondemand" },
+        { "hex": "#4B82FA", "label": "B5 · $dt-primary-main" },
+        { "hex": "#1F60ED", "label": "B6 · $dt-primary-middle" },
+        { "hex": "#0052CC", "label": "B7 · $dt-primary-dark" }
+      ]
+    },
+    {
+      "id": "green", "label": "Green · success — $dt-success, $hp-success-*",
+      "swatches": [
+        { "hex": "#E3FCEF", "label": "$dt-success bg" },
+        { "hex": "#79F2C0", "label": "$dt-success-dark" },
+        { "hex": "#5BDE45", "label": "$hp-success-light" },
+        { "hex": "#4BB839", "label": "$hp-success-dark" },
+        { "hex": "#47D09A", "label": "Planner accent" },
+        { "hex": "#00875A", "label": "$dt-success ✓" },
+        { "hex": "#006844", "label": "success dark" }
+      ]
+    },
+    {
+      "id": "red", "label": "Red · danger — $dt-feedback-r*",
+      "swatches": [
+        { "hex": "#FFEBE6", "label": "R1 · $dt-feedback-r7" },
+        { "hex": "#FFBDAD", "label": "R2 · $dt-feedback-r6" },
+        { "hex": "#FF8F73", "label": "$dt-error-dark" },
+        { "hex": "#FF7452", "label": "$dt-feedback-r4" },
+        { "hex": "#FF5630", "label": "R5 · $dt-feedback-r3" },
+        { "hex": "#DE350B", "label": "R6 · $dt-error ✗" },
+        { "hex": "#BF2600", "label": "R7 · $dt-feedback-r1" }
+      ]
+    },
+    {
+      "id": "orange", "label": "Orange · warning — $dt-warning",
+      "swatches": [
+        { "hex": "#FFFAE6", "label": "O1" },
+        { "hex": "#FFE380", "label": "$dt-warning-dark" },
+        { "hex": "#FFAB00", "label": "O5 · $dt-warning ⚠" },
+        { "hex": "#FF8B00", "label": "O7" }
+      ]
+    },
+    {
+      "id": "brand", "label": "Honeypot brand — $hp-primary, $hp-secondary, product colors",
+      "swatches": [
+        { "hex": "#FFD200", "label": "$hp-primary-light" },
+        { "hex": "#F5B63E", "label": "$hp-primary" },
+        { "hex": "#EEA00C", "label": "$hp-primary-dark" },
+        { "hex": "#A3B5D1", "label": "$hp-secondary-light" },
+        { "hex": "#546884", "label": "$hp-secondary" },
+        { "hex": "#222E3F", "label": "$hp-secondary-dark" },
+        { "hex": "#70CBFF", "label": "$hp-tertiary-light" },
+        { "hex": "#0792E0", "label": "$hp-tertiary" },
+        { "hex": "#628EFF", "label": "$hp-info-light" },
+        { "hex": "#F27B42", "label": "LastMile" },
+        { "hex": "#FF3E50", "label": "FirstMile" },
+        { "hex": "#47D09A", "label": "Planner" },
+        { "hex": "#6B9AFF", "label": "OnDemand" }
+      ]
+    }
+  ]
+}

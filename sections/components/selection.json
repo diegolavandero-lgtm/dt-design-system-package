@@ -1,0 +1,35 @@
+{
+  "title": "Selection controls",
+  "titleKey": "nav.selection",
+  "description": "Checkbox, radio, y switch. Cada uno tiene un estado on claro en azul primario. Toggle haciendo click en el switch.",
+  "keywords": ["checkbox", "radio", "switch", "toggle", "selection", "controls"],
+  "controls": [
+    {
+      "type": "checkbox",
+      "label": "Checkbox",
+      "states": [
+        { "label": "Default", "on": false, "disabled": false },
+        { "label": "Checked", "on": true, "disabled": false },
+        { "label": "Mixed", "on": "mixed", "disabled": false },
+        { "label": "Disabled", "on": false, "disabled": true }
+      ]
+    },
+    {
+      "type": "radio",
+      "label": "Radio",
+      "states": [
+        { "label": "Default", "on": false },
+        { "label": "Selected", "on": true },
+        { "label": "Disabled", "on": false, "disabled": true }
+      ]
+    },
+    {
+      "type": "switch",
+      "label": "Switch",
+      "states": [
+        { "label": "Off (click to toggle)", "on": false },
+        { "label": "On", "on": true }
+      ]
+    }
+  ]
+}

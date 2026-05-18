@@ -1,0 +1,34 @@
+{
+  "title": "Typography",
+  "titleKey": "nav.typography",
+  "description": "DM Sans para toda la UI del producto (400/500/700). Roboto Mono para código. Source: styles/packages/typography/src/",
+  "keywords": ["typography", "type", "font", "dm sans", "roboto", "scale", "weight"],
+  "fonts": [
+    {
+      "family": "DM Sans",
+      "token": "$honeypot-font-family",
+      "weights": [400, 500, 700],
+      "role": "UI principal",
+      "specimen": "Aa Bb Cc 123",
+      "sample": "Crear orden · Exportar a Planner",
+      "note": "400 (regular) · 500 (medium) · 700 (bold) + italics"
+    },
+    {
+      "family": "Roboto Mono",
+      "weights": [400],
+      "role": "Código solamente",
+      "specimen": "const hp = require('@beetrack/hp')",
+      "note": "Solo para tokens, snippets y labels de código"
+    }
+  ],
+  "scale": [
+    { "name": "hero", "mixin": "hp-typography__hero", "size": 26, "lineHeight": 32, "weight": 500, "font": "DM Sans", "sample": "Dispatch order #44812" },
+    { "name": "title", "mixin": "hp-typography__title", "size": 22, "lineHeight": 28, "weight": 700, "font": "DM Sans", "sample": "Rutas en curso" },
+    { "name": "subtitle", "mixin": "hp-typography__subtitle", "size": 18, "lineHeight": 20, "weight": 500, "font": "DM Sans", "sample": "Información de usuario" },
+    { "name": "body", "mixin": "hp-typography__body", "size": 16, "lineHeight": 20, "weight": 400, "font": "DM Sans", "sample": "Tienes cambios sin guardar. Si cierras este modal…" },
+    { "name": "bodysmall", "mixin": "hp-typography__bodysmall", "size": 14, "lineHeight": 18, "weight": 400, "font": "DM Sans", "sample": "Admin Master · Última conexión hace 3h" },
+    { "name": "button", "mixin": "hp-typography__button", "size": 16, "lineHeight": 16, "weight": 500, "font": "DM Sans", "sample": "Guardar · Cancelar · Eliminar" },
+    { "name": "micro", "mixin": "hp-typography__micro", "size": 12, "lineHeight": 16, "weight": 400, "font": "DM Sans", "sample": "1–25 de 340 · 10-10-25 10:35 hrs" },
+    { "name": "code", "mixin": "hp-typography__code", "size": 16, "lineHeight": 21, "weight": 400, "font": "Roboto Mono", "sample": "$dt-primary-main: #4B82FA" }
+  ]
+}

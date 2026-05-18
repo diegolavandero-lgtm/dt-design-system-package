@@ -1,0 +1,14 @@
+{
+  "title": "Radii",
+  "titleKey": "nav.radii",
+  "description": "6 stops. Modales/inputs 4px, cards 8px, chips 16px, sidebar items 30px, buttons pill (50px). Special: topbar company-logo slot 25px top-left only.",
+  "keywords": ["radii", "border", "radius", "corners", "pill"],
+  "scale": [
+    { "label": "4px", "px": 4, "use": "modal, input, banners", "token": "$hp-text-field-radius / $modal-border-radius" },
+    { "label": "8px", "px": 8, "use": "cards, tables, tags", "token": "$hp-table-border-radius" },
+    { "label": "16px · chip", "px": 16, "use": "$hp-chip border-radius", "token": "$hp-chip.border-radius" },
+    { "label": "30px · sidebar", "px": 30, "use": "$hp-sidebar-border-radius", "token": "$hp-sidebar-border-radius" },
+    { "label": "pill · 50px", "px": 50, "use": "buttons", "token": "$hp-button-border-basic-radius", "special": "pill" },
+    { "label": "25px 0 0 0", "px": 25, "use": "topbar customer slot", "token": "$hp-top-bar-customer-border-radius", "special": "topbar" }
+  ]
+}

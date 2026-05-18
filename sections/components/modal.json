@@ -1,0 +1,28 @@
+{
+  "title": "Modal",
+  "titleKey": "nav.modal",
+  "description": "Ancho 500px ($modal-width), border-radius 4px, borde 1px solid #A3B5D1 ($hp-secondary-light). Padding 24px. Title usa $hp-secondary (#546884). Source: styles/packages/modal/src/",
+  "keywords": ["modal", "dialog", "overlay", "confirm"],
+  "tokens": {
+    "width": "500px",
+    "radius": "4px",
+    "border": "1px solid #A3B5D1",
+    "padding": "24px",
+    "innerPadding": "20px",
+    "titleColor": "#546884",
+    "titleSize": "22px",
+    "maxHeight": "90vh",
+    "overlayBg": "rgba(19,32,69,0.45)",
+    "elevation": "0 8px 16px rgba(0,0,0,0.15)"
+  },
+  "preview": {
+    "title": "Crear llave API",
+    "subtitle": "Genera una llave para integrar con el webhook de órdenes.",
+    "fields": [
+      { "label": "Nombre", "required": true, "state": "focus", "value": "Integración Planner — staging", "helper": "Cómo aparecerá en órdenes y reportes." },
+      { "label": "Alcance", "value": "Lectura / escritura", "type": "select" }
+    ],
+    "warning": "Tienes cambios sin guardar. Si cierras este modal, los cambios se perderán.",
+    "actions": [{ "label": "Cancelar", "type": "secondary" }, { "label": "Guardar", "type": "primary" }]
+  }
+}

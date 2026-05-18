@@ -1,0 +1,18 @@
+{
+  "title": "Banners",
+  "titleKey": "nav.banners",
+  "description": "Borde izquierdo 3px + fondo tintado. Cuatro intents mapean 1:1 a colores semánticos. Source: styles/packages/info-box/src/",
+  "keywords": ["banners", "alerts", "notifications", "info", "warning", "error", "success"],
+  "banners": [
+    { "type": "success", "iconColor": "#00875A", "title": "Dirección verificada.", "text": "El pin se colocó automáticamente en el mapa." },
+    { "type": "warning", "iconColor": "#FFAB00", "title": "La dirección es aproximada.", "text": "Verifica en el mapa o ajusta el pin." },
+    { "type": "danger", "iconColor": "#DE350B", "title": "No pudimos geolocalizar esta dirección.", "text": "Revisa el formato o ingresa las coordenadas." },
+    { "type": "info", "iconColor": "#1F60ED", "text": "Se exportarán <b>25 órdenes</b> a Planner. Puedes continuar editando mientras se procesan." }
+  ],
+  "tokenMap": {
+    "success": { "bg": "#E3FCEF", "border": "#00875A" },
+    "warning": { "bg": "#FFFAE6", "border": "#FFAB00" },
+    "danger": { "bg": "#FFEBE6", "border": "#DE350B" },
+    "info": { "bg": "#EDF5FF", "border": "#1F60ED" }
+  }
+}

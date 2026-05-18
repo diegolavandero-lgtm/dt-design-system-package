@@ -1,0 +1,7 @@
+{
+  "title": "Data viz palette",
+  "titleKey": "nav.dataviz",
+  "description": "11 colores ordenados para charts. Asignar estrictamente 1→11. Nunca saltar ni reusar fuera de secuencia.",
+  "keywords": ["data", "viz", "visualization", "chart", "graph", "palette", "ordered"],
+  "palette": ["#6E8DDE","#FFCC65","#57C2D6","#7EEABC","#FF8F76","#A59ADD","#5EBE95","#DED95D","#8DBCE7","#BF7B83","#DFA2F4"]
+}

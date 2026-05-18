@@ -1,0 +1,25 @@
+{
+  "title": "Inputs & forms",
+  "titleKey": "nav.inputs",
+  "description": "Siempre con label en formularios. Altura 56px (dense 40px), border-radius 4px, borde $dt-neutral-n3. Focus: borde $dt-primary-main + fondo $dt-primary-8. Source: styles/packages/text-field/src/",
+  "keywords": ["inputs", "forms", "text", "field", "validation", "label", "helper"],
+  "tokens": {
+    "height": "56px",
+    "heightDense": "40px",
+    "radius": "4px",
+    "borderDefault": "#E1E6ED",
+    "borderFocus": "#4B82FA",
+    "bgFocus": "#EDF5FF",
+    "borderError": "#DE350B",
+    "bgDisabled": "#E1E6ED",
+    "padding": "24px 10px 10px 14px",
+    "paddingDense": "10px"
+  },
+  "examples": [
+    { "label": "Nombre", "required": true, "state": "default", "placeholder": "Escribe un nombre", "helper": "Cómo aparecerá en órdenes y reportes." },
+    { "label": "Buscar", "state": "focus", "value": "Maya", "icon": "search" },
+    { "label": "Email", "state": "error", "value": "walter@ejemp", "error": "Formato de email inválido.", "icon": "x-circle" },
+    { "label": "Usuario", "state": "success", "value": "walter.wallace", "helper": "Disponible.", "icon": "check-circle" }
+  ],
+  "code": "/* Source: styles/packages/text-field/src/ — Honeypot */\n.hp-text-field {\n  height: 56px;          /* $hp-text-field-height */\n  border: 1px solid #E1E6ED; /* $dt-neutral-n3 */\n  border-radius: 4px;    /* $hp-text-field-radius */\n  padding: 24px 10px 10px 14px; /* $hp-text-field-content-padding */\n}\n.hp-text-field--dense   { height: 40px; padding: 10px; } /* $hp-text-field-height-dense */\n.hp-text-field--focus   { border-color: #4B82FA; background: #EDF5FF; } /* $dt-primary-8 */\n.hp-text-field--error   { border-color: #DE350B; } /* $dt-feedback-red-scale-2 */\n.hp-text-field--disabled { background: #E1E6ED; color: #8FA0BA; }"
+}
