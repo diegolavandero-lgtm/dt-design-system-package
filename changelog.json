@@ -1,0 +1,99 @@
+{
+  "$schema": "Keep a Changelog bilingüe — DispatchTrack Design System",
+  "currentVersion": "2.4.0",
+  "entries": [
+    {
+      "version": "2.4.0",
+      "date": "2026-05-01",
+      "author": "DS Team",
+      "changes": [
+        {
+          "type": "changed",
+          "component": "Map pins",
+          "description": {
+            "es": "Teardrop SVG reescrito de Bézier a gradiente con mask. Se agregan variantes de acción 'close' y 'add'.",
+            "en": "Teardrop SVG rewritten from Bézier to mask-based gradient. Adds close and add action variants."
+          }
+        },
+        {
+          "type": "fixed",
+          "component": "Map pins",
+          "description": {
+            "es": "Bug de renderizado cross-browser en Safari corregido.",
+            "en": "Cross-browser rendering bug on Safari fixed."
+          }
+        }
+      ]
+    },
+    {
+      "version": "2.3.2",
+      "date": "2026-04-21",
+      "author": "DS Team",
+      "changes": [
+        {
+          "type": "added",
+          "component": "Voice & content",
+          "description": {
+            "es": "Primer documento oficial de voz y contenido, derivado del spec dump de Figma MCP.",
+            "en": "First official voice & content document, derived from the Figma MCP spec dump."
+          }
+        }
+      ]
+    },
+    {
+      "version": "2.3.0",
+      "date": "2026-03-28",
+      "author": "DS Team",
+      "breaking": true,
+      "changes": [
+        {
+          "type": "changed",
+          "component": "Topbar",
+          "breaking": true,
+          "description": {
+            "es": "Slot del logo empresa movido al borde derecho con border-radius 20px 0 0 0. Orden de íconos bloqueado: apps → ayuda → mensajes → alertas → usuario.",
+            "en": "Company logo slot moved to far-right edge with border-radius 20px 0 0 0. Icon order locked: apps → help → messages → alerts → user."
+          }
+        },
+        {
+          "type": "deprecated",
+          "component": "Topbar",
+          "description": {
+            "es": "Clase .topbar--legacy marcada como obsoleta. Migrar al nuevo Topbar antes de v3.0.",
+            "en": "Class .topbar--legacy deprecated. Migrate to new Topbar before v3.0."
+          }
+        }
+      ]
+    },
+    {
+      "version": "2.2.0",
+      "date": "2026-03-15",
+      "author": "DS Team",
+      "changes": [
+        {
+          "type": "added",
+          "component": "Service units",
+          "description": {
+            "es": "Paleta ordenada de 10 colores cíclica. Pink #FE4EC4 ocupa la posición 1.",
+            "en": "10-step ordered palette, cyclic. Pink #FE4EC4 is now position 1."
+          }
+        }
+      ]
+    },
+    {
+      "version": "2.1.0",
+      "date": "2026-02-10",
+      "author": "DS Team",
+      "changes": [
+        {
+          "type": "tokens",
+          "component": "Typography",
+          "description": {
+            "es": "DM Sans como única familia tipográfica de UI. Roboto restringido a títulos de display internos del DS.",
+            "en": "DM Sans as sole UI font. Roboto restricted to DS-internal display titles only."
+          }
+        }
+      ]
+    }
+  ]
+}

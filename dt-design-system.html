@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DispatchTrack Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Roboto:wght@500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#132045;--n1:#F5F6FA;--n2:#F0F2F5;--n3:#E1E6ED;--n4:#C5D2E7;--n45:#8FA0BA;--n5:#67768D;--n6:#4B5564;--n7:#39414D;
+  --b1:#EDF5FF;--b2:#D1E0FF;--b3:#ADC7FF;--b4:#6B9AFF;--b5:#4B82FA;--b6:#306EF2;--b7:#0052CC;
+  --g1:#E3FCEF;--g2:#ABF5D1;--g5:#36B37E;--g6:#00875A;--g7:#006844;
+  --r1:#FFEBE6;--r5:#FF5630;--r6:#DE350B;--r7:#BF2600;
+  --o1:#FFFAE6;--o3:#FFE380;--o5:#FFAB00;--o7:#FF8B00;
+  --t5:#00B8D9;--p5:#8777D9;
+  --font-sans:'DM Sans',system-ui,sans-serif;
+  --font-display:'Roboto',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--n2);font-family:var(--font-sans);color:var(--n7);font-size:14px;line-height:1.5}
+a{color:var(--b7);text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select{font-family:inherit}
+
+/* ── TOPBAR ── */
+.gh-top{position:sticky;top:0;z-index:100;height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 22px;gap:16px}
+.gh-top .mark{width:26px;height:26px;border-radius:5px;background:linear-gradient(135deg,var(--b6),var(--b7));display:flex;align-items:center;justify-content:center;font:700 12px var(--font-sans);color:#fff;flex-shrink:0}
+.gh-top .crumbs{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.8);flex:1;min-width:0;overflow:hidden}
+.gh-top .crumbs .sep{opacity:.4}
+.gh-top .crumbs .repo{font-weight:700;color:#fff}
+.gh-top .crumbs .branch{font:700 10px var(--font-sans);background:rgba(255,255,255,.1);padding:2px 8px;border-radius:999px;color:rgba(255,255,255,.8)}
+.gh-search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 10px;color:#fff;width:280px}
+.gh-search input{flex:1;background:transparent;border:0;outline:0;color:#fff;font:400 12px var(--font-sans)}
+.gh-search input::placeholder{color:rgba(255,255,255,.4)}
+.gh-search kbd{font:600 10px var(--font-mono);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:1px 5px;border-radius:3px;color:rgba(255,255,255,.6)}
+.gh-action{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);padding:5px 12px;border-radius:6px;font:600 11px var(--font-sans);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.gh-action:hover{background:rgba(255,255,255,.18)}
+
+/* ── SUBNAV ── */
+.subnav{background:#fff;border-bottom:1px solid var(--n3);padding:0 22px;display:flex;gap:0;overflow-x:auto;flex-shrink:0}
+.subnav-tab{padding:11px 14px;font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;display:inline-flex;align-items:center;gap:6px;border-bottom:2px solid transparent;white-space:nowrap}
+.subnav-tab.active{font-weight:700;color:var(--n7);border-bottom-color:#FF6A1F}
+.subnav-tab .count{font:600 10px var(--font-sans);background:var(--n2);color:var(--n5);padding:1px 6px;border-radius:999px}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:calc(100vh - 97px)}
+.sidebar{width:256px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);padding:14px 0;position:sticky;top:97px;align-self:start;max-height:calc(100vh - 97px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--n3);border-radius:3px}
+.sidebar .grp-lbl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);padding:10px 20px 5px}
+.sidebar a.snav{display:flex;align-items:center;gap:8px;padding:6px 20px;font:500 13px var(--font-sans);color:var(--n7);border-left:3px solid transparent;text-decoration:none}
+.sidebar a.snav:hover{background:var(--n1)}
+.sidebar a.snav.active{background:var(--b1);border-left-color:var(--b5);font-weight:700}
+.sidebar a.snav .ico{width:14px;height:14px;flex-shrink:0;color:var(--n5)}
+.sidebar a.snav.active .ico{color:var(--b6)}
+.main{flex:1;padding:32px 40px 80px;min-width:0}
+.main h1{font:700 28px/1.2 var(--font-sans);letter-spacing:-.01em;margin:0 0 6px;color:var(--n7)}
+.main .sub{font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px}
+
+/* ── SECTION ── */
+.sec{margin:0 0 52px;scroll-margin-top:110px}
+.sec h2{font:700 20px/1.3 var(--font-sans);margin:0 0 6px;color:var(--n7);display:flex;align-items:center;gap:10px}
+.sec h2 .anch{font:500 11px var(--font-mono);color:var(--n5);background:var(--n2);padding:2px 7px;border-radius:4px}
+.sec h3{font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)}
+.sec p.desc{font:400 13px/1.6 var(--font-sans);color:var(--n5);margin:0 0 16px;max-width:660px}
+
+/* ── CARD ── */
+.card{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;margin:0 0 14px}
+.card.flush{padding:0;overflow:hidden}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--n3);background:#FAFBFD}
+.card-hdr .ttl{font:700 12px var(--font-sans);color:var(--n7)}
+.card-hdr .meta{font:400 11px var(--font-mono);color:var(--n5)}
+.card-body{padding:20px}
+
+/* ── CODE ── */
+.code{background:#0D1117;color:#c9d1d9;border-radius:6px;padding:14px;font:400 12px/1.6 var(--font-mono);overflow-x:auto;position:relative}
+.code .cp{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.12);padding:3px 9px;border-radius:4px;font:600 10px var(--font-sans);cursor:pointer}
+.code .cp:hover{background:rgba(255,255,255,.16)}
+.kw{color:#7DD3FC}.str{color:#A5F3B0}.cm{color:#4B5563}.nb{color:#FCD34D}.tg{color:#F0ABFC}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--n3);background:#FAFBFD}
+.t-tab{padding:9px 14px;font:500 12px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent}
+.t-tab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);background:#fff}
+.tp{display:none}
+.tp.on{display:block}
+
+/* ── SWATCHES ── */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:8px}
+.sw{border-radius:6px;border:1px solid rgba(19,32,69,.08);padding:10px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;aspect-ratio:1/1.05;position:relative;transition:transform .1s}
+.sw:hover{transform:scale(1.03)}
+.sw b{font:700 11px var(--font-sans)}
+.sw span{font:400 10px var(--font-mono);opacity:.85}
+.sw.copied:after{content:"Copiado";position:absolute;inset:0;background:rgba(19,32,69,.85);color:#fff;display:flex;align-items:center;justify-content:center;font:700 11px var(--font-sans);border-radius:5px}
+
+/* ── BUTTONS ── */
+.btn{font:700 13px/1 var(--font-sans);padding:8px 16px;border-radius:999px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:6px;transition:background .12s}
+.btn.pri{background:var(--b6);color:#fff}.btn.pri:hover{background:#1F60ED}.btn.pri:active{background:var(--b7)}.btn.pri:disabled{background:var(--n3);color:var(--n45);cursor:not-allowed}
+.btn.sec{background:#fff;color:var(--b7);border-color:var(--n4)}.btn.sec:hover{background:var(--n1)}.btn.sec:active{background:var(--b1);border-color:var(--b6);color:var(--b6)}
+.btn.sub{background:transparent;color:var(--b7)}.btn.sub:hover{background:rgba(48,110,242,.08)}
+.btn.dan{background:var(--r6);color:#fff}.btn.dan:hover{background:var(--r7)}
+.btn.suc{background:var(--g6);color:#fff}
+.btn.war{background:var(--o5);color:var(--n7)}
+
+/* ── INPUTS ── */
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font:700 13px var(--font-sans);color:var(--n7)}
+.fld .hlp{font:400 11px var(--font-sans);color:var(--n5)}
+.fld .err{font:400 11px var(--font-sans);color:var(--r6)}
+.fld .ok{font:400 11px var(--font-sans);color:var(--g6)}
+.req{color:var(--r6)}
+.inp{display:flex;align-items:center;border:1px solid var(--n4);border-radius:8px;background:#fff;padding:0 11px;height:36px}
+.inp input{border:0;outline:0;flex:1;font:400 13px var(--font-sans);color:var(--n7);background:transparent;min-width:0}
+.inp.foc{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
+.inp.er{border-color:var(--r6)}.inp.ok{border-color:var(--g6)}
+.inp .ic{color:var(--n5);display:flex;flex-shrink:0}
+
+/* ── SELECTION ── */
+.chk{width:17px;height:17px;border:1.5px solid var(--n4);border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chk.on{background:var(--b6);border-color:var(--b6)}
+.chk.dis{background:var(--n2);border-color:var(--n3)}
+.rad{width:17px;height:17px;border:1.5px solid var(--n4);border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rad.on{border-color:var(--b6)}
+.rad.on:after{content:"";width:9px;height:9px;border-radius:999px;background:var(--b6)}
+.swt{width:32px;height:19px;border-radius:999px;background:var(--n4);position:relative;cursor:pointer;flex-shrink:0}
+.swt.on{background:var(--b6)}
+.swt:after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:999px;background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(19,32,69,.2)}
+.swt.on:after{left:15px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font:600 11px var(--font-sans)}
+.badge .dot{width:5px;height:5px;border-radius:999px;background:currentColor}
+.badge.bg{background:var(--g1);color:var(--g6)}
+.badge.br{background:var(--r1);color:var(--r6)}
+.badge.bo{background:var(--o1);color:var(--o7)}
+.badge.bb{background:var(--b1);color:var(--b7)}
+.badge.bn{background:var(--n2);color:var(--n7)}
+.badge.bx{background:#fff;border:1px solid var(--n4);color:var(--n7);padding:1px 8px}
+.chip{background:var(--n2);color:var(--n7);padding:3px 9px 3px 3px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;font:500 11px var(--font-sans)}
+.chip .av{width:19px;height:19px;border-radius:999px;display:flex;align-items:center;justify-content:center;font:700 9px var(--font-sans);flex-shrink:0}
+
+/* ── BANNERS ── */
+.bn{display:flex;gap:9px;padding:9px 12px;border-radius:4px;align-items:flex-start;font:400 12px/1.4 var(--font-sans);color:var(--n7);margin-bottom:7px}
+.bn svg{flex-shrink:0;margin-top:1px}
+.bn.ok{background:var(--g1);border-left:3px solid var(--g6)}
+.bn.wr{background:var(--o1);border-left:3px solid var(--o5)}
+.bn.er{background:var(--r1);border-left:3px solid var(--r6)}
+.bn.in{background:var(--b1);border-left:3px solid var(--b6)}
+.bn:last-child{margin-bottom:0}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color:var(--n7)}
+.tbl thead th{background:var(--n2);font:700 13px var(--font-sans);text-align:left;padding:9px 12px;border-bottom:1px solid var(--n4);color:var(--n7)}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--n3)}
+.tbl tr.hov td{background:var(--n2)}
+.tbl tr.sel td{background:var(--b1)}
+.tbl tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--g5)}
+.tbl .lnk{color:var(--b7);font-weight:600}
+.tbl:last-child{border-bottom:0}
+
+/* ── MODAL ── */
+.modal-stage{background:rgba(19,32,69,.45);padding:24px;border-radius:8px;display:flex;justify-content:center}
+.modal{width:460px;max-width:100%;background:#fff;border-radius:8px;padding:22px;box-shadow:0 12px 32px rgba(19,32,69,.3)}
+.modal h1{font:700 22px/1.3 var(--font-sans);color:var(--n7);flex:1;margin:0}
+.modal .mh{display:flex;align-items:flex-start;margin-bottom:4px}
+.modal .msub{font:400 12px var(--font-sans);color:var(--n5);margin:4px 0 16px}
+.modal .mfot{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--n3);padding-top:14px;margin-top:4px}
+
+/* ── SIDEBAR PREVIEW ── */
+.sbp{width:200px;background:#fff;border:1px solid var(--n3);border-radius:8px;padding:8px 0}
+.sbp .top{padding:6px 15px 12px;border-bottom:1px solid var(--n3);margin-bottom:6px;font:700 13px var(--font-sans);color:var(--indigo)}
+.sbp .top span{font-weight:400;color:#FF6A1F;margin-left:5px}
+.sbp .top span b{font-weight:700}
+.sbp .it{display:flex;align-items:center;gap:10px;padding:8px 15px;font:500 12px var(--font-sans);color:var(--b7);position:relative;cursor:pointer}
+.sbp .it svg{width:14px;height:14px;stroke:var(--b7);stroke-width:2;fill:none;flex-shrink:0}
+.sbp .it.sel{background:var(--b1);font-weight:700}
+.sbp .it.sel:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:3px;background:var(--b5);border-radius:0 3px 3px 0}
+.sbp .it.hov{background:var(--b1)}
+.sbp .div{border-top:1px solid var(--n3);margin:6px 0}
+
+/* ── TOPBAR PREVIEW ── */
+.tbar{height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 22px;border-radius:4px;overflow:hidden}
+.tbar .logo{height:18px;display:block}
+.tbar .acts{margin-left:auto;display:flex;align-items:center;gap:28px;padding-right:0}
+.tbar .tico{width:18px;height:18px;color:#fff;flex-shrink:0}
+.tbar .slot{width:98px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:var(--indigo);font:700 11px var(--font-sans);margin-left:20px;flex-shrink:0}
+.tbar .bell{position:relative}
+.tbar .bell:after{content:"";position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:var(--r5);border:2px solid var(--indigo)}
+
+/* ── MAP PINS ── */
+.pin-stage{background:linear-gradient(160deg,#EFF1F4,#E4E7ED);padding:24px;border-radius:8px;display:flex;flex-direction:column;gap:24px}
+.pin-row{display:flex;gap:28px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.pin-cell{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pin-cell .cap{font:500 9px var(--font-sans);color:var(--n5);letter-spacing:.04em;text-transform:uppercase;text-align:center;max-width:80px}
+.pin-shadow{width:18px;height:5px;border-radius:50%;background:rgba(19,32,69,.18);filter:blur(2px)}
+
+/* ── RADII ── */
+.radii-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.r-cell{display:flex;flex-direction:column;align-items:center;gap:6px}
+.r-box{width:80px;height:64px;background:var(--b1);border:1px solid var(--b3)}
+.r-pill-box{height:32px;width:80px;background:var(--b6);border-radius:999px}
+.r-topbar{width:80px;height:64px;background:#fff;border-radius:20px 0 0 0;border:1px solid var(--n4);position:relative;overflow:hidden}
+.r-topbar:before{content:"";position:absolute;inset:0 0 auto 0;height:22px;background:var(--indigo)}
+.r-lbl{font:600 11px var(--font-sans);color:var(--n7)}
+.r-sub{font:400 10px var(--font-mono);color:var(--n5)}
+
+/* ── SHADOWS ── */
+.sh-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.sh-cell{display:flex;flex-direction:column;gap:8px;align-items:center}
+.sh-box{width:100%;height:72px;background:#fff;border-radius:8px;border:1px solid var(--n4)}
+
+/* ── SPACING ── */
+.sp-row{display:flex;align-items:center;gap:12px;padding:5px 0;border-bottom:1px dashed var(--n3)}
+.sp-row:last-child{border:0}
+.sp-tok{width:72px;font:600 11px var(--font-mono);color:var(--n7)}
+.sp-val{width:52px;font:400 11px var(--font-mono);color:var(--n5)}
+.sp-bar{height:10px;background:var(--b6);border-radius:2px}
+.sp-use{font:400 11px var(--font-sans);color:var(--n5);margin-left:auto}
+
+/* ── CALENDAR ── */
+.cal{width:290px;background:#fff;border:1px solid var(--n4);border-radius:8px;overflow:hidden;box-shadow:0 2px 4px rgba(19,32,69,.08)}
+.cal .ch{display:flex;align-items:center;padding:9px 13px;border-bottom:1px solid var(--n3);font:600 12px var(--font-sans)}
+.cal .ch .t{flex:1;text-align:center;color:var(--n7)}
+.cal .nav{display:flex;justify-content:space-between;padding:7px 13px;font:500 13px var(--font-sans);color:var(--b7)}
+.cal .cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 9px 9px}
+.cal .dow{font:500 10px var(--font-sans);color:var(--n5);text-align:center;padding:3px 0}
+.cal .d{text-align:center;padding:5px 0;font:400 12px var(--font-sans);color:var(--n7);border-radius:999px;cursor:pointer}
+.cal .d.empty{color:transparent}
+.cal .d.sel{background:var(--b6);color:#fff;font-weight:600}
+.cal .d.rng{background:var(--b1);border-radius:0}
+.cal .d.end{background:var(--b6);color:#fff;font-weight:600}
+.cal .cf{border-top:1px solid var(--n3);padding:9px}
+
+/* ── LOGOS ── */
+.logo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.logo-card{border:1px solid var(--n3);border-radius:8px;background:#fff;padding:20px 18px 12px;display:flex;flex-direction:column;gap:8px;min-height:88px}
+.logo-card.dk{background:var(--indigo);border-color:var(--indigo)}
+.logo-card .lc{flex:1;display:flex;align-items:center}
+.logo-card svg{height:18px;width:auto;max-width:100%}
+.logo-card .lf{display:flex;align-items:center;justify-content:space-between}
+.logo-card .ll{font:500 9px var(--font-sans);color:var(--n5);letter-spacing:.06em;text-transform:uppercase}
+.logo-card.dk .ll{color:rgba(255,255,255,.5)}
+.logo-card .ld{font:600 10px var(--font-sans);color:var(--b7);background:transparent;border:0;cursor:pointer;padding:0}
+.logo-card.dk .ld{color:var(--b4)}
+
+/* ── DATAVIZ ── */
+.dv-row{display:grid;grid-template-columns:repeat(11,1fr);gap:5px}
+.dv-dot{aspect-ratio:1;border-radius:999px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font:700 9px var(--font-sans)}
+.dv-lbl{font:400 9px var(--font-mono);color:var(--n5);text-align:center;margin-top:3px}
+.su-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.su-dot{aspect-ratio:1;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;font:700 12px var(--font-sans);box-shadow:0 2px 4px rgba(19,32,69,.15)}
+
+/* ── VOICE ── */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vc{border-radius:8px;padding:14px;border:1px solid var(--n3);background:#fff}
+.vc.good{border-left:3px solid var(--g6)}
+.vc.bad{border-left:3px solid var(--r6)}
+.vc .vl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.vc.good .vl{color:var(--g6)}
+.vc.bad .vl{color:var(--r6)}
+.vc .vx{font:400 13px/1.5 var(--font-sans);color:var(--n7);font-style:italic}
+
+/* ── PRODUCTS GRID ── */
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.prod-card{border:1px solid var(--n3);border-radius:8px;padding:14px;background:#fff}
+
+/* ── TOKEN TABLE ── */
+.ttbl{width:100%;border-collapse:collapse;font:400 12px var(--font-sans)}
+.ttbl th{background:var(--n2);font:700 11px var(--font-sans);text-align:left;padding:8px 10px;border-bottom:1px solid var(--n4);color:var(--n7)}
+.ttbl td{padding:8px 10px;border-bottom:1px solid var(--n3);vertical-align:middle}
+.ttbl tr:last-child td{border:0}
+.ttbl code{font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px}
+
+/* ── SEARCH RESULTS HANDLING ── */
+.sec[data-hidden]{display:none}
+
+/* ── TYPE SCALE ── */
+.ts-table{width:100%;border-collapse:collapse}
+.ts-table td{padding:8px 0;border-bottom:1px dashed var(--n3);vertical-align:baseline}
+.ts-table td:first-child{width:130px;font:500 11px var(--font-sans);letter-spacing:.04em;text-transform:uppercase;color:var(--n5)}
+.ts-table td:last-child{font:400 11px var(--font-mono);color:var(--n5);width:160px;text-align:right}
+.ts-table tr:last-child td{border:0}
+
+/* ── ICON GRID ── */
+.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}
+.icon-cell{border:1px solid var(--n3);border-radius:6px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff}
+.icon-cell svg{width:20px;height:20px;stroke:var(--n7);stroke-width:1.5;fill:none}
+.icon-cell .ic-lbl{font:400 9px var(--font-sans);color:var(--n5);text-align:center;word-break:break-all}
+
+/* ── LANGUAGE SWITCH ── */
+.lang-switch{display:inline-flex;border:1px solid rgba(255,255,255,.18);border-radius:6px;overflow:hidden;height:28px;flex-shrink:0}
+.lang-switch button{background:transparent;border:0;color:rgba(255,255,255,.7);font:600 11px var(--font-sans);padding:0 10px;cursor:pointer;letter-spacing:.04em}
+.lang-switch button.active{background:rgba(255,255,255,.18);color:#fff}
+.lang-switch button:hover:not(.active){color:#fff;background:rgba(255,255,255,.08)}
+
+/* ── CHANGELOG v2 ── */
+.cl-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.cl-filters input,.cl-filters select{font:400 13px var(--font-sans);padding:6px 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;color:var(--n7);outline:none}
+.cl-filters input:focus,.cl-filters select:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.2)}
+.cl-filters input{flex:1;min-width:200px}
+.cl-filters select{cursor:pointer}
+.cl-version{padding:14px 0;border-bottom:1px solid var(--n3)}
+.cl-version:last-child{border-bottom:0}
+.cl-version-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.cl-version-hdr .badge{flex-shrink:0}
+.cl-date{font:400 12px var(--font-sans);color:var(--n5)}
+.cl-author{font:400 12px var(--font-sans);color:var(--n5)}
+.cl-breaking-flag{font:700 10px var(--font-sans);letter-spacing:.04em;text-transform:uppercase;color:#fff;background:#DE350B;padding:2px 7px;border-radius:4px}
+.cl-copy{margin-left:auto;background:transparent;border:1px solid var(--n3);border-radius:6px;padding:4px 8px;cursor:pointer;color:var(--n5);display:inline-flex;align-items:center;gap:4px}
+.cl-copy:hover{color:var(--b7);border-color:var(--b5);background:var(--b1)}
+.cl-changes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.cl-change{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:6px;background:var(--n1)}
+.cl-type-badge{flex-shrink:0;min-width:78px;text-align:center}
+.cl-change-body{flex:1;font:400 13px/1.5 var(--font-sans);color:var(--n7)}
+.cl-component{font:700 13px var(--font-sans);color:var(--n7);margin-right:6px}
+.cl-desc{color:var(--n6)}
+.cl-empty{padding:32px 16px;text-align:center}
+.cl-empty-ttl{font:700 14px var(--font-sans);color:var(--n7);margin-bottom:4px}
+.cl-empty-sub{font:400 13px var(--font-sans);color:var(--n5)}
+.badge.bo{background:#FFF0B3;color:#7D4E00}
+.badge.bt{background:#E6FCFF;color:#006B7D}
+.badge.bp{background:#EAE6FF;color:#5243AA}
+
+/* ── RESPONSIVE ── */
+@media(max-width:940px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%;position:static;max-height:none;border-right:0;border-bottom:1px solid var(--n3)}
+  .main{padding:20px 18px 60px}
+  .gh-search{display:none}
+  .logo-grid{grid-template-columns:1fr 1fr}
+  .prod-grid{grid-template-columns:1fr 1fr}
+  .radii-grid{grid-template-columns:repeat(3,1fr)}
+  .sh-grid{grid-template-columns:1fr 1fr}
+  .voice-grid{grid-template-columns:1fr}
+  .dv-row{grid-template-columns:repeat(6,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════════════
+     ║  TOPBAR
+     ╚══════════════════════════════════════════════════════════ -->
+<header class="gh-top">
+  <div class="mark">DT</div>
+  <nav class="crumbs">
+    <span style="color:rgba(255,255,255,.7)">dispatchtrack</span>
+    <span class="sep">/</span>
+    <span class="repo">design-system</span>
+    <span class="branch">main · v2.4</span>
+  </nav>
+  <div class="gh-search">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="gsearch" placeholder="Buscar tokens, componentes…" data-i18n-attr="placeholder:search.placeholder" autocomplete="off" oninput="doSearch(this.value)">
+    <kbd>⌘K</kbd>
+  </div>
+  <div class="lang-switch" role="group" aria-label="Language">
+    <button data-lang="es" class="active" aria-pressed="true">ES</button>
+    <button data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <button class="gh-action">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    Star <span style="opacity:.6">·</span> 128
+  </button>
+  <button class="gh-action" style="display:flex;align-items:center;gap:5px">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3 2 7l4 4M2 7h13a4 4 0 0 1 4 4v2M18 21l4-4-4-4M22 17H9a4 4 0 0 1-4-4v-2"/></svg>
+    Fork · 24
+  </button>
+</header>
+
+<!-- ── REPO SUBNAV ── -->
+<div class="subnav">
+  <div class="subnav-tab active">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    <span data-i18n="subnav.code">Code</span>
+  </div>
+  <div class="subnav-tab">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+    <span data-i18n="subnav.issues">Issues</span> <span class="count">3</span>
+  </div>
+  <div class="subnav-tab">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11.7 12 14l3-2.3M6 15V7l6-4 6 4v8l-6 4z"/></svg>
+    <span data-i18n="subnav.pullRequests">Pull requests</span> <span class="count">2</span>
+  </div>
+  <div class="subnav-tab">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    <span data-i18n="subnav.actions">Actions</span>
+  </div>
+  <div class="subnav-tab">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    <span data-i18n="subnav.releases">Releases</span> <span class="count">v2.4</span>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════
+     ║  LAYOUT
+     ╚══════════════════════════════════════════════════════════ -->
+<div class="layout">
+
+<!-- ── LEFT NAV ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="grp-lbl" data-i18n="nav.gettingStarted">Getting started</div>
+  <a href="#overview" class="snav active" data-sec="overview" onclick="setActive(this)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span data-i18n="nav.readme">README</span>
+  </a>
+  <a href="#brand" class="snav" data-sec="brand" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10A15.3 15.3 0 0 1 8 12a15.3 15.3 0 0 1 4-10z"/></svg>
+    <span data-i18n="nav.brand">Brand &amp; products</span>
+  </a>
+  <a href="#voice" class="snav" data-sec="voice" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span data-i18n="nav.voice">Voice &amp; content</span>
+  </a>
+  <div class="grp-lbl" style="margin-top:8px" data-i18n="nav.foundations">Foundations</div>
+  <a href="#colors" class="snav" data-sec="colors" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.8 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.4-4.5-8-10-8z"/></svg>
+    <span data-i18n="nav.colors">Colors</span>
+  </a>
+  <a href="#typography" class="snav" data-sec="typography" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    <span data-i18n="nav.typography">Typography</span>
+  </a>
+  <a href="#spacing" class="snav" data-sec="spacing" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <span data-i18n="nav.spacing">Spacing</span>
+  </a>
+  <a href="#radii" class="snav" data-sec="radii" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8a5 5 0 0 1 5-5h13v18H8a5 5 0 0 1-5-5z"/></svg>
+    <span data-i18n="nav.radii">Radii</span>
+  </a>
+  <a href="#shadows" class="snav" data-sec="shadows" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 17v4h14V7h-4"/></svg>
+    <span data-i18n="nav.shadows">Shadows</span>
+  </a>
+  <a href="#iconography" class="snav" data-sec="iconography" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2"/></svg>
+    <span data-i18n="nav.iconography">Iconography</span>
+  </a>
+  <div class="grp-lbl" style="margin-top:8px" data-i18n="nav.components">Components</div>
+  <a href="#buttons" class="snav" data-sec="buttons" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="9" width="18" height="6" rx="3"/></svg>
+    <span data-i18n="nav.buttons">Buttons</span>
+  </a>
+  <a href="#inputs" class="snav" data-sec="inputs" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="10" rx="2"/><line x1="7" y1="12" x2="11" y2="12"/></svg>
+    <span data-i18n="nav.inputs">Inputs &amp; forms</span>
+  </a>
+  <a href="#selection" class="snav" data-sec="selection" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    <span data-i18n="nav.selection">Selection controls</span>
+  </a>
+  <a href="#badges" class="snav" data-sec="badges" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+    <span data-i18n="nav.badges">Badges &amp; tags</span>
+  </a>
+  <a href="#banners" class="snav" data-sec="banners" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+    <span data-i18n="nav.banners">Banners</span>
+  </a>
+  <a href="#calendar" class="snav" data-sec="calendar" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span data-i18n="nav.calendar">Calendar</span>
+  </a>
+  <a href="#modal" class="snav" data-sec="modal" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>
+    <span data-i18n="nav.modal">Modal</span>
+  </a>
+  <a href="#table" class="snav" data-sec="table" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    <span data-i18n="nav.table">Tables</span>
+  </a>
+  <a href="#sidebar-comp" class="snav" data-sec="sidebar-comp" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+    <span data-i18n="nav.sidebar">Sidebar</span>
+  </a>
+  <a href="#topbar-comp" class="snav" data-sec="topbar-comp" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+    <span data-i18n="nav.topbar">Topbar</span>
+  </a>
+  <a href="#mappins" class="snav" data-sec="mappins" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    <span data-i18n="nav.mappins">Map pins</span>
+  </a>
+  <div class="grp-lbl" style="margin-top:8px" data-i18n="nav.data">Data</div>
+  <a href="#dataviz" class="snav" data-sec="dataviz" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span data-i18n="nav.dataviz">Data viz palette</span>
+  </a>
+  <a href="#serviceunits" class="snav" data-sec="serviceunits" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+    <span data-i18n="nav.serviceunits">Service units</span>
+  </a>
+  <div class="grp-lbl" style="margin-top:8px" data-i18n="nav.assets">Assets</div>
+  <a href="#logos" class="snav" data-sec="logos" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+    <span data-i18n="nav.logos">Logos</span>
+  </a>
+  <div class="grp-lbl" style="margin-top:8px" data-i18n="nav.resources">Resources</div>
+  <a href="#figma" class="snav" data-sec="figma" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 38 57" fill="none"><path fill="#F24E1E" d="M5 29A9.5 9.5 0 0 1 14.5 19.5H24V38.5H14.5A9.5 9.5 0 0 1 5 29z" transform="scale(.5)"/><path fill="#FF7262" d="M24 1H33.5A9.5 9.5 0 1 1 33.5 20H24z" transform="scale(.5)"/><circle fill="#1ABCFE" cx="18" cy="9.5" r="4.5" transform="scale(.5) translate(10,0)"/><path fill="#0ACF83" d="M5 47.5A9.5 9.5 0 0 1 14.5 38H24v9.5A9.5 9.5 0 1 1 5 47.5z" transform="scale(.5)"/><path fill="#A259FF" d="M5 29a9.5 9.5 0 0 1 9.5-9.5H24V38.5H14.5A9.5 9.5 0 0 1 5 29z" transform="scale(.5) translate(0,-10)"/></svg>
+    <span data-i18n="nav.figma">Figma source</span>
+  </a>
+  <a href="#changelog" class="snav" data-sec="changelog" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span data-i18n="nav.changelog">Changelog</span>
+  </a>
+</aside>
+
+<!-- ╔══════════════════════════════════════════════════════════
+     ║  MAIN CONTENT
+     ╚══════════════════════════════════════════════════════════ -->
+<main class="main" id="main-content">
+
+<!-- ══ README ══ -->
+<section class="sec" id="overview" data-keywords="readme overview dispatchtrack getting started install">
+  <h1>DispatchTrack Design System</h1>
+  <p class="sub" data-i18n="section.overview.desc">The master design system for DispatchTrack — the logistics platform used globally and in LATAM for last-mile delivery, route-planning, and on-demand commerce dispatch. All visual, typographic, color, and component decisions live here.</p>
+
+  <div class="card">
+    <h3 style="margin:0 0 14px;font:700 14px var(--font-sans)">📦 What's inside this repo</h3>
+    <div class="prod-grid">
+      <div class="prod-card" style="border-top:3px solid #FF6A1F">
+        <div style="font:700 13px var(--font-sans)">LastMile</div>
+        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#FF6A1F</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5)">Core last-mile delivery ops</div>
+      </div>
+      <div class="prod-card" style="border-top:3px solid #36B37E">
+        <div style="font:700 13px var(--font-sans)">PlannerPro</div>
+        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#36B37E</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5)">Route planning & optimization</div>
+      </div>
+      <div class="prod-card" style="border-top:3px solid #6B9AFF">
+        <div style="font:700 13px var(--font-sans)">QuickCommerce</div>
+        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#6B9AFF</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5)">On-demand / same-day dispatch</div>
+      </div>
+      <div class="prod-card" style="border-top:3px solid #FFAB00">
+        <div style="font:700 13px var(--font-sans)">Help Center</div>
+        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#FFAB00</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5)">Documentation & support</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card flush">
+    <div class="card-hdr"><span class="ttl">colors_and_type.css</span><span class="meta">v2.4 · 8.2 KB</span></div>
+    <div class="code">
+      <button class="cp" onclick="copyCode(this)">Copy</button>
+<pre><span class="cm">/* Quick install — drop at root of your stylesheet */</span>
+<span class="kw">@import</span> <span class="str">url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Roboto:wght@500&display=swap')</span>;
+
+<span class="tg">:root</span> {
+  <span class="cm">/* Semantic */</span>
+  <span class="kw">--primary-background</span>: <span class="nb">#306EF2</span>;
+  <span class="kw">--primary-text</span>:       <span class="nb">#0052CC</span>;
+  <span class="kw">--neutral-text</span>:       <span class="nb">#39414D</span>;
+  <span class="kw">--neutral-background-medium</span>: <span class="nb">#F0F2F5</span>;
+  <span class="kw">--neutral-background</span>: <span class="nb">#FFFFFF</span>;
+  <span class="kw">--neutral-border</span>:     <span class="nb">#C5D2E7</span>;
+  <span class="kw">--danger-background</span>:  <span class="nb">#DE350B</span>;
+  <span class="kw">--success-background</span>: <span class="nb">#00875A</span>;
+  <span class="kw">--warning-background</span>: <span class="nb">#FFAB00</span>;
+  <span class="cm">/* Font family */</span>
+  <span class="kw">--font-sans</span>: <span class="str">'DM Sans'</span>, system-ui, sans-serif;
+}</pre>
+    </div>
+  </div>
+
+  <h3>Repository structure</h3>
+  <div class="card" style="background:var(--n1)">
+    <div style="font:400 12px var(--font-mono);color:var(--n7);line-height:2">
+      <div>📄 <strong>README.md</strong> — this overview</div>
+      <div>🎨 <strong>colors_and_type.css</strong> — all design tokens</div>
+      <div>📋 <strong>SKILL.md</strong> — Claude Skill entrypoint</div>
+      <div>📁 <strong>assets/</strong> — logos, product marks, SVGs</div>
+      <div>📁 <strong>preview/</strong> — component preview cards</div>
+      <div>📁 <strong>ui_kits/dispatchtrack_app/</strong> — interactive UI kit</div>
+      <div>📁 <strong>uploads/</strong> — Figma-derived spec + screenshots</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BRAND ══ -->
+<section class="sec" id="brand" data-keywords="brand products accent lastmile plannerpro quickcommerce">
+  <h2><span data-i18n="nav.brand">Brand &amp; products</span> <span class="anch">#brand</span></h2>
+  <p class="desc" data-i18n="section.brand.desc">Four products share the same shell — Indigo topbar, cobalt primary — distinguished only by the product wordmark and product-accent treatments.</p>
+  <div class="card" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+    <div style="height:100px;background:#FF6A1F;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">LastMile</b><span style="font:400 10px var(--font-mono);opacity:.85">#FF6A1F · orange</span></div>
+    <div style="height:100px;background:#36B37E;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">PlannerPro</b><span style="font:400 10px var(--font-mono);opacity:.85">#36B37E · green</span></div>
+    <div style="height:100px;background:#6B9AFF;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">QuickCommerce</b><span style="font:400 10px var(--font-mono);opacity:.85">#6B9AFF · blue</span></div>
+    <div style="height:100px;background:#FFAB00;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#39414D"><b style="font-size:13px">Help Center</b><span style="font:400 10px var(--font-mono);opacity:.7">#FFAB00 · yellow</span></div>
+  </div>
+</section>
+
+<!-- ══ VOICE ══ -->
+<section class="sec" id="voice" data-keywords="voice content copy tone writing spanish english">
+  <h2><span data-i18n="nav.voice">Voice &amp; content</span> <span class="anch">#voice</span></h2>
+  <p class="desc" data-i18n="section.voice.desc">Operational, direct, bilingual (ES/EN), product-first. For dispatchers, fleet managers, and drivers — not consumers.</p>
+  <div class="card" style="margin-bottom:12px">
+    <ul style="margin:0;padding-left:16px;line-height:2;font-size:13px;color:var(--n7)">
+      <li><strong>Imperative & concrete.</strong> Actions are verbs: "Crear orden", "Bloquear usuario", "Exportar a PlannerPro".</li>
+      <li><strong>Second-person (tú/you).</strong> "Tienes cambios sin guardar. Si cierras este modal, los cambios se perderán."</li>
+      <li><strong>Sentence case</strong> for all UI copy. UPPERCASE only for DS-internal section titles.</li>
+      <li><strong>No emoji, no exclamations.</strong> Status is factual: "Activo", "Bloqueado", "Recogido".</li>
+      <li><strong>Errors describe the condition, not the blame.</strong> "No pudimos geolocalizar esta dirección."</li>
+      <li><strong>Numbers are first-class.</strong> "1–25 de 340", "10-10-25 10:35 hrs", "200/200 (100%)".</li>
+    </ul>
+  </div>
+  <div class="voice-grid">
+    <div class="vc good"><div class="vl">✓ Do</div><div class="vx">"Tienes cambios sin guardar. Si cierras este modal, los cambios se perderán."</div></div>
+    <div class="vc bad"><div class="vl">✗ Don't</div><div class="vx">"¡Atención! Tu información se perderá!! Por favor guarda antes de salir 😊"</div></div>
+    <div class="vc good"><div class="vl">✓ Do</div><div class="vx">"No pudimos geolocalizar esta dirección."</div></div>
+    <div class="vc bad"><div class="vl">✗ Don't</div><div class="vx">"Has ingresado una dirección incorrecta — por favor revísala."</div></div>
+  </div>
+</section>
+
+<!-- ══ COLORS ══ -->
+<section class="sec" id="colors" data-keywords="colors palette tokens semantic primary neutral blue green red orange">
+  <h2><span data-i18n="nav.colors">Colors</span> <span class="anch">#colors</span></h2>
+  <p class="desc" data-i18n="section.colors.desc">One dark surface (Indigo, topbar only). Two surfaces stacked under it (N2 page · white card). Cobalt primary. Four semantic intents. Color is never decoration — every hue carries a role.</p>
+
+  <h3>Semantic tokens</h3>
+  <table class="ttbl" style="margin-bottom:16px">
+    <thead><tr><th style="width:60px">Swatch</th><th>Token</th><th>Hex</th><th>Use</th></tr></thead>
+    <tbody id="sem-tokens"></tbody>
+  </table>
+
+  <h3>Neutrals</h3>
+  <div class="sw-grid" id="sw-neutral"></div>
+  <h3>Blue · primary scale</h3>
+  <div class="sw-grid" id="sw-blue"></div>
+  <h3>Green · success</h3>
+  <div class="sw-grid" id="sw-green"></div>
+  <h3>Red · danger</h3>
+  <div class="sw-grid" id="sw-red"></div>
+  <h3>Orange · warning</h3>
+  <div class="sw-grid" id="sw-orange"></div>
+  <h3>Teal, Purple</h3>
+  <div class="sw-grid" id="sw-misc"></div>
+</section>
+
+<!-- ══ TYPOGRAPHY ══ -->
+<section class="sec" id="typography" data-keywords="typography type font dm sans roboto scale weight">
+  <h2><span data-i18n="nav.typography">Typography</span> <span class="anch">#typography</span></h2>
+  <p class="desc" data-i18n="section.typography.desc">DM Sans for 100% of the product UI. Roboto Medium is reserved for DS-internal display titles only — never ships in production.</p>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
+      <div>
+        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">DM Sans — UI family</div>
+        <div style="font:700 32px/1.1 'DM Sans';letter-spacing:-.02em;color:var(--n7)">Aa Bb Cc 123</div>
+        <div style="font:400 14px/1.3 'DM Sans';color:var(--n7);margin-top:7px">Crear orden · Exportar a PlannerPro</div>
+        <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:7px">400 · 500 · 600 · 700 + italics</div>
+      </div>
+      <div>
+        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">Roboto Medium — DS display only</div>
+        <div style="font:500 32px/1.1 'Roboto';letter-spacing:-.01em;color:var(--n7)">Aa Bb Cc 123</div>
+        <div style="font:500 12px/1.3 'Roboto';letter-spacing:.06em;text-transform:uppercase;color:var(--b5);margin-top:10px">TOPBAR PRODUCTOS</div>
+        <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:10px">Never shipped in production</div>
+      </div>
+    </div>
+  </div>
+  <h3>Type scale</h3>
+  <div class="card">
+    <table class="ts-table">
+      <tr><td>Title</td><td style="font:700 26px/32px 'DM Sans';color:var(--n7)">Dispatch order #44812</td><td>26/32 · Bold</td></tr>
+      <tr><td>Subtitle</td><td style="font:500 22px/28px 'DM Sans';color:var(--n7)">Rutas en curso</td><td>22/28 · Medium</td></tr>
+      <tr><td>Header L</td><td style="font:700 16px/20px 'DM Sans';color:var(--n7)">Información de usuario</td><td>16/20 · Bold</td></tr>
+      <tr><td>Header S</td><td style="font:700 14px/20px 'DM Sans';color:var(--n7)">Nombre y apellido</td><td>14/20 · Bold</td></tr>
+      <tr><td>Body L</td><td style="font:400 16px/20px 'DM Sans';color:var(--n7)">Tienes cambios sin guardar.</td><td>16/20 · Regular</td></tr>
+      <tr><td>Body S</td><td style="font:400 14px/20px 'DM Sans';color:var(--n7)">Admin Master · Última conexión hace 3h</td><td>14/20 · Regular</td></tr>
+      <tr><td>Caption</td><td style="font:400 12px/16px 'DM Sans';color:var(--n7)">1–25 de 340 · 10-10-25 10:35 hrs</td><td>12/16 · Regular</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ══ SPACING ══ -->
+<section class="sec" id="spacing" data-keywords="spacing scale padding gap margin 4px grid">
+  <h2><span data-i18n="nav.spacing">Spacing</span> <span class="anch">#spacing</span></h2>
+  <p class="desc" data-i18n="section.spacing.desc">4px grid. 10 steps from 4px to 64px. Section gaps 48px, product groups 56px, topbar segments 64px.</p>
+  <div class="card" id="spacing-card"></div>
+</section>
+
+<!-- ══ RADII ══ -->
+<section class="sec" id="radii" data-keywords="radii border radius corners pill">
+  <h2><span data-i18n="nav.radii">Radii</span> <span class="anch">#radii</span></h2>
+  <p class="desc" data-i18n="section.radii.desc">5 stops. Buttons 6px, inputs/cards 8px, pills 999px. One special: the topbar company-logo slot is 20px on top-left only.</p>
+  <div class="card">
+    <div class="radii-grid">
+      <div class="r-cell"><div class="r-box" style="border-radius:4px"></div><div class="r-lbl">sm · 4px</div><div class="r-sub">banners</div></div>
+      <div class="r-cell"><div class="r-box" style="border-radius:6px"></div><div class="r-lbl">md · 6px</div><div class="r-sub">buttons</div></div>
+      <div class="r-cell"><div class="r-box" style="border-radius:8px"></div><div class="r-lbl">lg · 8px</div><div class="r-sub">cards, inputs</div></div>
+      <div class="r-cell"><div class="r-pill-box"></div><div class="r-lbl">pill · 999px</div><div class="r-sub">tags, chips</div></div>
+      <div class="r-cell"><div class="r-topbar"></div><div class="r-lbl">20px 0 0 0</div><div class="r-sub">topbar slot</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SHADOWS ══ -->
+<section class="sec" id="shadows" data-keywords="shadows elevation depth focus ring">
+  <h2><span data-i18n="nav.shadows">Shadows</span> <span class="anch">#shadows</span></h2>
+  <p class="desc" data-i18n="section.shadows.desc">Restrained — the app is mostly borders, not elevation. No inner shadows, no neumorphism.</p>
+  <div class="card">
+    <div class="sh-grid">
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 1px 2px rgba(19,32,69,.06)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-xs</div><div style="font:400 10px var(--font-sans);color:var(--n5)">hover row lift</div></div>
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 2px 4px rgba(19,32,69,.08)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-sm</div><div style="font:400 10px var(--font-sans);color:var(--n5)">dropdown panel</div></div>
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 4px 12px rgba(19,32,69,.10)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-md</div><div style="font:400 10px var(--font-sans);color:var(--n5)">modal</div></div>
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 12px 32px rgba(19,32,69,.14)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-lg</div><div style="font:400 10px var(--font-sans);color:var(--n5)">floating menu</div></div>
+    </div>
+    <div style="margin-top:20px;text-align:center">
+      <div class="sh-box" style="box-shadow:0 0 0 3px rgba(75,130,250,.25);border-color:var(--b5);max-width:220px;margin:0 auto"></div>
+      <div style="font:600 11px var(--font-sans);color:var(--n7);margin-top:7px">focus-ring</div>
+      <div style="font:400 10px var(--font-mono);color:var(--n5);margin-top:3px">0 0 0 3px rgba(75,130,250,.25) — all interactive elements</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ICONOGRAPHY ══ -->
+<section class="sec" id="iconography" data-keywords="icons iconography stroke 24px lucide">
+  <h2><span data-i18n="nav.iconography">Iconography</span> <span class="anch">#iconography</span></h2>
+  <p class="desc" data-i18n="section.iconography.desc">Single 24×24 stroke icon set. ~1.5px stroke, rounded caps, monochrome, recolored via currentColor. Lucide is used here as the closest open-source match for the proprietary DT icon set.</p>
+  <div class="card">
+    <div class="icon-grid" id="icon-grid"></div>
+  </div>
+  <div class="card flush" style="margin-top:10px">
+    <div class="card-hdr"><span class="ttl">Topbar icon order (invariable)</span></div>
+    <div style="padding:14px;display:flex;gap:20px;align-items:center">
+      <span style="font:500 12px var(--font-sans);color:var(--n5)">1 · apps</span>
+      <span style="font:500 12px var(--font-sans);color:var(--n5)">2 · help</span>
+      <span style="font:500 12px var(--font-sans);color:var(--n5)">3 · messages</span>
+      <span style="font:500 12px var(--font-sans);color:var(--n5)">4 · alerts</span>
+      <span style="font:500 12px var(--font-sans);color:var(--n5)">5 · user</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BUTTONS ══ -->
+<section class="sec" id="buttons" data-keywords="buttons cta primary secondary subtle danger pill">
+  <h2><span data-i18n="nav.buttons">Buttons</span> <span class="anch">#buttons</span></h2>
+  <p class="desc" data-i18n="section.buttons.desc">Pill-shaped (999px), Bold 14px. One primary per view. Destructive actions always use intent=danger.</p>
+  <div class="card flush">
+    <div class="tabs">
+      <div class="t-tab on" onclick="switchTab(this,'btn-')">Preview</div>
+      <div class="t-tab" onclick="switchTab(this,'btn-')">Code</div>
+    </div>
+    <div class="tp on" id="tp-btn-0" style="padding:18px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="width:76px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Primary</span>
+        <button class="btn pri">Guardar</button>
+        <button class="btn pri" style="background:#1F60ED">Hover</button>
+        <button class="btn pri" style="background:#0052CC">Active</button>
+        <button class="btn pri" disabled>Disabled</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="width:76px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Secondary</span>
+        <button class="btn sec">Cancelar</button>
+        <button class="btn sec" style="background:var(--n1)">Hover</button>
+        <button class="btn sec" style="background:var(--b1);border-color:var(--b6);color:var(--b6)">Active</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="width:76px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Subtle</span>
+        <button class="btn sub">Ver más</button>
+        <button class="btn sub" style="background:rgba(48,110,242,.08)">Hover</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span style="width:76px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Intent</span>
+        <button class="btn pri">Normal</button>
+        <button class="btn dan">Eliminar</button>
+        <button class="btn suc">Confirmar</button>
+        <button class="btn war">Atención</button>
+      </div>
+    </div>
+    <div class="tp" id="tp-btn-1" style="padding:0">
+      <div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button>
+<pre><span class="tg">&lt;button</span> <span class="kw">class</span>=<span class="str">"btn primary"</span><span class="tg">&gt;</span>Guardar<span class="tg">&lt;/button&gt;</span>
+
+<span class="tg">.btn</span> {
+  <span class="kw">font</span>: <span class="nb">700 14px/1</span> <span class="str">'DM Sans'</span>;
+  <span class="kw">padding</span>: <span class="nb">9px 18px</span>;
+  <span class="kw">border-radius</span>: <span class="nb">999px</span>;
+  <span class="kw">border</span>: <span class="nb">1px</span> solid transparent;
+}
+<span class="tg">.btn.primary</span>         { <span class="kw">background</span>: <span class="nb">#306EF2</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; }
+<span class="tg">.btn.primary</span>:hover   { <span class="kw">background</span>: <span class="nb">#1F60ED</span>; }
+<span class="tg">.btn.primary</span>:active  { <span class="kw">background</span>: <span class="nb">#0052CC</span>; }
+<span class="tg">.btn.danger</span>          { <span class="kw">background</span>: <span class="nb">#DE350B</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; }
+<span class="tg">.btn.success</span>         { <span class="kw">background</span>: <span class="nb">#00875A</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; }</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ INPUTS ══ -->
+<section class="sec" id="inputs" data-keywords="inputs forms text field validation label helper">
+  <h2><span data-i18n="nav.inputs">Inputs &amp; forms</span> <span class="anch">#inputs</span></h2>
+  <p class="desc" data-i18n="section.inputs.desc">Always use labeled inputs in forms; borderless input only in tables. Validation is semantic — no custom error colors.</p>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px">
+      <div class="fld">
+        <label>Nombre <span class="req">*</span></label>
+        <div class="inp"><input placeholder="Escribe un nombre" style="width:100%"></div>
+        <div class="hlp">Cómo aparecerá en órdenes y reportes.</div>
+      </div>
+      <div class="fld">
+        <label>Buscar</label>
+        <div class="inp foc">
+          <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input value="Maya" style="width:100%">
+        </div>
+      </div>
+      <div class="fld">
+        <label>Email</label>
+        <div class="inp er">
+          <input value="walter@ejemp" style="width:100%">
+          <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DE350B" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+        </div>
+        <div class="err">Formato de email inválido.</div>
+      </div>
+      <div class="fld">
+        <label>Usuario</label>
+        <div class="inp ok">
+          <input value="walter.wallace" style="width:100%">
+          <svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div class="ok">Disponible.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card flush">
+    <div class="card-hdr"><span class="ttl">Snippet</span></div>
+    <div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button>
+<pre><span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"field"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;label&gt;</span>Nombre <span class="tg">&lt;span</span> <span class="kw">class</span>=<span class="str">"req"</span><span class="tg">&gt;</span>*<span class="tg">&lt;/span&gt;&lt;/label&gt;</span>
+  <span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"input"</span><span class="tg">&gt;&lt;input</span> <span class="kw">placeholder</span>=<span class="str">"Escribe un nombre"</span><span class="tg">&gt;&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"helper"</span><span class="tg">&gt;</span>Cómo aparecerá en órdenes.<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/div&gt;</span>
+
+<span class="tg">.input</span> {
+  <span class="kw">height</span>: <span class="nb">36px</span>; <span class="kw">border</span>: <span class="nb">1px</span> solid <span class="nb">#C5D2E7</span>;
+  <span class="kw">border-radius</span>: <span class="nb">8px</span>;
+}
+<span class="tg">.input.focus</span>  { <span class="kw">border-color</span>: <span class="nb">#4B82FA</span>; <span class="kw">box-shadow</span>: <span class="nb">0 0 0 3px rgba(75,130,250,.22)</span>; }
+<span class="tg">.input.error</span>  { <span class="kw">border-color</span>: <span class="nb">#DE350B</span>; }
+<span class="tg">.input.success</span>{ <span class="kw">border-color</span>: <span class="nb">#00875A</span>; }</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SELECTION ══ -->
+<section class="sec" id="selection" data-keywords="checkbox radio switch toggle selection controls">
+  <h2><span data-i18n="nav.selection">Selection controls</span> <span class="anch">#selection</span></h2>
+  <p class="desc" data-i18n="section.selection.desc">Checkbox, radio, and switch. Each has a clear "on" filled state in primary blue. Toggle by clicking the switch below.</p>
+  <div class="card">
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <span style="width:88px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Checkbox</span>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="chk"></div>Default</div>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>Checked</div>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="chk on"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>Mixed</div>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="chk dis"></div>Disabled</div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+      <span style="width:88px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Radio</span>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="rad"></div>Default</div>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="rad on"></div>Selected</div>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="rad" style="background:var(--n2);border-color:var(--n3)"></div>Disabled</div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <span style="width:88px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Switch</span>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="swt" onclick="this.classList.toggle('on')"></div>Off (click to toggle)</div>
+      <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="swt on" onclick="this.classList.toggle('on')"></div>On</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BADGES ══ -->
+<section class="sec" id="badges" data-keywords="badges tags pills chips status activo bloqueado">
+  <h2><span data-i18n="nav.badges">Badges &amp; tags</span> <span class="anch">#badges</span></h2>
+  <p class="desc" data-i18n="section.badges.desc">Pill-shaped, 11px semibold. Status badges carry a dot when the state is live. Chips with avatars reference users or products.</p>
+  <div class="card">
+    <div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center">
+      <span class="badge bg"><span class="dot"></span>Activo</span>
+      <span class="badge br"><span class="dot"></span>Bloqueado</span>
+      <span class="badge bo"><span class="dot"></span>Aproximado</span>
+      <span class="badge bb">En ruta</span>
+      <span class="badge bn">Borrador</span>
+      <span class="badge bx">Pendiente</span>
+      <span class="chip"><span class="av" style="background:var(--b6);color:#fff">MJ</span>Maya Jonson</span>
+      <span class="chip" style="background:var(--b1);color:var(--b7)"><span class="av" style="background:var(--g5);color:#fff">PP</span>PlannerPro</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BANNERS ══ -->
+<section class="sec" id="banners" data-keywords="banners alerts notifications info warning error success">
+  <h2><span data-i18n="nav.banners">Banners</span> <span class="anch">#banners</span></h2>
+  <p class="desc" data-i18n="section.banners.desc">3px left border + tinted background. Four intents map 1:1 to semantic colors.</p>
+  <div class="card">
+    <div class="bn ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg><span><b>Dirección verificada.</b> El pin se colocó automáticamente en el mapa.</span></div>
+    <div class="bn wr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg><span><b>La dirección es aproximada.</b> Verifica en el mapa o ajusta el pin.</span></div>
+    <div class="bn er"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DE350B" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg><span><b>No pudimos geolocalizar esta dirección.</b> Revisa el formato o ingresa las coordenadas.</span></div>
+    <div class="bn in"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#306EF2" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg><span>Se exportarán <b>25 órdenes</b> a PlannerPro. Puedes continuar editando mientras se procesan.</span></div>
+  </div>
+</section>
+
+<!-- ══ CALENDAR ══ -->
+<section class="sec" id="calendar" data-keywords="calendar date picker range">
+  <h2><span data-i18n="nav.calendar">Calendar</span> <span class="anch">#calendar</span></h2>
+  <p class="desc" data-i18n="section.calendar.desc">Single date or range. Selected = primary fill; range middle = B1 background; endpoints remain solid.</p>
+  <div class="card" style="background:var(--n2)">
+    <div class="cal" style="margin:0 auto">
+      <div class="ch"><div class="t">Fecha</div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+      <div class="nav"><span>←</span><span>Abril 2026</span><span>→</span></div>
+      <div class="cgrid">
+        <div class="dow">L</div><div class="dow">M</div><div class="dow">M</div><div class="dow">J</div><div class="dow">V</div><div class="dow">S</div><div class="dow">D</div>
+        <div class="d empty">.</div><div class="d empty">.</div><div class="d empty">.</div><div class="d empty">.</div><div class="d empty">.</div>
+        <div class="d">1</div><div class="d">2</div>
+        <div class="d">3</div><div class="d">4</div><div class="d">5</div><div class="d">6</div><div class="d sel">7</div>
+        <div class="d rng">8</div><div class="d rng">9</div>
+        <div class="d rng">10</div><div class="d rng">11</div><div class="d rng">12</div><div class="d rng">13</div><div class="d end">14</div>
+        <div class="d">15</div><div class="d">16</div>
+        <div class="d">17</div><div class="d">18</div><div class="d">19</div><div class="d">20</div><div class="d">21</div>
+        <div class="d">22</div><div class="d">23</div>
+        <div class="d">24</div><div class="d">25</div><div class="d">26</div><div class="d">27</div><div class="d">28</div>
+        <div class="d">29</div><div class="d">30</div>
+      </div>
+      <div class="cf"><button class="btn pri" style="width:100%;justify-content:center">Aceptar</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MODAL ══ -->
+<section class="sec" id="modal" data-keywords="modal dialog overlay confirm">
+  <h2><span data-i18n="nav.modal">Modal</span> <span class="anch">#modal</span></h2>
+  <p class="desc" data-i18n="section.modal.desc">Title 22/28 Bold, close X top-right, optional warning banner, footer with secondary + primary. Overlay rgba(19,32,69,.45).</p>
+  <div class="card flush">
+    <div class="modal-stage">
+      <div class="modal">
+        <div class="mh">
+          <h1>Crear llave API</h1>
+          <svg style="width:22px;height:22px;color:var(--n5);cursor:pointer;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </div>
+        <div class="msub">Genera una llave para integrar con el webhook de órdenes.</div>
+        <div class="fld" style="margin-bottom:10px">
+          <label>Nombre <span class="req">*</span></label>
+          <div class="inp foc"><input value="Integración Planner — staging" style="width:100%"></div>
+          <div class="hlp">Cómo aparecerá en órdenes y reportes.</div>
+        </div>
+        <div class="fld" style="margin-bottom:12px">
+          <label>Alcance</label>
+          <div class="inp" style="justify-content:space-between"><input value="Lectura / escritura" style="width:100%"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="bn wr" style="margin-bottom:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg><span>Tienes cambios sin guardar. Si cierras este modal, los cambios se perderán.</span></div>
+        <div class="mfot">
+          <button class="btn sec">Cancelar</button>
+          <button class="btn pri">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TABLE ══ -->
+<section class="sec" id="table" data-keywords="table rows hover selected columns pagination">
+  <h2><span data-i18n="nav.table">Tables</span> <span class="anch">#table</span></h2>
+  <p class="desc" data-i18n="section.table.desc">Header N2 bg, rows white. Hover → N2, selected → B1 with a Service Unit color stripe on the left.</p>
+  <div class="card flush">
+    <table class="tbl">
+      <thead><tr><th style="width:22px"></th><th>Nombre</th><th>Estado</th><th>Usuario</th><th>Rol</th><th>Última conexión</th></tr></thead>
+      <tbody>
+        <tr><td></td><td class="lnk">Maya Jonson</td><td><span class="badge bg">Activo</span></td><td>mayaj</td><td>Admin Master</td><td>10-10-25 10:35 hrs</td></tr>
+        <tr class="hov"><td></td><td class="lnk">Lucas Martínez</td><td><span class="badge br">Bloqueado</span></td><td>lucasm</td><td>Personalizado</td><td>—</td></tr>
+        <tr class="sel"><td></td><td class="lnk">Liam Smith</td><td><span class="badge bg">Activo</span></td><td>liams</td><td>Admin 2</td><td>10-10-25 11:30 hrs</td></tr>
+        <tr><td></td><td class="lnk">Aisha Patel</td><td><span class="badge bg">Activo</span></td><td>aishap</td><td>QC</td><td>10-10-25 09:11 hrs</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══ SIDEBAR ══ -->
+<section class="sec" id="sidebar-comp" data-keywords="sidebar navigation left menu collapsed expanded">
+  <h2><span data-i18n="nav.sidebar">Sidebar</span> <span class="anch">#sidebar</span></h2>
+  <p class="desc" data-i18n="section.sidebar.desc">Collapsed 56px / expanded 232px. Item text+icon color is B7 (#0052CC). Selected: B1 bg + 3px B5 left marker. Settings sidebar stays open when in Settings.</p>
+  <div class="card" style="background:var(--n2)">
+    <div style="display:flex;gap:14px;align-items:flex-start">
+      <div class="sbp">
+        <div class="top">DT<span>last<b>mile</b></span></div>
+        <div class="it"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Actividad</div>
+        <div class="it"><svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8H11a4 4 0 0 1 0-8h4"/></svg>Rutas</div>
+        <div class="it sel"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Órdenes</div>
+        <div class="it hov"><svg viewBox="0 0 24 24"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Flota</div>
+        <div class="it"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Estadísticas</div>
+        <div class="it"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>Alertas</div>
+        <div class="it"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Clientes</div>
+        <div class="div"></div>
+        <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51"/></svg>Ajustes</div>
+      </div>
+      <div style="font:400 12px/1.8 var(--font-sans);color:var(--n5);padding:6px">
+        <div><b style="color:var(--n7)">Default</b> — white bg, B7 (#0052CC) icon + label.</div>
+        <div style="margin-top:8px"><b style="color:var(--n7)">Hover</b> — B1 (#EDF5FF) bg, icons/label stay B7.</div>
+        <div style="margin-top:8px"><b style="color:var(--n7)">Selected</b> — B1 bg, bold label, 3px B5 left marker.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TOPBAR ══ -->
+<section class="sec" id="topbar-comp" data-keywords="topbar header navigation indigo products lastmile plannerpro">
+  <h2><span data-i18n="nav.topbar">Topbar</span> <span class="anch">#topbar</span></h2>
+  <p class="desc" data-i18n="section.topbar.desc">Always 52px, always Indigo #132045. Product logo left · action icons right (gap 28px desktop / 12px mobile) · company white slot far-right (border-radius 20px 0 0 0).</p>
+  <div class="card" style="background:var(--n2);display:flex;flex-direction:column;gap:12px">
+    <!-- LastMile -->
+    <div class="tbar">
+      <svg class="logo" height="18" viewBox="0 0 227 20" fill="none"><path d="M152 15.7V0H153.9V15.7H152Z" fill="#F27B42"/><path d="M165.5 4.9H167.3V15.7H165.5V13.8C164.6 15.3 163.2 16 161.5 16C160 16 158.7 15.4 157.7 14.3C156.6 13.2 156.1 11.9 156.1 10.3C156.1 8.7 156.6 7.4 157.7 6.3C158.7 5.2 160 4.7 161.5 4.7C163.2 4.7 164.6 5.4 165.5 6.8V4.9ZM161.7 14.2C162.8 14.2 163.7 13.8 164.4 13.1C165.1 12.3 165.5 11.4 165.5 10.3C165.5 9.2 165.1 8.3 164.4 7.6C163.7 6.8 162.8 6.5 161.7 6.5C160.6 6.5 159.7 6.8 159 7.6C158.3 8.3 157.9 9.2 157.9 10.3C157.9 11.4 158.3 12.3 159 13.1C159.7 13.8 160.6 14.2 161.7 14.2Z" fill="#F27B42"/><path d="M141.7 14.4V3.2H143.3V14.4H141.7Z" fill="#0052CC"/><path d="M6.9 0.1C5 0.1 3.1 0.1 1.2 0.1H0.5C0.4 0.1 0.3 0.1 0.2 0.1L0 0.1V15.6H2.2C2.9 15.6 3.6 15.6 4.3 15.6C5.2 15.6 6.1 15.6 7 15.6C9.2 15.6 10.8 14 10.8 11.8C10.8 9.3 10.8 6.4 10.8 3.9C10.8 1.6 9.2 0.1 6.9 0.1ZM8 12.1C8 12.8 7.7 13.1 7 13.1C5.9 13.1 4.8 13.1 3.8 13.1H2.8V2.6C2.9 2.6 2.9 2.6 2.9 2.6C2.9 2.6 3 2.6 3 2.6C4.3 2.6 5.6 2.6 7 2.6C7.7 2.6 8 2.9 8 3.6C8 6.3 8 9.4 8 12.1Z" fill="#0052CC"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/></svg>
+      <div class="acts">
+        <svg class="tico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <svg class="tico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"/></svg>
+        <svg class="tico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="bell"><svg class="tico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+        <svg class="tico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="slot">ACME CO</div>
+    </div>
+    <!-- PlannerPro -->
+    <div class="tbar">
+      <svg class="logo" height="18" viewBox="0 0 255 20" fill="none"><path d="M141.7 14.4V3.2H143.3V14.4H141.7Z" fill="#0052CC"/><path d="M6.9 0.1C5 0.1 3.1 0.1 1.2 0.1H0.5C0.4 0.1 0.3 0.1 0.2 0.1L0 0.1V15.6H2.2C2.9 15.6 3.6 15.6 4.3 15.6C5.2 15.6 6.1 15.6 7 15.6C9.2 15.6 10.8 14 10.8 11.8C10.8 9.3 10.8 6.4 10.8 3.9C10.8 1.6 9.2 0.1 6.9 0.1ZM8 12.1C8 12.8 7.7 13.1 7 13.1C5.9 13.1 4.8 13.1 3.8 13.1H2.8V2.6C2.9 2.6 3 2.6 3 2.6C4.3 2.6 5.6 2.6 7 2.6C7.7 2.6 8 2.9 8 3.6C8 6.3 8 9.4 8 12.1Z" fill="#0052CC"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/><path d="M157.7 4.4C159.1 4.4 160.4 5 161.4 6C162.4 7 162.9 8.3 162.9 9.8C162.9 11.3 162.4 12.6 161.4 13.6C160.4 14.7 159.1 15.2 157.7 15.2C156 15.2 154.7 14.5 153.8 13.2V19H152V4.7H153.8V6.5C154.7 5.1 156 4.4 157.7 4.4ZM157.5 13.5C158.5 13.5 159.4 13.1 160.1 12.4C160.8 11.7 161.1 10.8 161.1 9.8C161.1 8.8 160.8 7.9 160.1 7.2C159.4 6.5 158.5 6.1 157.5 6.1C156.4 6.1 155.5 6.5 154.8 7.2C154.1 7.9 153.8 8.8 153.8 9.8C153.8 10.8 154.1 11.7 154.8 12.4C155.5 13.1 156.4 13.5 157.5 13.5Z" fill="#47D09A"/><path d="M165 14.9V0H166.8V14.9H165Z" fill="#47D09A"/><path d="M240 13.6C238.9 14.7 237.6 15.2 236.1 15.2C234.5 15.2 233.3 14.7 232.2 13.6C231.1 12.6 230.6 11.3 230.6 9.8C230.6 8.3 231.1 7 232.2 6C233.3 4.9 234.5 4.4 236.1 4.4C237.6 4.4 238.9 4.9 240 6C241.1 7 241.6 8.3 241.6 9.8C241.6 11.3 241.1 12.6 240 13.6ZM234.4 11.5C234.9 11.9 235.5 12.2 236.1 12.2C236.8 12.2 237.3 11.9 237.8 11.5C238.3 11.1 238.5 10.5 238.5 9.8C238.5 9.1 238.3 8.5 237.8 8.1C237.3 7.6 236.8 7.4 236.1 7.4C235.5 7.4 234.9 7.6 234.4 8.1C234 8.5 233.7 9.1 233.7 9.8C233.7 10.5 234 11.1 234.4 11.5Z" fill="#47D09A"/></svg>
+    </div>
+    <!-- QuickCommerce -->
+    <div class="tbar">
+      <svg class="logo" height="18" viewBox="0 0 278 20" fill="none"><path d="M141.7 14.4V3.2H143.3V14.4H141.7Z" fill="#0052CC"/><path d="M6.9 0.1C5 0.1 3.1 0.1 1.2 0.1H0.5C0.4 0.1 0.3 0.1 0.2 0.1L0 0.1V15.6H2.2C2.9 15.6 3.6 15.6 4.3 15.6C5.2 15.6 6.1 15.6 7 15.6C9.2 15.6 10.8 14 10.8 11.8C10.8 9.3 10.8 6.4 10.8 3.9C10.8 1.6 9.2 0.1 6.9 0.1ZM8 12.1C8 12.8 7.7 13.1 7 13.1C5.9 13.1 4.8 13.1 3.8 13.1H2.8V2.6C2.9 2.6 3 2.6 3 2.6C4.3 2.6 5.6 2.6 7 2.6C7.7 2.6 8 2.9 8 3.6C8 6.3 8 9.4 8 12.1Z" fill="#0052CC"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/><path d="M159.9 5.7H161.5V18H159.9V13C159.2 14 158.1 14.7 156.5 14.7C154 14.7 152 12.7 152 10.1C152 7.5 154 5.4 156.5 5.4C158.1 5.4 159.2 6.1 159.9 7.2V5.7ZM156.7 13.2C158.5 13.2 159.9 11.9 159.9 10.1C159.9 8.3 158.5 6.9 156.7 6.9C154.9 6.9 153.6 8.3 153.6 10.1C153.6 11.9 154.9 13.2 156.7 13.2Z" fill="#6B9AFF"/><path d="M208 14.7C205.3 14.7 203.2 12.7 203.2 10.1C203.2 7.4 205.3 5.4 208 5.4C210.6 5.4 212.7 7.4 212.7 10.1C212.7 12.7 210.6 14.7 208 14.7ZM208 12.1C209.1 12.1 210 11.3 210 10.1C210 8.8 209.1 8 208 8C206.8 8 205.9 8.8 205.9 10.1C205.9 11.3 206.8 12.1 208 12.1Z" fill="#6B9AFF"/><path d="M277.6 11.1H271.1C271.5 12 272.3 12.4 273.3 12.4C274 12.4 274.6 12.1 275 11.7L277.2 12.9C276.3 14.1 275 14.7 273.2 14.7C270.2 14.7 268.3 12.7 268.3 10.1C268.3 7.4 270.2 5.4 273 5.4C275.7 5.4 277.6 7.4 277.6 10.1C277.6 10.4 277.6 10.8 277.6 11.1ZM271.1 9.2H275C274.6 8.1 273.8 7.8 273 7.8C272 7.8 271.3 8.3 271.1 9.2Z" fill="#6B9AFF"/></svg>
+    </div>
+    <!-- Soporte / Help Center -->
+    <div class="tbar">
+      <svg class="logo" height="18" viewBox="0 0 269 21" fill="none"><path d="M6.9 0.4C5 0.4 3.1 0.4 1.2 0.4H0.5C0.4 0.4 0.3 0.4 0.2 0.4L0 0.4V16H2.2C2.9 16 3.6 16 4.3 16C5.2 16 6.1 16 7 16C9.2 16 10.8 14.4 10.8 12.2C10.8 9.6 10.8 6.8 10.8 4.2C10.8 2 9.2 0.4 6.9 0.4ZM8 12.4C8 13.1 7.7 13.5 7 13.5C5.9 13.5 4.8 13.5 3.8 13.5H2.8V2.9C2.9 2.9 2.9 2.9 2.9 2.9C4.3 2.9 5.6 2.9 7 2.9C7.7 2.9 8 3.3 8 4C8 6.7 8 9.7 8 12.4Z" fill="white"/><path d="M15.3 4.6H12.5V16H15.3V4.6Z" fill="white"/><path d="M15.3 0.4H12.5V3H15.3V0.4Z" fill="#F27B42"/><path d="M92.4 0.4H82.4V2.8H86V16H88.8V2.8H92.4V0.4Z" fill="white"/><path d="M141.9 16V4.8H143.5V16H141.9Z" fill="white"/><path d="M157.6 4.9C158.9 4.9 160 5.3 160.7 6.1C161.5 6.9 161.9 8 161.9 9.5V16.4H160V9.6C160 8.7 159.7 8 159.2 7.5C158.7 7 158.1 6.7 157.2 6.7C156.2 6.7 155.4 7 154.8 7.6C154.2 8.2 153.9 9.1 153.9 10.4V16.4H152V5.2H153.9V6.7C154.7 5.5 155.9 4.9 157.6 4.9Z" fill="#FFE380"/><path d="M188.8 4.9C190.4 4.9 191.7 5.4 192.8 6.6C193.9 7.7 194.5 9.1 194.5 10.8C194.5 12.4 193.9 13.8 192.8 14.9C191.7 16.1 190.4 16.6 188.8 16.6C187 16.6 185.5 15.9 184.6 14.4V20.8H182.6V5.2H184.6V7.1C185.5 5.6 187 4.9 188.8 4.9ZM188.6 14.8C189.7 14.8 190.6 14.4 191.4 13.6C192.1 12.8 192.5 11.9 192.5 10.8C192.5 9.6 192.1 8.7 191.4 7.9C190.6 7.1 189.7 6.7 188.6 6.7C187.4 6.7 186.5 7.1 185.7 7.9C184.9 8.7 184.6 9.6 184.6 10.8C184.6 11.9 184.9 12.8 185.7 13.6C186.5 14.4 187.4 14.8 188.6 14.8Z" fill="#FFE380"/><path d="M259.7 12.1H251.7C251.8 13.1 252.3 13.9 253 13.9C253.7 13.9 254 13.7 254.4 13.2L256.6 14.4C255.1 15.9 253.5 16.7 251.4 16.7C248.2 16.7 246.2 14.9 246.2 12.1C246.2 9.3 248.1 7.8 250.5 7.8C252.8 7.8 255.1 9.1 255.3 12.1ZM251.6 9.6C250.7 9.6 250 10.1 249.7 10.8L253.2 10.8C252.9 10.1 252.4 9.6 251.6 9.6Z" fill="#FFE380"/></svg>
+    </div>
+  </div>
+  <div class="card" style="margin-top:10px;padding:14px">
+    <div style="font:400 12px/1.8 var(--font-sans);color:var(--n5)">
+      <strong style="color:var(--n7)">Rules:</strong> background is always <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">#132045</code> · height 52px · company slot <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">border-radius: 20px 0 0 0</code> · icon gap desktop 28px / mobile 12px
+    </div>
+  </div>
+</section>
+
+<!-- ══ MAP PINS ══ -->
+<section class="sec" id="mappins" data-keywords="map pins teardrop location markers assigned unassigned selected">
+  <h2><span data-i18n="nav.mappins">Map pins</span> <span class="anch">#mappins</span></h2>
+  <p class="desc" data-i18n="section.mappins.desc">Teardrop shape with 100×130 viewBox. Assigned (#0C47C7) vs unassigned (#8FA0BA). Selected swaps soft blur shadow for a hard dark ellipse. Badge = B5 circle top-right with white border.</p>
+  <div class="card flush">
+    <div class="pin-stage" id="pin-stage"></div>
+  </div>
+</section>
+
+<!-- ══ DATA VIZ ══ -->
+<section class="sec" id="dataviz" data-keywords="data viz visualization chart graph palette ordered">
+  <h2><span data-i18n="nav.dataviz">Data viz palette</span> <span class="anch">#dataviz</span></h2>
+  <p class="desc" data-i18n="section.dataviz.desc">11 ordered colors for charts. Assign strictly 1→11. Never skip or reuse out of sequence.</p>
+  <div class="card">
+    <div class="dv-row" id="dv-row"></div>
+    <div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:10px">Assign in strict order 1 → 11. Do not skip or reuse out of sequence.</div>
+  </div>
+</section>
+
+<!-- ══ SERVICE UNITS ══ -->
+<section class="sec" id="serviceunits" data-keywords="service units fleet ordered cyclic">
+  <h2><span data-i18n="section.serviceunits.title">Service units palette</span> <span class="anch">#serviceunits</span></h2>
+  <p class="desc" data-i18n="section.serviceunits.desc">10 ordered identification colors for fleet Service Units. Cycle when count exceeds 10.</p>
+  <div class="card">
+    <div class="su-grid" id="su-grid"></div>
+  </div>
+</section>
+
+<!-- ══ LOGOS ══ -->
+<section class="sec" id="logos" data-keywords="logos brand assets svg download desktop mobile white color">
+  <h2><span data-i18n="nav.logos">Logos</span> <span class="anch">#logos</span></h2>
+  <p class="desc" data-i18n="section.logos.desc">Each product has desktop and mobile lockups, in color (on light) and white (on dark Indigo). Click Download to copy the SVG.</p>
+  <h3>Desktop · Color</h3>
+  <div class="logo-grid">
+    <div class="logo-card"><div class="lc"><svg viewBox="0 0 227 20"><path d="M152 15.7V0H153.9V15.7H152Z" fill="#F27B42"/><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8C10.8 9.3 10.8 6.4 10.8 3.9C10.8 1.6 9.2 0.1 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6C4.3 2.6 5.6 2.6 7 2.6C7.7 2.6 8 2.9 8 3.6V12.1Z" fill="#0052CC"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/><path d="M165.5 4.9H167.3V15.7H165.5V13.8C164.6 15.3 163.2 16 161.5 16C158.6 16 156.1 13.5 156.1 10.3C156.1 7.1 158.6 4.7 161.5 4.7C163.2 4.7 164.6 5.4 165.5 6.8V4.9ZM161.7 14.2C163.3 14.2 165.5 12.8 165.5 10.3C165.5 7.8 163.3 6.5 161.7 6.5C160.1 6.5 157.9 7.8 157.9 10.3C157.9 12.8 160.1 14.2 161.7 14.2Z" fill="#F27B42"/></svg></div><div class="lf"><div class="ll">LastMile</div><button class="ld" onclick="alert('SVG copiado — ver sección Logos para el SVG completo')">↓ Copy SVG</button></div></div>
+    <div class="logo-card"><div class="lc"><svg viewBox="0 0 255 20"><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z" fill="#0052CC"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/><path d="M157.7 4.4C160.4 4.4 162.9 6.9 162.9 9.8C162.9 12.8 160.4 15.2 157.7 15.2C156 15.2 154.7 14.5 153.8 13.2V19H152V4.7H153.8V6.5C154.7 5.1 156 4.4 157.7 4.4ZM157.5 13.5C159.1 13.5 161.1 12.1 161.1 9.8C161.1 7.5 159.1 6.1 157.5 6.1C155.9 6.1 153.8 7.5 153.8 9.8C153.8 12.1 155.9 13.5 157.5 13.5Z" fill="#47D09A"/><path d="M165 14.9V0H166.8V14.9H165Z" fill="#47D09A"/><path d="M240 13.6C238.9 14.7 237.6 15.2 236.1 15.2C234.5 15.2 233.3 14.7 232.2 13.6C231.1 12.6 230.6 11.3 230.6 9.8C230.6 8.3 231.1 7 232.2 6C233.3 4.9 234.5 4.4 236.1 4.4C237.6 4.4 238.9 4.9 240 6C241.1 7 241.6 8.3 241.6 9.8C241.6 11.3 241.1 12.6 240 13.6ZM234.4 11.5C234.9 12 235.5 12.2 236.1 12.2C236.8 12.2 237.3 12 237.8 11.5C238.3 11 238.5 10.5 238.5 9.8C238.5 9.1 238.3 8.5 237.8 8.1C237.3 7.6 236.8 7.4 236.1 7.4C235.5 7.4 234.9 7.6 234.4 8.1C234 8.5 233.7 9.1 233.7 9.8C233.7 10.5 234 11.1 234.4 11.5Z" fill="#47D09A"/></svg></div><div class="lf"><div class="ll">PlannerPro</div><button class="ld" onclick="alert('SVG copiado — ver sección Logos para el SVG completo')">↓ Copy SVG</button></div></div>
+    <div class="logo-card"><div class="lc"><svg viewBox="0 0 278 20"><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z" fill="#0052CC"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/><path d="M159.9 5.7H161.5V18H159.9V13C159.2 14 158 14.7 156.5 14.7C154 14.7 152 12.7 152 10.1C152 7.5 154 5.4 156.5 5.4C158 5.4 159.2 6.1 159.9 7.2V5.7ZM156.7 13.2C158.5 13.2 159.9 11.9 159.9 10.1C159.9 8.3 158.5 6.9 156.7 6.9C154.9 6.9 153.6 8.3 153.6 10.1C153.6 11.9 154.9 13.2 156.7 13.2Z" fill="#6B9AFF"/><path d="M208 14.7C205.3 14.7 203.2 12.7 203.2 10.1C203.2 7.4 205.3 5.4 208 5.4C210.6 5.4 212.7 7.4 212.7 10.1C212.7 12.7 210.6 14.7 208 14.7ZM208 12.1C209.1 12.1 210 11.3 210 10.1C210 8.8 209.1 8 208 8C206.8 8 205.9 8.8 205.9 10.1C205.9 11.3 206.8 12.1 208 12.1Z" fill="#6B9AFF"/></svg></div><div class="lf"><div class="ll">QuickCommerce</div><button class="ld" onclick="alert('SVG copiado')">↓ Copy SVG</button></div></div>
+  </div>
+  <h3>Desktop · White (on dark Indigo)</h3>
+  <div class="logo-grid">
+    <div class="logo-card dk"><div class="lc"><svg viewBox="0 0 225 20"><g fill="white"><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z"/><path d="M141.9 15.6V4.4H143.5V15.6H141.9Z"/></g><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M152 15.7V0H153.8V15.7H152Z" fill="#F27B42"/><path d="M165.1 4.9H166.9V15.7H165.1V13.8C164.2 15.3 162.9 16 161.2 16C158.3 16 155.9 13.5 155.9 10.3C155.9 7.1 158.3 4.7 161.2 4.7C162.9 4.7 164.2 5.4 165.1 6.8V4.9ZM161.4 14.2C163 14.2 165.1 12.8 165.1 10.3C165.1 7.8 163 6.5 161.4 6.5C159.8 6.5 157.8 7.8 157.8 10.3C157.8 12.8 159.8 14.2 161.4 14.2Z" fill="#F27B42"/><path d="M171.2 7.8C171.2 9.1 172.4 9.6 173.1 9.9C173.8 10.1 174.4 10.3 174.9 10.6C175.5 10.9 175.9 11.4 176 11.9L174.5 12.5C174.2 13 173.7 13.4 173.1 13.7C172.5 14 171.9 14.2 171.2 14.2C170 14.2 169.1 14 168.4 13.5C167.7 13 167.2 12.3 167 11.5L168.6 10.5C168.8 11.1 169.1 11.5 169.6 11.8C170 12.1 170.6 12.2 171.2 12.2C171.8 12.2 172.2 12.1 172.6 11.9C173 11.6 173.2 11.3 173.2 10.8C173.2 10.4 173 10.1 172.6 9.8C172.2 9.5 171.7 9.3 171.1 9.2C170.6 9 170 8.8 169.4 8.6C168.8 8.4 168.3 8 167.9 7.6C167.5 7.1 167.3 6.5 167.3 5.9C167.3 5 167.6 4.2 168.3 3.6C169 3 169.9 2.7 171 2.7C171.8 2.7 172.6 2.9 173.2 3.3C173.9 3.7 174.4 4.2 174.8 4.9L173.2 5.8C172.9 4.9 172.1 4.4 171 4.4C170.5 4.4 170 4.5 169.7 4.8C169.4 5 169.2 5.4 169.2 5.8C169.2 6.3 169.4 6.6 169.7 6.8C170.1 7.1 170.6 7.2 171.2 7.8Z" fill="#F27B42"/><path d="M217.5 11.6C217.9 12.6 218.7 13.1 220 13.1C220.9 13.1 221.5 12.8 222 12.3L224.5 13.8C223.5 15.3 221.9 16 219.9 16C218.2 16 216.8 15.5 215.7 14.4C214.7 13.3 214.2 12 214.2 10.3C214.2 8.7 214.7 7.4 215.8 6.3C216.8 5.2 218.1 4.6 219.7 4.6C221.2 4.6 222.5 5.2 223.5 6.3C224.5 7.4 225 8.7 225 10.3C225 10.8 225 11.2 224.9 11.6H217.5ZM217.5 9.2H221.9C221.6 8.1 220.9 7.5 219.7 7.5C218.5 7.5 217.7 8.1 217.5 9.2Z" fill="#F27B42"/></svg></div><div class="lf"><div class="ll">LastMile</div><button class="ld" onclick="alert('SVG copiado')">↓ Copy SVG</button></div></div>
+    <div class="logo-card dk"><div class="lc"><svg viewBox="0 0 255 20"><g fill="white"><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z"/><path d="M141.9 15.6V4.4H143.5V15.6H141.9Z"/></g><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M157.2 4.9C160 4.9 162.4 7.4 162.4 10.3C162.4 13.3 160 15.7 157.2 15.7C155.5 15.7 154.2 15 153.3 13.7V19.5H151.5V5.2H153.3V7C154.2 5.6 155.5 4.9 157.2 4.9ZM157 13.9C158.6 13.9 160.6 12.6 160.6 10.3C160.6 8 158.6 6.6 157 6.6C155.4 6.6 153.3 8 153.3 10.3C153.3 12.6 155.4 13.9 157 13.9Z" fill="#47D09A"/><path d="M164.6 15.4V0.5H166.4V15.4H164.6Z" fill="#47D09A"/><path d="M240 14.1C238.9 15.2 237.6 15.7 236.1 15.7C234.5 15.7 233.3 15.2 232.2 14.1C231.1 13.1 230.6 11.8 230.6 10.3C230.6 8.8 231.1 7.5 232.2 6.5C233.3 5.4 234.5 4.9 236.1 4.9C237.6 4.9 238.9 5.4 240 6.5C241.1 7.5 241.6 8.8 241.6 10.3C241.6 11.8 241.1 13.1 240 14.1ZM234.4 12.5C234.9 13 235.5 13.2 236.1 13.2C236.8 13.2 237.3 13 237.8 12.5C238.3 12 238.5 11.5 238.5 10.8C238.5 10.1 238.3 9.5 237.8 9.1C237.3 8.6 236.8 8.4 236.1 8.4C235.5 8.4 234.9 8.6 234.4 9.1C234 9.5 233.7 10.1 233.7 10.8C233.7 11.5 234 12 234.4 12.5Z" fill="#47D09A"/></svg></div><div class="lf"><div class="ll">PlannerPro</div><button class="ld" onclick="alert('SVG copiado')">↓ Copy SVG</button></div></div>
+    <div class="logo-card dk"><div class="lc"><svg viewBox="0 0 269 21"><g fill="white"><path d="M6.9 0.4H0V16H7C9.2 16 10.8 14.4 10.8 12.2V4.2C10.8 2 9.2 0.4 6.9 0.4ZM8 12.4C8 13.1 7.7 13.5 7 13.5H2.8V2.9H7C7.7 2.9 8 3.3 8 4V12.4Z"/><path d="M15.3 4.6H12.5V16H15.3V4.6Z"/><path d="M92.4 0.4H82.4V2.8H86V16H88.8V2.8H92.4V0.4Z"/><path d="M141.9 16V4.8H143.5V16H141.9Z"/></g><path d="M15.3 0.4H12.5V3H15.3V0.4Z" fill="#F27B42"/><path d="M157.6 4.9C159.1 4.9 160.4 5.5 161.3 6.6C162.2 7.7 162.7 9 162.7 10.6L160.8 10.6C160.8 9.6 160.5 8.8 159.9 8.2C159.3 7.6 158.5 7.3 157.6 7.3C155.9 7.3 154.8 8.5 154 9.7V16.4H152V5.2H153.9V6.8C154.7 5.5 156.1 4.9 157.6 4.9Z" fill="#FFE380"/><path d="M188.8 4.9C191.6 4.9 194 7.4 194 10.8C194 14.2 191.6 16.6 188.8 16.6C187.1 16.6 185.7 15.9 184.8 14.6V20.8H182.6V5.2H184.6V7C185.5 5.6 186.9 4.9 188.8 4.9ZM188.5 14.8C190.2 14.8 192.1 13.4 192.1 10.8C192.1 8.2 190.2 6.7 188.5 6.7C186.9 6.7 184.9 8.1 184.9 10.8C184.9 13.4 186.9 14.8 188.5 14.8Z" fill="#FFE380"/><path d="M260 12.1H252C252.1 13.2 252.7 13.7 253.3 13.7C253.9 13.7 254.3 13.5 254.7 13.1L256.6 14.4C255.2 15.8 253.7 16.7 251.5 16.7C248.3 16.7 246.2 14.7 246.2 12.1C246.2 9.4 248.1 7.8 250.5 7.8C252.8 7.8 255.1 9.1 255.3 12.1H260ZM251.6 9.6C250.7 9.6 250 10.1 249.8 10.8H253.3C253 10.1 252.5 9.6 251.6 9.6Z" fill="#FFE380"/></svg></div><div class="lf"><div class="ll">Soporte / Help</div><button class="ld" onclick="alert('SVG copiado')">↓ Copy SVG</button></div></div>
+  </div>
+  <h3>Mobile lockups</h3>
+  <div class="logo-grid">
+    <div class="logo-card"><div class="lc"><svg viewBox="0 0 115 20"><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12C8 12.7 7.6 13.1 6.9 13.1H2.7V2.6H6.9C7.6 2.6 8 2.9 8 3.6V12Z" fill="#0052CC"/><path d="M21.8 0H11.9V2.5H15.5V15.6H18.3V2.5H21.8V0Z" fill="#0052CC"/><path d="M30 14.4V3.2H31.6V14.4H30Z" fill="#0052CC"/><path d="M40 15.7V0H41.9V15.7H40Z" fill="#F27B42"/><path d="M53.5 4.9H55.3V15.7H53.5V13.8C52.6 15.3 51.2 16 49.5 16C46.6 16 44.1 13.5 44.1 10.3C44.1 7.1 46.6 4.7 49.5 4.7C51.2 4.7 52.6 5.4 53.5 6.8V4.9ZM49.7 14.2C51.3 14.2 53.5 12.8 53.5 10.3C53.5 7.8 51.3 6.5 49.7 6.5C48.1 6.5 45.9 7.8 45.9 10.3C45.9 12.8 48.1 14.2 49.7 14.2Z" fill="#F27B42"/><path d="M107.3 11.6C107.7 12.6 108.5 13.1 109.9 13.1C110.7 13.1 111.4 12.8 111.9 12.3L114.5 13.8C113.4 15.3 111.9 16 109.8 16C108.1 16 106.6 15.5 105.5 14.4C104.5 13.3 103.9 12 103.9 10.3C103.9 8.7 104.5 7.4 105.5 6.3C106.6 5.2 107.9 4.6 109.6 4.6C111.1 4.6 112.4 5.2 113.4 6.3C114.5 7.4 115 8.7 115 10.3C115 10.8 114.9 11.2 114.9 11.6H107.3Z" fill="#F27B42"/></svg></div><div class="lf"><div class="ll">LastMile Mobile · Color</div><button class="ld" onclick="alert('SVG copiado')">↓ Copy SVG</button></div></div>
+    <div class="logo-card"><div class="lc"><svg viewBox="0 0 146 20"><g fill="#0052CC"><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12C8 12.7 7.6 13.1 6.9 13.1H2.7V2.6H6.9C7.6 2.6 8 2.9 8 3.6V12Z"/><path d="M21.8 0H11.9V2.5H15.5V15.6H18.3V2.5H21.8V0Z"/><path d="M30 14.4V3.2H31.6V14.4H30Z"/></g><path d="M48.7 4.4C51.4 4.4 53.9 6.9 53.9 9.8C53.9 12.8 51.4 15.2 48.7 15.2C47 15.2 45.7 14.5 44.8 13.2V19H43V4.7H44.8V6.5C45.7 5.1 47 4.4 48.7 4.4ZM48.5 13.5C50.1 13.5 52.1 12.1 52.1 9.8C52.1 7.5 50.1 6.1 48.5 6.1C46.9 6.1 44.8 7.5 44.8 9.8C44.8 12.1 46.9 13.5 48.5 13.5Z" fill="#47D09A"/><path d="M56.1 14.9V0H57.8V14.9H56.1Z" fill="#47D09A"/><path d="M131.2 13.6C130.2 14.7 128.9 15.2 127.4 15.2C125.8 15.2 124.6 14.7 123.5 13.6C122.4 12.6 121.9 11.3 121.9 9.8C121.9 8.3 122.4 7 123.5 6C124.6 4.9 125.8 4.4 127.4 4.4C128.9 4.4 130.2 4.9 131.2 6C132.3 7 132.8 8.3 132.8 9.8C132.8 11.3 132.3 12.6 131.2 13.6Z" fill="#47D09A"/></svg></div><div class="lf"><div class="ll">PlannerPro Mobile · Color</div><button class="ld" onclick="alert('SVG copiado')">↓ Copy SVG</button></div></div>
+    <div class="logo-card"><div class="lc"><svg viewBox="0 0 169 20"><g fill="#0052CC"><path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12C8 12.7 7.6 13.1 6.9 13.1H2.7V2.6H6.9C7.6 2.6 8 2.9 8 3.6V12Z"/><path d="M21.8 0H11.9V2.5H15.5V15.6H18.3V2.5H21.8V0Z"/><path d="M30 14.4V3.2H31.6V14.4H30Z"/></g><path d="M50.9 3.7H52.5V16H50.9V11C50.2 12.1 49.1 12.7 47.5 12.7C45 12.7 43 10.7 43 8.1C43 5.5 45 3.4 47.5 3.4C49.1 3.4 50.2 4.1 50.9 5.2V3.7ZM47.7 11.2C49.5 11.2 50.9 9.9 50.9 8.1C50.9 6.3 49.5 4.9 47.7 4.9C45.9 4.9 44.6 6.3 44.6 8.1C44.6 9.9 45.9 11.2 47.7 11.2Z" fill="#6B9AFF"/><path d="M99 12.7C96.3 12.7 94.2 10.7 94.2 8.1C94.2 5.4 96.3 3.4 99 3.4C101.6 3.4 103.7 5.4 103.7 8.1C103.7 10.7 101.6 12.7 99 12.7ZM99 10.1C100.1 10.1 101 9.3 101 8.1C101 6.8 100.1 6 99 6C97.8 6 96.9 6.8 96.9 8.1C96.9 9.3 97.8 10.1 99 10.1Z" fill="#6B9AFF"/><path d="M168.5 9.1H162.1C162.5 10 163.3 10.4 164.3 10.4C165 10.4 165.6 10.1 166 9.7L168.2 10.9C167.3 12.1 165.9 12.7 164.2 12.7C161.2 12.7 159.3 10.7 159.3 8.1C159.3 5.4 161.2 3.4 164 3.4C166.7 3.4 168.5 5.4 168.6 8.1L168.5 9.1ZM162.1 7.1H165.9C165.6 6.1 164.8 5.8 164 5.8C163 5.8 162.4 6.3 162.1 7.1Z" fill="#6B9AFF"/></svg></div><div class="lf"><div class="ll">QuickCommerce Mobile · Color</div><button class="ld" onclick="alert('SVG copiado')">↓ Copy SVG</button></div></div>
+  </div>
+</section>
+
+<!-- ══ FIGMA ══ -->
+<section class="sec" id="figma" data-keywords="figma source design canonical">
+  <h2><span data-i18n="nav.figma">Figma source</span> <span class="anch">#figma</span></h2>
+  <p class="desc" data-i18n="section.figma.desc">The canonical design source maintained by the DispatchTrack UX team. All decisions upstream of this repo originate here.</p>
+  <div class="card" style="display:flex;align-items:center;gap:16px">
+    <svg width="36" height="54" viewBox="0 0 38 57"><path fill="#F24E1E" d="M5 28.5A9.5 9.5 0 0 1 14.5 19H24V38H14.5A9.5 9.5 0 0 1 5 28.5z"/><path fill="#FF7262" d="M24 1H33.5A9.5 9.5 0 1 1 33.5 20H24z"/><circle fill="#1ABCFE" cx="33.5" cy="28.5" r="9.5"/><path fill="#0ACF83" d="M5 47.5A9.5 9.5 0 0 1 14.5 38H24v9.5A9.5 9.5 0 1 1 5 47.5z"/><path fill="#A259FF" d="M5 28.5a9.5 9.5 0 0 1 9.5-9.5H24V38H14.5A9.5 9.5 0 0 1 5 28.5z"/></svg>
+    <div style="flex:1">
+      <div style="font:700 14px var(--font-sans);color:var(--n7)">Design-System-Global-General</div>
+      <div style="font:400 12px var(--font-sans);color:var(--n5);margin-top:3px">Node 18572:5658 · Updated 2026-04-21</div>
+      <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:3px">figma.com/design/HP52ZT33bgqV25E9ROfy9A</div>
+    </div>
+    <button class="btn pri" onclick="window.open('https://figma.com','_blank')">Open in Figma</button>
+  </div>
+</section>
+
+<!-- ══ CHANGELOG ══ -->
+<section class="sec" id="changelog" data-keywords="changelog releases versions history breaking cambios">
+  <h2><span data-i18n="changelog.title">Changelog</span> <span class="anch">#changelog</span></h2>
+  <p class="desc" data-i18n="changelog.description">Versioned releases. Breaking changes flagged in red.</p>
+  <div class="card">
+    <div class="cl-filters">
+      <input type="search" id="cl-filter-search" data-i18n-attr="placeholder:changelog.search.placeholder" placeholder="Buscar en el changelog…" autocomplete="off">
+      <select id="cl-filter-component" aria-label="Componente"><option value="">Todos los componentes</option></select>
+      <select id="cl-filter-type" aria-label="Tipo"><option value="">Todos los tipos</option></select>
+    </div>
+    <div id="changelog-list"></div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+/* ────────────────────────────────
+   DATA
+──────────────────────────────── */
+const semTokens = [
+  {hex:'#306EF2',name:'$primary-background',sub:'B6',use:'Botones primarios'},
+  {hex:'#0052CC',name:'$primary-text',sub:'B7',use:'Links de texto'},
+  {hex:'#4B82FA',name:'$primary-main',sub:'B5',use:'Selección, highlight'},
+  {hex:'#DE350B',name:'$danger',sub:'R6',use:'Eliminar, errores'},
+  {hex:'#00875A',name:'$success',sub:'G6',use:'Confirmación, activo'},
+  {hex:'#FFAB00',name:'$warning-background',sub:'O5',use:'Advertencias'},
+  {hex:'#39414D',name:'$neutral-text',sub:'N7',use:'Texto principal'},
+  {hex:'#67768D',name:'$neutral-text-medium',sub:'N5',use:'Texto secundario'},
+  {hex:'#C5D2E7',name:'$neutral-border',sub:'N4',use:'Bordes, divisores'},
+  {hex:'#F0F2F5',name:'$neutral-bg-medium',sub:'N2',use:'Background de página'},
+  {hex:'#132045',name:'$indigo',sub:'',use:'Topbar — solo topbar'},
+];
+
+const palettes = {
+  neutral: [{h:'#FFFFFF',l:'White'},{h:'#F5F6FA',l:'N1'},{h:'#F0F2F5',l:'N2'},{h:'#E1E6ED',l:'N3'},{h:'#C5D2E7',l:'N4'},{h:'#8FA0BA',l:'N4.5'},{h:'#67768D',l:'N5'},{h:'#4B5564',l:'N6'},{h:'#39414D',l:'N7'},{h:'#132045',l:'Indigo'}],
+  blue: [{h:'#EDF5FF',l:'B1'},{h:'#D1E0FF',l:'B2'},{h:'#ADC7FF',l:'B3'},{h:'#6B9AFF',l:'B4'},{h:'#4B82FA',l:'B5 Main'},{h:'#306EF2',l:'B6 Primary'},{h:'#0052CC',l:'B7 Text'}],
+  green: [{h:'#E3FCEF',l:'G1'},{h:'#ABF5D1',l:'G2'},{h:'#79F2C0',l:'G3'},{h:'#57D9A3',l:'G4'},{h:'#36B37E',l:'G5'},{h:'#00875A',l:'G6 ✓'},{h:'#006844',l:'G7'}],
+  red: [{h:'#FFEBE6',l:'R1'},{h:'#FFBDAD',l:'R2'},{h:'#FF8F73',l:'R3'},{h:'#FF7452',l:'R4'},{h:'#FF5630',l:'R5'},{h:'#DE350B',l:'R6 ✗'},{h:'#BF2600',l:'R7'}],
+  orange: [{h:'#FFFAE6',l:'O1'},{h:'#FFF0B3',l:'O2'},{h:'#FFE380',l:'O3'},{h:'#FFC400',l:'O4'},{h:'#FFAB00',l:'O5 ⚠'},{h:'#FF9A1F',l:'O6'},{h:'#FF8B00',l:'O7'}],
+  misc: [
+    {h:'#E6FCFF',l:'T1'},{h:'#B3F5FF',l:'T2'},{h:'#00B8D9',l:'T5'},{h:'#008DA6',l:'T7'},
+    {h:'#F0EDFF',l:'P1'},{h:'#C0B6F2',l:'P3'},{h:'#8777D9',l:'P5'},{h:'#5243AA',l:'P7'},
+  ],
+};
+
+const dvPalette = ['#6E8DDE','#FFCC65','#57C2D6','#7EEABC','#FF8F76','#A59ADD','#5EBE95','#DED95D','#8DBCE7','#BF7B83','#DFA2F4'];
+const suPalette = [
+  {c:'#FE4EC4',l:'Pink',t:'#fff'},{c:'#36B37E',l:'G5',t:'#fff'},{c:'#00B8D9',l:'T5',t:'#fff'},{c:'#1F60ED',l:'B6',t:'#fff'},{c:'#8777D9',l:'P5',t:'#fff'},
+  {c:'#FF5630',l:'R5',t:'#fff'},{c:'#FFAB00',l:'O5',t:'#132045'},{c:'#83E873',l:'Lime',t:'#132045'},{c:'#FFEC3F',l:'Yellow',t:'#132045'},{c:'#67768D',l:'N5',t:'#fff'},
+];
+
+const spScale = [
+  {t:'space-1',v:'4px',u:'tight icon gap'},{t:'space-2',v:'8px',u:'inline label ↔ control'},{t:'space-3',v:'12px',u:'toolbar gap (mobile)'},
+  {t:'space-4',v:'16px',u:'component gap within section'},{t:'space-5',v:'20px',u:'grid gutter'},{t:'space-6',v:'24px',u:'card padding'},
+  {t:'space-7',v:'32px',u:'page margin (xl)'},{t:'space-8',v:'48px',u:'title ↔ content'},{t:'space-9',v:'56px',u:'product group gap'},{t:'space-10',v:'64px',u:'topbar section gap'},
+];
+
+const icons = [
+  ['Activity','M22 12 13.5 15.5 8.5 10.5 1 18M17 6 23 6 23 12'],
+  ['Package','M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'],
+  ['Truck','M1 3h15v13H1zM16 8h4l3 3v5h-7V8zM5.5 21A2.5 2.5 0 1 0 5.5 16A2.5 2.5 0 0 0 5.5 21zM18.5 21A2.5 2.5 0 1 0 18.5 16A2.5 2.5 0 0 0 18.5 21z'],
+  ['Map pin','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0zM12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'],
+  ['Bell','M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0'],
+  ['User','M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 7A4 4 0 1 0 12 15A4 4 0 0 0 12 7Z'],
+  ['Settings','M12 15A3 3 0 1 0 12 9A3 3 0 0 0 12 15ZM19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33'],
+  ['Search','M11 11m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M21 21 16.65 16.65'],
+  ['Check','M20 6 9 17 4 12'],
+  ['X','M18 6 6 18M6 6 18 18'],
+  ['Route','M3 11 3 7 7 3 17 3 17 7M7 3 7 13M17 7 17 17 13 21 3 21 3 17M7 13 13 13M13 13 13 21'],
+  ['Layers','M12 2 2 7 12 12 22 7 12 2zM2 17 12 22 22 17M2 12 12 17 22 12'],
+  ['Filter','M22 3H2l8 9.46V19l4 2V12.46L22 3'],
+  ['Download','M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10 12 15 17 10M12 15V3'],
+  ['Upload','M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8 12 3 7 8M12 3v12'],
+  ['Chart bar','M18 20 18 10M12 20 12 4M6 20 6 14'],
+  ['Calendar','M21 4H3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM16 2v4M8 2v4M1 10h22'],
+  ['Edit','M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z'],
+  ['Trash','M3 6h18M8 6V4h8v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6'],
+  ['Grid','M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z'],
+  ['Alert circle','M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM12 8v4M12 16h.01'],
+  ['Check circle','M22 12A10 10 0 1 0 2 12A10 10 0 0 0 22 12ZM9 12 11 14 15 10'],
+  ['Info','M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM12 8h.01M12 12v4'],
+  ['Lock','M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4'],
+];
+
+/* ────────────────────────────────
+   RENDER: semantic token table
+──────────────────────────────── */
+const semTbody = document.getElementById('sem-tokens');
+semTokens.forEach(t => {
+  const r = document.createElement('tr');
+  const tx = ['#fff','#FFFFFF','#F5F6FA','#F0F2F5','#E1E6ED'].includes(t.hex) ? '#39414D' : '#fff';
+  r.innerHTML = `<td class="preview-cell"><div style="width:36px;height:36px;border-radius:4px;background:${t.hex};border:1px solid rgba(19,32,69,.1)"></div></td><td><code>${t.name}</code></td><td><code>${t.hex}</code>${t.sub ? ` <span style="color:var(--n5);font-size:10px">· ${t.sub}</span>`:''}</td><td style="color:var(--n5)">${t.use}</td>`;
+  semTbody.appendChild(r);
+});
+
+/* ────────────────────────────────
+   RENDER: color swatches
+──────────────────────────────── */
+function mkSwatch(hex, label, containerId) {
+  const g = document.getElementById(containerId);
+  const lum = parseInt(hex.slice(1,3),16)*.2126+parseInt(hex.slice(3,5),16)*.7152+parseInt(hex.slice(5,7),16)*.0722;
+  const tc = lum > 150 ? '#39414D' : '#fff';
+  const el = document.createElement('div');
+  el.className = 'sw';
+  el.style.background = hex;
+  el.style.color = tc;
+  el.innerHTML = `<b>${label}</b><span>${hex}</span>`;
+  el.onclick = () => {
+    navigator.clipboard.writeText(hex).catch(()=>{});
+    el.classList.add('copied');
+    setTimeout(()=>el.classList.remove('copied'), 1200);
+  };
+  g.appendChild(el);
+}
+
+Object.entries(palettes).forEach(([key, arr]) => {
+  arr.forEach(item => mkSwatch(item.h, item.l, 'sw-'+key));
+});
+
+/* ────────────────────────────────
+   RENDER: spacing
+──────────────────────────────── */
+const sc = document.getElementById('spacing-card');
+spScale.forEach(s => {
+  const div = document.createElement('div');
+  div.className = 'sp-row';
+  const px = parseInt(s.v);
+  div.innerHTML = `<div class="sp-tok">${s.t}</div><div class="sp-val">${s.v}</div><div class="sp-bar" style="width:${px}px"></div><div class="sp-use">${s.u}</div>`;
+  sc.appendChild(div);
+});
+
+/* ────────────────────────────────
+   RENDER: icon grid
+──────────────────────────────── */
+const ig = document.getElementById('icon-grid');
+icons.forEach(([name, path]) => {
+  const el = document.createElement('div');
+  el.className = 'icon-cell';
+  el.innerHTML = `<svg viewBox="0 0 24 24"><path d="${path}" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="ic-lbl">${name.toLowerCase()}</span>`;
+  ig.appendChild(el);
+});
+
+/* ────────────────────────────────
+   RENDER: data viz dots
+──────────────────────────────── */
+const dvRow = document.getElementById('dv-row');
+dvPalette.forEach((c, i) => {
+  const lum = parseInt(c.slice(1,3),16)*.2126+parseInt(c.slice(3,5),16)*.7152+parseInt(c.slice(5,7),16)*.0722;
+  const tx = lum > 150 ? 'rgba(0,0,0,.55)' : '#fff';
+  dvRow.innerHTML += `<div><div class="dv-dot" style="background:${c};color:${tx}">${i+1}</div><div class="dv-lbl">${c}</div></div>`;
+});
+
+/* ────────────────────────────────
+   RENDER: service unit dots
+──────────────────────────────── */
+const suGrid = document.getElementById('su-grid');
+suPalette.forEach((p, i) => {
+  suGrid.innerHTML += `<div class="su-dot" style="background:${p.c};color:${p.t}" title="${p.l} · ${p.c}">${i+1}</div>`;
+});
+
+/* ────────────────────────────────
+   RENDER: map pins (from original DT SVG paths)
+──────────────────────────────── */
+function pinSVG({fill='#0C47C7', selected=false, inner=null, badge=null, size=58}) {
+  const h = Math.round(size * 1.3);
+  const gnd = selected
+    ? `<ellipse cx="${size*.46}" cy="${h*.94}" rx="${size*.42}" ry="${size*.09}" fill="#2D2926"/>`
+    : `<ellipse cx="${size*.45}" cy="${h*.92}" rx="${size*.18}" ry="${size*.05}" fill="rgba(0,0,0,.12)" filter="url(#blur)"/>`;
+
+  let innerContent = '';
+  if (inner === 'circle') {
+    innerContent = `<circle cx="${size*.455}" cy="${h*.44}" r="${size*.21}" fill="white"/>`;
+  } else if (inner === 'x') {
+    const cx = size*.455, cy = h*.44, s = size*.14;
+    innerContent = `<path d="M${cx-s} ${cy-s} L${cx+s} ${cy+s} M${cx+s} ${cy-s} L${cx-s} ${cy+s}" stroke="white" stroke-width="${size*.04}" stroke-linecap="round"/>`;
+  } else if (inner === 'plus') {
+    const cx = size*.455, cy = h*.44, s = size*.15;
+    innerContent = `<path d="M${cx} ${cy-s} V${cy+s} M${cx-s} ${cy} H${cx+s}" stroke="white" stroke-width="${size*.04}" stroke-linecap="round"/>`;
+  }
+
+  const badgePart = badge !== null ? `
+    <circle cx="${size*.83}" cy="${h*.04}" r="${size*.18}" fill="#4B82FA" stroke="white" stroke-width="${size*.04}"/>
+    <text x="${size*.83}" y="${h*.04}" text-anchor="middle" dominant-baseline="central" fill="white" font-family="DM Sans,sans-serif" font-weight="700" font-size="${size*.13}">${badge}</text>` : '';
+
+  return `<svg width="${size}" height="${h}" viewBox="0 0 ${size} ${h}" overflow="visible">
+    <defs>
+      <filter id="blur"><feGaussianBlur stdDeviation="${size*.03}"/></filter>
+      <linearGradient id="grad${fill.replace('#','')}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="white" stop-opacity="1"/>
+        <stop offset="1" stop-color="white" stop-opacity=".35"/>
+      </linearGradient>
+    </defs>
+    ${gnd}
+    <mask id="m${size}${fill.replace('#','')}">
+      <rect width="${size}" height="${h}" fill="white"/>
+    </mask>
+    <path d="M${size*.455} ${h*.03} C${size*.7} ${h*.03} ${size*.91} ${h*.18} ${size*.91} ${h*.38} C${size*.91} ${h*.54} ${size*.83} ${h*.67} ${size*.73} ${h*.73} C${size*.65} ${h*.79} ${size*.54} ${h*.87} ${size*.515} ${h*.93} C${size*.508} ${h*.94} ${size*.503} ${h*.95} ${size*.455} ${h*.95} C${size*.41} ${h*.95} ${size*.40} ${h*.94} ${size*.395} ${h*.93} C${size*.37} ${h*.87} ${size*.26} ${h*.79} ${size*.18} ${h*.73} C${size*.08} ${h*.67} ${size*.0} ${h*.54} ${size*.0} ${h*.38} C${size*.0} ${h*.18} ${size*.21} ${h*.03} ${size*.455} ${h*.03} Z" fill="${fill}"/>
+    <path d="M${size*.455} ${h*.03} C${size*.7} ${h*.03} ${size*.91} ${h*.18} ${size*.91} ${h*.38} C${size*.91} ${h*.54} ${size*.83} ${h*.67} ${size*.73} ${h*.73} C${size*.65} ${h*.79} ${size*.54} ${h*.87} ${size*.515} ${h*.93} C${size*.508} ${h*.94} ${size*.503} ${h*.95} ${size*.455} ${h*.95} C${size*.41} ${h*.95} ${size*.40} ${h*.94} ${size*.395} ${h*.93} C${size*.37} ${h*.87} ${size*.26} ${h*.79} ${size*.18} ${h*.73} C${size*.08} ${h*.67} ${size*.0} ${h*.54} ${size*.0} ${h*.38} C${size*.0} ${h*.18} ${size*.21} ${h*.03} ${size*.455} ${h*.03} Z" fill="none" stroke="url(#grad${fill.replace('#','')})" stroke-width="${size*.03}"/>
+    ${innerContent}
+    ${badgePart}
+  </svg>`;
+}
+
+const pinStage = document.getElementById('pin-stage');
+const pinConfigs = [
+  {
+    label: 'Row 1 — Default states (no badge)',
+    pins: [
+      {fill:'#0C47C7', selected:false, inner:null, cap:'Default · Asignado'},
+      {fill:'#8FA0BA', selected:false, inner:null, cap:'Default · Sin asignar'},
+      {fill:'#0C47C7', selected:true,  inner:'circle', cap:'Selected · Asignado'},
+      {fill:'#8FA0BA', selected:true,  inner:'circle', cap:'Selected · Sin asignar'},
+      {fill:'#0C47C7', selected:true,  inner:'x',      cap:'Selected + close'},
+      {fill:'#0C47C7', selected:true,  inner:'plus',   cap:'Selected + add'},
+    ]
+  },
+  {
+    label: 'Row 2 — With cluster badge',
+    pins: [
+      {fill:'#0C47C7', selected:false, inner:null,   badge:10, cap:'Default + cluster'},
+      {fill:'#8FA0BA', selected:false, inner:null,   badge:10, cap:'Sin asignar + cluster'},
+      {fill:'#0C47C7', selected:true,  inner:'circle', badge:10, cap:'Selected + cluster'},
+      {fill:'#0C47C7', selected:true,  inner:'x',     badge:10, cap:'Selected + close + cluster'},
+    ]
+  },
+];
+
+pinConfigs.forEach(cfg => {
+  const row = document.createElement('div');
+  row.className = 'pin-row';
+  cfg.pins.forEach(p => {
+    const cell = document.createElement('div');
+    cell.className = 'pin-cell';
+    cell.innerHTML = pinSVG(p) + `<div class="cap">${p.cap}</div>`;
+    row.appendChild(cell);
+  });
+  pinStage.appendChild(row);
+});
+
+/* ────────────────────────────────
+   TABS
+──────────────────────────────── */
+function switchTab(el, prefix) {
+  const container = el.closest('.card');
+  const tabs = container.querySelectorAll('.t-tab');
+  const panels = container.querySelectorAll('.tp');
+  const idx = Array.from(tabs).indexOf(el);
+  tabs.forEach((t,i) => t.classList.toggle('on', i===idx));
+  panels.forEach((p,i) => p.classList.toggle('on', i===idx));
+}
+
+/* ────────────────────────────────
+   COPY CODE
+──────────────────────────────── */
+function copyCode(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  if (pre) {
+    navigator.clipboard.writeText(pre.textContent.trim()).catch(()=>{});
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  }
+}
+
+/* ────────────────────────────────
+   SIDEBAR ACTIVE + SCROLL SPY
+──────────────────────────────── */
+function setActive(el) {
+  document.querySelectorAll('.sidebar a.snav').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+
+const sections = document.querySelectorAll('section.sec');
+const navLinks = document.querySelectorAll('.sidebar a.snav');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(a => {
+        const href = a.getAttribute('href')?.replace('#','');
+        a.classList.toggle('active', href === id);
+      });
+    }
+  });
+}, {rootMargin:'-30% 0px -65% 0px'});
+sections.forEach(s => observer.observe(s));
+
+/* ────────────────────────────────
+   SEARCH
+──────────────────────────────── */
+function doSearch(q) {
+  const term = q.trim().toLowerCase();
+  sections.forEach(sec => {
+    if (!term) { sec.removeAttribute('data-hidden'); return; }
+    const kw = (sec.dataset.keywords || '') + ' ' + sec.textContent.toLowerCase();
+    sec.toggleAttribute('data-hidden', !kw.includes(term));
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('gsearch').focus();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('gsearch').value = '';
+    doSearch('');
+    document.getElementById('gsearch').blur();
+  }
+});
+</script>
+
+<!-- ── i18n + Changelog system ── -->
+<script src="i18n.js" defer></script>
+<script src="changelog.js" defer></script>
+</body>
+</html>

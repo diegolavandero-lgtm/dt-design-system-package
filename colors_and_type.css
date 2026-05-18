@@ -1,0 +1,197 @@
+/* DispatchTrack Design System — Colors & Type
+ * Source: Figma "Design System Global General" + uploads/DESIGN-SYSTEM.md
+ */
+
+/* ---------- Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+  /* ===== NEUTRALS ===== */
+  --white: #FFFFFF;
+  --black: #000000;
+  --indigo: #132045;           /* Topbar / nav background */
+
+  --n1: #F5F6FA;
+  --n2: #F0F2F5;               /* default page background */
+  --n3: #E1E6ED;
+  --n4: #C5D2E7;               /* borders / dividers */
+  --n4-5: #8FA0BA;
+  --n5: #67768D;               /* secondary text / icons */
+  --n6: #4B5564;
+  --n7: #39414D;               /* primary text */
+
+  /* ===== GREEN ===== */
+  --g1: #E3FCEF;
+  --g2: #ABF5D1;
+  --g3: #79F2C0;
+  --g4: #57D9A3;
+  --g5: #36B37E;
+  --g6: #00875A;               /* success */
+  --g7: #006844;
+
+  /* ===== TEAL ===== */
+  --t1: #E6FCFF;
+  --t2: #B3F5FF;
+  --t3: #79E2F2;
+  --t4: #3DD7F2;
+  --t5: #00B8D9;
+  --t6: #00A3BF;
+  --t7: #008DA6;
+
+  /* ===== BLUE ===== */
+  --b1: #EDF5FF;
+  --b2: #D1E0FF;
+  --b3: #ADC7FF;
+  --b4: #6B9AFF;               /* QuickCommerce Main */
+  --b5: #4B82FA;               /* Primary Main */
+  --b6: #306EF2;               /* primary-background */
+  --b7: #0052CC;               /* primary-text */
+
+  /* ===== PURPLE ===== */
+  --p1: #F0EDFF;
+  --p2: #DBD4FA;
+  --p3: #C0B6F2;
+  --p4: #998DD9;
+  --p5: #8777D9;
+  --p6: #6554C0;
+  --p7: #5243AA;
+
+  /* ===== RED ===== */
+  --r1: #FFEBE6;
+  --r2: #FFBDAD;
+  --r3: #FF8F73;
+  --r4: #FF7452;
+  --r5: #FF5630;
+  --r6: #DE350B;               /* danger */
+  --r7: #BF2600;
+
+  /* ===== ORANGE ===== */
+  --o1: #FFFAE6;
+  --o2: #FFF0B3;
+  --o3: #FFE380;
+  --o4: #FFC400;
+  --o5: #FFAB00;               /* warning */
+  --o6: #FF9A1F;
+  --o7: #FF8B00;
+
+  /* ===== SEMANTIC — COLOR ===== */
+  --primary-background: var(--b6);
+  --primary-text: var(--b7);
+  --primary-main: var(--b5);
+
+  --danger-background: var(--r6);
+  --danger-text: var(--r6);
+
+  --success-background: var(--g6);
+  --success-text: var(--g6);
+
+  --warning-background: var(--o5);
+  --warning-text: var(--n7);
+
+  /* ===== SEMANTIC — NEUTRAL ===== */
+  --neutral-background-medium: var(--n2);  /* page background */
+  --neutral-background: var(--white);       /* containers */
+  --neutral-border: var(--n4);
+  --neutral-text: var(--n7);
+  --neutral-text-medium: var(--n5);
+  --neutral-text-inverse: var(--white);
+  --neutral-icon: var(--n7);
+  --neutral-icon-medium: var(--n6);
+
+  /* ===== PRODUCT ACCENTS ===== */
+  --product-lastmile: #FF6A1F;      /* orange */
+  --product-plannerpro: #36B37E;    /* green */
+  --product-quickcommerce: #6B9AFF; /* blue */
+  --product-help: #FFAB00;          /* yellow */
+
+  /* ===== DATA VIZ (ordered) ===== */
+  --dv1: #6E8DDE;
+  --dv2: #FFCC65;
+  --dv3: #57C2D6;
+  --dv4: #7EEABC;
+  --dv5: #FF8F76;
+  --dv6: #A59ADD;
+  --dv7: #5EBE95;
+  --dv8: #DED95D;
+  --dv9: #8DBCE7;
+  --dv10: #BF7B83;
+  --dv11: #DFA2F4;
+
+  /* ===== SERVICE UNITS (ordered) ===== */
+  --su1: #FE4EC4;
+  --su2: #36B37E;
+  --su3: #00B8D9;
+  --su4: #1F60ED;
+  --su5: #8777D9;
+  --su6: #FF5630;
+  --su7: #FFAB00;
+  --su8: #83E873;
+  --su9: #FFEC3F;
+  --su10: #67768D;
+
+  /* ===== TYPE ===== */
+  --font-sans: 'DM Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-display: 'Roboto', system-ui, sans-serif;
+
+  --fs-title: 26px;        --lh-title: 32px;      /* page titles — Bold */
+  --fs-subtitle: 22px;     --lh-subtitle: 28px;   /* section subtitles — Medium */
+  --fs-header-l: 16px;     --lh-header-l: 20px;   /* card/table header — Bold */
+  --fs-header-s: 14px;     --lh-header-s: 20px;   /* labels — Bold */
+  --fs-body-l: 16px;       --lh-body-l: 20px;     /* body — Regular */
+  --fs-body-s: 14px;       --lh-body-s: 20px;     /* secondary body */
+  --fs-caption: 12px;      --lh-caption: 16px;    /* caption */
+
+  --fs-ds-title: 60px;                            /* DS-internal display */
+  --fs-ds-section: 24px;                          /* DS-internal section title */
+
+  /* ===== SPACING & LAYOUT ===== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+  --space-9: 56px;
+  --space-10: 64px;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-topbar-slot: 20px 0 0 0;
+  --radius-pill: 999px;
+
+  /* ===== SHADOW ===== */
+  --shadow-xs: 0 1px 2px rgba(19, 32, 69, 0.06);
+  --shadow-sm: 0 2px 4px rgba(19, 32, 69, 0.08);
+  --shadow-md: 0 4px 12px rgba(19, 32, 69, 0.10);
+  --shadow-lg: 0 12px 32px rgba(19, 32, 69, 0.14);
+  --shadow-focus: 0 0 0 3px rgba(75, 130, 250, 0.25);
+
+  /* ===== TOPBAR ===== */
+  --topbar-h: 52px;
+
+  /* ===== SIDEBAR ===== */
+  --sidebar-w-collapsed: 56px;
+  --sidebar-w-expanded: 232px;
+}
+
+/* ---------- Semantic type classes ---------- */
+body, html { font-family: var(--font-sans); color: var(--neutral-text); }
+
+.dt-title        { font-weight: 700; font-size: var(--fs-title);    line-height: var(--lh-title); color: var(--neutral-text); letter-spacing: -0.01em; }
+.dt-subtitle     { font-weight: 500; font-size: var(--fs-subtitle); line-height: var(--lh-subtitle); color: var(--neutral-text); }
+.dt-header-l     { font-weight: 700; font-size: var(--fs-header-l); line-height: var(--lh-header-l); color: var(--neutral-text); }
+.dt-header-s     { font-weight: 700; font-size: var(--fs-header-s); line-height: var(--lh-header-s); color: var(--neutral-text); }
+.dt-body-l       { font-weight: 400; font-size: var(--fs-body-l);   line-height: var(--lh-body-l); color: var(--neutral-text); }
+.dt-body-l-bold  { font-weight: 700; font-size: var(--fs-body-l);   line-height: var(--lh-body-l); color: var(--neutral-text); }
+.dt-body-s       { font-weight: 400; font-size: var(--fs-body-s);   line-height: var(--lh-body-s); color: var(--neutral-text); }
+.dt-body-s-bold  { font-weight: 700; font-size: var(--fs-body-s);   line-height: var(--lh-body-s); color: var(--neutral-text); }
+.dt-caption      { font-weight: 400; font-size: var(--fs-caption);  line-height: var(--lh-caption); color: var(--neutral-text-medium); }
+.dt-caption-med  { font-weight: 500; font-size: var(--fs-caption);  line-height: var(--lh-caption); color: var(--neutral-text); }
+.dt-caption-semi { font-weight: 600; font-size: var(--fs-caption);  line-height: var(--lh-caption); color: var(--neutral-text); }
+
+.dt-ds-title     { font-family: var(--font-display); font-weight: 500; font-size: var(--fs-ds-title); letter-spacing: -0.07px; color: var(--neutral-text); }
+.dt-ds-section   { font-family: var(--font-display); font-weight: 500; font-size: var(--fs-ds-section); letter-spacing: -0.07px; text-transform: uppercase; color: var(--primary-main); }
