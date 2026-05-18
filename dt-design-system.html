@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DispatchTrack Design System</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Roboto:wght@500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Roboto:wght@500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --indigo:#132045;--n1:#F5F6FA;--n2:#F0F2F5;--n3:#E1E6ED;--n4:#C5D2E7;--n45:#8FA0BA;--n5:#67768D;--n6:#4B5564;--n7:#39414D;
-  --b1:#EDF5FF;--b2:#D1E0FF;--b3:#ADC7FF;--b4:#6B9AFF;--b5:#4B82FA;--b6:#306EF2;--b7:#0052CC;
+  --b1:#EDF5FF;--b2:#D1E0FF;--b3:#ADC7FF;--b4:#6B9AFF;--b5:#4B82FA;--b6:#1F60ED;--b7:#0052CC;
   --g1:#E3FCEF;--g2:#ABF5D1;--g5:#36B37E;--g6:#00875A;--g7:#006844;
   --r1:#FFEBE6;--r5:#FF5630;--r6:#DE350B;--r7:#BF2600;
   --o1:#FFFAE6;--o3:#FFE380;--o5:#FFAB00;--o7:#FF8B00;
   --t5:#00B8D9;--p5:#8777D9;
   --font-sans:'DM Sans',system-ui,sans-serif;
   --font-display:'Roboto',system-ui,sans-serif;
-  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --font-mono:'Roboto Mono',ui-monospace,monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--n2);font-family:var(--font-sans);color:var(--n7);font-size:14px;line-height:1.5}
@@ -40,7 +40,7 @@ button,input,select{font-family:inherit}
 /* ── SUBNAV ── */
 .subnav{background:#fff;border-bottom:1px solid var(--n3);padding:0 22px;display:flex;gap:0;overflow-x:auto;flex-shrink:0}
 .subnav-tab{padding:11px 14px;font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;display:inline-flex;align-items:center;gap:6px;border-bottom:2px solid transparent;white-space:nowrap}
-.subnav-tab.active{font-weight:700;color:var(--n7);border-bottom-color:#FF6A1F}
+.subnav-tab.active{font-weight:700;color:var(--n7);border-bottom-color:#F27B42}
 .subnav-tab .count{font:600 10px var(--font-sans);background:var(--n2);color:var(--n5);padding:1px 6px;border-radius:999px}
 
 /* ── LAYOUT ── */
@@ -110,9 +110,9 @@ button,input,select{font-family:inherit}
 .fld .err{font:400 11px var(--font-sans);color:var(--r6)}
 .fld .ok{font:400 11px var(--font-sans);color:var(--g6)}
 .req{color:var(--r6)}
-.inp{display:flex;align-items:center;border:1px solid var(--n4);border-radius:8px;background:#fff;padding:0 11px;height:36px}
+.inp{display:flex;align-items:center;border:1px solid var(--n3);border-radius:4px;background:#fff;padding:0 14px;height:40px}
 .inp input{border:0;outline:0;flex:1;font:400 13px var(--font-sans);color:var(--n7);background:transparent;min-width:0}
-.inp.foc{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
+.inp.foc{border-color:var(--b5);background:var(--b1);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
 .inp.er{border-color:var(--r6)}.inp.ok{border-color:var(--g6)}
 .inp .ic{color:var(--n5);display:flex;flex-shrink:0}
 
@@ -161,8 +161,8 @@ button,input,select{font-family:inherit}
 
 /* ── MODAL ── */
 .modal-stage{background:rgba(19,32,69,.45);padding:24px;border-radius:8px;display:flex;justify-content:center}
-.modal{width:460px;max-width:100%;background:#fff;border-radius:8px;padding:22px;box-shadow:0 12px 32px rgba(19,32,69,.3)}
-.modal h1{font:700 22px/1.3 var(--font-sans);color:var(--n7);flex:1;margin:0}
+.modal{width:500px;max-width:100%;background:#fff;border-radius:4px;padding:24px;border:1px solid #A3B5D1;box-shadow:0 8px 16px rgba(0,0,0,.15)}
+.modal h1{font:700 22px/1.3 var(--font-sans);color:#546884;flex:1;margin:0}
 .modal .mh{display:flex;align-items:flex-start;margin-bottom:4px}
 .modal .msub{font:400 12px var(--font-sans);color:var(--n5);margin:4px 0 16px}
 .modal .mfot{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--n3);padding-top:14px;margin-top:4px}
@@ -170,7 +170,7 @@ button,input,select{font-family:inherit}
 /* ── SIDEBAR PREVIEW ── */
 .sbp{width:200px;background:#fff;border:1px solid var(--n3);border-radius:8px;padding:8px 0}
 .sbp .top{padding:6px 15px 12px;border-bottom:1px solid var(--n3);margin-bottom:6px;font:700 13px var(--font-sans);color:var(--indigo)}
-.sbp .top span{font-weight:400;color:#FF6A1F;margin-left:5px}
+.sbp .top span{font-weight:400;color:#F27B42;margin-left:5px}
 .sbp .top span b{font-weight:700}
 .sbp .it{display:flex;align-items:center;gap:10px;padding:8px 15px;font:500 12px var(--font-sans);color:var(--b7);position:relative;cursor:pointer}
 .sbp .it svg{width:14px;height:14px;stroke:var(--b7);stroke-width:2;fill:none;flex-shrink:0}
@@ -196,7 +196,7 @@ button,input,select{font-family:inherit}
 .pin-shadow{width:18px;height:5px;border-radius:50%;background:rgba(19,32,69,.18);filter:blur(2px)}
 
 /* ── RADII ── */
-.radii-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.radii-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
 .r-cell{display:flex;flex-direction:column;align-items:center;gap:6px}
 .r-box{width:80px;height:64px;background:var(--b1);border:1px solid var(--b3)}
 .r-pill-box{height:32px;width:80px;background:var(--b6);border-radius:999px}
@@ -521,25 +521,25 @@ button,input,select{font-family:inherit}
   <div class="card">
     <h3 style="margin:0 0 14px;font:700 14px var(--font-sans)">📦 What's inside this repo</h3>
     <div class="prod-grid">
-      <div class="prod-card" style="border-top:3px solid #FF6A1F">
+      <div class="prod-card" style="border-top:3px solid #F27B42">
         <div style="font:700 13px var(--font-sans)">LastMile</div>
-        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#FF6A1F</div>
+        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#F27B42</div>
         <div style="font:400 11px var(--font-sans);color:var(--n5)">Core last-mile delivery ops</div>
       </div>
-      <div class="prod-card" style="border-top:3px solid #36B37E">
-        <div style="font:700 13px var(--font-sans)">PlannerPro</div>
-        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#36B37E</div>
+      <div class="prod-card" style="border-top:3px solid #FF3E50">
+        <div style="font:700 13px var(--font-sans)">FirstMile</div>
+        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#FF3E50</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5)">First-mile pickup & inbound</div>
+      </div>
+      <div class="prod-card" style="border-top:3px solid #47D09A">
+        <div style="font:700 13px var(--font-sans)">Planner</div>
+        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#47D09A</div>
         <div style="font:400 11px var(--font-sans);color:var(--n5)">Route planning & optimization</div>
       </div>
       <div class="prod-card" style="border-top:3px solid #6B9AFF">
-        <div style="font:700 13px var(--font-sans)">QuickCommerce</div>
+        <div style="font:700 13px var(--font-sans)">OnDemand</div>
         <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#6B9AFF</div>
         <div style="font:400 11px var(--font-sans);color:var(--n5)">On-demand / same-day dispatch</div>
-      </div>
-      <div class="prod-card" style="border-top:3px solid #FFAB00">
-        <div style="font:700 13px var(--font-sans)">Help Center</div>
-        <div style="font:500 10px var(--font-mono);color:var(--n5);margin:3px 0">#FFAB00</div>
-        <div style="font:400 11px var(--font-sans);color:var(--n5)">Documentation & support</div>
       </div>
     </div>
   </div>
@@ -548,23 +548,24 @@ button,input,select{font-family:inherit}
     <div class="card-hdr"><span class="ttl">colors_and_type.css</span><span class="meta">v2.4 · 8.2 KB</span></div>
     <div class="code">
       <button class="cp" onclick="copyCode(this)">Copy</button>
-<pre><span class="cm">/* Quick install — drop at root of your stylesheet */</span>
-<span class="kw">@import</span> <span class="str">url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Roboto:wght@500&display=swap')</span>;
+<pre><span class="cm">/* Instalar: npm install @beetrack/hp-tokens-style */</span>
+<span class="kw">@import</span> <span class="str">'~@beetrack/hp-tokens-style'</span>;
 
-<span class="tg">:root</span> {
-  <span class="cm">/* Semantic */</span>
-  <span class="kw">--primary-background</span>: <span class="nb">#306EF2</span>;
-  <span class="kw">--primary-text</span>:       <span class="nb">#0052CC</span>;
-  <span class="kw">--neutral-text</span>:       <span class="nb">#39414D</span>;
-  <span class="kw">--neutral-background-medium</span>: <span class="nb">#F0F2F5</span>;
-  <span class="kw">--neutral-background</span>: <span class="nb">#FFFFFF</span>;
-  <span class="kw">--neutral-border</span>:     <span class="nb">#C5D2E7</span>;
-  <span class="kw">--danger-background</span>:  <span class="nb">#DE350B</span>;
-  <span class="kw">--success-background</span>: <span class="nb">#00875A</span>;
-  <span class="kw">--warning-background</span>: <span class="nb">#FFAB00</span>;
-  <span class="cm">/* Font family */</span>
-  <span class="kw">--font-sans</span>: <span class="str">'DM Sans'</span>, system-ui, sans-serif;
-}</pre>
+<span class="cm">/* O carga las fuentes directamente */</span>
+<span class="kw">@import</span> <span class="str">url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Roboto+Mono&display=swap')</span>;
+
+<span class="cm">/* Tokens clave de colors.scss */</span>
+<span class="tg">$dt-neutral-indigo</span>: <span class="nb">#132045</span>;   <span class="cm">/* topbar */</span>
+<span class="tg">$dt-primary-main</span>:   <span class="nb">#4B82FA</span>;   <span class="cm">/* selection / highlight */</span>
+<span class="tg">$dt-primary-middle</span>: <span class="nb">#1F60ED</span>;   <span class="cm">/* button primary bg */</span>
+<span class="tg">$dt-primary-dark</span>:   <span class="nb">#0052CC</span>;   <span class="cm">/* text links / active */</span>
+<span class="tg">$dt-neutral-n7</span>:     <span class="nb">#39414D</span>;   <span class="cm">/* texto principal */</span>
+<span class="tg">$dt-neutral-n5</span>:     <span class="nb">#67768D</span>;   <span class="cm">/* texto secundario */</span>
+<span class="tg">$dt-neutral-n4</span>:     <span class="nb">#C5D2E7</span>;   <span class="cm">/* bordes */</span>
+<span class="tg">$dt-neutral-n2</span>:     <span class="nb">#F0F2F5</span>;   <span class="cm">/* page background */</span>
+<span class="tg">$dt-success</span>:        <span class="nb">#00875A</span>;
+<span class="tg">$dt-error</span>:          <span class="nb">#DE350B</span>;
+<span class="tg">$dt-warning</span>:        <span class="nb">#FFAB00</span>;</pre>
     </div>
   </div>
 
@@ -585,12 +586,12 @@ button,input,select{font-family:inherit}
 <!-- ══ BRAND ══ -->
 <section class="sec" id="brand" data-keywords="brand products accent lastmile plannerpro quickcommerce">
   <h2><span data-i18n="nav.brand">Brand &amp; products</span> <span class="anch">#brand</span></h2>
-  <p class="desc" data-i18n="section.brand.desc">Four products share the same shell — Indigo topbar, cobalt primary — distinguished only by the product wordmark and product-accent treatments.</p>
+  <p class="desc" data-i18n="section.brand.desc">Four products share the same shell — Indigo topbar (#132045), cobalt primary — distinguished only by the product accent color. Source: <code>$honeypot-product-colors</code> in <code>tokens/src/colors.scss</code>.</p>
   <div class="card" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
-    <div style="height:100px;background:#FF6A1F;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">LastMile</b><span style="font:400 10px var(--font-mono);opacity:.85">#FF6A1F · orange</span></div>
-    <div style="height:100px;background:#36B37E;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">PlannerPro</b><span style="font:400 10px var(--font-mono);opacity:.85">#36B37E · green</span></div>
-    <div style="height:100px;background:#6B9AFF;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">QuickCommerce</b><span style="font:400 10px var(--font-mono);opacity:.85">#6B9AFF · blue</span></div>
-    <div style="height:100px;background:#FFAB00;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#39414D"><b style="font-size:13px">Help Center</b><span style="font:400 10px var(--font-mono);opacity:.7">#FFAB00 · yellow</span></div>
+    <div style="height:100px;background:#F27B42;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">LastMile</b><span style="font:400 10px var(--font-mono);opacity:.85">#F27B42 · orange</span></div>
+    <div style="height:100px;background:#FF3E50;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">FirstMile</b><span style="font:400 10px var(--font-mono);opacity:.85">#FF3E50 · red</span></div>
+    <div style="height:100px;background:#47D09A;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">Planner</b><span style="font:400 10px var(--font-mono);opacity:.85">#47D09A · green</span></div>
+    <div style="height:100px;background:#6B9AFF;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff"><b style="font-size:13px">OnDemand</b><span style="font:400 10px var(--font-mono);opacity:.85">#6B9AFF · blue</span></div>
   </div>
 </section>
 
@@ -621,56 +622,56 @@ button,input,select{font-family:inherit}
   <h2><span data-i18n="nav.colors">Colors</span> <span class="anch">#colors</span></h2>
   <p class="desc" data-i18n="section.colors.desc">One dark surface (Indigo, topbar only). Two surfaces stacked under it (N2 page · white card). Cobalt primary. Four semantic intents. Color is never decoration — every hue carries a role.</p>
 
-  <h3>Semantic tokens</h3>
+  <h3>Semantic tokens — <code>$dt-*</code> variables</h3>
   <table class="ttbl" style="margin-bottom:16px">
     <thead><tr><th style="width:60px">Swatch</th><th>Token</th><th>Hex</th><th>Use</th></tr></thead>
     <tbody id="sem-tokens"></tbody>
   </table>
 
-  <h3>Neutrals</h3>
+  <h3>Neutrals — <code>$dt-neutral-*</code> + <code>$hp-black</code></h3>
   <div class="sw-grid" id="sw-neutral"></div>
-  <h3>Blue · primary scale</h3>
+  <h3>Blue · primary — <code>$dt-primary-*</code></h3>
   <div class="sw-grid" id="sw-blue"></div>
-  <h3>Green · success</h3>
+  <h3>Green · success — <code>$dt-success</code>, <code>$hp-success-*</code></h3>
   <div class="sw-grid" id="sw-green"></div>
-  <h3>Red · danger</h3>
+  <h3>Red · danger — <code>$dt-feedback-r*</code></h3>
   <div class="sw-grid" id="sw-red"></div>
-  <h3>Orange · warning</h3>
+  <h3>Orange · warning — <code>$dt-warning</code></h3>
   <div class="sw-grid" id="sw-orange"></div>
-  <h3>Teal, Purple</h3>
+  <h3>Honeypot brand + product colors — <code>$hp-primary</code>, <code>$hp-secondary</code>, <code>$honeypot-product-colors</code></h3>
   <div class="sw-grid" id="sw-misc"></div>
 </section>
 
 <!-- ══ TYPOGRAPHY ══ -->
 <section class="sec" id="typography" data-keywords="typography type font dm sans roboto scale weight">
   <h2><span data-i18n="nav.typography">Typography</span> <span class="anch">#typography</span></h2>
-  <p class="desc" data-i18n="section.typography.desc">DM Sans for 100% of the product UI. Roboto Medium is reserved for DS-internal display titles only — never ships in production.</p>
+  <p class="desc" data-i18n="section.typography.desc">DM Sans para toda la UI del producto (400/500/700). Roboto Mono para código. Source: <code>styles/packages/typography/src/base-mixins.scss</code> y <code>fonts.scss</code>.</p>
   <div class="card" style="margin-bottom:12px">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
       <div>
-        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">DM Sans — UI family</div>
+        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">DM Sans — familia UI (<code>$honeypot-font-family</code>)</div>
         <div style="font:700 32px/1.1 'DM Sans';letter-spacing:-.02em;color:var(--n7)">Aa Bb Cc 123</div>
-        <div style="font:400 14px/1.3 'DM Sans';color:var(--n7);margin-top:7px">Crear orden · Exportar a PlannerPro</div>
-        <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:7px">400 · 500 · 600 · 700 + italics</div>
+        <div style="font:400 16px/20px 'DM Sans';color:var(--n7);margin-top:7px">Crear orden · Exportar a Planner</div>
+        <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:7px">400 (regular) · 500 (medium) · 700 (bold) + italics</div>
       </div>
       <div>
-        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">Roboto Medium — DS display only</div>
-        <div style="font:500 32px/1.1 'Roboto';letter-spacing:-.01em;color:var(--n7)">Aa Bb Cc 123</div>
-        <div style="font:500 12px/1.3 'Roboto';letter-spacing:.06em;text-transform:uppercase;color:var(--b5);margin-top:10px">TOPBAR PRODUCTOS</div>
-        <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:10px">Never shipped in production</div>
+        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">Roboto Mono — código solamente</div>
+        <div style="font:400 20px/1.3 'Roboto Mono';color:var(--n7)">const hp = require('@beetrack/hp')</div>
+        <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:10px">Solo para tokens, snippets y labels de código</div>
       </div>
     </div>
   </div>
-  <h3>Type scale</h3>
+  <h3>Type scale — <code>hp-typography__*</code></h3>
   <div class="card">
     <table class="ts-table">
-      <tr><td>Title</td><td style="font:700 26px/32px 'DM Sans';color:var(--n7)">Dispatch order #44812</td><td>26/32 · Bold</td></tr>
-      <tr><td>Subtitle</td><td style="font:500 22px/28px 'DM Sans';color:var(--n7)">Rutas en curso</td><td>22/28 · Medium</td></tr>
-      <tr><td>Header L</td><td style="font:700 16px/20px 'DM Sans';color:var(--n7)">Información de usuario</td><td>16/20 · Bold</td></tr>
-      <tr><td>Header S</td><td style="font:700 14px/20px 'DM Sans';color:var(--n7)">Nombre y apellido</td><td>14/20 · Bold</td></tr>
-      <tr><td>Body L</td><td style="font:400 16px/20px 'DM Sans';color:var(--n7)">Tienes cambios sin guardar.</td><td>16/20 · Regular</td></tr>
-      <tr><td>Body S</td><td style="font:400 14px/20px 'DM Sans';color:var(--n7)">Admin Master · Última conexión hace 3h</td><td>14/20 · Regular</td></tr>
-      <tr><td>Caption</td><td style="font:400 12px/16px 'DM Sans';color:var(--n7)">1–25 de 340 · 10-10-25 10:35 hrs</td><td>12/16 · Regular</td></tr>
+      <tr><td>hero</td><td style="font:500 26px/32px 'DM Sans';color:var(--n7)">Dispatch order #44812</td><td>26px / 32px · Medium</td></tr>
+      <tr><td>title</td><td style="font:700 22px/28px 'DM Sans';color:var(--n7)">Rutas en curso</td><td>22px / 28px · Bold</td></tr>
+      <tr><td>subtitle</td><td style="font:500 18px/20px 'DM Sans';color:var(--n7)">Información de usuario</td><td>18px / 20px · Medium</td></tr>
+      <tr><td>body</td><td style="font:400 16px/20px 'DM Sans';color:var(--n7)">Tienes cambios sin guardar. Si cierras este modal…</td><td>16px / 20px · Regular</td></tr>
+      <tr><td>bodysmall</td><td style="font:400 14px/18px 'DM Sans';color:var(--n7)">Admin Master · Última conexión hace 3h</td><td>14px / 18px · Regular</td></tr>
+      <tr><td>button</td><td style="font:500 16px/16px 'DM Sans';color:var(--n7)">Guardar · Cancelar · Eliminar</td><td>16px / 16px · Medium</td></tr>
+      <tr><td>micro</td><td style="font:400 12px/16px 'DM Sans';color:var(--n7)">1–25 de 340 · 10-10-25 10:35 hrs</td><td>12px / 16px · Regular</td></tr>
+      <tr><td>code</td><td style="font:400 16px/21px 'Roboto Mono';color:var(--n7)">$dt-primary-main: #4B82FA</td><td>16px / 21px · Roboto Mono</td></tr>
     </table>
   </div>
 </section>
@@ -685,14 +686,15 @@ button,input,select{font-family:inherit}
 <!-- ══ RADII ══ -->
 <section class="sec" id="radii" data-keywords="radii border radius corners pill">
   <h2><span data-i18n="nav.radii">Radii</span> <span class="anch">#radii</span></h2>
-  <p class="desc" data-i18n="section.radii.desc">5 stops. Buttons 6px, inputs/cards 8px, pills 999px. One special: the topbar company-logo slot is 20px on top-left only.</p>
+  <p class="desc" data-i18n="section.radii.desc">6 stops. Modales/inputs 4px, cards 8px, chips 16px, sidebar items 30px, buttons pill (50px). Special: topbar company-logo slot 25px top-left only.</p>
   <div class="card">
     <div class="radii-grid">
-      <div class="r-cell"><div class="r-box" style="border-radius:4px"></div><div class="r-lbl">sm · 4px</div><div class="r-sub">banners</div></div>
-      <div class="r-cell"><div class="r-box" style="border-radius:6px"></div><div class="r-lbl">md · 6px</div><div class="r-sub">buttons</div></div>
-      <div class="r-cell"><div class="r-box" style="border-radius:8px"></div><div class="r-lbl">lg · 8px</div><div class="r-sub">cards, inputs</div></div>
-      <div class="r-cell"><div class="r-pill-box"></div><div class="r-lbl">pill · 999px</div><div class="r-sub">tags, chips</div></div>
-      <div class="r-cell"><div class="r-topbar"></div><div class="r-lbl">20px 0 0 0</div><div class="r-sub">topbar slot</div></div>
+      <div class="r-cell"><div class="r-box" style="border-radius:4px"></div><div class="r-lbl">4px</div><div class="r-sub">modal, input, banners</div></div>
+      <div class="r-cell"><div class="r-box" style="border-radius:8px"></div><div class="r-lbl">8px</div><div class="r-sub">cards, tables</div></div>
+      <div class="r-cell"><div class="r-box" style="border-radius:16px"></div><div class="r-lbl">16px · chip</div><div class="r-sub">$hp-chip border-radius</div></div>
+      <div class="r-cell"><div class="r-box" style="border-radius:30px"></div><div class="r-lbl">30px · sidebar</div><div class="r-sub">$hp-sidebar-border-radius</div></div>
+      <div class="r-cell"><div class="r-pill-box"></div><div class="r-lbl">pill · 50px</div><div class="r-sub">buttons ($hp-button)</div></div>
+      <div class="r-cell"><div class="r-topbar" style="border-radius:25px 0 0 0"></div><div class="r-lbl">25px 0 0 0</div><div class="r-sub">topbar customer slot</div></div>
     </div>
   </div>
 </section>
@@ -700,18 +702,19 @@ button,input,select{font-family:inherit}
 <!-- ══ SHADOWS ══ -->
 <section class="sec" id="shadows" data-keywords="shadows elevation depth focus ring">
   <h2><span data-i18n="nav.shadows">Shadows</span> <span class="anch">#shadows</span></h2>
-  <p class="desc" data-i18n="section.shadows.desc">Restrained — the app is mostly borders, not elevation. No inner shadows, no neumorphism.</p>
+  <p class="desc" data-i18n="section.shadows.desc">5 niveles de elevación. Color base: <code>rgba(#000, 0.15)</code> (light). Source: <code>$hp-elevation-z1–z5</code> en <code>styles/packages/elevation/src/variables.scss</code>.</p>
   <div class="card">
-    <div class="sh-grid">
-      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 1px 2px rgba(19,32,69,.06)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-xs</div><div style="font:400 10px var(--font-sans);color:var(--n5)">hover row lift</div></div>
-      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 2px 4px rgba(19,32,69,.08)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-sm</div><div style="font:400 10px var(--font-sans);color:var(--n5)">dropdown panel</div></div>
-      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 4px 12px rgba(19,32,69,.10)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-md</div><div style="font:400 10px var(--font-sans);color:var(--n5)">modal</div></div>
-      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 12px 32px rgba(19,32,69,.14)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">shadow-lg</div><div style="font:400 10px var(--font-sans);color:var(--n5)">floating menu</div></div>
+    <div class="sh-grid" style="grid-template-columns:repeat(5,1fr)">
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 1px 2px rgba(0,0,0,.15)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">z1 · Raised</div><div style="font:400 10px var(--font-mono);color:var(--n5)">0 1px 2px</div></div>
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 4px 8px rgba(0,0,0,.15)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">z2 · Overlay</div><div style="font:400 10px var(--font-mono);color:var(--n5)">0 4px 8px</div></div>
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 6px 12px rgba(0,0,0,.15)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">z3 · Sticky Nav</div><div style="font:400 10px var(--font-mono);color:var(--n5)">0 6px 12px</div></div>
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 8px 16px rgba(0,0,0,.15)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">z4 · Temp Nav</div><div style="font:400 10px var(--font-mono);color:var(--n5)">0 8px 16px</div></div>
+      <div class="sh-cell"><div class="sh-box" style="box-shadow:0 12px 24px rgba(0,0,0,.15)"></div><div style="font:600 11px var(--font-sans);color:var(--n7)">z5 · Pop-out</div><div style="font:400 10px var(--font-mono);color:var(--n5)">0 12px 24px</div></div>
     </div>
     <div style="margin-top:20px;text-align:center">
       <div class="sh-box" style="box-shadow:0 0 0 3px rgba(75,130,250,.25);border-color:var(--b5);max-width:220px;margin:0 auto"></div>
       <div style="font:600 11px var(--font-sans);color:var(--n7);margin-top:7px">focus-ring</div>
-      <div style="font:400 10px var(--font-mono);color:var(--n5);margin-top:3px">0 0 0 3px rgba(75,130,250,.25) — all interactive elements</div>
+      <div style="font:400 10px var(--font-mono);color:var(--n5);margin-top:3px">0 0 0 3px rgba(75,130,250,.25) — todos los elementos interactivos</div>
     </div>
   </div>
 </section>
@@ -738,7 +741,7 @@ button,input,select{font-family:inherit}
 <!-- ══ BUTTONS ══ -->
 <section class="sec" id="buttons" data-keywords="buttons cta primary secondary subtle danger pill">
   <h2><span data-i18n="nav.buttons">Buttons</span> <span class="anch">#buttons</span></h2>
-  <p class="desc" data-i18n="section.buttons.desc">Pill-shaped (999px), Bold 14px. One primary per view. Destructive actions always use intent=danger.</p>
+  <p class="desc" data-i18n="section.buttons.desc">Pill-shaped (<code>border-radius: 50px</code>), body 16px/20px medio. Altura normal 40px (<code>$hp-button-size</code>), tall 56px (<code>$hp-button-tall-size</code>). Siete variantes: primary · secondary · tertiary · text · danger · tertiary-blue · tertiary-red. Un primary por vista. Acciones destructivas siempre usan <code>--danger</code>.</p>
   <div class="card flush">
     <div class="tabs">
       <div class="t-tab on" onclick="switchTab(this,'btn-')">Preview</div>
@@ -775,17 +778,22 @@ button,input,select{font-family:inherit}
       <div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button>
 <pre><span class="tg">&lt;button</span> <span class="kw">class</span>=<span class="str">"btn primary"</span><span class="tg">&gt;</span>Guardar<span class="tg">&lt;/button&gt;</span>
 
-<span class="tg">.btn</span> {
-  <span class="kw">font</span>: <span class="nb">700 14px/1</span> <span class="str">'DM Sans'</span>;
-  <span class="kw">padding</span>: <span class="nb">9px 18px</span>;
-  <span class="kw">border-radius</span>: <span class="nb">999px</span>;
-  <span class="kw">border</span>: <span class="nb">1px</span> solid transparent;
+<span class="cm">/* Source: styles/packages/button/src/ — Honeypot */</span>
+<span class="tg">.hp-button</span> {
+  <span class="kw">font</span>: <span class="nb">400 16px/20px</span> <span class="str">'DM Sans'</span>; <span class="cm">/* hp-typography__body--regular */</span>
+  <span class="kw">height</span>: <span class="nb">40px</span>; <span class="cm">/* $hp-button-size */</span>
+  <span class="kw">padding</span>: <span class="nb">0 32px</span>; <span class="cm">/* $hp-space-x-large */</span>
+  <span class="kw">border-radius</span>: <span class="nb">50px</span>; <span class="cm">/* $hp-button-border-basic-radius */</span>
+  <span class="kw">border</span>: none;
+  <span class="kw">min-width</span>: <span class="nb">64px</span>;
 }
-<span class="tg">.btn.primary</span>         { <span class="kw">background</span>: <span class="nb">#306EF2</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; }
-<span class="tg">.btn.primary</span>:hover   { <span class="kw">background</span>: <span class="nb">#1F60ED</span>; }
-<span class="tg">.btn.primary</span>:active  { <span class="kw">background</span>: <span class="nb">#0052CC</span>; }
-<span class="tg">.btn.danger</span>          { <span class="kw">background</span>: <span class="nb">#DE350B</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; }
-<span class="tg">.btn.success</span>         { <span class="kw">background</span>: <span class="nb">#00875A</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; }</pre>
+<span class="tg">.hp-button--primary</span>          { <span class="kw">background</span>: <span class="nb">#4B82FA</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; } <span class="cm">/* $dt-primary-main */</span>
+<span class="tg">.hp-button--primary</span>:hover    { <span class="kw">background</span>: <span class="nb">#1F60ED</span>; } <span class="cm">/* $dt-primary-middle */</span>
+<span class="tg">.hp-button--primary</span>:active   { <span class="kw">background</span>: <span class="nb">#0052CC</span>; } <span class="cm">/* $dt-primary-dark */</span>
+<span class="tg">.hp-button--secondary</span>        { <span class="kw">background</span>: <span class="nb">#fff</span>; <span class="kw">color</span>: <span class="nb">#4B82FA</span>; <span class="kw">border</span>: <span class="nb">2px solid #1F60ED</span>; }
+<span class="tg">.hp-button--tertiary</span>         { <span class="kw">background</span>: <span class="nb">#fff</span>; <span class="kw">color</span>: <span class="nb">#39414D</span>; <span class="kw">border</span>: <span class="nb">2px solid #C5D2E7</span>; }
+<span class="tg">.hp-button--danger</span>           { <span class="kw">background</span>: <span class="nb">#FF5630</span>; <span class="kw">color</span>: <span class="nb">#fff</span>; } <span class="cm">/* $dt-feedback-r3 */</span>
+<span class="tg">.hp-button--tall</span>             { <span class="kw">height</span>: <span class="nb">56px</span>; } <span class="cm">/* $hp-button-tall-size, submit actions */</span></pre>
       </div>
     </div>
   </div>
@@ -794,7 +802,7 @@ button,input,select{font-family:inherit}
 <!-- ══ INPUTS ══ -->
 <section class="sec" id="inputs" data-keywords="inputs forms text field validation label helper">
   <h2><span data-i18n="nav.inputs">Inputs &amp; forms</span> <span class="anch">#inputs</span></h2>
-  <p class="desc" data-i18n="section.inputs.desc">Always use labeled inputs in forms; borderless input only in tables. Validation is semantic — no custom error colors.</p>
+  <p class="desc" data-i18n="section.inputs.desc">Siempre con label en formularios. Altura 56px (dense 40px), <code>border-radius: 4px</code>, borde <code>$dt-neutral-n3</code>. Focus: borde <code>$dt-primary-main</code> + fondo <code>$dt-primary-8</code>. Error: borde <code>$dt-feedback-red-scale-2</code>. Source: <code>styles/packages/text-field/src/variables.scss</code>.</p>
   <div class="card">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 20px">
       <div class="fld">
@@ -836,13 +844,17 @@ button,input,select{font-family:inherit}
   <span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"helper"</span><span class="tg">&gt;</span>Cómo aparecerá en órdenes.<span class="tg">&lt;/div&gt;</span>
 <span class="tg">&lt;/div&gt;</span>
 
-<span class="tg">.input</span> {
-  <span class="kw">height</span>: <span class="nb">36px</span>; <span class="kw">border</span>: <span class="nb">1px</span> solid <span class="nb">#C5D2E7</span>;
-  <span class="kw">border-radius</span>: <span class="nb">8px</span>;
+<span class="cm">/* Source: styles/packages/text-field/src/ — Honeypot */</span>
+<span class="tg">.hp-text-field</span> {
+  <span class="kw">height</span>: <span class="nb">56px</span>; <span class="cm">/* $hp-text-field-height */</span>
+  <span class="kw">border</span>: <span class="nb">1px</span> solid <span class="nb">#E1E6ED</span>; <span class="cm">/* $dt-neutral-n3 */</span>
+  <span class="kw">border-radius</span>: <span class="nb">4px</span>; <span class="cm">/* $hp-text-field-radius */</span>
+  <span class="kw">padding</span>: <span class="nb">24px 10px 10px 14px</span>; <span class="cm">/* $hp-text-field-content-padding */</span>
 }
-<span class="tg">.input.focus</span>  { <span class="kw">border-color</span>: <span class="nb">#4B82FA</span>; <span class="kw">box-shadow</span>: <span class="nb">0 0 0 3px rgba(75,130,250,.22)</span>; }
-<span class="tg">.input.error</span>  { <span class="kw">border-color</span>: <span class="nb">#DE350B</span>; }
-<span class="tg">.input.success</span>{ <span class="kw">border-color</span>: <span class="nb">#00875A</span>; }</pre>
+<span class="tg">.hp-text-field--dense</span>  { <span class="kw">height</span>: <span class="nb">40px</span>; <span class="kw">padding</span>: <span class="nb">10px</span>; } <span class="cm">/* $hp-text-field-height-dense */</span>
+<span class="tg">.hp-text-field--focus</span>  { <span class="kw">border-color</span>: <span class="nb">#4B82FA</span>; <span class="kw">background</span>: <span class="nb">#EDF5FF</span>; } <span class="cm">/* $dt-primary-8 */</span>
+<span class="tg">.hp-text-field--error</span>  { <span class="kw">border-color</span>: <span class="nb">#DE350B</span>; } <span class="cm">/* $dt-feedback-red-scale-2 */</span>
+<span class="tg">.hp-text-field--disabled</span> { <span class="kw">background</span>: <span class="nb">#E1E6ED</span>; <span class="kw">color</span>: <span class="nb">#8FA0BA</span>; }</pre>
     </div>
   </div>
 </section>
@@ -886,7 +898,7 @@ button,input,select{font-family:inherit}
       <span class="badge bn">Borrador</span>
       <span class="badge bx">Pendiente</span>
       <span class="chip"><span class="av" style="background:var(--b6);color:#fff">MJ</span>Maya Jonson</span>
-      <span class="chip" style="background:var(--b1);color:var(--b7)"><span class="av" style="background:var(--g5);color:#fff">PP</span>PlannerPro</span>
+      <span class="chip" style="background:#EDF5FF;color:var(--b7)"><span class="av" style="background:#47D09A;color:#fff">PL</span>Planner</span>
     </div>
   </div>
 </section>
@@ -899,7 +911,7 @@ button,input,select{font-family:inherit}
     <div class="bn ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg><span><b>Dirección verificada.</b> El pin se colocó automáticamente en el mapa.</span></div>
     <div class="bn wr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg><span><b>La dirección es aproximada.</b> Verifica en el mapa o ajusta el pin.</span></div>
     <div class="bn er"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DE350B" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg><span><b>No pudimos geolocalizar esta dirección.</b> Revisa el formato o ingresa las coordenadas.</span></div>
-    <div class="bn in"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#306EF2" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg><span>Se exportarán <b>25 órdenes</b> a PlannerPro. Puedes continuar editando mientras se procesan.</span></div>
+    <div class="bn in"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg><span>Se exportarán <b>25 órdenes</b> a PlannerPro. Puedes continuar editando mientras se procesan.</span></div>
   </div>
 </section>
 
@@ -932,7 +944,7 @@ button,input,select{font-family:inherit}
 <!-- ══ MODAL ══ -->
 <section class="sec" id="modal" data-keywords="modal dialog overlay confirm">
   <h2><span data-i18n="nav.modal">Modal</span> <span class="anch">#modal</span></h2>
-  <p class="desc" data-i18n="section.modal.desc">Title 22/28 Bold, close X top-right, optional warning banner, footer with secondary + primary. Overlay rgba(19,32,69,.45).</p>
+  <p class="desc" data-i18n="section.modal.desc">Ancho 500px (<code>$modal-width</code>), <code>border-radius: 4px</code>, borde <code>1px solid #A3B5D1</code> (<code>$modal-border-color</code>). Padding 24px (<code>$modal-padding</code>). Title usa <code>$hp-secondary</code> (#546884). Overlay rgba(19,32,69,.45).</p>
   <div class="card flush">
     <div class="modal-stage">
       <div class="modal">
@@ -980,7 +992,7 @@ button,input,select{font-family:inherit}
 <!-- ══ SIDEBAR ══ -->
 <section class="sec" id="sidebar-comp" data-keywords="sidebar navigation left menu collapsed expanded">
   <h2><span data-i18n="nav.sidebar">Sidebar</span> <span class="anch">#sidebar</span></h2>
-  <p class="desc" data-i18n="section.sidebar.desc">Collapsed 56px / expanded 232px. Item text+icon color is B7 (#0052CC). Selected: B1 bg + 3px B5 left marker. Settings sidebar stays open when in Settings.</p>
+  <p class="desc" data-i18n="section.sidebar.desc">Collapsed 52px (<code>$hp-sidebar-width-closed</code>) / expanded 224px (<code>$hp-sidebar-width</code>). Item height 40px. Color ink: <code>$dt-primary-main</code> (#4B82FA). Selected: <code>$dt-primary-8</code> bg + 3px <code>$dt-primary-dark</code> left border. <code>border-radius: 30px</code>.</p>
   <div class="card" style="background:var(--n2)">
     <div style="display:flex;gap:14px;align-items:flex-start">
       <div class="sbp">
@@ -1130,41 +1142,65 @@ button,input,select{font-family:inherit}
    DATA
 ──────────────────────────────── */
 const semTokens = [
-  {hex:'#306EF2',name:'$primary-background',sub:'B6',use:'Botones primarios'},
-  {hex:'#0052CC',name:'$primary-text',sub:'B7',use:'Links de texto'},
-  {hex:'#4B82FA',name:'$primary-main',sub:'B5',use:'Selección, highlight'},
-  {hex:'#DE350B',name:'$danger',sub:'R6',use:'Eliminar, errores'},
-  {hex:'#00875A',name:'$success',sub:'G6',use:'Confirmación, activo'},
-  {hex:'#FFAB00',name:'$warning-background',sub:'O5',use:'Advertencias'},
-  {hex:'#39414D',name:'$neutral-text',sub:'N7',use:'Texto principal'},
-  {hex:'#67768D',name:'$neutral-text-medium',sub:'N5',use:'Texto secundario'},
-  {hex:'#C5D2E7',name:'$neutral-border',sub:'N4',use:'Bordes, divisores'},
-  {hex:'#F0F2F5',name:'$neutral-bg-medium',sub:'N2',use:'Background de página'},
-  {hex:'#132045',name:'$indigo',sub:'',use:'Topbar — solo topbar'},
+  {hex:'#1F60ED',name:'$dt-primary-middle',sub:'B6',use:'Botones primarios (hover)'},
+  {hex:'#4B82FA',name:'$dt-primary-main',sub:'B5',use:'Selección, highlight, focus'},
+  {hex:'#0052CC',name:'$dt-primary-dark',sub:'B7',use:'Links de texto, active'},
+  {hex:'#EDF5FF',name:'$dt-primary-8',sub:'B1',use:'Fondo hover / selección ligera'},
+  {hex:'#DE350B',name:'$dt-error',sub:'R6',use:'Eliminar, errores'},
+  {hex:'#00875A',name:'$dt-success',sub:'G6',use:'Confirmación, activo'},
+  {hex:'#FFAB00',name:'$dt-warning',sub:'O5',use:'Advertencias'},
+  {hex:'#39414D',name:'$dt-neutral-n7',sub:'N7',use:'Texto principal'},
+  {hex:'#67768D',name:'$dt-neutral-n5',sub:'N5',use:'Texto secundario'},
+  {hex:'#C5D2E7',name:'$dt-neutral-n4',sub:'N4',use:'Bordes, divisores'},
+  {hex:'#E1E6ED',name:'$dt-neutral-n3',sub:'N3',use:'Bordes suaves, separadores'},
+  {hex:'#F0F2F5',name:'$dt-neutral-n2',sub:'N2',use:'Background de página'},
+  {hex:'#132045',name:'$dt-neutral-indigo / $hp-dt-indigo',sub:'',use:'Topbar — solo topbar'},
+  {hex:'#F5B63E',name:'$hp-primary',sub:'',use:'Marca Honeypot / Beetrack (brand)'},
 ];
 
 const palettes = {
-  neutral: [{h:'#FFFFFF',l:'White'},{h:'#F5F6FA',l:'N1'},{h:'#F0F2F5',l:'N2'},{h:'#E1E6ED',l:'N3'},{h:'#C5D2E7',l:'N4'},{h:'#8FA0BA',l:'N4.5'},{h:'#67768D',l:'N5'},{h:'#4B5564',l:'N6'},{h:'#39414D',l:'N7'},{h:'#132045',l:'Indigo'}],
-  blue: [{h:'#EDF5FF',l:'B1'},{h:'#D1E0FF',l:'B2'},{h:'#ADC7FF',l:'B3'},{h:'#6B9AFF',l:'B4'},{h:'#4B82FA',l:'B5 Main'},{h:'#306EF2',l:'B6 Primary'},{h:'#0052CC',l:'B7 Text'}],
-  green: [{h:'#E3FCEF',l:'G1'},{h:'#ABF5D1',l:'G2'},{h:'#79F2C0',l:'G3'},{h:'#57D9A3',l:'G4'},{h:'#36B37E',l:'G5'},{h:'#00875A',l:'G6 ✓'},{h:'#006844',l:'G7'}],
-  red: [{h:'#FFEBE6',l:'R1'},{h:'#FFBDAD',l:'R2'},{h:'#FF8F73',l:'R3'},{h:'#FF7452',l:'R4'},{h:'#FF5630',l:'R5'},{h:'#DE350B',l:'R6 ✗'},{h:'#BF2600',l:'R7'}],
-  orange: [{h:'#FFFAE6',l:'O1'},{h:'#FFF0B3',l:'O2'},{h:'#FFE380',l:'O3'},{h:'#FFC400',l:'O4'},{h:'#FFAB00',l:'O5 ⚠'},{h:'#FF9A1F',l:'O6'},{h:'#FF8B00',l:'O7'}],
+  neutral: [
+    {h:'#FFFFFF',l:'White · $white'},{h:'#F8F8F8',l:'$hp-gray-10'},{h:'#F5F6FA',l:'N1 · $dt-neutral-n1'},
+    {h:'#F0F2F5',l:'N2 · $dt-neutral-n2'},{h:'#E1E6ED',l:'N3 · $dt-neutral-n3'},{h:'#C5D2E7',l:'N4 · $dt-neutral-n4'},
+    {h:'#8FA0BA',l:'$dt-disabled-3'},{h:'#67768D',l:'N5 · $dt-neutral-n5'},{h:'#4B5564',l:'N6 · $dt-neutral-n6'},
+    {h:'#39414D',l:'N7 · $dt-neutral-n7'},{h:'#2D2926',l:'$hp-black'},{h:'#132045',l:'Indigo · $dt-neutral-indigo'}
+  ],
+  blue: [
+    {h:'#EDF5FF',l:'B1 · $dt-primary-8'},{h:'#D1E0FF',l:'B2 · $dt-primary-7'},{h:'#ADC7FF',l:'B3 · $dt-primary-6'},
+    {h:'#6B9AFF',l:'B4 · ondemand'},{h:'#4B82FA',l:'B5 · $dt-primary-main'},{h:'#1F60ED',l:'B6 · $dt-primary-middle'},{h:'#0052CC',l:'B7 · $dt-primary-dark'}
+  ],
+  green: [
+    {h:'#E3FCEF',l:'$dt-success bg'},{h:'#79F2C0',l:'$dt-success-dark'},{h:'#5BDE45',l:'$hp-success-light'},
+    {h:'#4BB839',l:'$hp-success-dark'},{h:'#47D09A',l:'Planner accent'},{h:'#00875A',l:'$dt-success ✓'},{h:'#006844',l:'success dark'}
+  ],
+  red: [
+    {h:'#FFEBE6',l:'R1 · $dt-feedback-r7'},{h:'#FFBDAD',l:'R2 · $dt-feedback-r6'},{h:'#FF8F73',l:'$dt-error-dark'},
+    {h:'#FF7452',l:'$dt-feedback-r4'},{h:'#FF5630',l:'R5 · $dt-feedback-r3'},{h:'#DE350B',l:'R6 · $dt-error ✗'},{h:'#BF2600',l:'R7 · $dt-feedback-r1'}
+  ],
+  orange: [{h:'#FFFAE6',l:'O1'},{h:'#FFE380',l:'$dt-warning-dark'},{h:'#FFAB00',l:'O5 · $dt-warning ⚠'},{h:'#FF8B00',l:'O7'}],
   misc: [
-    {h:'#E6FCFF',l:'T1'},{h:'#B3F5FF',l:'T2'},{h:'#00B8D9',l:'T5'},{h:'#008DA6',l:'T7'},
-    {h:'#F0EDFF',l:'P1'},{h:'#C0B6F2',l:'P3'},{h:'#8777D9',l:'P5'},{h:'#5243AA',l:'P7'},
+    {h:'#F5B63E',l:'$hp-primary'},{h:'#EEA00C',l:'$hp-primary-dark'},{h:'#FFD200',l:'$hp-primary-light'},
+    {h:'#546884',l:'$hp-secondary'},{h:'#A3B5D1',l:'$hp-secondary-light'},{h:'#222E3F',l:'$hp-secondary-dark'},
+    {h:'#0792E0',l:'$hp-tertiary'},{h:'#70CBFF',l:'$hp-tertiary-light'},{h:'#628EFF',l:'$hp-info-light'},
+    {h:'#FF3E50',l:'FirstMile'},{h:'#F27B42',l:'LastMile'},
   ],
 };
 
 const dvPalette = ['#6E8DDE','#FFCC65','#57C2D6','#7EEABC','#FF8F76','#A59ADD','#5EBE95','#DED95D','#8DBCE7','#BF7B83','#DFA2F4'];
 const suPalette = [
-  {c:'#FE4EC4',l:'Pink',t:'#fff'},{c:'#36B37E',l:'G5',t:'#fff'},{c:'#00B8D9',l:'T5',t:'#fff'},{c:'#1F60ED',l:'B6',t:'#fff'},{c:'#8777D9',l:'P5',t:'#fff'},
-  {c:'#FF5630',l:'R5',t:'#fff'},{c:'#FFAB00',l:'O5',t:'#132045'},{c:'#83E873',l:'Lime',t:'#132045'},{c:'#FFEC3F',l:'Yellow',t:'#132045'},{c:'#67768D',l:'N5',t:'#fff'},
+  {c:'#FE4EC4',l:'Pink',t:'#fff'},{c:'#47D09A',l:'Planner',t:'#fff'},{c:'#0792E0',l:'$hp-tertiary',t:'#fff'},{c:'#1F60ED',l:'$dt-primary-middle',t:'#fff'},{c:'#628EFF',l:'$hp-info-light',t:'#fff'},
+  {c:'#FF5630',l:'$dt-feedback-r3',t:'#fff'},{c:'#FFAB00',l:'$dt-warning',t:'#132045'},{c:'#83E873',l:'Lime',t:'#132045'},{c:'#FFEC3F',l:'Yellow',t:'#132045'},{c:'#67768D',l:'$dt-neutral-n5',t:'#fff'},
 ];
 
 const spScale = [
-  {t:'space-1',v:'4px',u:'tight icon gap'},{t:'space-2',v:'8px',u:'inline label ↔ control'},{t:'space-3',v:'12px',u:'toolbar gap (mobile)'},
-  {t:'space-4',v:'16px',u:'component gap within section'},{t:'space-5',v:'20px',u:'grid gutter'},{t:'space-6',v:'24px',u:'card padding'},
-  {t:'space-7',v:'32px',u:'page margin (xl)'},{t:'space-8',v:'48px',u:'title ↔ content'},{t:'space-9',v:'56px',u:'product group gap'},{t:'space-10',v:'64px',u:'topbar section gap'},
+  {t:'$hp-basic-space',v:'4px',u:'base unit — nunca usar directamente'},
+  {t:'$hp-space-x-micro',v:'8px',u:'gap de iconos inline, badge padding'},
+  {t:'$hp-space-micro',v:'12px',u:'gap de toolbar (mobile), inner padding'},
+  {t:'$hp-space-x-small',v:'16px',u:'gap entre componentes en sección'},
+  {t:'$hp-space-small',v:'20px',u:'gutter de grilla'},
+  {t:'$hp-space-medium',v:'24px',u:'padding de card / modal ($modal-padding)'},
+  {t:'$hp-space-large',v:'28px',u:'gaps de sección interna'},
+  {t:'$hp-space-x-large',v:'32px',u:'padding horizontal de botón (button px)'},
 ];
 
 const icons = [
