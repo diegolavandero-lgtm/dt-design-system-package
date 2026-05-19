@@ -25,9 +25,9 @@
     "height": "28px",
     "borderRadius": "14px",
     "paddingX": "12px",
-    "bg": "rgba(255,255,255,0.12)",
-    "bgHover": "rgba(255,255,255,0.22)",
-    "ink": "#ffffff",
+    "bg": "#F5C518",
+    "bgHover": "#e6b800",
+    "ink": "#132045",
     "notes": "Displayed as pill button in the actions area. Opens contextual help panel or documentation link."
   },
   "products": [
