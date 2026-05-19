@@ -1,0 +1,84 @@
+{
+  "title": "Changelog",
+  "titleKey": "nav.changelog",
+  "description": "Auto-generated from git history. Updated on every push to main.",
+  "generated": "2026-05-19T17:08:43.074Z",
+  "days": [
+    {
+      "date": "2026-05-19",
+      "entries": [
+        {
+          "hash": "07ba907",
+          "type": "fix",
+          "section": "Iconography",
+          "message": "Fix icon-cell CSS: fill not stroke for Carbon icons"
+        },
+        {
+          "hash": "927c5e9",
+          "type": "fix",
+          "section": "Iconography",
+          "message": "Carbon icons in iconography section + fix bell alignment"
+        },
+        {
+          "hash": "7f6f293",
+          "type": "update",
+          "section": "Iconography",
+          "message": "Switch icon library to Carbon Design System (IBM) icons"
+        },
+        {
+          "hash": "881c4fb",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "Rebuild sidebar to match real design: white bg, blue icons, CSS hover expand"
+        },
+        {
+          "hash": "3c5e43e",
+          "type": "feat",
+          "section": "Topbar",
+          "message": "Add mobile & tablet variants to topbar JSON and renderer"
+        },
+        {
+          "hash": "d150694",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "Update sidebar section: 3 products × 3 states with real hp-sidebar dark theme"
+        },
+        {
+          "hash": "18c0aa8",
+          "type": "feat",
+          "section": "Topbar",
+          "message": "Add product logos: topbar variants, logo section grid, DT wordmark in header"
+        }
+      ]
+    },
+    {
+      "date": "2026-05-18",
+      "entries": [
+        {
+          "hash": "c3e4e9e",
+          "type": "update",
+          "section": "Inputs",
+          "message": "Rebuild inputs section with real hp-text-field structure"
+        },
+        {
+          "hash": "ea98b72",
+          "type": "feat",
+          "section": "Overview",
+          "message": "Add modular design system: index.html, renderers, and sections data"
+        },
+        {
+          "hash": "b4f2658",
+          "type": "update",
+          "section": "General",
+          "message": "Sincronization with current DT Honeypot repo 1.0"
+        },
+        {
+          "hash": "6993b59",
+          "type": "feat",
+          "section": "Overview",
+          "message": "Initial commit: DT Design System v1"
+        }
+      ]
+    }
+  ]
+}

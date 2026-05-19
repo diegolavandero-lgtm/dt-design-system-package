@@ -959,17 +959,36 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── CHANGELOG ── */
   changelog(data) {
-    return `
-      <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)" data-i18n="changelog.title">Changelog</h1>
-      <p class="sub" style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px" data-i18n="changelog.description">Versioned releases. Breaking changes flagged in red.</p>
-      <div class="card">
-        <div class="cl-filters">
-          <input type="search" id="cl-filter-search" placeholder="Buscar en el changelog…" autocomplete="off">
-          <select id="cl-filter-component"><option value="">Todos los componentes</option></select>
-          <select id="cl-filter-type"><option value="">Todos los tipos</option></select>
-        </div>
-        <div id="changelog-list"></div>
-      </div>`;
+    const TYPE_COLOR = { fix: '#C45000', feat: '#1A7F3C', update: '#0052CC' };
+    const TYPE_LABEL = { fix: 'Fix', feat: 'New', update: 'Update' };
+
+    const noData = !data || !data.days || data.days.length === 0;
+    const desc = (data && data.description) || 'Auto-generated from git history. Updated on every push to main.';
+
+    const body = noData
+      ? `<div class="card" style="padding:24px;color:var(--n5)">No entries yet.</div>`
+      : data.days.map(day => {
+          const d = new Date(day.date + 'T12:00:00Z');
+          const dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          const rows = day.entries.map(e => {
+            const color = TYPE_COLOR[e.type] || TYPE_COLOR.update;
+            const label = TYPE_LABEL[e.type] || 'Update';
+            return `<div style="display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid #F0F2F5">
+              <span style="font:600 11px/1 var(--font-sans);color:#fff;background:${color};padding:2px 8px;border-radius:4px;flex-shrink:0">${label}</span>
+              <span style="font:500 11px/1 var(--font-sans);color:#7B8796;flex-shrink:0;min-width:80px">${e.section}</span>
+              <span style="font:400 13px/1.4 var(--font-sans);color:var(--n7);flex:1">${e.message}</span>
+              <code style="font:400 11px/1 monospace;color:#A0ABBB;flex-shrink:0">${e.hash}</code>
+            </div>`;
+          }).join('');
+          return `<div style="margin-bottom:28px">
+            <div style="font:600 12px/1 var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.06em;padding-bottom:10px;border-bottom:2px solid #E9ECF2;margin-bottom:4px">${dateStr}</div>
+            ${rows}
+          </div>`;
+        }).join('');
+
+    return `<h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">Changelog</h1>
+      <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px">${desc}</p>
+      <div class="card" style="padding:24px 28px">${body}</div>`;
   },
 
 };

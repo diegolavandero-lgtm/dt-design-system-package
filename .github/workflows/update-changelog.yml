@@ -1,0 +1,30 @@
+name: Update Changelog
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  update-changelog:
+    # Skip if this push was itself the changelog auto-update
+    if: "!contains(github.event.head_commit.message, 'chore: auto-update changelog')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate changelog.json
+        run: node scripts/gen-changelog.js
+
+      - name: Commit if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto-update changelog"
+          file_pattern: sections/changelog.json
+          commit_user_name: github-actions[bot]
+          commit_user_email: github-actions[bot]@users.noreply.github.com
