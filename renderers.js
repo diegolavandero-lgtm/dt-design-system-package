@@ -41,7 +41,7 @@ function badgeHtml(label, type) {
 
 /* ── ICON PATHS (subset for sidebar/topbar previews) ── */
 const ICON_PATHS = {
-  'activity':   'M22 12 13.5 15.5 8.5 10.5 1 18M17 6 23 6 23 12',
+  'activity':   'M22 12h-4l-3 9L9 3l-3 9H2',
   'package':    'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z',
   'truck':      'M1 3h15v13H1zM16 8h4l3 3v5h-7V8zM5.5 21A2.5 2.5 0 1 0 5.5 16A2.5 2.5 0 0 0 5.5 21zM18.5 21A2.5 2.5 0 1 0 18.5 16A2.5 2.5 0 0 0 18.5 21z',
   'bell':       'M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
@@ -629,55 +629,63 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const t = data.tokens || {};
     const products = data.products || [];
 
-    function renderSidebarPreview(state, productColor) {
-      const extended = state.extended;
-      const width = extended ? '200px' : '52px';
-      const padding = extended ? '8px' : '8px 0';
+    const SB_STYLE = `<style>
+      .sbx{width:52px;overflow:hidden;transition:width .25s cubic-bezier(.4,0,.2,1);background:#fff;border-radius:0 0 24px 0;box-shadow:0 6px 12px rgba(0,0,0,.15);padding:8px 0;flex-shrink:0;cursor:default}
+      .sbx:hover{width:240px}
+      .sbx-row{display:flex;align-items:center;height:40px;cursor:pointer}
+      .sbx-row:hover .sbx-bg{background:rgba(75,130,250,.04)}
+      .sbx-row.sel .sbx-bg{background:rgba(75,130,250,.08)}
+      .sbx-bar{width:6px;height:40px;flex-shrink:0;background:transparent}
+      .sbx-row.sel .sbx-bar{background:#0052CC}
+      .sbx-bg{display:flex;align-items:center;height:40px;flex:1;transition:background .12s}
+      .sbx-ico{width:46px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+      .sbx-ico svg{display:block}
+      .sbx-row .sbx-ico svg{stroke:#4B82FA}
+      .sbx-row.sel .sbx-ico svg{stroke:#0052CC}
+      .sbx-lbl{font:400 13px/1 'DM Sans',sans-serif;color:#39414D;white-space:nowrap;opacity:0;transition:opacity .18s .06s;overflow:hidden;flex:1}
+      .sbx:hover .sbx-lbl{opacity:1}
+      .sbx-row.sel .sbx-lbl{font-weight:600;color:#0052CC}
+      .sbx-sep{height:1px;background:#E9ECF2;margin:4px 14px}
+      .sbx-static{width:240px;background:#fff;border-radius:0 0 24px 0;box-shadow:0 6px 12px rgba(0,0,0,.15);padding:8px 0;flex-shrink:0}
+      .sbx-static .sbx-lbl{opacity:1}
+    </style>`;
 
-      const items = (state.items || []).map(it => {
-        if (it.divider) {
-          return `<div style="height:1px;background:rgba(255,255,255,0.1);margin:4px ${extended ? '8px' : '6px'}"></div>`;
-        }
+    function buildItems(items) {
+      return (items || []).map(it => {
+        if (it.divider) return `<div class="sbx-sep"></div>`;
         const isSel = it.state === 'selected';
-        const isHov = it.state === 'hover';
         const iconPath = ICON_PATHS[it.icon] || ICON_PATHS['package'];
-        const bg = isSel ? 'rgba(255,255,255,0.12)' : isHov ? 'rgba(255,255,255,0.06)' : 'transparent';
-        const ink = isSel ? '#fff' : 'rgba(255,255,255,0.65)';
-        const borderLeft = isSel ? `3px solid ${productColor}` : '3px solid transparent';
-        const justify = extended ? '' : 'justify-content:center;';
-        const px = extended ? '12px' : '0';
-        const radius = extended ? '6px' : '0';
-        const label = extended
-          ? `<span style="font:${isSel ? '600' : '400'} 13px/1 var(--font-sans);color:${ink};white-space:nowrap">${escHtml(it.label)}</span>`
-          : '';
-
-        return `<div style="display:flex;align-items:center;gap:10px;height:40px;padding:0 ${px};border-radius:${radius};background:${bg};border-left:${borderLeft};cursor:pointer;margin-bottom:2px;${justify}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPath}"/></svg>
-          ${label}
+        return `<div class="sbx-row${isSel ? ' sel' : ''}">
+          <div class="sbx-bar"></div>
+          <div class="sbx-bg">
+            <div class="sbx-ico">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPath}"/></svg>
+            </div>
+            <span class="sbx-lbl">${escHtml(it.label)}</span>
+          </div>
         </div>`;
       }).join('');
-
-      return `<div style="width:${width};min-height:300px;background:#132045;border-radius:12px;padding:${padding};display:flex;flex-direction:column;overflow:hidden">
-        ${items}
-      </div>`;
     }
 
     const productSections = products.map(p => {
-      const stateColumns = (p.states || []).map(state => {
-        return `<div style="display:flex;flex-direction:column;gap:8px;align-items:center;flex-shrink:0">
-          <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.06em">${escHtml(state.label)}</div>
-          ${renderSidebarPreview(state, p.color)}
-        </div>`;
-      }).join('');
+      const interactiveItems = buildItems(p.items);
+      const settingsItems = buildItems(p.settingsItems || p.items);
 
       return `
-        <div style="margin-bottom:28px">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="margin-bottom:32px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
             <div style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
             <span style="font:700 14px var(--font-sans);color:var(--n7)">${escHtml(p.name)}</span>
           </div>
-          <div style="display:flex;gap:20px;align-items:flex-start;overflow-x:auto;padding-bottom:4px">
-            ${stateColumns}
+          <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Collapsed → hover to expand</div>
+              <div class="sbx">${interactiveItems}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Settings state</div>
+              <div class="sbx-static">${settingsItems}</div>
+            </div>
           </div>
         </div>`;
     }).join('');
@@ -687,6 +695,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
     return `
       ${sectionHeader(data)}
+      ${SB_STYLE}
       <div class="card" style="background:var(--n2)">
         ${productSections}
       </div>
