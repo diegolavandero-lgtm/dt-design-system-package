@@ -688,32 +688,48 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const tokenRows = Object.entries(t).filter(([k]) => k !== 'productColors').map(([k,v]) =>
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`).join('');
 
-    const products = t.productColors ? Object.entries(t.productColors).map(([name, hex]) => `
+    const productColors = t.productColors ? Object.entries(t.productColors).map(([name, hex]) => `
       <div style="display:flex;align-items:center;gap:8px">
         <div style="width:12px;height:12px;border-radius:50%;background:${hex}"></div>
         <span style="font:400 12px var(--font-sans);color:var(--n5)">${name} · ${hex}</span>
       </div>`).join('') : '';
 
+    const productBars = (data.products || []).map(prod => {
+      const logoEl = prod.logoDesktop
+        ? `<img src="${prod.logoDesktop}" height="18" alt="${escHtml(prod.name)} logo" style="display:block;flex-shrink:0">`
+        : `<span style="color:#fff;font:700 12px var(--font-sans)">${escHtml(prod.name)}</span>`;
+      const mobileLogoEl = prod.logoMobile
+        ? `<img src="${prod.logoMobile}" height="18" alt="${escHtml(prod.name)} logo" style="display:block;flex-shrink:0">`
+        : logoEl;
+      return `
+        <div>
+          <div style="font:500 11px var(--font-sans);color:var(--n5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">${escHtml(prod.name)}</div>
+          <div class="tbar" style="margin-bottom:6px">
+            ${logoEl}
+            <div class="acts">${icons}</div>
+            <div class="slot">ACME CO</div>
+          </div>
+          ${prod.logoMobile ? `<div class="tbar tbar--mobile">
+            ${mobileLogoEl}
+            <div class="acts">${icons}</div>
+            <div class="slot">AC</div>
+          </div>` : ''}
+        </div>`;
+    }).join('');
+
     return `
       ${sectionHeader(data)}
-      <div class="card" style="background:var(--n2);display:flex;flex-direction:column;gap:12px">
-        <div class="tbar">
-          <svg class="logo" height="18" viewBox="0 0 227 20" fill="none">
-            <path d="M152 15.7V0H153.9V15.7H152Z" fill="#F27B42"/>
-            <path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z" fill="#0052CC"/>
-            <path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/>
-            <path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/>
-            <path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/>
-          </svg>
+      <div class="card" style="background:var(--n2);display:flex;flex-direction:column;gap:20px">
+        ${productBars || `<div class="tbar">
           <div class="acts">${icons}</div>
           <div class="slot">ACME CO</div>
-        </div>
+        </div>`}
       </div>
       <div class="card" style="margin-top:10px;padding:14px">
         <div style="font:400 12px/1.8 var(--font-sans);color:var(--n5)">
-          <strong style="color:var(--n7)">Rules:</strong> background is always <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">#132045</code> · height 52px · company slot <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">border-radius: 25px 0 0 0</code> · icon gap desktop 28px / mobile 12px
+          <strong style="color:var(--n7)">Rules:</strong> background always <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">#132045</code> · height 52px · company slot <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">border-radius: 25px 0 0 0</code> · usar logo <strong>white</strong> sobre fondo oscuro
         </div>
-        ${products ? `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">${products}</div>` : ''}
+        ${productColors ? `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">${productColors}</div>` : ''}
       </div>
       <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Design tokens</h3>
       <div class="card">
@@ -776,53 +792,55 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── LOGOS ── */
   logos(data) {
-    const lightSvg = `<svg viewBox="0 0 227 20" fill="none">
-      <path d="M152 15.7V0H153.9V15.7H152Z" fill="#F27B42"/>
-      <path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z" fill="#0052CC"/>
-      <path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/>
-      <path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/>
-      <path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/>
-      <path d="M165.5 4.9H167.3V15.7H165.5V13.8C164.6 15.3 163.2 16 161.5 16C158.6 16 156.1 13.5 156.1 10.3C156.1 7.1 158.6 4.7 161.5 4.7C163.2 4.7 164.6 5.4 165.5 6.8V4.9ZM161.7 14.2C163.3 14.2 165.5 12.8 165.5 10.3C165.5 7.8 163.3 6.5 161.7 6.5C160.1 6.5 157.9 7.8 157.9 10.3C157.9 12.8 160.1 14.2 161.7 14.2Z" fill="#F27B42"/>
-    </svg>`;
+    const products = data.products || [];
 
-    const darkSvg = `<svg viewBox="0 0 227 20" fill="none">
-      <g fill="white">
-        <path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z"/>
-        <path d="M15.3 4.2H12.5V15.6H15.3V4.2Z"/>
-        <path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z"/>
-        <path d="M141.9 15.6V4.4H143.5V15.6H141.9Z"/>
-      </g>
-      <path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/>
-      <path d="M152 15.7V0H153.8V15.7H152Z" fill="#F27B42"/>
-      <path d="M165.1 4.9H166.9V15.7H165.1V13.8C164.2 15.3 162.9 16 161.2 16C158.3 16 155.9 13.5 155.9 10.3C155.9 7.1 158.3 4.7 161.2 4.7C162.9 4.7 164.2 5.4 165.1 6.8V4.9ZM161.4 14.2C163 14.2 165.1 12.8 165.1 10.3C165.1 7.8 163 6.5 161.4 6.5C159.8 6.5 157.8 7.8 157.8 10.3C157.8 12.8 159.8 14.2 161.4 14.2Z" fill="#F27B42"/>
-    </svg>`;
-
-    const iconSvg = `<svg viewBox="0 0 30 20" fill="none">
-      <path d="M6.9 0H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0 6.9 0ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z" fill="#0052CC"/>
-      <path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/>
-      <path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/>
-    </svg>`;
-
-    const cards = [
-      { name: 'DT Primary Light', bg: '#fff', svgContent: lightSvg, dark: false },
-      { name: 'DT Primary Dark', bg: '#132045', svgContent: darkSvg, dark: true },
-      { name: 'DT Icon Only', bg: '#fff', svgContent: iconSvg, dark: false },
-    ];
-
-    const logoCards = cards.map(c => `
-      <div class="logo-card ${c.dark ? 'dk' : ''}" style="background:${c.bg}">
-        <div class="lc">${c.svgContent}</div>
-        <div class="lf">
-          <div class="ll">${c.name}</div>
-          <button class="ld" onclick="copyToClipboard(this.closest('.logo-card').querySelector('svg').outerHTML, this)">↓ Copy SVG</button>
+    const wordmarkSection = data.dtWordmark ? `
+      <div style="margin-bottom:24px">
+        <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:8px">DispatchTrack Wordmark</div>
+        <div class="logo-grid">
+          <div class="logo-card dk" style="background:#132045">
+            <div class="lc"><img src="${data.dtWordmark}" height="20" alt="DispatchTrack wordmark" style="display:block"></div>
+            <div class="lf">
+              <div class="ll">White</div>
+              <a class="ld" href="${data.dtWordmark}" download>↓ Download</a>
+            </div>
+          </div>
         </div>
-      </div>`).join('');
+      </div>` : '';
+
+    const productSections = products.map(p => {
+      const l = p.logos || {};
+      const variants = [];
+      if (l.desktopColor) variants.push({ label: 'Desktop · Color', path: l.desktopColor, bg: '#fff', dark: false });
+      if (l.desktopWhite) variants.push({ label: 'Desktop · White', path: l.desktopWhite, bg: '#132045', dark: true });
+      if (l.mobileColor)  variants.push({ label: 'Mobile · Color',   path: l.mobileColor,  bg: '#fff', dark: false });
+      if (l.mobileWhite)  variants.push({ label: 'Mobile · White',   path: l.mobileWhite,  bg: '#132045', dark: true });
+
+      const cards = variants.map(v => `
+        <div class="logo-card ${v.dark ? 'dk' : ''}" style="background:${v.bg}">
+          <div class="lc"><img src="${v.path}" height="20" alt="${escHtml(p.name)} ${escHtml(v.label)}" style="display:block"></div>
+          <div class="lf">
+            <div class="ll">${escHtml(v.label)}</div>
+            <a class="ld" href="${v.path}" download>↓ Download</a>
+          </div>
+        </div>`).join('');
+
+      return `
+        <div style="margin-bottom:24px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
+            <span style="font:700 13px var(--font-sans);color:var(--n7)">${escHtml(p.name)}</span>
+          </div>
+          <div class="logo-grid">${cards}</div>
+        </div>`;
+    }).join('');
 
     return `
       ${sectionHeader(data)}
-      <div class="logo-grid">${logoCards}</div>
-      <div class="card" style="margin-top:12px;padding:12px 16px">
-        <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0">SVG only. Never scale below 18px height. Use the dark variant on Indigo (#132045) backgrounds.</p>
+      ${wordmarkSection}
+      ${productSections}
+      <div class="card" style="margin-top:4px;padding:12px 16px">
+        <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0">SVG only. Nunca escalar por debajo de 18px de alto. Usar variante <strong>white</strong> sobre fondos oscuros (#132045) y variante <strong>color</strong> sobre fondos claros.</p>
       </div>`;
   },
 

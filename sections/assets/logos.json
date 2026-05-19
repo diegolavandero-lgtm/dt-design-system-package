@@ -1,11 +1,66 @@
 {
   "title": "Logos",
   "titleKey": "nav.logos",
-  "description": "Logo assets — SVG only. Siempre usar la versión SVG. No escalar por debajo de 18px de altura.",
-  "keywords": ["logos", "brand", "svg", "assets"],
-  "logos": [
-    { "name": "DT Primary Light", "variant": "light", "bg": "#fff" },
-    { "name": "DT Primary Dark", "variant": "dark", "bg": "#132045" },
-    { "name": "DT Icon Only", "variant": "icon", "bg": "#fff" }
+  "description": "Product logo assets — SVG only. Usar la versión white en fondos oscuros (#132045), la versión color en fondos claros. Nunca escalar por debajo de 18px de altura.",
+  "keywords": ["logos", "brand", "svg", "assets", "lastmile", "plannerpro", "ondemand"],
+  "dtWordmark": "sections/assets/logos/dt-wordmark-white.svg",
+  "products": [
+    {
+      "id": "lastmile",
+      "name": "Last Mile",
+      "color": "#F27B42",
+      "logos": {
+        "desktopColor": "sections/assets/logos/lastmile-desktop-color.svg",
+        "desktopWhite": "sections/assets/logos/lastmile-desktop-white.svg",
+        "mobileColor": "sections/assets/logos/lastmile-mobile-color.svg",
+        "mobileWhite": "sections/assets/logos/lastmile-mobile-white.svg"
+      }
+    },
+    {
+      "id": "lastmile-backoffice",
+      "name": "Last Mile Backoffice",
+      "color": "#F27B42",
+      "logos": {
+        "desktopColor": "sections/assets/logos/lastmile-backoffice-desktop-color.svg"
+      }
+    },
+    {
+      "id": "plannerpro",
+      "name": "Planner Pro",
+      "color": "#47D09A",
+      "logos": {
+        "desktopColor": "sections/assets/logos/plannerpro-desktop-color.svg",
+        "desktopWhite": "sections/assets/logos/plannerpro-desktop-white.svg",
+        "mobileColor": "sections/assets/logos/plannerpro-mobile-color.svg",
+        "mobileWhite": "sections/assets/logos/plannerpro-mobile-white.svg"
+      }
+    },
+    {
+      "id": "ondemand",
+      "name": "On Demand",
+      "color": "#6B9AFF",
+      "logos": {
+        "desktopColor": "sections/assets/logos/ondemand-desktop-color.svg",
+        "desktopWhite": "sections/assets/logos/ondemand-desktop-white.svg",
+        "mobileColor": "sections/assets/logos/ondemand-mobile-color.svg",
+        "mobileWhite": "sections/assets/logos/ondemand-mobile-white.svg"
+      }
+    },
+    {
+      "id": "customer-portal",
+      "name": "Customer Portal",
+      "color": "#1F60ED",
+      "logos": {
+        "desktopWhite": "sections/assets/logos/customer-portal-desktop-white.svg"
+      }
+    },
+    {
+      "id": "soporte",
+      "name": "Soporte",
+      "color": "#F5A623",
+      "logos": {
+        "desktopWhite": "sections/assets/logos/soporte-desktop-white.svg"
+      }
+    }
   ]
 }

@@ -16,5 +16,49 @@
       "ondemand": "#6B9AFF"
     }
   },
-  "iconOrder": ["apps", "help", "messages", "alerts", "user"]
+  "iconOrder": ["apps", "help", "messages", "alerts", "user"],
+  "products": [
+    {
+      "id": "lastmile",
+      "name": "Last Mile",
+      "color": "#F27B42",
+      "logoDesktop": "sections/assets/logos/lastmile-desktop-white.svg",
+      "logoMobile": "sections/assets/logos/lastmile-mobile-white.svg"
+    },
+    {
+      "id": "plannerpro",
+      "name": "Planner Pro",
+      "color": "#47D09A",
+      "logoDesktop": "sections/assets/logos/plannerpro-desktop-white.svg",
+      "logoMobile": "sections/assets/logos/plannerpro-mobile-white.svg"
+    },
+    {
+      "id": "ondemand",
+      "name": "On Demand",
+      "color": "#6B9AFF",
+      "logoDesktop": "sections/assets/logos/ondemand-desktop-white.svg",
+      "logoMobile": "sections/assets/logos/ondemand-mobile-white.svg"
+    },
+    {
+      "id": "customer-portal",
+      "name": "Customer Portal",
+      "color": "#1F60ED",
+      "logoDesktop": "sections/assets/logos/customer-portal-desktop-white.svg",
+      "logoMobile": null
+    },
+    {
+      "id": "lastmile-backoffice",
+      "name": "Last Mile Backoffice",
+      "color": "#F27B42",
+      "logoDesktop": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
+      "logoMobile": null
+    },
+    {
+      "id": "soporte",
+      "name": "Soporte",
+      "color": "#F5A623",
+      "logoDesktop": "sections/assets/logos/soporte-desktop-white.svg",
+      "logoMobile": null
+    }
+  ]
 }
