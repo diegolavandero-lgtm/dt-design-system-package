@@ -327,17 +327,28 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── ICONOGRAPHY ── */
   iconography(data) {
-    const icons = (data.icons || []).map(([name, path]) => `
+    const lib = data.library || {};
+    const icons = (data.icons || []).map(([name, inner]) => `
       <div class="icon-cell">
-        <svg viewBox="0 0 24 24"><path d="${path}" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span class="ic-lbl">${name.toLowerCase()}</span>
+        <svg viewBox="0 0 32 32" fill="currentColor">${inner}</svg>
+        <span class="ic-lbl">${escHtml(name.toLowerCase())}</span>
       </div>`).join('');
 
     const order = (data.topbarOrder || []).map((n,i) =>
       `<span style="font:500 12px var(--font-sans);color:var(--n5)">${i+1} · ${n}</span>`).join('');
 
+    const libBadge = lib.name ? `
+      <div class="card" style="margin-bottom:14px;padding:12px 16px;display:flex;align-items:center;gap:12px">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="var(--b5)"><path d="M8,4V8H4V4Zm2-2H2v8h8Zm8,2V8H14V4Zm2-2H12v8h8Zm8,2V8H24V4Zm2-2H22v8h8ZM8,14v4H4V14Zm2-2H2v8h8Zm8,2v4H14V14Zm2-2H12v8h8Zm8,2v4H24V14Zm2-2H22v8h8ZM8,24v4H4V24Zm2-2H2v8h8Zm8,2v4H14V24Zm2-2H12v8h8Zm8,2v4H24V24Zm2-2H22v8h8Z"/></svg>
+        <div>
+          <div style="font:600 13px var(--font-sans);color:var(--n7)">${escHtml(lib.name)} <span style="font-weight:400;color:var(--n5)">by ${escHtml(lib.vendor)}</span></div>
+          <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:2px">${escHtml(lib.package)}@${escHtml(lib.version)} · ${escHtml(lib.viewBox)} · ${escHtml(lib.style)}-based · <a href="${escHtml(lib.cdnBase)}" target="_blank" style="color:var(--b5)">${escHtml(lib.cdnBase)}</a></div>
+        </div>
+      </div>` : '';
+
     return `
       ${sectionHeader(data)}
+      ${libBadge}
       <div class="card">
         <div class="icon-grid">${icons}</div>
       </div>
