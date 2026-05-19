@@ -727,7 +727,48 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         <span style="font:400 12px var(--font-sans);color:var(--n5)">${name} · ${hex}</span>
       </div>`).join('') : '';
 
+    const bpIcon = { desktop: '🖥', tablet: '⬜', mobile: '📱' };
+    const bpLabel = { desktop: 'Desktop', tablet: 'Tablet ≥768px', mobile: 'Mobile <768px' };
+
     const productBars = (data.products || []).map(prod => {
+      const variants = prod.variants || [];
+
+      if (variants.length) {
+        const variantRows = variants.map(v => {
+          const varIcons = v.icons.map(name => {
+            const p = iconPaths[name] || '';
+            const isAlert = name === 'alerts';
+            const wrap = isAlert ? `<div class="bell">` : '';
+            const wrapEnd = isAlert ? `</div>` : '';
+            return `${wrap}<svg class="tico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${p}"/></svg>${wrapEnd}`;
+          }).join('');
+
+          const logoEl = `<img src="${v.logo}" height="18" alt="${escHtml(prod.name)}" style="display:block;flex-shrink:0">`;
+          const slotEl = v.customerSlot.show
+            ? `<div class="slot">${escHtml(v.customerSlot.text || '')}</div>`
+            : '';
+
+          const maxW = v.breakpoint === 'desktop' ? '100%' : v.width;
+          const bp = v.breakpoint;
+
+          return `<div style="margin-bottom:6px">
+            <div style="font:500 9px var(--font-sans);color:var(--n4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">${escHtml(bpLabel[bp] || bp)}</div>
+            <div class="tbar${bp === 'mobile' ? ' tbar--mobile' : ''}" style="max-width:${maxW}">
+              ${logoEl}
+              <div class="acts">${varIcons}</div>
+              ${slotEl}
+            </div>
+          </div>`;
+        }).join('');
+
+        return `
+          <div>
+            <div style="font:500 11px var(--font-sans);color:var(--n5);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">${escHtml(prod.name)}</div>
+            ${variantRows}
+          </div>`;
+      }
+
+      // fallback: old structure without variants
       const logoEl = prod.logoDesktop
         ? `<img src="${prod.logoDesktop}" height="18" alt="${escHtml(prod.name)} logo" style="display:block;flex-shrink:0">`
         : `<span style="color:#fff;font:700 12px var(--font-sans)">${escHtml(prod.name)}</span>`;
@@ -762,6 +803,11 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         <div style="font:400 12px/1.8 var(--font-sans);color:var(--n5)">
           <strong style="color:var(--n7)">Rules:</strong> background always <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">#132045</code> · height 52px · company slot <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">border-radius: 25px 0 0 0</code> · usar logo <strong>white</strong> sobre fondo oscuro
         </div>
+        ${data.breakpoints ? `<div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
+          ${Object.entries(data.breakpoints).map(([bp, desc]) =>
+            `<div style="font:400 11px var(--font-sans);color:var(--n5)"><strong style="color:var(--n7);text-transform:capitalize">${bp}</strong> — ${escHtml(desc)}</div>`
+          ).join('')}
+        </div>` : ''}
         ${productColors ? `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">${productColors}</div>` : ''}
       </div>
       <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Design tokens</h3>
