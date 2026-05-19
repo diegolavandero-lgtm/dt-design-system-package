@@ -118,6 +118,66 @@ const renderers = {
 
   /* ── OVERVIEW ── */
   overview(data) {
+    const d = data.dashboard || {};
+
+    const stats = (d.stats || []).map(s => `
+      <div class="dash-stat">
+        <div class="ds-lbl">${escHtml(s.label)}</div>
+        <div class="ds-val">${escHtml(s.value)}</div>
+        <div class="ds-trend">${escHtml(s.trend)}</div>
+      </div>`).join('');
+
+    const warnIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--o7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+    const infoIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+    const a11yItems = (d.a11yWarnings || []).map(w => `
+      <a class="a11y-item" href="#${w.id}" onclick="navigate('${escHtml(w.id)}');return false;">
+        <div class="a11y-icon ${w.severity === 'warning' ? 'warn' : 'info'}">${w.severity === 'warning' ? warnIcon : infoIcon}</div>
+        <div class="a11y-body">
+          <div class="ab-comp">${escHtml(w.component)}</div>
+          <div class="ab-issue">${escHtml(w.issue)}</div>
+        </div>
+      </a>`).join('');
+
+    const warnCount = (d.a11yWarnings || []).filter(w => w.severity === 'warning').length;
+    const infoCount = (d.a11yWarnings || []).filter(w => w.severity === 'info').length;
+    const badgeParts = [];
+    if (warnCount) badgeParts.push(`<span class="badge bo">${warnCount} warning${warnCount > 1 ? 's' : ''}</span>`);
+    if (infoCount) badgeParts.push(`<span class="badge bb">${infoCount} info</span>`);
+
+    const dashboard = `
+      <div style="margin-bottom:28px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <h2 style="font:700 16px var(--font-sans);color:var(--n7);margin:0;display:flex;align-items:center;gap:8px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </h2>
+          <span style="font:400 11px var(--font-sans);color:var(--n5)">${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
+        </div>
+        <div class="dash-stats">${stats}</div>
+        <div class="dash-panels">
+          <div class="dash-feed">
+            <div class="dash-feed-hdr">
+              <span class="ttl">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Latest updates
+              </span>
+            </div>
+            <div id="dash-activity"><div style="padding:18px 16px;font:400 12px var(--font-sans);color:var(--n5)">Loading…</div></div>
+          </div>
+          <div class="dash-a11y">
+            <div class="dash-warn-hdr">
+              <span class="ttl">
+                ${warnIcon}
+                Accessibility
+              </span>
+              <div style="display:flex;gap:5px">${badgeParts.join('')}</div>
+            </div>
+            ${a11yItems || '<div style="padding:18px 16px;font:400 12px var(--font-sans);color:var(--n5)">No issues found.</div>'}
+          </div>
+        </div>
+      </div>`;
+
     const products = (data.products || []).map(p => `
       <div class="prod-card" style="border-top:3px solid ${p.hex}">
         <div style="font:700 13px var(--font-sans)">${p.name}</div>
@@ -132,6 +192,7 @@ const renderers = {
 
     return `
       ${sectionHeader(data)}
+      ${dashboard}
       <div class="card">
         <h3 style="margin:0 0 14px;font:700 14px var(--font-sans)">What's inside this repo</h3>
         <div class="prod-grid">${products}</div>
@@ -238,17 +299,53 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <div>
         <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">${f.family} ${f.token ? `— <code>${f.token}</code>` : ''}</div>
         <div style="font:700 32px/1.1 '${f.family}';letter-spacing:-.02em;color:var(--n7)">${f.specimen}</div>
-        <div style="font:400 16px/20px '${f.family}';color:var(--n7);margin-top:7px">${f.sample}</div>
+        ${f.sample ? `<div style="font:400 16px/20px '${f.family}';color:var(--n7);margin-top:7px">${f.sample}</div>` : ''}
         <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:7px">${f.note}</div>
       </div>`).join('');
 
+    function weightLabel(w) {
+      return w === 700 ? 'Bold' : w === 500 ? 'Medium' : 'Regular';
+    }
+
     const scaleRows = (data.scale || []).map(s => {
       const fontVal = s.font === 'Roboto Mono' ? `'Roboto Mono'` : `'DM Sans'`;
-      return `<tr>
-        <td>${s.name}</td>
-        <td style="font:${s.weight} ${s.size}px/${s.lineHeight}px ${fontVal};color:var(--n7)">${s.sample}</td>
-        <td>${s.size}px / ${s.lineHeight}px · ${s.weight === 700 ? 'Bold' : s.weight === 500 ? 'Medium' : 'Regular'}${s.font === 'Roboto Mono' ? ' · Roboto Mono' : ''}</td>
-      </tr>`;
+      const mob = s.mobile || {};
+      const mobSize = mob.size || s.size;
+      const mobLH   = mob.lineHeight || s.lineHeight;
+      const mobW    = mob.weight || s.weight;
+      const sameSize = mobSize === s.size && mobLH === s.lineHeight && mobW === s.weight;
+
+      const desktopPreview = `<div style="font:${s.weight} ${s.size}px/${s.lineHeight}px ${fontVal};color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.sample)}</div>`;
+      const mobilePreview  = `<div style="font:${mobW} ${mobSize}px/${mobLH}px ${fontVal};color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.sample)}</div>`;
+
+      const desktopSpec = `<span style="font:500 10px var(--font-mono);color:var(--n5)">${s.size}/${s.lineHeight}px · ${weightLabel(s.weight)}</span>`;
+      const mobileSpec  = sameSize
+        ? `<span style="font:500 10px var(--font-mono);color:var(--n45)">—</span>`
+        : `<span style="font:500 10px var(--font-mono);color:var(--n5)">${mobSize}/${mobLH}px · ${weightLabel(mobW)}</span>`;
+
+      return `
+        <tr style="border-bottom:1px solid var(--n3)">
+          <td style="padding:12px 14px;vertical-align:middle;width:110px">
+            <div style="font:700 11px var(--font-sans);color:var(--n7)">${escHtml(s.name)}</div>
+            <div style="font:400 10px var(--font-mono);color:var(--n45);margin-top:2px">${escHtml(s.mixin)}</div>
+          </td>
+          <td style="padding:12px 14px;vertical-align:middle;border-left:1px solid var(--n3)">
+            <div style="font:600 9px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);margin-bottom:5px;display:flex;align-items:center;gap:5px">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              Desktop
+            </div>
+            ${desktopPreview}
+            <div style="margin-top:3px">${desktopSpec}</div>
+          </td>
+          <td style="padding:12px 14px;vertical-align:middle;border-left:1px solid var(--n3)">
+            <div style="font:600 9px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);margin-bottom:5px;display:flex;align-items:center;gap:5px">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              Mobile
+            </div>
+            ${mobilePreview}
+            <div style="margin-top:3px">${mobileSpec}</div>
+          </td>
+        </tr>`;
     }).join('');
 
     return `
@@ -257,8 +354,27 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">${fonts}</div>
       </div>
       <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Type scale — <code>hp-typography__*</code></h3>
-      <div class="card">
-        <table class="ts-table">${scaleRows}</table>
+      <div class="card flush">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--n2);border-bottom:1px solid var(--n4)">
+              <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);width:110px">Style</th>
+              <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
+                <span style="display:flex;align-items:center;gap:5px">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  Desktop
+                </span>
+              </th>
+              <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
+                <span style="display:flex;align-items:center;gap:5px">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                  Mobile
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>${scaleRows}</tbody>
+        </table>
       </div>`;
   },
 

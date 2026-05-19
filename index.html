@@ -347,12 +347,40 @@ textarea.hp-text-field__input{resize:vertical;padding-top:0;align-self:auto;min-
 .no-results-ttl{font:700 16px var(--font-sans);color:var(--n7);margin-bottom:6px}
 .no-results-sub{font:400 13px var(--font-sans);color:var(--n5)}
 
+/* ── DASHBOARD ── */
+.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.dash-stat{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:18px 20px}
+.dash-stat .ds-lbl{font:500 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);margin-bottom:6px}
+.dash-stat .ds-val{font:700 32px/1 var(--font-sans);color:var(--n7)}
+.dash-stat .ds-trend{font:400 11px var(--font-sans);color:var(--n5);margin-top:5px}
+.dash-panels{display:grid;grid-template-columns:1fr 300px;gap:12px;margin-bottom:24px}
+.dash-feed,.dash-a11y{background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden}
+.dash-feed-hdr,.dash-warn-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--n3);background:#FAFBFD}
+.dash-feed-hdr .ttl,.dash-warn-hdr .ttl{font:700 12px var(--font-sans);color:var(--n7);display:flex;align-items:center;gap:7px}
+.dash-feed-item{display:flex;gap:10px;align-items:flex-start;padding:10px 16px;border-bottom:1px solid var(--n3)}
+.dash-feed-item:last-child{border-bottom:0}
+.dash-av{width:28px;height:28px;border-radius:999px;color:#fff;display:flex;align-items:center;justify-content:center;font:700 10px var(--font-sans);flex-shrink:0}
+.dash-feed-body{flex:1;min-width:0}
+.dash-feed-body .dfb-who{font:700 12px var(--font-sans);color:var(--n7)}
+.dash-feed-body .dfb-what{font:400 12px var(--font-sans);color:var(--n6);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-feed-body .dfb-when{font:400 10px var(--font-sans);color:var(--n45);margin-top:3px}
+.a11y-item{display:flex;gap:10px;align-items:flex-start;padding:10px 16px;border-bottom:1px solid var(--n3);cursor:pointer;text-decoration:none}
+.a11y-item:last-child{border-bottom:0}
+.a11y-item:hover{background:var(--n1)}
+.a11y-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.a11y-icon.warn{background:var(--o1)}
+.a11y-icon.info{background:var(--b1)}
+.a11y-body .ab-comp{font:700 11px var(--font-sans);color:var(--n7)}
+.a11y-body .ab-issue{font:400 11px var(--font-sans);color:var(--n6);margin-top:2px;line-height:1.4}
+
 /* ── RESPONSIVE ── */
 @media(max-width:940px){
   .layout{flex-direction:column}
   .sidebar{width:100%;position:static;max-height:none;border-right:0;border-bottom:1px solid var(--n3)}
   .main{padding:20px 18px 60px}
   .gh-search{display:none}
+  .dash-stats{grid-template-columns:1fr 1fr}
+  .dash-panels{grid-template-columns:1fr}
   .logo-grid{grid-template-columns:1fr 1fr}
   .prod-grid{grid-template-columns:1fr 1fr}
   .radii-grid{grid-template-columns:repeat(3,1fr)}
@@ -575,6 +603,7 @@ async function navigate(id) {
     const fn = renderers[route.renderer];
     if (!fn) throw new Error(`No renderer: ${route.renderer}`);
     view.innerHTML = fn(cache[id]);
+    if (id === 'overview') initOverviewDashboard();
     if (window.applyI18n) applyI18n();
   } catch(e) {
     view.innerHTML = `<div class="card"><p style="color:var(--r6)">Error loading section: ${e.message}</p></div>`;
@@ -752,6 +781,55 @@ document.addEventListener('click', e => {
   const inp = f.querySelector('.hp-text-field__input');
   if (inp && document.activeElement !== inp) inp.focus();
 });
+
+/* ================================================================
+   OVERVIEW DASHBOARD — activity feed from changelog.json
+================================================================ */
+const AVATAR_COLORS = ['#4B82FA','#00875A','#F27B42','#8777D9','#47D09A','#FF5630'];
+const TYPE_LABELS = { added:'Added', changed:'Changed', fixed:'Fixed', deprecated:'Deprecated', removed:'Removed', tokens:'Tokens' };
+const TYPE_CLS    = { added:'bg', changed:'bb', fixed:'bg', deprecated:'bo', removed:'br', tokens:'bt' };
+
+async function initOverviewDashboard() {
+  const el = document.getElementById('dash-activity');
+  if (!el) return;
+  try {
+    const res = await fetch('changelog.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const entries = (data.entries || []).slice(0, 6);
+    if (!entries.length) { el.innerHTML = '<div style="padding:18px 16px;font:400 12px var(--font-sans);color:var(--n5)">No updates yet.</div>'; return; }
+
+    const rows = [];
+    for (let ei = 0; ei < entries.length; ei++) {
+      const entry = entries[ei];
+      for (let ci = 0; ci < Math.min(entry.changes.length, 2); ci++) {
+        const change = entry.changes[ci];
+        const initials = entry.author.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+        const color = AVATAR_COLORS[ei % AVATAR_COLORS.length];
+        const d = new Date(entry.date);
+        const dateStr = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+        const typeCls = TYPE_CLS[change.type] || 'bn';
+        const typeLabel = TYPE_LABELS[change.type] || change.type;
+        const lang = (document.documentElement.lang || 'es') === 'en' ? 'en' : 'es';
+        const desc = change.description ? (change.description[lang] || change.description.en || '') : '';
+        rows.push(`
+          <div class="dash-feed-item">
+            <div class="dash-av" style="background:${color}">${initials}</div>
+            <div class="dash-feed-body">
+              <div class="dfb-who">${escHtml(entry.author)} <span style="font-weight:400;color:var(--n5)">· v${escHtml(entry.version)}</span>
+                <span class="badge ${typeCls}" style="margin-left:5px;font-size:9px">${typeLabel}</span>
+              </div>
+              <div class="dfb-what"><strong>${escHtml(change.component)}</strong> — ${escHtml(desc)}</div>
+              <div class="dfb-when">${dateStr}</div>
+            </div>
+          </div>`);
+      }
+    }
+    el.innerHTML = rows.join('');
+  } catch(e) {
+    el.innerHTML = `<div style="padding:18px 16px;font:400 12px var(--font-sans);color:var(--r6)">Could not load activity.</div>`;
+  }
+}
 
 /* ================================================================
    INIT

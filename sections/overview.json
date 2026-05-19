@@ -3,6 +3,39 @@
   "description": "The master design system for DispatchTrack — the logistics platform used globally and in LATAM for last-mile delivery, route-planning, and on-demand commerce dispatch.",
   "keywords": ["readme", "overview", "dispatchtrack", "getting started", "install"],
   "version": "v2.4",
+  "dashboard": {
+    "stats": [
+      { "label": "Teams using DS", "value": "14", "trend": "+2 this quarter" },
+      { "label": "Components", "value": "12", "trend": "across 6 categories" },
+      { "label": "Design tokens", "value": "48", "trend": "CSS + SCSS variables" }
+    ],
+    "a11yWarnings": [
+      {
+        "component": "Inputs & forms",
+        "id": "inputs",
+        "severity": "warning",
+        "issue": "Error messages lack aria-describedby linkage to their input — screen readers may miss validation feedback."
+      },
+      {
+        "component": "Modal",
+        "id": "modal",
+        "severity": "warning",
+        "issue": "Focus trap behavior is not specified. Implementations may break keyboard-only navigation."
+      },
+      {
+        "component": "Selection controls",
+        "id": "selection",
+        "severity": "warning",
+        "issue": "Custom checkbox and radio elements require explicit aria-checked for screen readers."
+      },
+      {
+        "component": "Badges & tags",
+        "id": "badges",
+        "severity": "info",
+        "issue": "Status colors are used without text labels — color-blind users may lose meaning."
+      }
+    ]
+  },
   "install": {
     "caption": "Install — agregar en el root de tu stylesheet",
     "npm": "@beetrack/hp-tokens-style",
