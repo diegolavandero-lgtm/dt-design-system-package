@@ -17,6 +17,19 @@
     }
   },
   "iconOrder": ["apps", "help", "messages", "alerts", "user"],
+  "helpButton": {
+    "label": "Help",
+    "icon": "help-circle",
+    "variant": "ghost",
+    "position": "actions-area",
+    "height": "28px",
+    "borderRadius": "14px",
+    "paddingX": "12px",
+    "bg": "rgba(255,255,255,0.12)",
+    "bgHover": "rgba(255,255,255,0.22)",
+    "ink": "#ffffff",
+    "notes": "Displayed as pill button in the actions area. Opens contextual help panel or documentation link."
+  },
   "products": [
     {
       "id": "lastmile",

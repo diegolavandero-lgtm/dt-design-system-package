@@ -677,6 +677,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       user:     'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 7A4 4 0 1 0 12 15A4 4 0 0 0 12 7Z',
     };
 
+    const hb = data.helpButton;
+    const helpBtn = hb ? `<button style="display:inline-flex;align-items:center;gap:5px;height:${hb.height};padding:0 ${hb.paddingX};border-radius:${hb.borderRadius};background:${hb.bg};border:none;color:${hb.ink};font:500 12px var(--font-sans);cursor:pointer;flex-shrink:0" onmouseover="this.style.background='${hb.bgHover}'" onmouseout="this.style.background='${hb.bg}'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="${iconPaths.help}"/></svg>${escHtml(hb.label)}</button>` : '';
+
     const icons = (data.iconOrder || []).map((name, i) => {
       const p = iconPaths[name] || '';
       const isAlert = name === 'alerts';
@@ -706,12 +709,12 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           <div style="font:500 11px var(--font-sans);color:var(--n5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">${escHtml(prod.name)}</div>
           <div class="tbar" style="margin-bottom:6px">
             ${logoEl}
-            <div class="acts">${icons}</div>
+            <div class="acts">${helpBtn}${icons}</div>
             <div class="slot">ACME CO</div>
           </div>
           ${prod.logoMobile ? `<div class="tbar tbar--mobile">
             ${mobileLogoEl}
-            <div class="acts">${icons}</div>
+            <div class="acts">${helpBtn}${icons}</div>
             <div class="slot">AC</div>
           </div>` : ''}
         </div>`;
