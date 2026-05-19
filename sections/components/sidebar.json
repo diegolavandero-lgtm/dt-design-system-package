@@ -1,32 +1,169 @@
 {
   "title": "Sidebar",
   "titleKey": "nav.sidebar",
-  "description": "Collapsed 52px ($hp-sidebar-width-closed) / expanded 224px ($hp-sidebar-width). Item height 40px. Ink: $dt-primary-main (#4B82FA). Selected: $dt-primary-8 bg + 3px $dt-primary-dark border. border-radius: 30px. Source: styles/packages/sidebar/src/",
-  "keywords": ["sidebar", "navigation", "left", "menu", "collapsed", "expanded"],
+  "description": "Collapsed 52px ($hp-sidebar-width-closed) / expanded 224px ($hp-sidebar-width). Item height 40px. Dark bg #132045. Selected item: rgba(255,255,255,0.12) bg + 3px product-color left border. Source: styles/packages/sidebar/src/",
+  "keywords": ["sidebar", "navigation", "left", "menu", "collapsed", "expanded", "settings"],
   "tokens": {
     "width": "224px",
     "widthClosed": "52px",
-    "borderRadius": "30px",
+    "bg": "#132045",
     "itemHeight": "40px",
-    "ink": "#4B82FA",
-    "inkHover": "#0052CC",
-    "itemHoverBg": "#EDF5FF",
-    "itemSelectedBg": "rgba(34,46,63,0.4)",
-    "itemSelectedBorder": "#0052CC",
-    "surfaceBg": "#fff"
+    "inkDefault": "rgba(255,255,255,0.65)",
+    "inkSelected": "#ffffff",
+    "itemSelectedBg": "rgba(255,255,255,0.12)",
+    "itemHoverBg": "rgba(255,255,255,0.06)",
+    "separatorColor": "rgba(255,255,255,0.1)"
   },
-  "preview": {
-    "header": { "brand": "DT", "productName": "last", "productAccent": "mile", "accentColor": "#F27B42" },
-    "items": [
-      { "label": "Actividad", "state": "default", "icon": "activity" },
-      { "label": "Rutas", "state": "default", "icon": "route" },
-      { "label": "Órdenes", "state": "selected", "icon": "package" },
-      { "label": "Flota", "state": "hover", "icon": "truck" },
-      { "label": "Estadísticas", "state": "default", "icon": "chart-bar" },
-      { "label": "Alertas", "state": "default", "icon": "bell" },
-      { "label": "Clientes", "state": "default", "icon": "user" },
-      { "divider": true },
-      { "label": "Ajustes", "state": "default", "icon": "settings" }
-    ]
-  }
+  "products": [
+    {
+      "id": "lastmile",
+      "name": "Last Mile",
+      "color": "#F27B42",
+      "states": [
+        {
+          "id": "collapsed",
+          "label": "Collapsed",
+          "extended": false,
+          "items": [
+            { "icon": "route",     "label": "Rutas",      "state": "selected" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "icon": "bell",      "label": "Alertas",    "state": "default" },
+            { "icon": "user",      "label": "Usuarios",   "state": "default" },
+            { "icon": "package",   "label": "Órdenes",    "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "default" }
+          ]
+        },
+        {
+          "id": "expanded",
+          "label": "Expanded",
+          "extended": true,
+          "items": [
+            { "icon": "route",     "label": "Rutas",      "state": "selected" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "icon": "bell",      "label": "Alertas",    "state": "default" },
+            { "icon": "user",      "label": "Usuarios",   "state": "default" },
+            { "icon": "package",   "label": "Órdenes",    "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "default" }
+          ]
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "extended": true,
+          "items": [
+            { "icon": "route",     "label": "Rutas",      "state": "default" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "icon": "bell",      "label": "Alertas",    "state": "default" },
+            { "icon": "user",      "label": "Usuarios",   "state": "default" },
+            { "icon": "package",   "label": "Órdenes",    "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "selected" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plannerpro",
+      "name": "Planner Pro",
+      "color": "#47D09A",
+      "states": [
+        {
+          "id": "collapsed",
+          "label": "Collapsed",
+          "extended": false,
+          "items": [
+            { "icon": "route",     "label": "Rutas",      "state": "selected" },
+            { "icon": "package",   "label": "Órdenes",    "state": "default" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "icon": "grid",      "label": "Recursos",   "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "default" }
+          ]
+        },
+        {
+          "id": "expanded",
+          "label": "Expanded",
+          "extended": true,
+          "items": [
+            { "icon": "route",     "label": "Rutas",      "state": "selected" },
+            { "icon": "package",   "label": "Órdenes",    "state": "default" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "icon": "grid",      "label": "Recursos",   "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "default" }
+          ]
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "extended": true,
+          "items": [
+            { "icon": "route",     "label": "Rutas",      "state": "default" },
+            { "icon": "package",   "label": "Órdenes",    "state": "default" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "icon": "grid",      "label": "Recursos",   "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "selected" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ondemand",
+      "name": "On Demand",
+      "color": "#6B9AFF",
+      "states": [
+        {
+          "id": "collapsed",
+          "label": "Collapsed",
+          "extended": false,
+          "items": [
+            { "icon": "grid",      "label": "Dashboard",  "state": "selected" },
+            { "icon": "package",   "label": "Pedidos",    "state": "default" },
+            { "icon": "route",     "label": "Rutas",      "state": "default" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "default" }
+          ]
+        },
+        {
+          "id": "expanded",
+          "label": "Expanded",
+          "extended": true,
+          "items": [
+            { "icon": "grid",      "label": "Dashboard",  "state": "selected" },
+            { "icon": "package",   "label": "Pedidos",    "state": "default" },
+            { "icon": "route",     "label": "Rutas",      "state": "default" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "default" }
+          ]
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "extended": true,
+          "items": [
+            { "icon": "grid",      "label": "Dashboard",  "state": "default" },
+            { "icon": "package",   "label": "Pedidos",    "state": "default" },
+            { "icon": "route",     "label": "Rutas",      "state": "default" },
+            { "icon": "truck",     "label": "Flota",      "state": "default" },
+            { "icon": "chart-bar", "label": "Analítica",  "state": "default" },
+            { "divider": true },
+            { "icon": "settings",  "label": "Ajustes",    "state": "selected" }
+          ]
+        }
+      ]
+    }
+  ]
 }

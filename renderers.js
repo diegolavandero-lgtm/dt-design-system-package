@@ -626,36 +626,69 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── SIDEBAR ── */
   sidebar(data) {
-    const p = data.preview || {};
-    const hdr = p.header || {};
-    const items = (p.items || []).map(it => {
-      if (it.divider) return `<div class="div"></div>`;
-      const cls = it.state === 'selected' ? 'it sel' : it.state === 'hover' ? 'it hov' : 'it';
-      const iconPath = ICON_PATHS[it.icon] || ICON_PATHS['package'];
-      return `<div class="${cls}">
-        <svg viewBox="0 0 24 24"><path d="${iconPath}"/></svg>
-        ${escHtml(it.label)}
+    const t = data.tokens || {};
+    const products = data.products || [];
+
+    function renderSidebarPreview(state, productColor) {
+      const extended = state.extended;
+      const width = extended ? '200px' : '52px';
+      const padding = extended ? '8px' : '8px 0';
+
+      const items = (state.items || []).map(it => {
+        if (it.divider) {
+          return `<div style="height:1px;background:rgba(255,255,255,0.1);margin:4px ${extended ? '8px' : '6px'}"></div>`;
+        }
+        const isSel = it.state === 'selected';
+        const isHov = it.state === 'hover';
+        const iconPath = ICON_PATHS[it.icon] || ICON_PATHS['package'];
+        const bg = isSel ? 'rgba(255,255,255,0.12)' : isHov ? 'rgba(255,255,255,0.06)' : 'transparent';
+        const ink = isSel ? '#fff' : 'rgba(255,255,255,0.65)';
+        const borderLeft = isSel ? `3px solid ${productColor}` : '3px solid transparent';
+        const justify = extended ? '' : 'justify-content:center;';
+        const px = extended ? '12px' : '0';
+        const radius = extended ? '6px' : '0';
+        const label = extended
+          ? `<span style="font:${isSel ? '600' : '400'} 13px/1 var(--font-sans);color:${ink};white-space:nowrap">${escHtml(it.label)}</span>`
+          : '';
+
+        return `<div style="display:flex;align-items:center;gap:10px;height:40px;padding:0 ${px};border-radius:${radius};background:${bg};border-left:${borderLeft};cursor:pointer;margin-bottom:2px;${justify}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${iconPath}"/></svg>
+          ${label}
+        </div>`;
+      }).join('');
+
+      return `<div style="width:${width};min-height:300px;background:#132045;border-radius:12px;padding:${padding};display:flex;flex-direction:column;overflow:hidden">
+        ${items}
       </div>`;
+    }
+
+    const productSections = products.map(p => {
+      const stateColumns = (p.states || []).map(state => {
+        return `<div style="display:flex;flex-direction:column;gap:8px;align-items:center;flex-shrink:0">
+          <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.06em">${escHtml(state.label)}</div>
+          ${renderSidebarPreview(state, p.color)}
+        </div>`;
+      }).join('');
+
+      return `
+        <div style="margin-bottom:28px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
+            <span style="font:700 14px var(--font-sans);color:var(--n7)">${escHtml(p.name)}</span>
+          </div>
+          <div style="display:flex;gap:20px;align-items:flex-start;overflow-x:auto;padding-bottom:4px">
+            ${stateColumns}
+          </div>
+        </div>`;
     }).join('');
 
-    const t = data.tokens || {};
     const tokenRows = Object.entries(t).map(([k,v]) =>
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`).join('');
 
     return `
       ${sectionHeader(data)}
       <div class="card" style="background:var(--n2)">
-        <div style="display:flex;gap:14px;align-items:flex-start">
-          <div class="sbp">
-            <div class="top">${escHtml(hdr.brand || 'DT')}<span>${escHtml(hdr.productName || 'last')}<b>${escHtml(hdr.productAccent || 'mile')}</b></span></div>
-            ${items}
-          </div>
-          <div style="font:400 12px/1.8 var(--font-sans);color:var(--n5);padding:6px">
-            <div><b style="color:var(--n7)">Default</b> — white bg, B7 (#0052CC) icon + label.</div>
-            <div style="margin-top:8px"><b style="color:var(--n7)">Hover</b> — B1 (#EDF5FF) bg, icons/label stay B7.</div>
-            <div style="margin-top:8px"><b style="color:var(--n7)">Selected</b> — B1 bg, bold label, 3px B5 left marker.</div>
-          </div>
-        </div>
+        ${productSections}
       </div>
       <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Design tokens</h3>
       <div class="card">
