@@ -2,7 +2,7 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T15:11:56.775Z",
+  "generated": "2026-05-20T15:32:00.966Z",
   "days": [
     {
       "date": "2026-05-20",
@@ -34,6 +34,13 @@
           "section": "Changelog",
           "message": "Fix changelog: refresh with Cristina's commits + grant workflow write permission",
           "author": "Diego"
+        },
+        {
+          "hash": "367cd17",
+          "type": "feat",
+          "section": "Buttons",
+          "message": "test: add prueba yellow button variant",
+          "author": "Carlos"
         },
         {
           "hash": "be444c3",
