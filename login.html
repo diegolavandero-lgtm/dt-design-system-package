@@ -11,27 +11,36 @@
   --indigo:#132045;
   --b5:#4B82FA;--b6:#1F60ED;--b7:#0052CC;
   --n1:#F5F6FA;--n2:#F0F2F5;--n3:#E1E6ED;--n5:#67768D;--n7:#39414D;
-  --r6:#DE350B;
+  --g6:#00875A;--r6:#DE350B;
   --font:'DM Sans',system-ui,sans-serif;
 }
 html,body{height:100%;background:var(--n2);font-family:var(--font);color:var(--n7)}
 
-/* ── layout ── */
 .page{min-height:100vh;display:flex;flex-direction:column}
 .top{height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 24px;flex-shrink:0}
 .center{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px}
 
 /* ── card ── */
-.card{background:#fff;border:1px solid var(--n3);border-radius:12px;width:100%;max-width:400px;padding:40px 36px;box-shadow:0 4px 24px rgba(19,32,69,.07)}
+.card{background:#fff;border:1px solid var(--n3);border-radius:12px;width:100%;max-width:400px;padding:36px 36px 32px;box-shadow:0 4px 24px rgba(19,32,69,.07)}
 
-.card-brand{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:32px}
+.card-brand{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:28px}
 .card-brand .ds-label{font:700 11px/1 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--n5)}
 
-.card h1{font:700 22px/1.2 var(--font);color:var(--n7);text-align:center;margin-bottom:6px}
-.card .sub{font:400 13px/1.5 var(--font);color:var(--n5);text-align:center;margin-bottom:28px}
+/* ── tabs ── */
+.auth-tabs{display:flex;border:1.5px solid var(--n3);border-radius:8px;padding:3px;gap:3px;margin-bottom:24px}
+.auth-tab{flex:1;height:32px;border:none;border-radius:5px;font:600 13px var(--font);cursor:pointer;background:transparent;color:var(--n5);transition:all .15s}
+.auth-tab.active{background:var(--indigo);color:#fff}
+.auth-tab:not(.active):hover{background:var(--n1);color:var(--n7)}
+
+/* ── panels ── */
+.panel{display:none}
+.panel.active{display:block}
+
+.panel-title{font:700 20px/1.2 var(--font);color:var(--n7);text-align:center;margin-bottom:4px}
+.panel-sub{font:400 13px/1.5 var(--font);color:var(--n5);text-align:center;margin-bottom:22px}
 
 /* ── form ── */
-.field{margin-bottom:16px}
+.field{margin-bottom:14px}
 .field label{display:block;font:500 12px/1 var(--font);color:var(--n7);margin-bottom:6px}
 .field input{
   width:100%;height:40px;padding:0 12px;
@@ -41,7 +50,11 @@ html,body{height:100%;background:var(--n2);font-family:var(--font);color:var(--n
   transition:border-color .15s;
 }
 .field input:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.15)}
+.field input.invalid{border-color:var(--r6)}
 .field input::placeholder{color:#A0ABBB}
+
+.domain-hint{font:400 11px var(--font);color:var(--n5);margin-top:4px}
+.domain-hint.bad{color:var(--r6)}
 
 .btn{
   width:100%;height:40px;
@@ -49,29 +62,25 @@ html,body{height:100%;background:var(--n2);font-family:var(--font);color:var(--n
   border:none;border-radius:6px;
   font:600 14px var(--font);cursor:pointer;
   transition:background .15s;
-  margin-top:8px;
+  margin-top:6px;
   display:flex;align-items:center;justify-content:center;gap:8px;
 }
 .btn:hover{background:var(--b7)}
 .btn:disabled{opacity:.55;cursor:default}
 
-/* ── error / status ── */
-.msg{
-  font:400 13px/1.4 var(--font);
-  border-radius:6px;padding:10px 14px;
-  margin-bottom:16px;display:none;
-}
-.msg.error{background:#FFEBE6;color:var(--r6);display:block}
-.msg.info {background:#EDF5FF;color:var(--b7);display:block}
+/* ── messages ── */
+.msg{font:400 13px/1.4 var(--font);border-radius:6px;padding:10px 14px;margin-bottom:14px;display:none}
+.msg.error  {background:#FFEBE6;color:var(--r6);display:block}
+.msg.info   {background:#EDF5FF;color:var(--b7);display:block}
+.msg.success{background:#E3FCEF;color:var(--g6);display:block;text-align:center}
+
+/* ── success state ── */
+.success-state{display:none;flex-direction:column;align-items:center;gap:12px;padding:8px 0}
+.success-state.show{display:flex}
+.success-icon{width:52px;height:52px;border-radius:50%;background:#E3FCEF;display:flex;align-items:center;justify-content:center}
 
 /* ── spinner ── */
-.spin{
-  width:16px;height:16px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.3);
-  border-top-color:#fff;
-  animation:spin .6s linear infinite;
-  display:none;
-}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .6s linear infinite;display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .btn.loading .spin{display:block}
 .btn.loading .btn-txt{display:none}
@@ -80,13 +89,11 @@ html,body{height:100%;background:var(--n2);font-family:var(--font);color:var(--n
 <body>
 <div class="page">
 
-  <!-- topbar -->
   <div class="top">
     <img src="sections/assets/logos/dt-wordmark-white.svg" height="18" alt="DispatchTrack" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
     <span style="display:none;font:700 15px/1 'DM Sans',sans-serif;color:#fff;letter-spacing:-.01em">DispatchTrack</span>
   </div>
 
-  <!-- centered card -->
   <div class="center">
     <div class="card">
 
@@ -99,25 +106,80 @@ html,body{height:100%;background:var(--n2);font-family:var(--font);color:var(--n
         <span class="ds-label">Design System</span>
       </div>
 
-      <h1>Sign in</h1>
-      <p class="sub">Internal access only — DispatchTrack team</p>
+      <!-- tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-signin" type="button">Sign in</button>
+        <button class="auth-tab" id="tab-register" type="button">Create account</button>
+      </div>
 
-      <div id="msg" class="msg"></div>
+      <!-- ── SIGN IN PANEL ── -->
+      <div class="panel active" id="panel-signin">
+        <p class="panel-title">Welcome back</p>
+        <p class="panel-sub">Internal access — DispatchTrack team</p>
 
-      <form id="login-form" novalidate>
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="you@dispatchtrack.com" autocomplete="email" required>
+        <div id="msg-signin" class="msg"></div>
+
+        <form id="form-signin" novalidate>
+          <div class="field">
+            <label for="si-email">Email</label>
+            <input id="si-email" type="email" placeholder="you@dispatchtrack.com" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="si-password">Password</label>
+            <input id="si-password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn" id="btn-signin">
+            <span class="btn-txt">Sign in</span>
+            <span class="spin"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- ── REGISTER PANEL ── -->
+      <div class="panel" id="panel-register">
+
+        <!-- success state (shown after sign-up) -->
+        <div class="success-state" id="register-success">
+          <div class="success-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p style="font:700 16px var(--font);color:var(--n7);text-align:center">Check your inbox</p>
+          <p style="font:400 13px/1.5 var(--font);color:var(--n5);text-align:center">We sent a confirmation link to<br><strong id="confirm-email" style="color:var(--n7)"></strong></p>
+          <p style="font:400 12px var(--font);color:var(--n5);text-align:center;margin-top:4px">Click the link to activate your account, then sign in.</p>
+          <button type="button" class="btn" style="margin-top:8px" onclick="switchTab('signin')">
+            <span class="btn-txt">Back to sign in</span>
+          </button>
         </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+
+        <!-- register form -->
+        <div id="register-form-wrap">
+          <p class="panel-title">Create account</p>
+          <p class="panel-sub">Only <strong>@dispatchtrack.com</strong> emails allowed</p>
+
+          <div id="msg-register" class="msg"></div>
+
+          <form id="form-register" novalidate>
+            <div class="field">
+              <label for="reg-email">Work email</label>
+              <input id="reg-email" type="email" placeholder="you@dispatchtrack.com" autocomplete="email" required>
+              <div class="domain-hint" id="email-hint"></div>
+            </div>
+            <div class="field">
+              <label for="reg-password">Password</label>
+              <input id="reg-password" type="password" placeholder="Min. 8 characters" autocomplete="new-password" required minlength="8">
+            </div>
+            <div class="field">
+              <label for="reg-confirm">Confirm password</label>
+              <input id="reg-confirm" type="password" placeholder="Repeat password" autocomplete="new-password" required>
+            </div>
+            <button type="submit" class="btn" id="btn-register">
+              <span class="btn-txt">Create account</span>
+              <span class="spin"></span>
+            </button>
+          </form>
         </div>
-        <button type="submit" class="btn" id="submit-btn">
-          <span class="btn-txt">Sign in</span>
-          <span class="spin"></span>
-        </button>
-      </form>
+
+      </div>
 
     </div>
   </div>
@@ -128,51 +190,115 @@ html,body{height:100%;background:var(--n2);font-family:var(--font);color:var(--n
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (async () => {
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const ALLOWED_DOMAIN = 'dispatchtrack.com';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
   // Already logged in → go straight to the app
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await sb.auth.getSession();
   if (session) { location.replace('index.html'); return; }
 
-  const form   = document.getElementById('login-form');
-  const btn    = document.getElementById('submit-btn');
-  const msgEl  = document.getElementById('msg');
+  /* ── tab switching ── */
+  window.switchTab = function(tab) {
+    document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+    document.getElementById('panel-signin').classList.toggle('active', tab === 'signin');
+    document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+    clearMsg('signin'); clearMsg('register');
+  };
+  document.getElementById('tab-signin').addEventListener('click', () => switchTab('signin'));
+  document.getElementById('tab-register').addEventListener('click', () => switchTab('register'));
 
-  function showMsg(text, type) {
-    msgEl.textContent = text;
-    msgEl.className   = 'msg ' + type;
+  /* ── message helpers ── */
+  function showMsg(panel, text, type) {
+    const el = document.getElementById('msg-' + panel);
+    el.textContent = text;
+    el.className = 'msg ' + type;
   }
-  function clearMsg() {
-    msgEl.className = 'msg';
-    msgEl.textContent = '';
+  function clearMsg(panel) {
+    const el = document.getElementById('msg-' + panel);
+    el.className = 'msg'; el.textContent = '';
   }
 
-  form.addEventListener('submit', async (e) => {
+  function setLoading(btn, on) {
+    btn.classList.toggle('loading', on);
+    btn.disabled = on;
+  }
+
+  /* ── sign in ── */
+  document.getElementById('form-signin').addEventListener('submit', async (e) => {
     e.preventDefault();
-    clearMsg();
+    clearMsg('signin');
+    const email    = document.getElementById('si-email').value.trim();
+    const password = document.getElementById('si-password').value;
+    if (!email || !password) { showMsg('signin', 'Please fill in all fields.', 'error'); return; }
 
-    const email    = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
+    const btn = document.getElementById('btn-signin');
+    setLoading(btn, true);
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) { showMsg('signin', error.message, 'error'); setLoading(btn, false); return; }
+    showMsg('signin', 'Signing you in…', 'info');
+    location.replace('index.html');
+  });
 
-    if (!email || !password) {
-      showMsg('Please enter your email and password.', 'error');
+  /* ── register: live email domain hint ── */
+  document.getElementById('reg-email').addEventListener('input', function() {
+    const hint = document.getElementById('email-hint');
+    const val  = this.value.trim();
+    if (!val) { hint.textContent = ''; hint.className = 'domain-hint'; return; }
+    if (val.endsWith('@' + ALLOWED_DOMAIN) || val.includes('@' + ALLOWED_DOMAIN)) {
+      hint.textContent = '✓ Valid DispatchTrack email';
+      hint.className = 'domain-hint';
+      hint.style.color = '#00875A';
+      this.classList.remove('invalid');
+    } else if (val.includes('@')) {
+      hint.textContent = '✗ Only @' + ALLOWED_DOMAIN + ' emails are allowed';
+      hint.className = 'domain-hint bad';
+      hint.style.color = '';
+      this.classList.add('invalid');
+    } else {
+      hint.textContent = '';
+      hint.className = 'domain-hint';
+    }
+  });
+
+  /* ── register: submit ── */
+  document.getElementById('form-register').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg('register');
+
+    const email    = document.getElementById('reg-email').value.trim().toLowerCase();
+    const password = document.getElementById('reg-password').value;
+    const confirm  = document.getElementById('reg-confirm').value;
+
+    // Domain check
+    if (!email.endsWith('@' + ALLOWED_DOMAIN)) {
+      showMsg('register', 'Only @' + ALLOWED_DOMAIN + ' email addresses can register.', 'error');
+      return;
+    }
+    if (password.length < 8) {
+      showMsg('register', 'Password must be at least 8 characters.', 'error');
+      return;
+    }
+    if (password !== confirm) {
+      showMsg('register', 'Passwords do not match.', 'error');
       return;
     }
 
-    btn.classList.add('loading');
-    btn.disabled = true;
+    const btn = document.getElementById('btn-register');
+    setLoading(btn, true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await sb.auth.signUp({ email, password });
 
     if (error) {
-      showMsg(error.message, 'error');
-      btn.classList.remove('loading');
-      btn.disabled = false;
+      showMsg('register', error.message, 'error');
+      setLoading(btn, false);
       return;
     }
 
-    showMsg('Signing you in…', 'info');
-    location.replace('index.html');
+    // Show success state
+    document.getElementById('confirm-email').textContent = email;
+    document.getElementById('register-form-wrap').style.display = 'none';
+    document.getElementById('register-success').classList.add('show');
   });
 })();
 </script>
