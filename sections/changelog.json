@@ -2,11 +2,32 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T14:18:06.659Z",
+  "generated": "2026-05-20T14:46:47.401Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "be444c3",
+          "type": "update",
+          "section": "Overview",
+          "message": "Overview: replace static 'Teams' stat with live Realtime presence user count",
+          "author": "Diego"
+        },
+        {
+          "hash": "646191d",
+          "type": "update",
+          "section": "Changelog",
+          "message": "Changelog: show commit author (Diego, Carlos, Cristina, etc.)",
+          "author": "Diego"
+        },
+        {
+          "hash": "77a6136",
+          "type": "feat",
+          "section": "Buttons",
+          "message": "Add mobile variants to buttons page",
+          "author": "Cristina"
+        },
         {
           "hash": "24818d2",
           "type": "update",

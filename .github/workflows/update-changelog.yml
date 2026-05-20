@@ -9,6 +9,8 @@ jobs:
     # Skip if this push was itself the changelog auto-update
     if: "!contains(github.event.head_commit.message, 'chore: auto-update changelog')"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
