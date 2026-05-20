@@ -849,7 +849,7 @@ window.addEventListener('hashchange', () => {
 <script src="i18n.js" defer></script>
 <script src="changelog.js" defer></script>
 
-<!-- ── Auth guard ── -->
+<!-- ── Auth guard + Realtime presence ── -->
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
@@ -866,6 +866,45 @@ window.addEventListener('hashchange', () => {
     await sb.auth.signOut();
     location.replace('login.html');
   });
+
+  // ── Realtime presence: count who's currently on the DS ──
+  function updateUsersStat(count) {
+    const val   = document.getElementById('stat-users-val');
+    const trend = document.getElementById('stat-users-val-trend');
+    if (val)   val.textContent   = count;
+    if (trend) trend.textContent = count === 1 ? 'currently online' : 'currently online';
+  }
+
+  const presenceChannel = sb.channel('ds-online', {
+    config: { presence: { key: session.user.id } },
+  });
+
+  presenceChannel
+    .on('presence', { event: 'sync' }, () => {
+      const count = Object.keys(presenceChannel.presenceState()).length;
+      updateUsersStat(count);
+    })
+    .subscribe(async (status) => {
+      if (status === 'SUBSCRIBED') {
+        await presenceChannel.track({
+          user_id: session.user.id,
+          name: session.user.email.split('@')[0],
+          at: new Date().toISOString(),
+        });
+      }
+    });
+
+  // Re-run whenever the overview section is navigated to
+  const origNavigate = window.navigate;
+  if (typeof origNavigate === 'function') {
+    window.navigate = async function(id, ...args) {
+      await origNavigate.call(this, id, ...args);
+      if (id === 'overview') {
+        const count = Object.keys(presenceChannel.presenceState()).length;
+        updateUsersStat(count);
+      }
+    };
+  }
 })();
 </script>
 </body>

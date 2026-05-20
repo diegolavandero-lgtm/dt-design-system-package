@@ -5,7 +5,7 @@
   "version": "v2.4",
   "dashboard": {
     "stats": [
-      { "label": "Teams using DS", "value": "14", "trend": "+2 this quarter" },
+      { "label": "Users on DS", "value": "—", "trend": "currently online", "id": "stat-users-val" },
       { "label": "Components", "value": "12", "trend": "across 6 categories" },
       { "label": "Design tokens", "value": "48", "trend": "CSS + SCSS variables" }
     ],

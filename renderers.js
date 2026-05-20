@@ -123,8 +123,8 @@ const renderers = {
     const stats = (d.stats || []).map(s => `
       <div class="dash-stat">
         <div class="ds-lbl">${escHtml(s.label)}</div>
-        <div class="ds-val">${escHtml(s.value)}</div>
-        <div class="ds-trend">${escHtml(s.trend)}</div>
+        <div class="ds-val"${s.id ? ` id="${s.id}"` : ''}>${escHtml(s.value)}</div>
+        <div class="ds-trend"${s.id ? ` id="${s.id}-trend"` : ''}>${escHtml(s.trend)}</div>
       </div>`).join('');
 
     const warnIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--o7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
