@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T15:39:05.240Z",
+  "generated": "2026-05-20T15:51:21.755Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "94b6580",
+          "type": "fix",
+          "section": "Buttons",
+          "message": "revert: remove prueba yellow button variant from main",
+          "author": "Carlos"
+        },
         {
           "hash": "39d128e",
           "type": "feat",
