@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T15:58:29.168Z",
+  "generated": "2026-05-20T16:27:18.127Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "c4e9a3e",
+          "type": "update",
+          "section": "Map pins",
+          "message": "Map pins: increase preview size to 72px with neutral background",
+          "author": "Diego"
+        },
         {
           "hash": "8cd4056",
           "type": "fix",
