@@ -14,6 +14,15 @@
     "lineHeight": "16px",
     "fontWeight": 500
   },
+  "mobileTokens": {
+    "height": "48px",
+    "heightTall": "56px",
+    "padding": "0 24px",
+    "fontSize": "14px",
+    "lineHeight": "16px",
+    "minWidth": "64px",
+    "note": "Touch target mínimo 48px. Botones full-width frecuentes en vistas móviles."
+  },
   "variants": [
     {
       "name": "primary", "label": "Primary",

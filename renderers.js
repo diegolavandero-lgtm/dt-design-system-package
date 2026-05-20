@@ -476,38 +476,87 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── BUTTONS ── */
   buttons(data) {
-    const preview = (data.variants || []).map(v => {
-      const states = v.states.map(s => {
+    const t  = data.tokens || {};
+    const mt = data.mobileTokens || {};
+
+    function renderStates(states, height, padding, fontSize) {
+      return states.map(s => {
         const style = [
           `background:${s.bg}`,
           `color:${s.color}`,
           s.border && s.border !== 'none' ? `border:${s.border}` : 'border:none',
           s.underline ? 'text-decoration:underline' : '',
         ].filter(Boolean).join(';');
-        return `<button class="btn" style="${style};font:500 16px/16px var(--font-sans);height:40px;padding:0 32px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center">${escHtml(s.text)}</button>`;
+        return `<div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+          <button style="${style};font:500 ${fontSize}/${fontSize} var(--font-sans);height:${height};padding:${padding};border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">${escHtml(s.text)}</button>
+          <span style="font:400 9px var(--font-sans);color:var(--n45);text-transform:uppercase;letter-spacing:.05em">${escHtml(s.label)}</span>
+        </div>`;
       }).join('');
-      return `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <span style="width:100px;font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">${escHtml(v.label)}</span>
-        ${states}
-      </div>`;
-    }).join('');
+    }
 
-    const tokenRows = Object.entries(data.tokens || {}).map(([k,v]) =>
-      `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`).join('');
+    const variantRows = (data.variants || []).map(v => `
+      <tr style="border-bottom:1px solid var(--n3)">
+        <td style="padding:14px;vertical-align:middle;width:110px">
+          <div style="font:700 11px var(--font-sans);color:var(--n7)">${escHtml(v.label)}</div>
+        </td>
+        <td style="padding:14px;vertical-align:middle;border-left:1px solid var(--n3);background:#FAFBFD">
+          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+            ${renderStates(v.states, t.height || '40px', t.padding || '0 32px', t.fontSize || '16px')}
+          </div>
+        </td>
+        <td style="padding:14px;vertical-align:middle;border-left:1px solid var(--n3);background:#F5F6FA">
+          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+            ${renderStates(v.states, mt.height || '48px', mt.padding || '0 24px', mt.fontSize || '14px')}
+          </div>
+        </td>
+      </tr>`).join('');
 
-    const previewTab = `<div style="padding:18px;display:flex;flex-direction:column;gap:14px">${preview}</div>`;
+    const tokenRows = Object.entries(t).map(([k,v]) =>
+      `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td><td><code>${escHtml(String(mt[k] || '—'))}</code></td></tr>`).join('');
+
+    const previewTab = `
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--n2);border-bottom:1px solid var(--n4)">
+            <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);width:110px">Variant</th>
+            <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
+              <span style="display:flex;align-items:center;gap:5px">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                Desktop <span style="font-weight:400;color:var(--n5);margin-left:4px">40px · 16px · 0 32px</span>
+              </span>
+            </th>
+            <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
+              <span style="display:flex;align-items:center;gap:5px">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                Mobile <span style="font-weight:400;color:var(--n5);margin-left:4px">48px · 14px · 0 24px</span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>${variantRows}</tbody>
+      </table>`;
+
     const codeTab = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
 
-    return `
-      ${sectionHeader(data)}
-      ${tabCard([{label:'Preview', content: previewTab}, {label:'Code', content: codeTab}])}
-      <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Design tokens</h3>
-      <div class="card">
+    const tokensTab = `
+      <div style="padding:16px">
+        ${mt.note ? `<div class="bn in" style="margin-bottom:14px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>${escHtml(mt.note)}</span>
+        </div>` : ''}
         <table class="ttbl">
-          <thead><tr><th>Token</th><th>Value</th></tr></thead>
+          <thead><tr><th>Token</th><th>Desktop</th><th>Mobile</th></tr></thead>
           <tbody>${tokenRows}</tbody>
         </table>
       </div>`;
+
+    return `
+      ${sectionHeader(data)}
+      ${tabCard([
+        {label:'Preview', content: previewTab},
+        {label:'Code',    content: codeTab},
+        {label:'Tokens',  content: tokensTab},
+      ])}`;
   },
 
   /* ── INPUTS ── */
