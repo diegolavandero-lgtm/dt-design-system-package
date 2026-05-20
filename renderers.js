@@ -268,7 +268,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       .cs-scale-sub{font:400 12px var(--font-sans);color:var(--n5);margin:0 0 14px;display:block}
       .cs-strip{display:flex;overflow:hidden;border:1px solid var(--n3);border-radius:8px}
       .cs-strip.cs-below{border-top:none;border-radius:0 0 8px 8px}
-      .cs-sw{flex:1;padding:14px 10px 12px;min-height:108px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;cursor:pointer;transition:filter .12s;border-right:1px solid rgba(0,0,0,.07)}
+      .cs-sw{flex:1;padding:14px 10px 12px;min-height:108px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;transition:filter .12s;border-right:1px solid rgba(0,0,0,.07)}
       .cs-sw:last-child{border-right:none}
       .cs-sw:hover{filter:brightness(.9)}
       .cs-sw-name{font:400 13px/1.3 var(--font-sans)}
@@ -277,20 +277,20 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       /* neutral special row */
       .cs-special{display:flex;overflow:hidden;border:1px solid var(--n3);border-radius:8px 8px 0 0;border-bottom:none}
       .cs-sp-white{flex:1.2;padding:14px 10px 12px;min-height:128px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;background:#fff;color:#39414D;border-right:1px solid rgba(0,0,0,.07)}
-      .cs-sp-large{flex:2;padding:14px 10px 12px;min-height:128px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;cursor:pointer;border-right:1px solid rgba(255,255,255,.12)}
+      .cs-sp-large{flex:2;padding:14px 10px 12px;min-height:128px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;border-right:1px solid rgba(255,255,255,.12)}
       .cs-sp-large:last-child{border-right:none}
       /* opacity */
       .op-block{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;margin-bottom:3px}
       .op-label-cell{width:136px;flex-shrink:0;padding:14px 14px;display:flex;align-items:center;font:400 13px var(--font-sans)}
       .op-swatches{flex:1;display:flex;overflow:hidden}
-      .op-sw{flex:1;padding:14px 10px 12px;min-height:88px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;cursor:pointer;border-left:1px solid rgba(0,0,0,.07)}
+      .op-sw{flex:1;padding:14px 10px 12px;min-height:88px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;border-left:1px solid rgba(0,0,0,.07)}
       .op-sw-name{font:400 11px/1.3 var(--font-sans)}
       .op-sw-desc{font:400 10px/1.3 var(--font-sans);opacity:.7}
     </style>`;
 
     function csw(s) {
       const tc = isLight(s.hex) ? '#39414D' : '#fff';
-      return `<div class="cs-sw" style="background:${s.hex};color:${tc}"
+      return `<div class="cs-sw color-sw" style="background:${s.hex};color:${tc}"
         onclick="copyToClipboard('${s.hex}',this)" title="Copy ${s.hex}">
         <div class="cs-sw-name">${escHtml(s.label)}</div>
         <div class="cs-sw-hex">Hex: ${s.hex}</div>
@@ -305,7 +305,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     if (neutralScale) {
       const specCells = (neutralScale.special || []).map((s, i) => {
         const tc = isLight(s.hex) ? '#39414D' : '#fff';
-        const cls = i === 0 ? 'cs-sp-white' : 'cs-sp-large';
+        const cls = i === 0 ? 'cs-sp-white color-sw' : 'cs-sp-large color-sw';
         return `<div class="${cls}" style="${i > 0 ? `background:${s.hex};color:${tc}` : ''}"
           onclick="copyToClipboard('${s.hex}',this)" title="Copy ${s.hex}">
           <div class="cs-sw-name">${escHtml(s.label)}</div>
@@ -334,12 +334,12 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const op = data.opacity;
     if (op) {
       const darkCells = (op.dark || []).map(o =>
-        `<div class="op-sw" style="background:${o.css};" onclick="copyToClipboard('${escHtml(o.css)}',this)">
+        `<div class="op-sw color-sw" style="background:${o.css};" onclick="copyToClipboard('${escHtml(o.label)}',this)" title="Copy ${escHtml(o.label)}">
           <div class="op-sw-name" style="color:#39414D">${escHtml(o.label)}</div>
           <div class="op-sw-desc" style="color:#39414D">${escHtml(o.desc)}</div>
         </div>`).join('');
       const lightCells = (op.light || []).map(o =>
-        `<div class="op-sw" style="background:${o.css};border-left-color:rgba(255,255,255,.12)" onclick="copyToClipboard('${escHtml(o.css)}',this)">
+        `<div class="op-sw color-sw" style="background:${o.css};border-left-color:rgba(255,255,255,.12)" onclick="copyToClipboard('${escHtml(o.label)}',this)" title="Copy ${escHtml(o.label)}">
           <div class="op-sw-name" style="color:#fff">${escHtml(o.label)}</div>
           <div class="op-sw-desc" style="color:#fff">${escHtml(o.desc)}</div>
         </div>`).join('');
@@ -1359,7 +1359,7 @@ async function downloadAllPins() {
     ).join('');
     const swatches = palette.map((c, i) => {
       const tc = isLight(c) ? '#39414D' : '#fff';
-      return `<div style="flex:1;padding:14px 10px 12px;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end;background:${c};color:${tc};cursor:pointer;border-right:1px solid rgba(0,0,0,.07)"
+      return `<div class="color-sw" style="flex:1;padding:14px 10px 12px;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end;background:${c};color:${tc};border-right:1px solid rgba(0,0,0,.07)"
         onclick="copyToClipboard('${c}',this)" title="Copy ${c}">
         <div style="font:400 11px var(--font-sans)">Hex: ${c}</div>
       </div>`;
@@ -1382,7 +1382,7 @@ async function downloadAllPins() {
     ).join('');
     const swatches = palette.map((p, i) => {
       const tc = isLight(p.hex) ? '#39414D' : '#fff';
-      return `<div style="flex:1;padding:14px 10px 12px;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end;background:${p.hex};color:${tc};cursor:pointer;border-right:1px solid rgba(0,0,0,.07)"
+      return `<div class="color-sw" style="flex:1;padding:14px 10px 12px;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end;background:${p.hex};color:${tc};border-right:1px solid rgba(0,0,0,.07)"
         onclick="copyToClipboard('${p.hex}',this)" title="Copy ${p.hex}">
         <div style="font:400 13px/1.3 var(--font-sans)">${escHtml(p.label)}</div>
         <div style="font:400 11px/1.5 var(--font-sans)">Hex: ${p.hex}</div>

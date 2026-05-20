@@ -103,6 +103,8 @@ button,input,select{font-family:inherit}
 .sw b{font:700 11px var(--font-sans)}
 .sw span{font:400 10px var(--font-mono);opacity:.85}
 .sw.copied:after{content:"Copiado";position:absolute;inset:0;background:rgba(19,32,69,.85);color:#fff;display:flex;align-items:center;justify-content:center;font:700 11px var(--font-sans);border-radius:5px}
+.color-sw{position:relative;cursor:pointer}
+.color-sw.copied::after{content:"Copied!";position:absolute;inset:0;background:rgba(19,32,69,.82);color:#fff;display:flex;align-items:center;justify-content:center;font:600 11px var(--font-sans);letter-spacing:.02em;pointer-events:none}
 
 /* ── BUTTONS ── */
 .btn{font:700 13px/1 var(--font-sans);padding:8px 16px;border-radius:999px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:6px;transition:background .12s}
