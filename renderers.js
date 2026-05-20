@@ -1161,21 +1161,107 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── MAPPINS ── */
   mappins(data) {
+    const base = (data.pinsPath || 'sections/assets/pins/').replace(/\/$/, '');
+
+    // collect all files for the ZIP button
+    const allFiles = (data.groups || []).flatMap(g => g.pins.map(p => p.file));
+
+    const PIN_STYLE = `<style>
+      .me-section{margin-bottom:36px}
+      .me-section-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--n2)}
+      .me-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+      .me-section-label{font:700 15px var(--font-sans);color:var(--n7)}
+      .me-count{font:400 12px var(--font-sans);color:var(--n5)}
+      .pin-grid{display:flex;flex-wrap:wrap;gap:12px}
+      .pin-card{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;width:108px;position:relative;transition:box-shadow .15s}
+      .pin-card:hover{box-shadow:0 4px 16px rgba(19,32,69,.1)}
+      .pin-card img{width:44px;height:auto;display:block}
+      .pin-card .pin-lbl{font:400 11px/1.3 var(--font-sans);color:var(--n5);text-align:center}
+      .pin-card .pin-dl{width:100%;height:26px;border:1px solid var(--n3);background:var(--n1);border-radius:4px;font:600 10px var(--font-sans);color:var(--n7);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;text-decoration:none;transition:background .1s}
+      .pin-card .pin-dl:hover{background:var(--b1);border-color:var(--b3);color:var(--b7)}
+      .me-zip-bar{display:flex;align-items:center;gap:12px;margin-bottom:28px;padding:14px 18px;background:#fff;border:1px solid var(--n3);border-radius:8px}
+      .me-zip-info{flex:1;font:400 13px var(--font-sans);color:var(--n5)}
+      .me-zip-info strong{color:var(--n7)}
+      .me-zip-btn{height:36px;padding:0 18px;background:var(--indigo);color:#fff;border:none;border-radius:6px;font:600 12px var(--font-sans);cursor:pointer;display:flex;align-items:center;gap:7px;flex-shrink:0}
+      .me-zip-btn:hover{background:#1a2d5a}
+      .me-zip-btn:disabled{opacity:.5;cursor:default}
+    </style>`;
+
+    const zipBtn = `
+      <div class="me-zip-bar">
+        <div class="me-zip-info"><strong>${allFiles.length} SVG files</strong> — Map pins for all states and types</div>
+        <button class="me-zip-btn" id="dl-all-pins" onclick="downloadAllPins()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download all as ZIP
+        </button>
+      </div>`;
+
     const groups = (data.groups || []).map(g => {
-      const pins = (g.pins || []).map(p => {
-        return `<div class="pin-cell">
-          ${pinSVG(p)}
-          <div class="cap">${escHtml(p.cap)}</div>
+      const cards = (g.pins || []).map(p => {
+        const src = `${base}/${p.file}`;
+        return `<div class="pin-card">
+          <img src="${src}" alt="${escHtml(p.label)}" loading="lazy">
+          <div class="pin-lbl">${escHtml(p.label)}</div>
+          <a class="pin-dl" href="${src}" download="${p.file}">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            SVG
+          </a>
         </div>`;
       }).join('');
-      return `<div class="pin-row">${pins}</div>`;
+
+      return `<div class="me-section">
+        <div class="me-section-hdr">
+          <div class="me-dot" style="background:${g.color}"></div>
+          <span class="me-section-label">${escHtml(g.label)}</span>
+          <span class="me-count">${g.pins.length} variant${g.pins.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="pin-grid">${cards}</div>
+      </div>`;
     }).join('');
 
-    return `
+    const allFilesJson = JSON.stringify(allFiles);
+    const zipScript = `<script>
+window.__pinFiles = ${allFilesJson};
+window.__pinBase  = '${base}';
+async function downloadAllPins() {
+  const btn = document.getElementById('dl-all-pins');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Building ZIP…';
+  try {
+    const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm')).default;
+    const zip = new JSZip();
+    const folder = zip.folder('dt-map-pins');
+    await Promise.all(window.__pinFiles.map(async f => {
+      const res = await fetch(window.__pinBase + '/' + f);
+      const blob = await res.blob();
+      folder.file(f, blob);
+    }));
+    const content = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(content);
+    a.download = 'dt-map-pins.zip';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch(e) {
+    alert('Could not build ZIP: ' + e.message);
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download all as ZIP';
+}
+<\/script>`;
+
+    return `${PIN_STYLE}
       ${sectionHeader(data)}
-      <div class="card flush">
-        <div class="pin-stage">${groups}</div>
-      </div>`;
+      ${zipBtn}
+      <div class="sec">
+        <h2 style="font:700 18px var(--font-sans);color:var(--n7);margin:0 0 20px;display:flex;align-items:center;gap:8px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Map pins
+        </h2>
+        ${groups}
+      </div>
+      ${zipScript}`;
   },
 
   /* ── DATAVIZ ── */

@@ -1,30 +1,108 @@
 {
-  "title": "Map pins",
+  "title": "Map elements",
   "titleKey": "nav.mappins",
-  "description": "Map pin SVGs generados dinámicamente. Fill principal usa $dt-primary-dark (#0C47C7). Sin asignar usa $dt-disabled-3 (#8FA0BA). Badge de cluster usa $dt-primary-main (#4B82FA).",
-  "keywords": ["map", "pins", "markers", "location", "cluster"],
-  "defaultFill": "#0C47C7",
-  "unassignedFill": "#8FA0BA",
-  "badgeFill": "#4B82FA",
+  "description": "All map pin SVGs used across DispatchTrack products. Download individually or as a ZIP package.",
+  "keywords": ["map", "pins", "markers", "location", "cluster", "map elements"],
+  "pinsPath": "sections/assets/pins/",
   "groups": [
     {
-      "label": "Row 1 — Default states (no badge)",
+      "id": "en-ruta",
+      "label": "En ruta",
+      "color": "#4B82FA",
       "pins": [
-        { "fill": "#0C47C7", "selected": false, "inner": null, "cap": "Default · Asignado" },
-        { "fill": "#8FA0BA", "selected": false, "inner": null, "cap": "Default · Sin asignar" },
-        { "fill": "#0C47C7", "selected": true, "inner": "circle", "cap": "Selected · Asignado" },
-        { "fill": "#8FA0BA", "selected": true, "inner": "circle", "cap": "Selected · Sin asignar" },
-        { "fill": "#0C47C7", "selected": true, "inner": "x", "cap": "Selected + close" },
-        { "fill": "#0C47C7", "selected": true, "inner": "plus", "cap": "Selected + add" }
+        { "file": "pin-en-ruta-unselected.svg",       "label": "Unselected" },
+        { "file": "pin-en-ruta-selected.svg",          "label": "Selected" },
+        { "file": "pin-en-ruta-badge-unselected.svg",  "label": "Badge · Unselected" },
+        { "file": "pin-en-ruta-badge-selected.svg",    "label": "Badge · Selected" }
       ]
     },
     {
-      "label": "Row 2 — With cluster badge",
+      "id": "exitosa",
+      "label": "Exitosa",
+      "color": "#00875A",
       "pins": [
-        { "fill": "#0C47C7", "selected": false, "inner": null, "badge": 10, "cap": "Default + cluster" },
-        { "fill": "#8FA0BA", "selected": false, "inner": null, "badge": 10, "cap": "Sin asignar + cluster" },
-        { "fill": "#0C47C7", "selected": true, "inner": "circle", "badge": 10, "cap": "Selected + cluster" },
-        { "fill": "#0C47C7", "selected": true, "inner": "x", "badge": 10, "cap": "Selected + close + cluster" }
+        { "file": "pin-exitosa-unselected.svg",       "label": "Unselected" },
+        { "file": "pin-exitosa-selected.svg",          "label": "Selected" },
+        { "file": "pin-exitosa-badge-unselected.svg",  "label": "Badge · Unselected" },
+        { "file": "pin-exitosa-badge-selected.svg",    "label": "Badge · Selected" }
+      ]
+    },
+    {
+      "id": "fallida",
+      "label": "Fallida",
+      "color": "#DE350B",
+      "pins": [
+        { "file": "pin-fallida-unselected.svg",       "label": "Unselected" },
+        { "file": "pin-fallida-selected.svg",          "label": "Selected" },
+        { "file": "pin-fallida-badge-unselected.svg",  "label": "Badge · Unselected" },
+        { "file": "pin-fallida-badge-selected.svg",    "label": "Badge · Selected" }
+      ]
+    },
+    {
+      "id": "cancelada",
+      "label": "Cancelada",
+      "color": "#8777D9",
+      "pins": [
+        { "file": "pin-cancelada-unselected.svg",       "label": "Unselected" },
+        { "file": "pin-cancelada-selected.svg",          "label": "Selected" },
+        { "file": "pin-cancelada-badge-unselected.svg",  "label": "Badge · Unselected" },
+        { "file": "pin-cancelada-badge-selected.svg",    "label": "Badge · Selected" }
+      ]
+    },
+    {
+      "id": "asignada",
+      "label": "Asignada",
+      "color": "#0052CC",
+      "pins": [
+        { "file": "pin-asignada-badge-unselected.svg",       "label": "Badge · Unselected" },
+        { "file": "pin-asignada-badge-selected.svg",          "label": "Badge · Selected" },
+        { "file": "pin-asignada-badge-selected-close.svg",    "label": "Badge · Selected · Close" }
+      ]
+    },
+    {
+      "id": "sin-asignar",
+      "label": "Sin asignar",
+      "color": "#8FA0BA",
+      "pins": [
+        { "file": "pin-sin-asignar-unselected.svg",            "label": "Unselected" },
+        { "file": "pin-sin-asignar-selected.svg",               "label": "Selected" },
+        { "file": "pin-sin-asignar-selected-close.svg",         "label": "Selected · Close" },
+        { "file": "pin-sin-asignar-badge-unselected.svg",       "label": "Badge · Unselected" },
+        { "file": "pin-sin-asignar-badge-selected.svg",         "label": "Badge · Selected" },
+        { "file": "pin-sin-asignar-badge-selected-close.svg",   "label": "Badge · Selected · Close" }
+      ]
+    },
+    {
+      "id": "route",
+      "label": "Route",
+      "color": "#00B8D9",
+      "pins": [
+        { "file": "pin-route-unselected.svg",       "label": "Unselected" },
+        { "file": "pin-route-selected.svg",          "label": "Selected" },
+        { "file": "pin-route-badge-unselected.svg",  "label": "Badge · Unselected" },
+        { "file": "pin-route-badge-selected.svg",    "label": "Badge · Selected" }
+      ]
+    },
+    {
+      "id": "no-order",
+      "label": "No order",
+      "color": "#FFAB00",
+      "pins": [
+        { "file": "pin-no-order-unselected.svg",                  "label": "Unselected" },
+        { "file": "pin-no-order-unselected-unassigned.svg",        "label": "Unselected · Unassigned" },
+        { "file": "pin-no-order-selected.svg",                     "label": "Selected" },
+        { "file": "pin-no-order-selected-unassigned.svg",          "label": "Selected · Unassigned" },
+        { "file": "pin-no-order-selected-close.svg",               "label": "Selected · Close" },
+        { "file": "pin-no-order-selected-close-unassigned.svg",    "label": "Selected · Close · Unassigned" }
+      ]
+    },
+    {
+      "id": "distribution-center",
+      "label": "Distribution center",
+      "color": "#132045",
+      "pins": [
+        { "file": "pin-distribution-center-unselected.svg",  "label": "Unselected" },
+        { "file": "pin-distribution-center-selected.svg",     "label": "Selected" }
       ]
     }
   ]
