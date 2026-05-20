@@ -15,6 +15,17 @@
     "overlayBg": "rgba(19,32,69,0.45)",
     "elevation": "0 8px 16px rgba(0,0,0,0.15)"
   },
+  "mobileTokens": {
+    "width": "calc(100vw - 32px)",
+    "maxWidth": "100%",
+    "radius": "8px",
+    "padding": "16px",
+    "innerPadding": "14px",
+    "titleSize": "18px",
+    "maxHeight": "calc(100vh - 64px)",
+    "actionsLayout": "stack-full-width",
+    "note": "Full-width con 16px de margen lateral. Botones apilados a ancho completo. Title 18px en lugar de 22px."
+  },
   "preview": {
     "title": "Crear llave API",
     "subtitle": "Genera una llave para integrar con el webhook de órdenes.",
