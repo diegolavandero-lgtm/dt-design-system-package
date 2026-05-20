@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T16:27:18.127Z",
+  "generated": "2026-05-20T16:35:00.122Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "467caa1",
+          "type": "feat",
+          "section": "General",
+          "message": "Map elements: add With order group, remove En ruta/Exitosa/Fallida/Cancelada/Asignada",
+          "author": "Diego"
+        },
         {
           "hash": "c4e9a3e",
           "type": "update",
