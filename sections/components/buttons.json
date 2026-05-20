@@ -65,6 +65,14 @@
       "states": [
         { "label": "Default", "text": "Eliminar", "bg": "#fff", "color": "#FF5630", "border": "2px solid #FF5630" }
       ]
+    },
+    {
+      "name": "prueba", "label": "Prueba",
+      "states": [
+        { "label": "Default", "text": "Prueba", "bg": "#F5C518", "color": "#132045", "border": "none" },
+        { "label": "Hover",   "text": "Hover",  "bg": "#e6b800", "color": "#132045", "border": "none" },
+        { "label": "Disabled","text": "Disabled","bg": "#E1E6ED", "color": "#8FA0BA", "border": "none" }
+      ]
     }
   ],
   "code": "/* Source: styles/packages/button/src/ — Honeypot */\n.hp-button {\n  font: 500 16px/16px 'DM Sans'; /* hp-typography__button--medium */\n  height: 40px;       /* $hp-button-size */\n  padding: 0 32px;    /* $hp-space-x-large */\n  border-radius: 50px; /* $hp-button-border-basic-radius */\n  border: none;\n  min-width: 64px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.hp-button--primary        { background: #4B82FA; color: #fff; } /* $dt-primary-main */\n.hp-button--primary:hover  { background: #1F60ED; } /* $dt-primary-middle */\n.hp-button--primary:active { background: #0052CC; } /* $dt-primary-dark */\n.hp-button--secondary      { background: #fff; color: #4B82FA; border: 2px solid #1F60ED; }\n.hp-button--tertiary       { background: #fff; color: #39414D; border: 2px solid #C5D2E7; }\n.hp-button--danger         { background: #FF5630; color: #fff; } /* $dt-feedback-r3 */\n.hp-button--tall           { height: 56px; } /* $hp-button-tall-size, submit actions */\n.hp-button:disabled        { background: #E1E6ED; color: #8FA0BA; }"
