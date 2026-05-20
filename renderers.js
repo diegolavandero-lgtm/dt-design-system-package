@@ -1173,9 +1173,10 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       .me-section-label{font:700 15px var(--font-sans);color:var(--n7)}
       .me-count{font:400 12px var(--font-sans);color:var(--n5)}
       .pin-grid{display:flex;flex-wrap:wrap;gap:12px}
-      .pin-card{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px 12px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;width:108px;position:relative;transition:box-shadow .15s}
+      .pin-card{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px 14px 12px;display:flex;flex-direction:column;align-items:center;gap:10px;width:120px;position:relative;transition:box-shadow .15s}
       .pin-card:hover{box-shadow:0 4px 16px rgba(19,32,69,.1)}
-      .pin-card img{width:44px;height:auto;display:block}
+      .pin-card .pin-preview{width:72px;height:72px;display:flex;align-items:center;justify-content:center;background:var(--n1);border-radius:6px}
+      .pin-card .pin-preview img{max-width:60px;max-height:64px;width:auto;height:auto;display:block}
       .pin-card .pin-lbl{font:400 11px/1.3 var(--font-sans);color:var(--n5);text-align:center}
       .pin-card .pin-dl{width:100%;height:26px;border:1px solid var(--n3);background:var(--n1);border-radius:4px;font:600 10px var(--font-sans);color:var(--n7);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;text-decoration:none;transition:background .1s}
       .pin-card .pin-dl:hover{background:var(--b1);border-color:var(--b3);color:var(--b7)}
@@ -1200,7 +1201,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       const cards = (g.pins || []).map(p => {
         const src = `${base}/${p.file}`;
         return `<div class="pin-card">
-          <img src="${src}" alt="${escHtml(p.label)}" loading="lazy">
+          <div class="pin-preview"><img src="${src}" alt="${escHtml(p.label)}" loading="lazy"></div>
           <div class="pin-lbl">${escHtml(p.label)}</div>
           <a class="pin-dl" href="${src}" download="${p.file}">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
