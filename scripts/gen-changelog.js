@@ -61,18 +61,39 @@ function shouldSkip(msg) {
   return SKIP.some(p => lower.includes(p));
 }
 
-const raw = execSync('git log --pretty=format:"%H|%ad|%s" --date=short', { encoding: 'utf8' });
+const raw = execSync('git log --pretty=format:"%H|%ad|%an|%ae|%s" --date=short', { encoding: 'utf8' });
 const lines = raw.trim().split('\n').filter(Boolean);
+
+// Map email/name fragments → display name
+const AUTHOR_MAP = {
+  'diego':     'Diego',
+  'carlos':    'Carlos',
+  'cristina':  'Cristina',
+  'github-actions': null, // hide bot commits
+};
+
+function resolveAuthor(name, email) {
+  const key = (name + ' ' + email).toLowerCase();
+  for (const [frag, display] of Object.entries(AUTHOR_MAP)) {
+    if (key.includes(frag)) return display;
+  }
+  // Fall back to first name from git name
+  return name.split(' ')[0];
+}
 
 const byDate = {};
 for (const line of lines) {
-  const sep = line.indexOf('|');
-  const sep2 = line.indexOf('|', sep + 1);
-  const hash = line.slice(0, sep);
-  const date = line.slice(sep + 1, sep2);
-  const msg  = line.slice(sep2 + 1);
+  const parts = line.split('|');
+  const hash   = parts[0];
+  const date   = parts[1];
+  const aName  = parts[2];
+  const aEmail = parts[3];
+  const msg    = parts.slice(4).join('|'); // message may contain |
 
   if (shouldSkip(msg)) continue;
+
+  const author = resolveAuthor(aName, aEmail);
+  if (author === null) continue; // skip bot commits
 
   if (!byDate[date]) byDate[date] = [];
   byDate[date].push({
@@ -80,6 +101,7 @@ for (const line of lines) {
     type:    classifyType(msg),
     section: extractSection(msg),
     message: msg,
+    author,
   });
 }
 

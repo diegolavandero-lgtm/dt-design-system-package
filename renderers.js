@@ -1138,11 +1138,16 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           const rows = day.entries.map(e => {
             const color = TYPE_COLOR[e.type] || TYPE_COLOR.update;
             const label = TYPE_LABEL[e.type] || 'Update';
-            return `<div style="display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid #F0F2F5">
+            const avatar = e.author
+              ? `<span title="${e.author}" style="width:20px;height:20px;border-radius:50%;background:#E1E6ED;display:inline-flex;align-items:center;justify-content:center;font:700 9px/1 var(--font-sans);color:#67768D;flex-shrink:0">${e.author[0].toUpperCase()}</span>`
+              : '';
+            return `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F0F2F5">
               <span style="font:600 11px/1 var(--font-sans);color:#fff;background:${color};padding:2px 8px;border-radius:4px;flex-shrink:0">${label}</span>
               <span style="font:500 11px/1 var(--font-sans);color:#7B8796;flex-shrink:0;min-width:80px">${e.section}</span>
               <span style="font:400 13px/1.4 var(--font-sans);color:var(--n7);flex:1">${e.message}</span>
-              <code style="font:400 11px/1 monospace;color:#A0ABBB;flex-shrink:0">${e.hash}</code>
+              ${avatar}
+              <span style="font:500 11px/1 var(--font-sans);color:#A0ABBB;flex-shrink:0;min-width:42px;text-align:right">${e.author || ''}</span>
+              <code style="font:400 11px/1 monospace;color:#C5D2E7;flex-shrink:0">${e.hash}</code>
             </div>`;
           }).join('');
           return `<div style="margin-bottom:28px">
