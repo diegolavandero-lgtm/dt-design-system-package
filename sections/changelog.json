@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T14:46:47.401Z",
+  "generated": "2026-05-20T14:47:33.632Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "798bd8d",
+          "type": "fix",
+          "section": "Changelog",
+          "message": "Fix changelog: refresh with Cristina's commits + grant workflow write permission",
+          "author": "Diego"
+        },
         {
           "hash": "be444c3",
           "type": "update",
