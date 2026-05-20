@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T16:35:00.122Z",
+  "generated": "2026-05-20T21:38:33.022Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "97f1092",
+          "type": "fix",
+          "section": "Colors",
+          "message": "Colors: replace swatch grid with scale strips, fix dataviz/service-units layout",
+          "author": "Diego"
+        },
         {
           "hash": "467caa1",
           "type": "feat",
