@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T21:38:33.022Z",
+  "generated": "2026-05-20T21:42:04.413Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "b729ede",
+          "type": "feat",
+          "section": "Colors",
+          "message": "Colors: add copy-to-clipboard feedback to all color swatches",
+          "author": "Diego"
+        },
         {
           "hash": "97f1092",
           "type": "fix",
