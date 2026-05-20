@@ -262,35 +262,121 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── COLORS ── */
   colors(data) {
-    const semRows = (data.semanticTokens || []).map(t => {
-      const tc = isLight(t.hex) ? '#39414D' : '#fff';
-      return `<tr>
-        <td><div style="width:36px;height:36px;border-radius:4px;background:${t.hex};border:1px solid rgba(19,32,69,.1);cursor:pointer" onclick="copyToClipboard('${t.hex}',this)" title="Copy ${t.hex}"></div></td>
-        <td><code>${escHtml(t.name)}</code></td>
-        <td><code>${t.hex}</code>${t.sub ? ` <span style="color:var(--n5);font-size:10px">· ${t.sub}</span>` : ''}</td>
-        <td style="color:var(--n5)">${t.use}</td>
-      </tr>`;
-    }).join('');
+    const CS = `<style>
+      .cs-section{margin-bottom:40px}
+      .cs-scale-title{font:700 22px/1.2 var(--font-sans);color:var(--n7);margin:0 0 2px}
+      .cs-scale-sub{font:400 12px var(--font-sans);color:var(--n5);margin:0 0 14px;display:block}
+      .cs-strip{display:flex;overflow:hidden;border:1px solid var(--n3);border-radius:8px}
+      .cs-strip.cs-below{border-top:none;border-radius:0 0 8px 8px}
+      .cs-sw{flex:1;padding:14px 10px 12px;min-height:108px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;cursor:pointer;transition:filter .12s;border-right:1px solid rgba(0,0,0,.07)}
+      .cs-sw:last-child{border-right:none}
+      .cs-sw:hover{filter:brightness(.9)}
+      .cs-sw-name{font:400 13px/1.3 var(--font-sans)}
+      .cs-sw-hex{font:400 11px/1.5 var(--font-sans)}
+      .cs-sw-meta{font:400 10px/1.4 var(--font-sans);opacity:.75}
+      /* neutral special row */
+      .cs-special{display:flex;overflow:hidden;border:1px solid var(--n3);border-radius:8px 8px 0 0;border-bottom:none}
+      .cs-sp-white{flex:1.2;padding:14px 10px 12px;min-height:128px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;background:#fff;color:#39414D;border-right:1px solid rgba(0,0,0,.07)}
+      .cs-sp-large{flex:2;padding:14px 10px 12px;min-height:128px;display:flex;flex-direction:column;justify-content:flex-end;gap:1px;cursor:pointer;border-right:1px solid rgba(255,255,255,.12)}
+      .cs-sp-large:last-child{border-right:none}
+      /* opacity */
+      .op-block{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;margin-bottom:3px}
+      .op-label-cell{width:136px;flex-shrink:0;padding:14px 14px;display:flex;align-items:center;font:400 13px var(--font-sans)}
+      .op-swatches{flex:1;display:flex;overflow:hidden}
+      .op-sw{flex:1;padding:14px 10px 12px;min-height:88px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;cursor:pointer;border-left:1px solid rgba(0,0,0,.07)}
+      .op-sw-name{font:400 11px/1.3 var(--font-sans)}
+      .op-sw-desc{font:400 10px/1.3 var(--font-sans);opacity:.7}
+    </style>`;
 
-    const groups = (data.groups || []).map(g => {
-      const swatches = g.swatches.map(s => {
+    function csw(s) {
+      const tc = isLight(s.hex) ? '#39414D' : '#fff';
+      return `<div class="cs-sw" style="background:${s.hex};color:${tc}"
+        onclick="copyToClipboard('${s.hex}',this)" title="Copy ${s.hex}">
+        <div class="cs-sw-name">${escHtml(s.label)}</div>
+        <div class="cs-sw-hex">Hex: ${s.hex}</div>
+        ${s.hsb ? `<div class="cs-sw-meta">HSB: ${escHtml(s.hsb)}</div>` : ''}
+        ${s.hcl != null ? `<div class="cs-sw-meta">HCL: ${s.hcl}</div>` : ''}
+        ${s.use ? `<div class="cs-sw-meta">Use: ${escHtml(s.use)}</div>` : ''}
+      </div>`;
+    }
+
+    const neutralScale = (data.scales || []).find(s => s.id === 'neutral');
+    let neutralHtml = '';
+    if (neutralScale) {
+      const specCells = (neutralScale.special || []).map((s, i) => {
         const tc = isLight(s.hex) ? '#39414D' : '#fff';
-        return `<div class="sw" style="background:${s.hex};color:${tc}" onclick="copyToClipboard('${s.hex}',this)">
-          <b>${escHtml(s.label)}</b><span>${s.hex}</span>
+        const cls = i === 0 ? 'cs-sp-white' : 'cs-sp-large';
+        return `<div class="${cls}" style="${i > 0 ? `background:${s.hex};color:${tc}` : ''}"
+          onclick="copyToClipboard('${s.hex}',this)" title="Copy ${s.hex}">
+          <div class="cs-sw-name">${escHtml(s.label)}</div>
+          <div class="cs-sw-hex">Hex: ${s.hex}</div>
+          ${s.hcl != null ? `<div class="cs-sw-meta">HCL: ${s.hcl}</div>` : ''}
         </div>`;
       }).join('');
-      return `<h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">${escHtml(g.label)}</h3>
-        <div class="sw-grid">${swatches}</div>`;
+      const nCells = (neutralScale.swatches || []).map(s => csw(s)).join('');
+      neutralHtml = `<div class="cs-section">
+        <p class="cs-scale-title">${escHtml(neutralScale.label)}</p>
+        ${neutralScale.group ? `<span class="cs-scale-sub">${escHtml(neutralScale.group)}</span>` : ''}
+        <div class="cs-special">${specCells}</div>
+        <div class="cs-strip cs-below">${nCells}</div>
+      </div>`;
+    }
+
+    const colorScales = (data.scales || []).filter(s => s.id !== 'neutral').map(scale => {
+      const cells = (scale.swatches || []).map(s => csw(s)).join('');
+      return `<div class="cs-section">
+        <p class="cs-scale-title">${escHtml(scale.label)}</p>
+        <div class="cs-strip">${cells}</div>
+      </div>`;
     }).join('');
 
-    return `
+    let opacityHtml = '';
+    const op = data.opacity;
+    if (op) {
+      const darkCells = (op.dark || []).map(o =>
+        `<div class="op-sw" style="background:${o.css};" onclick="copyToClipboard('${escHtml(o.css)}',this)">
+          <div class="op-sw-name" style="color:#39414D">${escHtml(o.label)}</div>
+          <div class="op-sw-desc" style="color:#39414D">${escHtml(o.desc)}</div>
+        </div>`).join('');
+      const lightCells = (op.light || []).map(o =>
+        `<div class="op-sw" style="background:${o.css};border-left-color:rgba(255,255,255,.12)" onclick="copyToClipboard('${escHtml(o.css)}',this)">
+          <div class="op-sw-name" style="color:#fff">${escHtml(o.label)}</div>
+          <div class="op-sw-desc" style="color:#fff">${escHtml(o.desc)}</div>
+        </div>`).join('');
+      opacityHtml = `<div class="cs-section">
+        <p class="cs-scale-title">${escHtml(op.label || 'Opacity scale')}</p>
+        <div class="op-block" style="background:#fff;border:1px solid var(--n3);margin-bottom:3px">
+          <div class="op-label-cell" style="color:var(--n7)">Dark Opacity</div>
+          <div class="op-swatches">${darkCells}</div>
+        </div>
+        <div class="op-block" style="background:#132045">
+          <div class="op-label-cell" style="color:#fff">Light Opacity</div>
+          <div class="op-swatches">${lightCells}</div>
+        </div>
+      </div>`;
+    }
+
+    const semRows = (data.semanticTokens || []).map(t =>
+      `<tr>
+        <td><div style="width:36px;height:36px;border-radius:4px;background:${t.hex};border:1px solid rgba(19,32,69,.1);cursor:pointer" onclick="copyToClipboard('${t.hex}',this)"></div></td>
+        <td><code>${escHtml(t.name)}</code></td>
+        <td><code>${t.hex}</code>${t.sub ? ` <span style="color:var(--n5);font-size:10px">· ${t.sub}</span>` : ''}</td>
+        <td style="color:var(--n5)">${escHtml(t.use)}</td>
+      </tr>`).join('');
+
+    return `${CS}
       ${sectionHeader(data)}
-      <h3 style="font:700 15px/1.4 var(--font-sans);margin:0 0 10px;color:var(--n7)">Semantic tokens — <code>$dt-*</code> variables</h3>
-      <table class="ttbl" style="margin-bottom:16px">
-        <thead><tr><th style="width:60px">Swatch</th><th>Token</th><th>Hex</th><th>Use</th></tr></thead>
-        <tbody>${semRows}</tbody>
-      </table>
-      ${groups}`;
+      ${neutralHtml}
+      ${colorScales}
+      ${opacityHtml}
+      ${semRows ? `<div class="cs-section">
+        <p class="cs-scale-title" style="font-size:18px">Design tokens</p>
+        <span class="cs-scale-sub">Semantic <code>$dt-*</code> variables</span>
+        <table class="ttbl">
+          <thead><tr><th style="width:56px">Swatch</th><th>Token</th><th>Hex</th><th>Use</th></tr></thead>
+          <tbody>${semRows}</tbody>
+        </table>
+      </div>` : ''}`;
   },
 
   /* ── TYPOGRAPHY ── */
@@ -1267,32 +1353,47 @@ async function downloadAllPins() {
 
   /* ── DATAVIZ ── */
   dataviz(data) {
-    const dots = (data.palette || []).map((c, i) => {
-      const tc = isLight(c) ? 'rgba(0,0,0,.55)' : '#fff';
-      return `<div>
-        <div class="dv-dot" style="background:${c};color:${tc}">${i+1}</div>
-        <div class="dv-lbl">${c}</div>
+    const palette = data.palette || [];
+    const numbers = palette.map((c, i) =>
+      `<div style="font:400 11px var(--font-sans);color:var(--n5);text-align:center;margin-bottom:4px;flex:1">${i+1}</div>`
+    ).join('');
+    const swatches = palette.map((c, i) => {
+      const tc = isLight(c) ? '#39414D' : '#fff';
+      return `<div style="flex:1;padding:14px 10px 12px;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end;background:${c};color:${tc};cursor:pointer;border-right:1px solid rgba(0,0,0,.07)"
+        onclick="copyToClipboard('${c}',this)" title="Copy ${c}">
+        <div style="font:400 11px var(--font-sans)">Hex: ${c}</div>
       </div>`;
     }).join('');
 
     return `
       ${sectionHeader(data)}
-      <div class="card">
-        <div class="dv-row">${dots}</div>
-        <div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:10px">Assign in strict order 1 → 11. Do not skip or reuse out of sequence.</div>
+      <div>
+        <div style="display:flex;margin-bottom:0">${numbers}</div>
+        <div style="display:flex;overflow:hidden;border:1px solid var(--n3);border-radius:8px">${swatches}</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:10px">Assign in strict order 1 → ${palette.length}. Do not skip or reuse out of sequence.</div>
       </div>`;
   },
 
   /* ── SERVICE UNITS ── */
   serviceunits(data) {
-    const dots = (data.palette || []).map((p, i) => {
-      return `<div class="su-dot" style="background:${p.hex};color:${p.textColor}" title="${escHtml(p.label)} · ${p.hex}">${i+1}</div>`;
+    const palette = data.palette || [];
+    const numbers = palette.map((p, i) =>
+      `<div style="font:400 11px var(--font-sans);color:var(--n5);text-align:center;margin-bottom:4px;flex:1">${i+1}</div>`
+    ).join('');
+    const swatches = palette.map((p, i) => {
+      const tc = isLight(p.hex) ? '#39414D' : '#fff';
+      return `<div style="flex:1;padding:14px 10px 12px;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end;background:${p.hex};color:${tc};cursor:pointer;border-right:1px solid rgba(0,0,0,.07)"
+        onclick="copyToClipboard('${p.hex}',this)" title="Copy ${p.hex}">
+        <div style="font:400 13px/1.3 var(--font-sans)">${escHtml(p.label)}</div>
+        <div style="font:400 11px/1.5 var(--font-sans)">Hex: ${p.hex}</div>
+      </div>`;
     }).join('');
 
     return `
       ${sectionHeader(data)}
-      <div class="card">
-        <div class="su-grid">${dots}</div>
+      <div>
+        <div style="display:flex;margin-bottom:0">${numbers}</div>
+        <div style="display:flex;overflow:hidden;border:1px solid var(--n3);border-radius:8px">${swatches}</div>
       </div>`;
   },
 

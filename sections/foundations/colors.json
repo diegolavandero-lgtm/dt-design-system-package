@@ -4,102 +4,131 @@
   "description": "One dark surface (Indigo, topbar only). Two surfaces stacked (N2 page · white card). Cobalt primary. Four semantic intents. Color is never decoration — every hue carries a role.",
   "descKey": "section.colors.desc",
   "keywords": ["colors", "palette", "tokens", "semantic", "primary", "neutral"],
-  "semanticTokens": [
-    { "hex": "#1F60ED", "name": "$dt-primary-middle", "sub": "B6", "use": "Botones primarios (hover state)" },
-    { "hex": "#4B82FA", "name": "$dt-primary-main", "sub": "B5", "use": "Selección, highlight, focus" },
-    { "hex": "#0052CC", "name": "$dt-primary-dark", "sub": "B7", "use": "Links de texto, active" },
-    { "hex": "#EDF5FF", "name": "$dt-primary-8", "sub": "B1", "use": "Fondo hover / selección ligera" },
-    { "hex": "#DE350B", "name": "$dt-error", "sub": "R6", "use": "Eliminar, errores" },
-    { "hex": "#00875A", "name": "$dt-success", "sub": "G6", "use": "Confirmación, activo" },
-    { "hex": "#FFAB00", "name": "$dt-warning", "sub": "O5", "use": "Advertencias" },
-    { "hex": "#39414D", "name": "$dt-neutral-n7", "sub": "N7", "use": "Texto principal" },
-    { "hex": "#67768D", "name": "$dt-neutral-n5", "sub": "N5", "use": "Texto secundario" },
-    { "hex": "#C5D2E7", "name": "$dt-neutral-n4", "sub": "N4", "use": "Bordes, divisores" },
-    { "hex": "#E1E6ED", "name": "$dt-neutral-n3", "sub": "N3", "use": "Bordes suaves, separadores" },
-    { "hex": "#F0F2F5", "name": "$dt-neutral-n2", "sub": "N2", "use": "Background de página" },
-    { "hex": "#132045", "name": "$dt-neutral-indigo / $hp-dt-indigo", "sub": "", "use": "Topbar — solo topbar" },
-    { "hex": "#F5B63E", "name": "$hp-primary", "sub": "", "use": "Marca Honeypot / Beetrack (brand)" }
-  ],
-  "groups": [
+  "scales": [
     {
-      "id": "neutral", "label": "Neutrals — $dt-neutral-* + $hp-black",
+      "id": "neutral",
+      "label": "Neutral scale",
+      "group": "Color",
+      "special": [
+        { "hex": "#FFFFFF", "label": "White", "hcl": 100 },
+        { "hex": "#132045", "label": "Indigo" },
+        { "hex": "#000000", "label": "Black", "hcl": 0 }
+      ],
       "swatches": [
-        { "hex": "#FFFFFF", "label": "White · $white" },
-        { "hex": "#F8F8F8", "label": "$hp-gray-10" },
-        { "hex": "#F5F6FA", "label": "N1 · $dt-neutral-n1" },
-        { "hex": "#F0F2F5", "label": "N2 · $dt-neutral-n2" },
-        { "hex": "#E1E6ED", "label": "N3 · $dt-neutral-n3" },
-        { "hex": "#C5D2E7", "label": "N4 · $dt-neutral-n4" },
-        { "hex": "#8FA0BA", "label": "$dt-disabled-3" },
-        { "hex": "#67768D", "label": "N5 · $dt-neutral-n5" },
-        { "hex": "#4B5564", "label": "N6 · $dt-neutral-n6" },
-        { "hex": "#39414D", "label": "N7 · $dt-neutral-n7" },
-        { "hex": "#2D2926", "label": "$hp-black" },
-        { "hex": "#132045", "label": "Indigo · $dt-neutral-indigo" }
+        { "hex": "#F5F6FA", "label": "N1",       "hcl": 97 },
+        { "hex": "#F0F2F5", "label": "N2",       "hsb": "220, 2, 96",  "hcl": 95, "use": "bg" },
+        { "hex": "#E1E6ED", "label": "N3",       "hsb": "217, 5, 93",  "hcl": 91, "use": "disabled bg, states" },
+        { "hex": "#C5D2E7", "label": "N4",       "hsb": "217, 15, 91", "hcl": 84, "use": "line" },
+        { "hex": "#8FA0BA", "label": "N4.5 temp","hsb": "217, 23, 73", "hcl": 66, "use": "line" },
+        { "hex": "#67768D", "label": "N5",       "hsb": "216, 27, 55", "hcl": 49 },
+        { "hex": "#4B5564", "label": "N6",       "hsb": "216, 25, 39", "hcl": 36 },
+        { "hex": "#39414D", "label": "N7",       "hsb": "216, 26, 30", "hcl": 27 }
       ]
     },
     {
-      "id": "blue", "label": "Blue · primary — $dt-primary-*",
+      "id": "green", "label": "Green",
       "swatches": [
-        { "hex": "#EDF5FF", "label": "B1 · $dt-primary-8" },
-        { "hex": "#D1E0FF", "label": "B2 · $dt-primary-7" },
-        { "hex": "#ADC7FF", "label": "B3 · $dt-primary-6" },
-        { "hex": "#6B9AFF", "label": "B4 · ondemand" },
-        { "hex": "#4B82FA", "label": "B5 · $dt-primary-main" },
-        { "hex": "#1F60ED", "label": "B6 · $dt-primary-middle" },
-        { "hex": "#0052CC", "label": "B7 · $dt-primary-dark" }
+        { "hex": "#E3FCEF", "label": "G1", "hcl": 97 },
+        { "hex": "#ABF5D1", "label": "G2", "hcl": 91 },
+        { "hex": "#79F2C0", "label": "G3", "hcl": 88 },
+        { "hex": "#57D9A3", "label": "G4" },
+        { "hex": "#36B37E", "label": "G5" },
+        { "hex": "#00875A", "label": "G6" },
+        { "hex": "#006644", "label": "G7" }
       ]
     },
     {
-      "id": "green", "label": "Green · success — $dt-success, $hp-success-*",
+      "id": "teal", "label": "Teal",
       "swatches": [
-        { "hex": "#E3FCEF", "label": "$dt-success bg" },
-        { "hex": "#79F2C0", "label": "$dt-success-dark" },
-        { "hex": "#5BDE45", "label": "$hp-success-light" },
-        { "hex": "#4BB839", "label": "$hp-success-dark" },
-        { "hex": "#47D09A", "label": "Planner accent" },
-        { "hex": "#00875A", "label": "$dt-success ✓" },
-        { "hex": "#006844", "label": "success dark" }
+        { "hex": "#E6FCFF", "label": "T1", "hcl": 97 },
+        { "hex": "#B3F5FF", "label": "T2", "hcl": 91 },
+        { "hex": "#79E2F2", "label": "T3", "hcl": 88 },
+        { "hex": "#3DD7F2", "label": "T4" },
+        { "hex": "#00B8D9", "label": "T5" },
+        { "hex": "#00A3BF", "label": "T6" },
+        { "hex": "#008DA6", "label": "T7" }
       ]
     },
     {
-      "id": "red", "label": "Red · danger — $dt-feedback-r*",
+      "id": "blue", "label": "Blue",
       "swatches": [
-        { "hex": "#FFEBE6", "label": "R1 · $dt-feedback-r7" },
-        { "hex": "#FFBDAD", "label": "R2 · $dt-feedback-r6" },
-        { "hex": "#FF8F73", "label": "$dt-error-dark" },
-        { "hex": "#FF7452", "label": "$dt-feedback-r4" },
-        { "hex": "#FF5630", "label": "R5 · $dt-feedback-r3" },
-        { "hex": "#DE350B", "label": "R6 · $dt-error ✗" },
-        { "hex": "#BF2600", "label": "R7 · $dt-feedback-r1" }
+        { "hex": "#EDF5FF", "label": "B1", "hsb": "221, 7, 100",  "hcl": 96 },
+        { "hex": "#D1E0FF", "label": "B2", "hsb": "221, 18, 100", "hcl": 89 },
+        { "hex": "#ADC7FF", "label": "B3", "hsb": "214, 32, 100", "hcl": 80 },
+        { "hex": "#6B9AFF", "label": "B4", "hsb": "218, 58, 100", "hcl": 65 },
+        { "hex": "#4B82FA", "label": "B5", "hsb": "221, 70, 98",  "hcl": 56 },
+        { "hex": "#1F60ED", "label": "B6", "hsb": "221, 87, 93",  "hcl": 45 },
+        { "hex": "#0052CC", "label": "B7", "hsb": "221, 94, 78",  "hcl": 37 }
       ]
     },
     {
-      "id": "orange", "label": "Orange · warning — $dt-warning",
+      "id": "purple", "label": "Purple",
       "swatches": [
-        { "hex": "#FFFAE6", "label": "O1" },
-        { "hex": "#FFE380", "label": "$dt-warning-dark" },
-        { "hex": "#FFAB00", "label": "O5 · $dt-warning ⚠" },
-        { "hex": "#FF8B00", "label": "O7" }
+        { "hex": "#F0EDFF", "label": "P1", "hsb": "250, 7, 100",  "hcl": 94 },
+        { "hex": "#DBD4FA", "label": "P2", "hsb": "251, 15, 98",  "hcl": 87 },
+        { "hex": "#C0B6F2", "label": "P3", "hsb": "250, 25, 95",  "hcl": 77 },
+        { "hex": "#998DD9", "label": "P4", "hsb": "249, 35, 85",  "hcl": 62 },
+        { "hex": "#8777D9", "label": "P5", "hsb": "250, 45, 85",  "hcl": 55 },
+        { "hex": "#6554C0", "label": "P6", "hsb": "249, 56, 75",  "hcl": 43 },
+        { "hex": "#5243AA", "label": "P7", "hsb": "249, 61, 67",  "hcl": 35 }
       ]
     },
     {
-      "id": "brand", "label": "Honeypot brand — $hp-primary, $hp-secondary, product colors",
+      "id": "red", "label": "Red",
       "swatches": [
-        { "hex": "#FFD200", "label": "$hp-primary-light" },
-        { "hex": "#F5B63E", "label": "$hp-primary" },
-        { "hex": "#EEA00C", "label": "$hp-primary-dark" },
-        { "hex": "#A3B5D1", "label": "$hp-secondary-light" },
-        { "hex": "#546884", "label": "$hp-secondary" },
-        { "hex": "#222E3F", "label": "$hp-secondary-dark" },
-        { "hex": "#70CBFF", "label": "$hp-tertiary-light" },
-        { "hex": "#0792E0", "label": "$hp-tertiary" },
-        { "hex": "#628EFF", "label": "$hp-info-light" },
-        { "hex": "#F27B42", "label": "LastMile" },
-        { "hex": "#FF3E50", "label": "FirstMile" },
-        { "hex": "#47D09A", "label": "Planner" },
-        { "hex": "#6B9AFF", "label": "OnDemand" }
+        { "hex": "#FFEBE6", "label": "R1", "hcl": 94 },
+        { "hex": "#FFBDAD", "label": "R2" },
+        { "hex": "#FF8F73", "label": "R3" },
+        { "hex": "#FF7452", "label": "R4" },
+        { "hex": "#FF5630", "label": "R5", "hsb": "13, 100, 100",  "hcl": 60 },
+        { "hex": "#DE350B", "label": "R6", "hsb": "10, 95, 87",    "hcl": 50 },
+        { "hex": "#BF2600", "label": "R7", "hsb": "10, 100, 75",   "hcl": 42 }
+      ]
+    },
+    {
+      "id": "orange", "label": "Orange",
+      "swatches": [
+        { "hex": "#FFFAE6", "label": "O1", "hcl": 98 },
+        { "hex": "#FFF0B3", "label": "O2" },
+        { "hex": "#FFE380", "label": "O3" },
+        { "hex": "#FFC400", "label": "O4" },
+        { "hex": "#FFAB00", "label": "O5", "hsb": "40, 100, 100" },
+        { "hex": "#FF9A1F", "label": "O6", "hsb": "37, 88, 100" },
+        { "hex": "#FF8B00", "label": "O7", "hsb": "33, 100, 100" }
       ]
     }
+  ],
+  "opacity": {
+    "label": "Opacity scale",
+    "dark": [
+      { "label": "black-a6",  "desc": "Opacity: #000000 6%",  "css": "rgba(0,0,0,0.06)" },
+      { "label": "black-a12", "desc": "Opacity: #000000 12%", "css": "rgba(0,0,0,0.12)" },
+      { "label": "black-18",  "desc": "Opacity: #000000 18%", "css": "rgba(0,0,0,0.18)" },
+      { "label": "black-24",  "desc": "Opacity: #000000 24%", "css": "rgba(0,0,0,0.24)" },
+      { "label": "black-50",  "desc": "Opacity: #000000 50%", "css": "rgba(0,0,0,0.5)"  },
+      { "label": "black-70",  "desc": "Opacity: #000000 70%", "css": "rgba(0,0,0,0.7)"  },
+      { "label": "black-90",  "desc": "Opacity: #000000 90%", "css": "rgba(0,0,0,0.9)"  }
+    ],
+    "light": [
+      { "label": "white-a8",  "desc": "Opacity: #ffffff 8%",  "css": "rgba(255,255,255,0.08)" },
+      { "label": "white-a16", "desc": "Opacity: #ffffff 16%", "css": "rgba(255,255,255,0.16)" },
+      { "label": "white-a24", "desc": "Opacity: #ffffff 24%", "css": "rgba(255,255,255,0.24)" },
+      { "label": "white-a32", "desc": "Opacity: #ffffff 32%", "css": "rgba(255,255,255,0.32)" }
+    ]
+  },
+  "semanticTokens": [
+    { "hex": "#1F60ED", "name": "$dt-primary-middle", "sub": "B6", "use": "Botones primarios (hover state)" },
+    { "hex": "#4B82FA", "name": "$dt-primary-main",   "sub": "B5", "use": "Selección, highlight, focus" },
+    { "hex": "#0052CC", "name": "$dt-primary-dark",   "sub": "B7", "use": "Links de texto, active" },
+    { "hex": "#EDF5FF", "name": "$dt-primary-8",      "sub": "B1", "use": "Fondo hover / selección ligera" },
+    { "hex": "#DE350B", "name": "$dt-error",          "sub": "R6", "use": "Eliminar, errores" },
+    { "hex": "#00875A", "name": "$dt-success",        "sub": "G6", "use": "Confirmación, activo" },
+    { "hex": "#FFAB00", "name": "$dt-warning",        "sub": "O5", "use": "Advertencias" },
+    { "hex": "#39414D", "name": "$dt-neutral-n7",     "sub": "N7", "use": "Texto principal" },
+    { "hex": "#67768D", "name": "$dt-neutral-n5",     "sub": "N5", "use": "Texto secundario" },
+    { "hex": "#C5D2E7", "name": "$dt-neutral-n4",     "sub": "N4", "use": "Bordes, divisores" },
+    { "hex": "#E1E6ED", "name": "$dt-neutral-n3",     "sub": "N3", "use": "Bordes suaves, separadores" },
+    { "hex": "#F0F2F5", "name": "$dt-neutral-n2",     "sub": "N2", "use": "Background de página" },
+    { "hex": "#132045", "name": "$dt-neutral-indigo", "sub": "",   "use": "Topbar — solo topbar" }
   ]
 }
