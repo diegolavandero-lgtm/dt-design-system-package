@@ -49,6 +49,16 @@ button,input,select{font-family:inherit}
 .sidebar::-webkit-scrollbar{width:6px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--n3);border-radius:3px}
 .sidebar .grp-lbl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);padding:10px 20px 5px}
+.sb-search{position:sticky;top:0;background:#fff;padding:10px 14px 8px;z-index:5;border-bottom:1px solid var(--n3)}
+.sb-search-inp{display:flex;align-items:center;gap:7px;background:var(--n1);border:1px solid var(--n3);border-radius:6px;padding:6px 9px;transition:border-color .12s,background .12s}
+.sb-search-inp:focus-within{border-color:var(--b5);background:#fff;box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.sb-search-inp svg{color:var(--n5);flex-shrink:0}
+.sb-search-inp input{flex:1;border:0;outline:0;background:transparent;font:400 13px var(--font-sans);color:var(--n7);min-width:0}
+.sb-search-inp input::placeholder{color:var(--n45)}
+.sb-search-inp .clr{background:transparent;border:0;color:var(--n5);cursor:pointer;padding:2px;display:none;align-items:center}
+.sb-search-inp.has-val .clr{display:inline-flex}
+.sb-empty{font:400 12px var(--font-sans);color:var(--n5);padding:14px 20px;font-style:italic}
+.sidebar .grp-lbl.hidden,.sidebar a.snav.hidden{display:none}
 .sidebar a.snav{display:flex;align-items:center;gap:8px;padding:6px 20px;font:500 13px var(--font-sans);color:var(--n7);border-left:3px solid transparent;text-decoration:none}
 .sidebar a.snav:hover{background:var(--n1)}
 .sidebar a.snav.active{background:var(--b1);border-left-color:var(--b5);font-weight:700}
@@ -616,9 +626,18 @@ async function navigate(id) {
 ================================================================ */
 function buildNav() {
   const sidebar = document.getElementById('sidebar');
-  let html = '';
+  let html = `
+    <div class="sb-search">
+      <div class="sb-search-inp" id="sb-search-wrap">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="sb-search" type="search" placeholder="Filtrar menú…" autocomplete="off" oninput="filterNav(this.value)">
+        <button class="clr" onclick="clearNavFilter()" aria-label="Clear" title="Clear">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>`;
   NAV.forEach((group, gi) => {
-    html += `<div class="grp-lbl"${gi > 0 ? ' style="margin-top:8px"' : ''} data-i18n="${group.i18n}">${group.group}</div>`;
+    html += `<div class="grp-lbl"${gi > 0 ? ' style="margin-top:8px"' : ''} data-i18n="${group.i18n}" data-grp="${group.group}">${group.group}</div>`;
     group.items.forEach(item => {
       let iconHtml = '';
       if (item.id === 'figma') {
@@ -627,13 +646,55 @@ function buildNav() {
       } else if (item.icon) {
         iconHtml = `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${item.icon}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       }
-      html += `<a href="#${item.id}" class="snav" data-sec="${item.id}" data-i18n="${item.i18n || ''}" onclick="navigate('${item.id}');return false;">
+      html += `<a href="#${item.id}" class="snav" data-sec="${item.id}" data-i18n="${item.i18n || ''}" data-label="${item.label.toLowerCase()}" onclick="navigate('${item.id}');return false;">
         ${iconHtml}
         <span>${item.label}</span>
       </a>`;
     });
   });
+  html += `<div class="sb-empty" id="sb-empty" style="display:none">Sin coincidencias</div>`;
   sidebar.innerHTML = html;
+}
+
+/* ================================================================
+   SIDEBAR NAV FILTER (local — narrows the left menu only)
+================================================================ */
+function filterNav(q) {
+  const term = (q || '').trim().toLowerCase();
+  const wrap = document.getElementById('sb-search-wrap');
+  if (wrap) wrap.classList.toggle('has-val', term.length > 0);
+
+  const links = document.querySelectorAll('.sidebar a.snav');
+  const groups = document.querySelectorAll('.sidebar .grp-lbl');
+  let totalVisible = 0;
+
+  links.forEach(a => {
+    const label = a.dataset.label || a.textContent.trim().toLowerCase();
+    const match = !term || label.includes(term);
+    a.classList.toggle('hidden', !match);
+    if (match) totalVisible++;
+  });
+
+  groups.forEach(g => {
+    let next = g.nextElementSibling;
+    let groupHasVisible = false;
+    while (next && !next.classList.contains('grp-lbl')) {
+      if (next.classList.contains('snav') && !next.classList.contains('hidden')) {
+        groupHasVisible = true;
+        break;
+      }
+      next = next.nextElementSibling;
+    }
+    g.classList.toggle('hidden', !groupHasVisible);
+  });
+
+  const empty = document.getElementById('sb-empty');
+  if (empty) empty.style.display = totalVisible === 0 && term ? 'block' : 'none';
+}
+
+function clearNavFilter() {
+  const inp = document.getElementById('sb-search');
+  if (inp) { inp.value = ''; filterNav(''); inp.focus(); }
 }
 
 /* ================================================================
