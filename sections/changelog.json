@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T15:32:00.966Z",
+  "generated": "2026-05-20T15:39:05.240Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "39d128e",
+          "type": "feat",
+          "section": "Sidebar",
+          "message": "Add mobile drawer pattern to sidebar component",
+          "author": "Cristina"
+        },
         {
           "hash": "30e2059",
           "type": "update",
