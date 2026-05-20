@@ -2,11 +2,25 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T15:51:21.755Z",
+  "generated": "2026-05-20T15:53:25.652Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "0e53c8c",
+          "type": "feat",
+          "section": "General",
+          "message": "Map elements: add 37 real pin SVGs with individual + ZIP download",
+          "author": "Diego"
+        },
+        {
+          "hash": "da7e845",
+          "type": "feat",
+          "section": "Sidebar",
+          "message": "Add sidebar search filter",
+          "author": "Cristina"
+        },
         {
           "hash": "94b6580",
           "type": "fix",
