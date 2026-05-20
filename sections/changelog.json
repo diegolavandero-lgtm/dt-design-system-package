@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T14:55:38.043Z",
+  "generated": "2026-05-20T14:59:12.066Z",
   "days": [
     {
       "date": "2026-05-20",
       "entries": [
+        {
+          "hash": "8061733",
+          "type": "feat",
+          "section": "General",
+          "message": "Login: add registration tab restricted to @dispatchtrack.com emails",
+          "author": "Diego"
+        },
         {
           "hash": "0071da4",
           "type": "feat",
