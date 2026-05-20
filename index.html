@@ -392,6 +392,13 @@ textarea.hp-text-field__input{resize:vertical;padding-top:0;align-self:auto;min-
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3 2 7l4 4M2 7h13a4 4 0 0 1 4 4v2M18 21l4-4-4-4M22 17H9a4 4 0 0 1-4-4v-2"/></svg>
     Fork · 24
   </button>
+  <div style="display:flex;align-items:center;gap:8px;margin-left:4px;padding-left:12px;border-left:1px solid rgba(255,255,255,.15)">
+    <span id="topbar-user-email" style="font:400 11px var(--font-sans);color:rgba(255,255,255,.6);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+    <button id="topbar-logout" class="gh-action" style="gap:5px" title="Sign out">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Sign out
+    </button>
+  </div>
 </header>
 
 <!-- ── REPO SUBNAV ── -->
@@ -763,5 +770,25 @@ window.addEventListener('hashchange', () => {
 <!-- ── i18n + Changelog system (deferred) ── -->
 <script src="i18n.js" defer></script>
 <script src="changelog.js" defer></script>
+
+<!-- ── Auth guard ── -->
+<script src="supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(async () => {
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { location.replace('login.html'); return; }
+
+  // Show user email in topbar and wire logout
+  const emailEl = document.getElementById('topbar-user-email');
+  if (emailEl) emailEl.textContent = session.user.email;
+
+  document.getElementById('topbar-logout')?.addEventListener('click', async () => {
+    await sb.auth.signOut();
+    location.replace('login.html');
+  });
+})();
+</script>
 </body>
 </html>
