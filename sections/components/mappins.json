@@ -6,57 +6,14 @@
   "pinsPath": "sections/assets/pins/",
   "groups": [
     {
-      "id": "en-ruta",
-      "label": "En ruta",
-      "color": "#4B82FA",
+      "id": "with-order",
+      "label": "With order",
+      "color": "#0C47C7",
       "pins": [
-        { "file": "pin-en-ruta-unselected.svg",       "label": "Unselected" },
-        { "file": "pin-en-ruta-selected.svg",          "label": "Selected" },
-        { "file": "pin-en-ruta-badge-unselected.svg",  "label": "Badge · Unselected" },
-        { "file": "pin-en-ruta-badge-selected.svg",    "label": "Badge · Selected" }
-      ]
-    },
-    {
-      "id": "exitosa",
-      "label": "Exitosa",
-      "color": "#00875A",
-      "pins": [
-        { "file": "pin-exitosa-unselected.svg",       "label": "Unselected" },
-        { "file": "pin-exitosa-selected.svg",          "label": "Selected" },
-        { "file": "pin-exitosa-badge-unselected.svg",  "label": "Badge · Unselected" },
-        { "file": "pin-exitosa-badge-selected.svg",    "label": "Badge · Selected" }
-      ]
-    },
-    {
-      "id": "fallida",
-      "label": "Fallida",
-      "color": "#DE350B",
-      "pins": [
-        { "file": "pin-fallida-unselected.svg",       "label": "Unselected" },
-        { "file": "pin-fallida-selected.svg",          "label": "Selected" },
-        { "file": "pin-fallida-badge-unselected.svg",  "label": "Badge · Unselected" },
-        { "file": "pin-fallida-badge-selected.svg",    "label": "Badge · Selected" }
-      ]
-    },
-    {
-      "id": "cancelada",
-      "label": "Cancelada",
-      "color": "#8777D9",
-      "pins": [
-        { "file": "pin-cancelada-unselected.svg",       "label": "Unselected" },
-        { "file": "pin-cancelada-selected.svg",          "label": "Selected" },
-        { "file": "pin-cancelada-badge-unselected.svg",  "label": "Badge · Unselected" },
-        { "file": "pin-cancelada-badge-selected.svg",    "label": "Badge · Selected" }
-      ]
-    },
-    {
-      "id": "asignada",
-      "label": "Asignada",
-      "color": "#0052CC",
-      "pins": [
-        { "file": "pin-asignada-badge-unselected.svg",       "label": "Badge · Unselected" },
-        { "file": "pin-asignada-badge-selected.svg",          "label": "Badge · Selected" },
-        { "file": "pin-asignada-badge-selected-close.svg",    "label": "Badge · Selected · Close" }
+        { "file": "pin-with-order-unselected.svg",       "label": "Unselected" },
+        { "file": "pin-with-order-selected.svg",          "label": "Selected" },
+        { "file": "pin-with-order-badge-unselected.svg",  "label": "Badge · Unselected" },
+        { "file": "pin-with-order-badge-selected.svg",    "label": "Badge · Selected" }
       ]
     },
     {
