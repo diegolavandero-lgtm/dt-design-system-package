@@ -6,5 +6,5 @@
 // SUPABASE_ANON → "anon / public" key
 // ─────────────────────────────────────────────────────────────────────────
 
-const SUPABASE_URL  = 'REPLACE_WITH_YOUR_PROJECT_URL';
-const SUPABASE_ANON = 'REPLACE_WITH_YOUR_ANON_KEY';
+const SUPABASE_URL  = 'https://phtdtubfbvgasojagfpr.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_0OgCK75mmPmNTRWHHNOrPg_JEUOdlnK';
