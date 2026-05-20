@@ -477,7 +477,7 @@ const HOME_ICON = 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10'
 
 const NAV = [
   { group: 'Getting started', i18n: 'nav.gettingStarted', items: [
-    { id: 'overview', label: 'README', i18n: 'nav.readme',
+    { id: 'overview', label: 'Home', i18n: 'nav.readme',
       icon: 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10',
       path: 'sections/overview.json', renderer: 'overview' },
     { id: 'changelog', label: 'Changelog', i18n: 'nav.changelog',
@@ -783,49 +783,64 @@ document.addEventListener('click', e => {
 });
 
 /* ================================================================
-   OVERVIEW DASHBOARD — activity feed from changelog.json
+   OVERVIEW DASHBOARD — activity feed from sections/changelog.json
 ================================================================ */
-const AVATAR_COLORS = ['#4B82FA','#00875A','#F27B42','#8777D9','#47D09A','#FF5630'];
-const TYPE_LABELS = { added:'Added', changed:'Changed', fixed:'Fixed', deprecated:'Deprecated', removed:'Removed', tokens:'Tokens' };
-const TYPE_CLS    = { added:'bg', changed:'bb', fixed:'bg', deprecated:'bo', removed:'br', tokens:'bt' };
+const AUTHOR_COLORS = { Diego:'#4B82FA', Cristina:'#47D09A', Carlos:'#F27B42' };
+const DEFAULT_COLORS = ['#8777D9','#00B8D9','#FF5630','#FFAB00'];
+const TYPE_COLOR = { fix:'#C45000', feat:'#1A7F3C', update:'#0052CC' };
+const TYPE_LABEL = { fix:'Fix', feat:'New', update:'Update' };
+
+function authorColor(name) {
+  if (AUTHOR_COLORS[name]) return AUTHOR_COLORS[name];
+  let hash = 0;
+  for (const c of (name || '?')) hash = (hash * 31 + c.charCodeAt(0)) & 0xffff;
+  return DEFAULT_COLORS[hash % DEFAULT_COLORS.length];
+}
 
 async function initOverviewDashboard() {
   const el = document.getElementById('dash-activity');
   if (!el) return;
   try {
-    const res = await fetch('changelog.json');
+    const res = await fetch('sections/changelog.json');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    const entries = (data.entries || []).slice(0, 6);
-    if (!entries.length) { el.innerHTML = '<div style="padding:18px 16px;font:400 12px var(--font-sans);color:var(--n5)">No updates yet.</div>'; return; }
 
-    const rows = [];
-    for (let ei = 0; ei < entries.length; ei++) {
-      const entry = entries[ei];
-      for (let ci = 0; ci < Math.min(entry.changes.length, 2); ci++) {
-        const change = entry.changes[ci];
-        const initials = entry.author.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-        const color = AVATAR_COLORS[ei % AVATAR_COLORS.length];
-        const d = new Date(entry.date);
-        const dateStr = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-        const typeCls = TYPE_CLS[change.type] || 'bn';
-        const typeLabel = TYPE_LABELS[change.type] || change.type;
-        const lang = (document.documentElement.lang || 'es') === 'en' ? 'en' : 'es';
-        const desc = change.description ? (change.description[lang] || change.description.en || '') : '';
-        rows.push(`
-          <div class="dash-feed-item">
-            <div class="dash-av" style="background:${color}">${initials}</div>
-            <div class="dash-feed-body">
-              <div class="dfb-who">${escHtml(entry.author)} <span style="font-weight:400;color:var(--n5)">· v${escHtml(entry.version)}</span>
-                <span class="badge ${typeCls}" style="margin-left:5px;font-size:9px">${typeLabel}</span>
-              </div>
-              <div class="dfb-what"><strong>${escHtml(change.component)}</strong> — ${escHtml(desc)}</div>
-              <div class="dfb-when">${dateStr}</div>
-            </div>
-          </div>`);
+    // Flatten days → entries, newest first, max 6
+    const flat = [];
+    for (const day of (data.days || [])) {
+      for (const e of (day.entries || [])) {
+        flat.push({ ...e, date: day.date });
+        if (flat.length === 6) break;
       }
+      if (flat.length === 6) break;
     }
-    el.innerHTML = rows.join('');
+
+    if (!flat.length) {
+      el.innerHTML = '<div style="padding:18px 16px;font:400 12px var(--font-sans);color:var(--n5)">No updates yet.</div>';
+      return;
+    }
+
+    el.innerHTML = flat.map(e => {
+      const author   = e.author || '?';
+      const initial  = author[0].toUpperCase();
+      const avColor  = authorColor(author);
+      const badgeColor = TYPE_COLOR[e.type] || TYPE_COLOR.update;
+      const badgeLabel = TYPE_LABEL[e.type] || 'Update';
+      const d        = new Date(e.date + 'T12:00:00Z');
+      const dateStr  = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+      return `
+        <div class="dash-feed-item">
+          <div class="dash-av" style="background:${avColor}">${initial}</div>
+          <div class="dash-feed-body">
+            <div class="dfb-who">${escHtml(author)}
+              <span style="display:inline-block;font:600 9px/1 var(--font-sans);color:#fff;background:${badgeColor};padding:2px 6px;border-radius:3px;margin-left:5px;vertical-align:middle">${badgeLabel}</span>
+              <span style="font:400 11px var(--font-sans);color:var(--n5);margin-left:4px">${escHtml(e.section)}</span>
+            </div>
+            <div class="dfb-what">${escHtml(e.message)}</div>
+            <div class="dfb-when">${dateStr} · <code style="font:400 10px var(--font-mono);color:var(--n5)">${e.hash}</code></div>
+          </div>
+        </div>`;
+    }).join('');
   } catch(e) {
     el.innerHTML = `<div style="padding:18px 16px;font:400 12px var(--font-sans);color:var(--r6)">Could not load activity.</div>`;
   }

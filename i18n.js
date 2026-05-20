@@ -41,7 +41,7 @@
     "type.tokens": { "es": "Tokens", "en": "Tokens" },
 
     "nav.gettingStarted": { "es": "Comenzar", "en": "Getting started" },
-    "nav.readme": { "es": "README", "en": "README" },
+    "nav.readme": { "es": "Home", "en": "Home" },
     "nav.brand": { "es": "Marca y productos", "en": "Brand & products" },
     "nav.voice": { "es": "Voz y contenido", "en": "Voice & content" },
     "nav.foundations": { "es": "Fundamentos", "en": "Foundations" },
