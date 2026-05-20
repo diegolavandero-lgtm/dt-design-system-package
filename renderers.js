@@ -865,7 +865,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── SIDEBAR ── */
   sidebar(data) {
-    const t = data.tokens || {};
+    const t  = data.tokens || {};
+    const mt = data.mobileTokens || {};
     const products = data.products || [];
 
     const SB_STYLE = `<style>
@@ -887,13 +888,21 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       .sbx-sep{height:1px;background:#E9ECF2;margin:4px 14px}
       .sbx-static{width:240px;background:#fff;border-radius:0 0 24px 0;box-shadow:0 6px 12px rgba(0,0,0,.15);padding:8px 0;flex-shrink:0}
       .sbx-static .sbx-lbl{opacity:1}
+
+      /* mobile drawer rows — bigger touch targets */
+      .mob-row{display:flex;align-items:center;height:48px;cursor:pointer;padding:0 16px;gap:14px}
+      .mob-row svg{fill:#4B82FA;flex-shrink:0;display:block}
+      .mob-row .mob-lbl{font:400 15px/1 'DM Sans',sans-serif;color:#39414D}
+      .mob-row.sel{background:rgba(75,130,250,.08);border-left:4px solid #0052CC;padding-left:12px}
+      .mob-row.sel svg{fill:#0052CC}
+      .mob-row.sel .mob-lbl{font-weight:600;color:#0052CC}
+      .mob-sep{height:1px;background:#E9ECF2;margin:6px 16px}
     </style>`;
 
     function buildItems(items) {
       return (items || []).map(it => {
         if (it.divider) return `<div class="sbx-sep"></div>`;
         const isSel = it.state === 'selected';
-        const iconPath = ICON_PATHS[it.icon] || ICON_PATHS['package'];
         return `<div class="sbx-row${isSel ? ' sel' : ''}">
           <div class="sbx-bar"></div>
           <div class="sbx-bg">
@@ -904,17 +913,83 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       }).join('');
     }
 
+    function buildMobileItems(items) {
+      return (items || []).map(it => {
+        if (it.divider) return `<div class="mob-sep"></div>`;
+        const isSel = it.state === 'selected';
+        return `<div class="mob-row${isSel ? ' sel' : ''}">
+          ${iconSvg(it.icon, 20)}
+          <span class="mob-lbl">${escHtml(it.label)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    /* Hamburger icon (3 lines) */
+    const hamburger = `<svg width="22" height="22" viewBox="0 0 32 32" fill="#fff"><path d="M4 8h24v2H4zM4 15h24v2H4zM4 22h24v2H4z"/></svg>`;
+    const closeX = `<svg width="22" height="22" viewBox="0 0 32 32" fill="#39414D"><path d="M24 9.4 22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16z"/></svg>`;
+
+    /* Phone frame with closed state (hamburger visible) */
+    function phoneClosed(product) {
+      return `
+        <div style="width:240px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+          <div style="background:#F0F2F5;border-radius:22px;height:440px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#1a1a1a;border-radius:2px"></div>
+            <div style="position:absolute;inset:30px 0 0 0;background:#fff">
+              <div style="height:52px;background:#132045;display:flex;align-items:center;padding:0 14px;gap:12px">
+                ${hamburger}
+                <span style="color:#fff;font:700 12px var(--font-sans)">DispatchTrack</span>
+                <div style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:${product.color}"></div>
+              </div>
+              <div style="padding:14px;font:400 11px var(--font-sans);color:var(--n5);text-align:center;margin-top:30px">
+                <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:4px">${escHtml(product.name)}</div>
+                Tap hamburger to open menu
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* Phone frame with drawer open */
+    function phoneOpen(product) {
+      const items = buildMobileItems(product.items);
+      return `
+        <div style="width:240px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+          <div style="background:#F0F2F5;border-radius:22px;height:440px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#1a1a1a;border-radius:2px;z-index:3"></div>
+            <div style="position:absolute;inset:30px 0 0 0;background:#fff">
+              <div style="height:52px;background:#132045"></div>
+            </div>
+            <div style="position:absolute;inset:30px 0 0 0;background:rgba(19,32,69,.5);z-index:1"></div>
+            <div style="position:absolute;top:30px;left:0;bottom:0;width:200px;background:#fff;z-index:2;display:flex;flex-direction:column;box-shadow:2px 0 12px rgba(0,0,0,.15)">
+              <div style="height:56px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid #E9ECF2">
+                <div style="width:6px;height:6px;border-radius:50%;background:${product.color}"></div>
+                <span style="font:700 13px var(--font-sans);color:var(--n7);flex:1">${escHtml(product.name)}</span>
+                ${closeX}
+              </div>
+              <div style="flex:1;overflow-y:auto;padding:8px 0">
+                ${items}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
     const productSections = products.map(p => {
       const interactiveItems = buildItems(p.items);
       const settingsItems = buildItems(p.settingsItems || p.items);
 
       return `
-        <div style="margin-bottom:32px">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-            <div style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
+        <div style="margin-bottom:40px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+            <div style="width:10px;height:10px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
             <span style="font:700 14px var(--font-sans);color:var(--n7)">${escHtml(p.name)}</span>
           </div>
-          <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
+
+          <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            Desktop
+          </div>
+          <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin-bottom:20px">
             <div style="display:flex;flex-direction:column;gap:7px">
               <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Collapsed → hover to expand</div>
               <div class="sbx">${interactiveItems}</div>
@@ -924,23 +999,52 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
               <div class="sbx-static">${settingsItems}</div>
             </div>
           </div>
+
+          <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Mobile
+          </div>
+          <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Closed · hamburger visible</div>
+              ${phoneClosed(p)}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px">
+              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Open · drawer with overlay</div>
+              ${phoneOpen(p)}
+            </div>
+          </div>
         </div>`;
     }).join('');
 
     const tokenRows = Object.entries(t).map(([k,v]) =>
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`).join('');
 
+    const mobileTokenRows = Object.entries(mt).filter(([k]) => k !== 'note').map(([k,v]) =>
+      `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`).join('');
+
     return `
       ${sectionHeader(data)}
       ${SB_STYLE}
+      ${mt.note ? `<div class="bn in" style="margin-bottom:14px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>${escHtml(mt.note)}</span>
+      </div>` : ''}
       <div class="card" style="background:var(--n2)">
         ${productSections}
       </div>
-      <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Design tokens</h3>
+      <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Desktop tokens</h3>
       <div class="card">
         <table class="ttbl">
           <thead><tr><th>Token</th><th>Value</th></tr></thead>
           <tbody>${tokenRows}</tbody>
+        </table>
+      </div>
+      <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Mobile tokens</h3>
+      <div class="card">
+        <table class="ttbl">
+          <thead><tr><th>Token</th><th>Value</th></tr></thead>
+          <tbody>${mobileTokenRows}</tbody>
         </table>
       </div>`;
   },

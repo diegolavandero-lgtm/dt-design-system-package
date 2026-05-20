@@ -16,6 +16,18 @@
     "itemHoverBg": "rgba(75,130,250,0.04)",
     "separatorColor": "#E9ECF2"
   },
+  "mobileTokens": {
+    "trigger": "Hamburger icon en topbar (24×24px)",
+    "drawerWidth": "280px",
+    "drawerMaxWidth": "85vw",
+    "itemHeight": "48px",
+    "iconSize": "20px",
+    "labelSize": "15px",
+    "overlayBg": "rgba(19,32,69,0.5)",
+    "transition": "transform .25s cubic-bezier(.4,0,.2,1)",
+    "headerHeight": "56px",
+    "note": "Sidebar oculto por defecto. Hamburger icon abre drawer desde la izquierda con overlay. Altura de items 48px (touch target). Labels siempre visibles, sin estado collapsed."
+  },
   "products": [
     {
       "id": "lastmile",
