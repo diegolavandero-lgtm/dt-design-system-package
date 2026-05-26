@@ -1,0 +1,97 @@
+{
+  "title": "Pills / Tags",
+  "titleKey": "nav.chips",
+  "description": "Pill-shaped, 11px semibold labels for statuses, filters, and metadata. 22px height, 999px border radius. Use color variants to communicate meaning at a glance.",
+  "keywords": ["pills", "tags", "chips", "badges", "status", "filters", "labels"],
+  "tokens": {
+    "height": "22px",
+    "padding": "2px 9px",
+    "borderRadius": "999px",
+    "fontSize": "11px",
+    "fontWeight": "600",
+    "iconSize": "12px",
+    "gap": "4px"
+  },
+  "statuses": [
+    { "label": "Scheduled",       "color": "info",    "icon": "calendar"     },
+    { "label": "In Transit",      "color": "info",    "icon": "truck"        },
+    { "label": "At Stop",         "color": "info",    "icon": "location"     },
+    { "label": "Out for Delivery","color": "warning", "icon": "route"        },
+    { "label": "Delivered",       "color": "success", "icon": "check"        },
+    { "label": "Partial",         "color": "warning", "icon": "check"        },
+    { "label": "Failed",          "color": "error",   "icon": "x-circle"    },
+    { "label": "Cancelled",       "color": "error",   "icon": "ban"         },
+    { "label": "Rescheduled",     "color": "warning", "icon": "refresh"      },
+    { "label": "Attempted",       "color": "warning", "icon": "warning"      },
+    { "label": "Collected",       "color": "success", "icon": "check-double" },
+    { "label": "Pending",         "color": "neutral", "icon": "arrow"        },
+    { "label": "Draft",           "color": "neutral", "icon": ""             }
+  ],
+  "groups": [
+    {
+      "title": "Availability",
+      "pills": [
+        { "label": "Available",   "color": "success" },
+        { "label": "Busy",        "color": "warning" },
+        { "label": "On break",    "color": "neutral" },
+        { "label": "Off duty",    "color": "neutral" },
+        { "label": "Unavailable", "color": "error"   }
+      ]
+    },
+    {
+      "title": "Approval",
+      "pills": [
+        { "label": "Approved",        "color": "success", "icon": "check"   },
+        { "label": "Pending review",  "color": "warning", "icon": "warning" },
+        { "label": "Rejected",        "color": "error",   "icon": "x-circle"}
+      ]
+    },
+    {
+      "title": "Filter chips",
+      "pills": [
+        { "label": "Today",           "color": "info",    "dismissible": true },
+        { "label": "Zone: North",     "color": "info",    "dismissible": true },
+        { "label": "Driver: Marcos",  "color": "info",    "dismissible": true },
+        { "label": "+ 2 more",        "color": "neutral"  }
+      ]
+    },
+    {
+      "title": "Counters / time",
+      "pills": [
+        { "label": "24 stops",   "color": "neutral" },
+        { "label": "3h 20min",   "color": "info"    },
+        { "label": "142 km",     "color": "neutral" },
+        { "label": "4 failed",   "color": "error"   },
+        { "label": "12 pending", "color": "warning" }
+      ]
+    },
+    {
+      "title": "Sync state",
+      "pills": [
+        { "label": "Synced",     "color": "success", "icon": "check"   },
+        { "label": "Syncing…",   "color": "info",    "icon": "refresh" },
+        { "label": "Sync error", "color": "error",   "icon": "warning" },
+        { "label": "Offline",    "color": "neutral"  }
+      ]
+    },
+    {
+      "title": "Action labels",
+      "pills": [
+        { "label": "Export",   "color": "neutral" },
+        { "label": "Assign",   "color": "info"    },
+        { "label": "Reassign", "color": "warning" },
+        { "label": "Archive",  "color": "neutral" },
+        { "label": "Delete",   "color": "error"   }
+      ]
+    },
+    {
+      "title": "Scheduled departure",
+      "pills": [
+        { "label": "On time",   "color": "success" },
+        { "label": "Delayed",   "color": "warning" },
+        { "label": "Departed",  "color": "info"    },
+        { "label": "Cancelled", "color": "error"   }
+      ]
+    }
+  ]
+}

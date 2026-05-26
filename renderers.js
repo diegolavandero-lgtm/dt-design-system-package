@@ -776,6 +776,163 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <div class="card">${rows}</div>`;
   },
 
+  /* ── CHIPS / PILLS ── */
+  chips(data) {
+    const VARIANTS = ['text','dot','outline','icon-outline','icon-outline-x','icon-solid-x','solid'];
+    const VARIANT_LABELS = ['Text','Dot','Outline','Icon','Icon + ×','Solid + ×','Solid'];
+
+    const CC = {
+      info:    { light:'var(--b1)', bd:'var(--b3)', fg:'var(--b6)', solid:'var(--b5)', solidFg:'#fff' },
+      success: { light:'var(--g1)', bd:'var(--g3)', fg:'var(--g7)', solid:'var(--g5)', solidFg:'#fff' },
+      warning: { light:'var(--o1)', bd:'var(--o3)', fg:'var(--o7)', solid:'var(--o5)', solidFg:'#fff' },
+      error:   { light:'var(--r1)', bd:'var(--r3)', fg:'var(--r6)', solid:'var(--r5)', solidFg:'#fff' },
+      neutral: { light:'var(--n2)', bd:'var(--n4)', fg:'var(--n6)', solid:'var(--n5)', solidFg:'#fff' },
+    };
+
+    const ICON_PATHS_CHIP = {
+      'calendar':     '<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>',
+      'truck':        '<path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-6zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
+      'location':     '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
+      'route':        '<path d="M19 15.18V7c0-2.21-1.79-4-4-4s-4 1.79-4 4v10c0 1.1-.9 2-2 2s-2-.9-2-2V8.82C8.16 8.4 9 7.3 9 6c0-1.66-1.34-3-3-3S3 4.34 3 6c0 1.3.84 2.4 2 2.82V17c0 2.21 1.79 4 4 4s4-1.79 4-4V7c0-1.1.9-2 2-2s2 .9 2 2v8.18c-1.16.41-2 1.51-2 2.82 0 1.66 1.34 3 3 3s3-1.34 3-3c0-1.3-.84-2.4-2-2.82z"/>',
+      'check':        '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
+      'x-circle':     '<path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>',
+      'ban':          '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69l11.21-11.21C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"/>',
+      'refresh':      '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
+      'warning':      '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
+      'check-double': '<path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/>',
+      'arrow':        '<path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>',
+    };
+
+    const BASE_PILL = 'display:inline-flex;align-items:center;gap:4px;height:22px;padding:2px 9px;border-radius:999px;font:600 11px/1 var(--font-sans);white-space:nowrap;';
+    const X_BTN = `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7;flex-shrink:0"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
+
+    function chipIcon(name, color) {
+      const path = ICON_PATHS_CHIP[name];
+      if (!path) return '';
+      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="${color}" style="flex-shrink:0">${path}</svg>`;
+    }
+
+    function renderVariant(label, icon, colorKey, variant) {
+      const c = CC[colorKey] || CC.neutral;
+      switch (variant) {
+        case 'text':
+          return `<span style="${BASE_PILL}background:transparent;color:${c.fg}">${escHtml(label)}</span>`;
+        case 'dot':
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg}"><span style="width:6px;height:6px;border-radius:50%;background:${c.solid};flex-shrink:0"></span>${escHtml(label)}</span>`;
+        case 'outline':
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${escHtml(label)}</span>`;
+        case 'icon-outline':
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${icon ? chipIcon(icon, c.fg) : ''}${escHtml(label)}</span>`;
+        case 'icon-outline-x':
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${icon ? chipIcon(icon, c.fg) : ''}${escHtml(label)}${X_BTN}</span>`;
+        case 'icon-solid-x':
+          return `<span style="${BASE_PILL}background:${c.solid};color:${c.solidFg}">${icon ? chipIcon(icon, c.solidFg) : ''}${escHtml(label)}${X_BTN}</span>`;
+        case 'solid':
+          return `<span style="${BASE_PILL}background:${c.solid};color:${c.solidFg}">${escHtml(label)}</span>`;
+        default:
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg}">${escHtml(label)}</span>`;
+      }
+    }
+
+    function renderSimplePill(p) {
+      const c = CC[p.color] || CC.neutral;
+      const icon = p.icon ? chipIcon(p.icon, c.fg) : '';
+      const dismiss = p.dismissible ? X_BTN : '';
+      return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${icon}${escHtml(p.label)}${dismiss}</span>`;
+    }
+
+    const tokens = data.tokens || {};
+    const tokenRows = Object.entries(tokens).map(([k, v]) => `
+      <tr>
+        <td style="padding:8px 12px;font:600 12px/1 var(--font-mono);color:var(--n7)">${escHtml(k)}</td>
+        <td style="padding:8px 12px;font:400 12px/1 var(--font-mono);color:var(--n5)">--chip-${escHtml(k)}</td>
+        <td style="padding:8px 12px;font:400 12px/1 var(--font-mono);color:var(--b6)">${escHtml(v)}</td>
+      </tr>`).join('');
+
+    const tokensCard = `
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--n3)">
+          <span style="font:600 13px/1 var(--font-sans);color:var(--n7)">Tokens</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--n2)">
+              <th style="padding:8px 12px;font:600 11px/1 var(--font-sans);color:var(--n5);text-align:left;text-transform:uppercase;letter-spacing:.04em">Property</th>
+              <th style="padding:8px 12px;font:600 11px/1 var(--font-sans);color:var(--n5);text-align:left;text-transform:uppercase;letter-spacing:.04em">Token</th>
+              <th style="padding:8px 12px;font:600 11px/1 var(--font-sans);color:var(--n5);text-align:left;text-transform:uppercase;letter-spacing:.04em">Value</th>
+            </tr>
+          </thead>
+          <tbody>${tokenRows}</tbody>
+        </table>
+      </div>`;
+
+    const statuses = data.statuses || [];
+    const headerCells = VARIANT_LABELS.map(l =>
+      `<div style="font:600 11px/1 var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;padding:6px 0">${l}</div>`
+    ).join('');
+
+    const statusRows = statuses.map(s => {
+      const cells = VARIANTS.map(v => `<div style="display:flex;align-items:center">${renderVariant(s.label, s.icon, s.color, v)}</div>`).join('');
+      return cells;
+    }).join('');
+
+    const gridCols = `repeat(${VARIANTS.length}, minmax(0,1fr))`;
+    const statusGrid = `
+      <div class="card" style="margin-bottom:24px">
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:16px">Status × variant grid</div>
+        <div style="display:grid;grid-template-columns:${gridCols};gap:6px;align-items:center">
+          ${headerCells}
+          ${statusRows}
+        </div>
+      </div>`;
+
+    const groups = (data.groups || []);
+    const groupCards = groups.map(g => {
+      const pills = (g.pills || []).map(renderSimplePill).join('');
+      return `
+        <div style="flex:1;min-width:200px">
+          <div style="font:600 11px/1 var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">${escHtml(g.title)}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">${pills}</div>
+        </div>`;
+    }).join('');
+
+    const groupsCard = `
+      <div class="card" style="margin-bottom:24px">
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:16px">Groups</div>
+        <div style="display:flex;flex-wrap:wrap;gap:20px 32px">${groupCards}</div>
+      </div>`;
+
+    const snippet = `<span class="pill-info">Scheduled</span>
+<span class="pill-success">Delivered</span>
+<span class="pill-warning">Pending</span>
+<span class="pill-error">Failed</span>
+<span class="pill-neutral">Draft</span>
+
+<!-- With icon -->
+<span class="pill-success pill-icon">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+  </svg>
+  Delivered
+</span>
+
+<!-- Dismissible -->
+<span class="pill-info pill-x">
+  Zone: North
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+  </svg>
+</span>`;
+
+    const snippetCard = `
+      <div class="card" style="margin-bottom:24px">
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:12px">Usage</div>
+        ${codeBlock(snippet)}
+      </div>`;
+
+    return `${sectionHeader(data)}${tokensCard}${statusGrid}${groupsCard}${snippetCard}`;
+  },
+
   /* ── BADGES ── */
   badges(data) {
     const badgeMap = {success:'bg', danger:'br', warning:'bo', info:'bb', neutral:'bn', outline:'bx'};
