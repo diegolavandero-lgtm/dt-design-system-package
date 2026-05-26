@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T18:46:05.638Z",
+  "generated": "2026-05-26T19:23:45.064Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "5d39c11",
+          "type": "update",
+          "section": "Colors",
+          "message": "Tables: hover-only scrollbar, ends before sticky column, N1/N4 colors",
+          "author": "Diego"
+        },
         {
           "hash": "07f5a77",
           "type": "fix",
