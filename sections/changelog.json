@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T19:32:12.626Z",
+  "generated": "2026-05-26T19:40:31.573Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "ef3e11b",
+          "type": "update",
+          "section": "Tables",
+          "message": "Tables: rewrite stacked cells with inline styles, no CSS classes",
+          "author": "Diego"
+        },
         {
           "hash": "f95329b",
           "type": "fix",
