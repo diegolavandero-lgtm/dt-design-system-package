@@ -1032,7 +1032,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             ).join('');
           } else {
             const overflow = acts.slice(1);
-            const dataActs = escHtml(JSON.stringify(overflow));
+            const dataActs = JSON.stringify(overflow).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
             btns = `<button class="tbl-act-btn" onclick="return false" title="${escHtml(acts[0])}">${iconSvg(acts[0],14)}</button>` +
               `<button class="tbl-act-btn" data-acts="${dataActs}" onclick="tblMenu(this)" title="More options">${iconSvg('overflow-menu-vertical',14)}</button>`;
           }
