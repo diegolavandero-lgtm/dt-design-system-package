@@ -801,68 +801,68 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── ALERTS / TOASTS ── */
   alerts(data) {
-    const typeMap = {
-      success: { stroke: 'var(--g6)', iconPath: '<circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>' },
-      error:   { stroke: 'var(--r6)', iconPath: '<circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>' },
-      warning: { stroke: 'var(--o5)', iconPath: '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>' },
-      info:    { stroke: 'var(--b6)', iconPath: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>' },
-      neutral: { stroke: 'var(--n5)', iconPath: '<circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/>' },
-      loading: { stroke: 'var(--b5)', iconPath: null },
+    const TYPES = data.types || ['info', 'neutral', 'warning', 'error', 'success'];
+
+    const TC = {
+      info:    { bg: 'var(--b2)', bd: 'var(--b3)',  fg: 'var(--b7)', ic: 'var(--b6)',  ip: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
+      neutral: { bg: 'var(--n2)', bd: 'var(--n3)',  fg: 'var(--n6)', ic: 'var(--n5)',  ip: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
+      warning: { bg: 'var(--o1)', bd: 'var(--o3)',  fg: 'var(--n7)', ic: 'var(--o7)',  ip: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>' },
+      error:   { bg: 'var(--r1)', bd: '#f5c2c7',    fg: 'var(--r7)', ic: 'var(--r6)',  ip: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>' },
+      success: { bg: 'var(--g1)', bd: 'var(--g2)',  fg: 'var(--g7)', ic: 'var(--g6)',  ip: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/>' },
     };
 
-    function toastIcon(type) {
-      const t = typeMap[type] || typeMap.info;
-      if (type === 'loading') {
-        return `<svg class="toast-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${t.stroke}" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
+    function typeIcon(type) {
+      const c = TC[type] || TC.info;
+      return `<svg width="16" height="16" viewBox="0 0 24 24" fill="${c.ic}" style="flex-shrink:0;margin-top:1px">${c.ip}</svg>`;
+    }
+
+    function xBtn() {
+      return `<button style="flex-shrink:0;background:none;border:none;padding:0;cursor:pointer;opacity:.55;display:flex;align-items:center;line-height:0" title="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
+    }
+
+    function actionIcon(name) {
+      const paths = {
+        eye:      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+        download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+      };
+      return `<button style="flex-shrink:0;background:none;border:none;padding:0;cursor:pointer;opacity:.6;display:flex;align-items:center;line-height:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${paths[name] || ''}</svg></button>`;
+    }
+
+    function renderAlert(row, type) {
+      const c = TC[type] || TC.info;
+      const base = `background:${c.bg};border:1px solid ${c.bd};border-radius:6px;color:${c.fg}`;
+
+      if (row.title) {
+        const paras = row.paragraphs || (row.text ? [row.text] : []);
+        return `<div style="${base};padding:14px 40px 14px 16px;position:relative">
+          ${row.hasClose !== false ? `<div style="position:absolute;top:10px;right:10px">${xBtn()}</div>` : ''}
+          <strong style="display:block;font:700 14px/1.4 var(--font-sans);margin-bottom:8px">${escHtml(row.title)}</strong>
+          ${paras.map(p => `<p style="margin:0 0 6px;font:400 13px/1.5 var(--font-sans)">${escHtml(p)}</p>`).join('')}
+        </div>`;
       }
-      return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${t.stroke}" stroke-width="2">${t.iconPath}</svg>`;
-    }
 
-    function toastCard(v, isStatic) {
-      const closeBtn = v.hasClose !== false
-        ? `<button class="toast-close"${isStatic ? '' : ' onclick="dismissToast(this.closest(\'.toast\'))"'} title="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`
-        : '';
-      return `<div class="toast toast-${v.type}" style="${isStatic ? 'animation:none' : ''}">
-        <div class="toast-icon">${toastIcon(v.type)}</div>
-        <div class="toast-body">
-          ${v.title ? `<div class="toast-title">${escHtml(v.title)}</div>` : ''}
-          ${v.text  ? `<div class="toast-text">${escHtml(v.text)}</div>` : ''}
-          ${v.actionLabel ? `<button class="toast-action" onclick="return false">${escHtml(v.actionLabel)}</button>` : ''}
-        </div>
-        ${closeBtn}
+      const extras = (row.extraActions || []).map(actionIcon).join('');
+      const lines = (row.text || '').split('\n');
+      const textHtml = lines.length > 1
+        ? lines.map(l => escHtml(l)).join('<br>')
+        : escHtml(row.text || '');
+      return `<div style="${base};padding:10px 12px;display:flex;align-items:center;gap:10px">
+        ${typeIcon(type)}
+        <span style="flex:1;font:400 13px/1.4 var(--font-sans)">${textHtml}</span>
+        ${extras}
+        ${row.hasClose !== false ? xBtn() : ''}
       </div>`;
     }
 
-    const previews = (data.variants || []).map(v => {
-      const typeLabel = v.type.charAt(0).toUpperCase() + v.type.slice(1);
-      const tags = [typeLabel, v.actionLabel ? '+ action' : '', v.hasClose === false ? 'no close' : ''].filter(Boolean).join(' · ');
-      return `<div>
-        <div style="font:500 11px var(--font-sans);color:var(--n45);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">${escHtml(tags)}</div>
-        ${toastCard(v, true)}
-      </div>`;
-    }).join('');
+    if (data.groups) {
+      const sections = data.groups.map(group => {
+        const cells = (group.rows || []).flatMap(row => TYPES.map(type => renderAlert(row, type)));
+        return `<div style="display:grid;grid-template-columns:repeat(${TYPES.length},1fr);gap:10px;margin-bottom:24px">${cells.join('')}</div>`;
+      }).join('');
+      return `${sectionHeader(data)}${sections}`;
+    }
 
-    const triggerBtns = (data.variants || []).map(v => {
-      const opts = {};
-      if (v.hasClose === false) opts.hasClose = false;
-      if (v.actionLabel) opts.actionLabel = v.actionLabel;
-      const typeLabel = v.type.charAt(0).toUpperCase() + v.type.slice(1);
-      const btnLabel = [typeLabel, v.actionLabel ? '+ action' : '', v.hasClose === false ? '(no close)' : ''].filter(Boolean).join(' ');
-      return `<button class="btn sec" style="font-size:12px;height:30px;padding:0 12px"
-        onclick="showToast(${JSON.stringify(v.type)},${JSON.stringify(v.title||'')},${JSON.stringify(v.text||'')},${JSON.stringify(opts)})">${escHtml(btnLabel)}</button>`;
-    }).join('');
-
-    return `
-      ${sectionHeader(data)}
-      <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;font-size:10px">Variants</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;margin-bottom:28px">
-        ${previews}
-      </div>
-      <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;font-size:10px">Interactive demo</div>
-      <div class="card">
-        <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 14px">Click to preview each toast at the top-right corner of the screen.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px">${triggerBtns}</div>
-      </div>`;
+    return sectionHeader(data);
   },
 
   /* ── MODAL ── */
