@@ -1082,9 +1082,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       const hasActs = cols.some(c => c.type === 'actions');
       const isBulk = hasCb && hasActs;
 
-      let thead;
+      let bulkBarHtml = '';
       if (isBulk) {
-        // Derive bulk actions from rows: union of all row actions minus 'edit'
         const actsSet = new Set();
         (def.rows||[]).forEach(row => {
           (row.cells||[]).forEach(cell => {
@@ -1093,34 +1092,28 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             }
           });
         });
-        const bulkActs = [...actsSet];
-
-        const dataColCount = cols.filter(c => c.type !== 'checkbox' && c.type !== 'actions').length;
-        const cbThStyle = 'width:40px;padding:10px 0;text-align:center;background:var(--n3);border-bottom:1px solid var(--n4)';
-        const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
-
-        const normalCells = cols.map(c => {
-          if (c.type === 'checkbox') return `<th style="${cbThStyle}">${masterCb}</th>`;
-          return rh(c);
-        }).join('');
-
-        const bulkBtns = bulkActs.map(act =>
+        const bulkBtns = [...actsSet].map(act =>
           `<button class="tbl-bulk-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14,'currentColor')}<span>${escHtml(act.charAt(0).toUpperCase()+act.slice(1))}</span></button>`
         ).join('');
+        bulkBarHtml = `<div class="tbl-bulk-bar"><span class="tbl-bulk-cnt"></span><div class="tbl-bulk-actions">${bulkBtns}</div></div>`;
+      }
 
-        const bulkCells =
-          `<th style="${cbThStyle.replace('var(--n3)','var(--b1)').replace('var(--n4)','var(--b3)')}">${masterCb}</th>` +
-          `<th colspan="${dataColCount}" style="background:var(--b1);border-bottom:1px solid var(--b3);padding:10px 16px"><div class="tbl-bulk-bar"><span class="tbl-bulk-cnt"></span><div class="tbl-bulk-actions">${bulkBtns}</div></div></th>` +
-          `<th class="tbl-acts-col" style="background:var(--b1);border-bottom:1px solid var(--b3)"></th>`;
-
-        thead = `<thead><tr class="tbl-hd-normal">${normalCells}</tr><tr class="tbl-hd-bulk" style="display:none">${bulkCells}</tr></thead>`;
+      let head;
+      if (isBulk) {
+        const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
+        head = cols.map(c => {
+          if (c.type === 'checkbox') return `<th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>`;
+          if (c.type === 'actions') return `<th class="tbl-acts-col" style="text-align:center">${escHtml(c.label||'')}</th>`;
+          const sv = c.sort==='asc' ? sortAscSvg : c.sort==='desc' ? sortDescSvg : c.sortable ? sortBothSvg : '';
+          if (c.sub) return `<th><div class="th-inner"><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(c.sub)}</span><span>${escHtml(c.label||'')}${sv}</span></div></div></th>`;
+          return `<th><div class="th-inner">${escHtml(c.label||'')}${sv}</div></th>`;
+        }).join('');
       } else {
-        const head = cols.map(c => rh(c)).join('');
-        thead = `<thead><tr>${head}</tr></thead>`;
+        head = cols.map(c => rh(c)).join('');
       }
 
       const body = (def.rows||[]).map(r => rr(r, cols)).join('');
-      return `<div class="tbl-outer"><div class="tbl-wrap"><table class="tbl">${thead}<tbody>${body}</tbody></table></div></div>`;
+      return `<div class="tbl-outer">${bulkBarHtml}<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
     }
 
     /* ── row types demo ── */

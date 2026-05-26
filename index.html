@@ -248,8 +248,12 @@ button,input,select{font-family:inherit}
 .tbl-dropdown-item{display:flex;align-items:center;gap:10px;padding:0 14px;height:40px;cursor:pointer;font:400 13px var(--font-sans);color:var(--n7);white-space:nowrap;transition:background .1s}
 .tbl-dropdown-item:first-child{background:var(--n2)}
 .tbl-dropdown-item:hover{background:var(--b1);color:var(--b7)}
-/* bulk selection header */
-.tbl-bulk-bar{display:flex;align-items:center;gap:12px}
+/* bulk selection — overlay slides in from left over the header row */
+.tbl-bulk-bar{position:absolute;top:0;left:40px;right:0;height:39px;background:var(--b1);border-bottom:1px solid var(--b3);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:5;transform:translateX(-28px);opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}
+.tbl-outer.bulk-active .tbl-bulk-bar{transform:translateX(0);opacity:1;pointer-events:all}
+.th-inner{display:contents;transition:transform .22s ease,opacity .22s ease}
+.tbl th .th-inner{display:block;transition:transform .22s ease,opacity .22s ease}
+.tbl-outer.bulk-active .tbl th .th-inner{transform:translateX(24px);opacity:0}
 .tbl-bulk-cnt{font:600 13px var(--font-sans);color:var(--b7);white-space:nowrap}
 .tbl-bulk-actions{display:flex;align-items:center;gap:6px}
 .tbl-bulk-btn{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:1px solid var(--b3);border-radius:4px;background:#fff;font:500 12px var(--font-sans);color:var(--b7);cursor:pointer;white-space:nowrap;transition:background .1s,border-color .1s}
@@ -924,13 +928,10 @@ function tblMaster(cb) {
 }
 
 function tblBulkUpdate(table, n) {
-  const normalRow = table.querySelector('.tbl-hd-normal');
-  const bulkRow = table.querySelector('.tbl-hd-bulk');
-  if (!normalRow || !bulkRow) return;
-  const show = n >= 2;
-  normalRow.style.display = show ? 'none' : '';
-  bulkRow.style.display = show ? 'table-row' : 'none';
-  const cntEl = bulkRow.querySelector('.tbl-bulk-cnt');
+  const outer = table.closest('.tbl-outer');
+  if (!outer) return;
+  outer.classList.toggle('bulk-active', n >= 2);
+  const cntEl = outer.querySelector('.tbl-bulk-cnt');
   if (cntEl) cntEl.textContent = n + ' selected';
 }
 
