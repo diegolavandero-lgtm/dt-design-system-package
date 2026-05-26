@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T23:40:54.692Z",
+  "generated": "2026-05-26T23:45:04.472Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "0239e9d",
+          "type": "fix",
+          "section": "General",
+          "message": "Fix pill border-radius and padding to 4px",
+          "author": "Diego"
+        },
         {
           "hash": "0cc4545",
           "type": "update",
