@@ -163,13 +163,36 @@ button,input,select{font-family:inherit}
 
 /* ── TABLE ── */
 .tbl{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color:var(--n7)}
-.tbl thead th{background:var(--n2);font:700 13px var(--font-sans);text-align:left;padding:9px 12px;border-bottom:1px solid var(--n4);color:var(--n7)}
-.tbl td{padding:9px 12px;border-bottom:1px solid var(--n3)}
+.tbl thead th{background:var(--n3);font:700 13px var(--font-sans);text-align:left;padding:9px 12px;border-bottom:1px solid var(--n4);color:var(--n7);white-space:nowrap}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--n3);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
 .tbl tr.hov td{background:var(--n2)}
 .tbl tr.sel td{background:var(--b1)}
 .tbl tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--g5)}
-.tbl .lnk{color:var(--b7);font-weight:600}
-.tbl:last-child{border-bottom:0}
+.tbl tr.dis{opacity:.4;pointer-events:none}
+.tbl .lnk,.tbl td.cell-lnk{color:var(--b7);font-weight:600;cursor:pointer}
+.tbl td.cell-num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.cell-muted{color:var(--n5)}
+/* cell: avatar+text */
+.tbl .tbl-av{display:flex;align-items:center;gap:8px}
+.tbl .tbl-av-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11px var(--font-sans);color:#fff;flex-shrink:0}
+/* cell: text+icon */
+.tbl .tbl-ti{display:flex;align-items:center;gap:6px}
+/* cell: actions */
+.tbl .tbl-acts{display:flex;align-items:center;gap:1px}
+.tbl .tbl-act-btn{width:26px;height:26px;border:none;background:none;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5);padding:0}
+.tbl .tbl-act-btn:hover{background:var(--n2);color:var(--n7)}
+/* cell: checkbox */
+.tbl .tbl-cb-td{text-align:center;width:40px}
+.tbl .tbl-cb{display:flex;align-items:center;justify-content:center}
+.tbl .tbl-cb input[type=checkbox]{width:14px;height:14px;accent-color:var(--b5);cursor:pointer}
+/* header sort */
+.tbl th .tbl-sort{margin-left:5px;vertical-align:middle;opacity:.55}
+/* row-type spec swatches */
+.tbl-spec-sw{display:inline-block;width:16px;height:16px;border-radius:3px;border:1px solid rgba(0,0,0,.1);vertical-align:middle;margin-right:5px}
+/* section sub-titles */
+.tbl-stitle{font:700 16px/1 var(--font-sans);color:var(--n7);margin:0 0 14px}
+.tbl-desc{font:400 13px/1.5 var(--font-sans);color:var(--n5);margin:0 0 14px}
 
 /* ── MODAL ── */
 .modal-stage{background:rgba(19,32,69,.45);padding:24px;border-radius:8px;display:flex;justify-content:center}

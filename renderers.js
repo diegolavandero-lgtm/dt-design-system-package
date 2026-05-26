@@ -58,6 +58,8 @@ const ICON_PATHS = {
   'location':      '<path d="M16,18a5,5,0,1,1,5-5A5.0057,5.0057,0,0,1,16,18Zm0-8a3,3,0,1,0,3,3A3.0033,3.0033,0,0,0,16,10Z"/><path d="M16,30,7.5645,20.0513c-.0479-.0571-.3482-.4515-.3482-.4515A10.8888,10.8888,0,0,1,5,13a11,11,0,0,1,22,0,10.8844,10.8844,0,0,1-2.2148,6.5973l-.0015.0025s-.3.3944-.3447.4474ZM8.8125,18.395c.001.0007.2334.3082.2866.3744L16,26.9079l6.91-8.15c.0439-.0552.2783-.3649.2788-.3657A8.901,8.901,0,0,0,25,13,9,9,0,1,0,7,13a8.9054,8.9054,0,0,0,1.8125,5.395Z"/>',
   'dashboard':     '<path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/>',
   'document':      '<path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/>',
+  'edit':          '<path d="M2 26h28v2H2z"/><path d="M25.4 9c.8-.8.8-2 0-2.8l-3.6-3.6c-.8-.8-2-.8-2.8 0l-15 15V24h6.4l15-15zm-5-5L24 7.6l-3 3-3.6-3.6 3-3zM6 22v-3.6l10-10 3.6 3.6-10 10H6z"/>',
+  'delete':        '<path d="M12 12h2v12h-2zm6 0h2v12h-2z"/><path d="M4 6v2h2l2 20h16l2-20h2V6H4zm4.23 22-1.84-20h19.22l-1.84 20H8.23z"/><path d="M10 4h12v2H10z"/>',
   // aliases for topbar icon order keys
   'alerts':        '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
   'messages':      '<path d="M17.74,30,16,29l4-7h6a2,2,0,0,0,2-2V8a2,2,0,0,0-2-2H6A2,2,0,0,0,4,8V20a2,2,0,0,0,2,2h9v2H6a4,4,0,0,1-4-4V8A4,4,0,0,1,6,4H26a4,4,0,0,1,4,4V20a4,4,0,0,1-4,4H21.16Z"/>',
@@ -926,26 +928,169 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── TABLE ── */
   table(data) {
-    const cols = (data.columns || []).map(c => `<th style="${!c ? 'width:22px' : ''}">${escHtml(c)}</th>`).join('');
-    const rows = (data.rows || []).map(r => {
-      const cls = r.state === 'hover' ? 'hov' : r.state === 'selected' ? 'sel' : '';
-      const cells = r.cells.map((c, i) => {
-        if (typeof c === 'object' && c.badge) {
-          return `<td>${badgeHtml(c.badge, c.type)}</td>`;
+    /* ── sort svg ── */
+    const sortBothSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg>`;
+    const sortAscSvg  = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 20h20L16 8z"/></svg>`;
+    const sortDescSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 12h20l-10 12z"/></svg>`;
+
+    /* ── render one cell ── */
+    function rc(cell) {
+      if (cell === null || cell === undefined) return `<td></td>`;
+      if (typeof cell !== 'object') return `<td>${escHtml(String(cell))}</td>`;
+
+      switch (cell.type) {
+        case 'checkbox':
+          return `<td class="tbl-cb-td"><div class="tbl-cb"><input type="checkbox"${cell.value ? ' checked' : ''} onclick="return false"></div></td>`;
+
+        case 'avatar-text': {
+          const ini = cell.initials || (cell.value||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+          const col = cell.color || '#1F60ED';
+          return `<td><div class="tbl-av"><div class="tbl-av-dot" style="background:${col}">${escHtml(ini)}</div><span>${escHtml(cell.value||'')}</span></div></td>`;
         }
-        if (i === 1 && c) return `<td class="lnk">${escHtml(String(c))}</td>`;
-        return `<td>${escHtml(String(c))}</td>`;
-      }).join('');
-      return `<tr class="${cls}">${cells}</tr>`;
+
+        case 'text-icon': {
+          const ico = iconSvg(cell.icon || 'location', 14, 'var(--n5)');
+          return `<td><div class="tbl-ti">${ico}<span>${escHtml(cell.value||'')}</span></div></td>`;
+        }
+
+        case 'link':
+          return `<td class="cell-lnk">${escHtml(cell.value||'')}</td>`;
+
+        case 'badge':
+          return `<td>${badgeHtml(cell.value||'', cell.variant||'neutral')}</td>`;
+
+        case 'date':
+          return `<td>${escHtml(cell.value||'')}</td>`;
+
+        case 'number':
+          return `<td class="cell-num">${escHtml(String(cell.value||''))}</td>`;
+
+        case 'text-secondary':
+          return `<td class="cell-muted">${escHtml(cell.value||'')}</td>`;
+
+        case 'actions': {
+          const btns = (cell.value||[]).map(act =>
+            `<button class="tbl-act-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14)}</button>`
+          ).join('');
+          return `<td><div class="tbl-acts">${btns}</div></td>`;
+        }
+
+        default:
+          return `<td>${escHtml(String(cell.value !== undefined ? cell.value : ''))}</td>`;
+      }
+    }
+
+    /* ── render one column header ── */
+    function rh(col) {
+      const w = col.type === 'checkbox' ? ' style="width:40px"' : '';
+      const sv = col.sort === 'asc' ? sortAscSvg : col.sort === 'desc' ? sortDescSvg : col.sortable ? sortBothSvg : '';
+      return `<th${w}>${escHtml(col.label||'')}${sv}</th>`;
+    }
+
+    /* ── render one data row ── */
+    function rr(row) {
+      const cls = row.state==='hover' ? ' class="hov"' : row.state==='selected' ? ' class="sel"' : row.state==='disabled' ? ' class="dis"' : '';
+      return `<tr${cls}>${(row.cells||[]).map(c => rc(c)).join('')}</tr>`;
+    }
+
+    /* ── row types demo table ── */
+    const rd = data.rowTypeDemo || {};
+    const rdHead = (rd.columns||[]).map(c => rh(c)).join('');
+    const rdBody = (rd.rows||[]).map(r => rr(r)).join('');
+
+    /* ── cell types demo table ── */
+    const cd = data.cellTypeDemo || {};
+    const cdHead = (cd.columns||[]).map(c => rh(c)).join('');
+    const cdBody = (cd.rows||[]).map(r => rr(r)).join('');
+
+    /* ── row types spec list ── */
+    const rowSpecRows = (data.rowTypes||[]).map(rt => {
+      const swStyle = `background:${rt.bg||'#fff'};${rt.stripeColor?`box-shadow:inset 3px 0 0 ${rt.stripeColor};`:''}${rt.opacity?`opacity:.4;`:''}`;
+      return `<tr>
+        <td><strong>${escHtml(rt.label)}</strong></td>
+        <td><span class="tbl-spec-sw" style="${swStyle}"></span><code>${escHtml(rt.bg||'—')}</code>${rt.stripeColor?` + <code>${escHtml(rt.stripeColor)}</code> stripe`:''}${rt.opacity?` · ${rt.opacity} opacity`:''}</td>
+        <td>${escHtml(rt.description)}</td>
+      </tr>`;
     }).join('');
+
+    /* ── badge variants ── */
+    const badgeVars = (data.cellTypes||[]).find(ct => ct.badgeVariants);
+    const badgeVarHtml = badgeVars
+      ? badgeVars.badgeVariants.map(bv => badgeHtml(bv.label, bv.variant)).join('&nbsp;')
+      : '';
+
+    /* ── cell types spec list ── */
+    const cellSpecRows = (data.cellTypes||[]).map(ct =>
+      `<tr><td><code>${escHtml(ct.id)}</code></td><td><strong>${escHtml(ct.label)}</strong></td><td>${escHtml(ct.description)}</td></tr>`
+    ).join('');
+
+    /* ── column type map ── */
+    const cmap = data.columnTypeMap || {};
+    const cmapRows = Object.entries(cmap).map(([type, patterns]) =>
+      `<tr><td><code>${escHtml(type)}</code></td><td>${patterns.map(p=>`<code style="margin-right:3px">${escHtml(p||'""')}</code>`).join('')}</td></tr>`
+    ).join('');
+
+    /* ── tokens ── */
+    const tok = data.tokens || {};
+    const tokRows = Object.entries(tok).map(([k,v]) =>
+      `<tr><td><code>${escHtml(k)}</code></td><td>${escHtml(v)}</td></tr>`
+    ).join('');
 
     return `
       ${sectionHeader(data)}
-      <div class="card flush">
-        <table class="tbl">
-          <thead><tr>${cols}</tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+
+      <div style="margin-bottom:28px">
+        <div class="tbl-stitle">Row types</div>
+        <div class="card flush" style="margin-bottom:14px">
+          <table class="tbl">
+            <thead><tr>${rdHead}</tr></thead>
+            <tbody>${rdBody}</tbody>
+          </table>
+        </div>
+        <div class="card">
+          <table class="ttbl">
+            <thead><tr><th>State</th><th>Background</th><th>Description</th></tr></thead>
+            <tbody>${rowSpecRows}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-bottom:28px">
+        <div class="tbl-stitle">Cell types</div>
+        <div class="card flush" style="margin-bottom:14px">
+          <table class="tbl">
+            <thead><tr>${cdHead}</tr></thead>
+            <tbody>${cdBody}</tbody>
+          </table>
+        </div>
+        ${badgeVarHtml ? `<div style="margin-bottom:14px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-right:10px">Badge variants</span>${badgeVarHtml}</div>` : ''}
+        <div class="card">
+          <table class="ttbl">
+            <thead><tr><th>ID</th><th>Label</th><th>Description</th></tr></thead>
+            <tbody>${cellSpecRows}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-bottom:28px">
+        <div class="tbl-stitle">Column type inference</div>
+        <div class="tbl-desc">Column names matching these patterns are auto-assigned the corresponding cell type.</div>
+        <div class="card">
+          <table class="ttbl">
+            <thead><tr><th>Cell type</th><th>Matching column names</th></tr></thead>
+            <tbody>${cmapRows}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="tbl-stitle">Tokens</div>
+        <div class="card">
+          <table class="ttbl">
+            <thead><tr><th>Token</th><th>Value</th></tr></thead>
+            <tbody>${tokRows}</tbody>
+          </table>
+        </div>
       </div>`;
   },
 
