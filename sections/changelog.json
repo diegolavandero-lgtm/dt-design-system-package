@@ -2,8 +2,20 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-20T21:42:04.413Z",
+  "generated": "2026-05-26T15:35:44.854Z",
   "days": [
+    {
+      "date": "2026-05-26",
+      "entries": [
+        {
+          "hash": "7617325",
+          "type": "update",
+          "section": "Tables",
+          "message": "Tables: full row/cell type system with all variants",
+          "author": "Diego"
+        }
+      ]
+    },
     {
       "date": "2026-05-20",
       "entries": [
