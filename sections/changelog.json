@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T21:57:23.538Z",
+  "generated": "2026-05-26T22:51:30.177Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "7e2e81e",
+          "type": "feat",
+          "section": "Badges",
+          "message": "Add Pills / Tags section — replaces Badges in nav",
+          "author": "Diego"
+        },
         {
           "hash": "d278530",
           "type": "update",
