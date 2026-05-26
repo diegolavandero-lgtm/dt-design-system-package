@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T20:54:28.469Z",
+  "generated": "2026-05-26T21:57:23.538Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "d278530",
+          "type": "update",
+          "section": "Iconography",
+          "message": "Rework alerts section — inline colored grid with Carbon icons",
+          "author": "Diego"
+        },
         {
           "hash": "1ac5211",
           "type": "feat",
