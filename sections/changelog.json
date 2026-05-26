@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T19:58:48.149Z",
+  "generated": "2026-05-26T20:12:03.462Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "18dfeba",
+          "type": "update",
+          "section": "General",
+          "message": "Rework bulk selection to animated overlay — no layout shift",
+          "author": "Diego"
+        },
         {
           "hash": "e13cb86",
           "type": "feat",
