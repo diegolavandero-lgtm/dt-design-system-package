@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T18:34:03.898Z",
+  "generated": "2026-05-26T18:41:43.792Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "cac5173",
+          "type": "fix",
+          "section": "General",
+          "message": "Fix overflow menu dropdown not opening (broken data-acts attribute)",
+          "author": "Diego"
+        },
         {
           "hash": "9c7593e",
           "type": "feat",
