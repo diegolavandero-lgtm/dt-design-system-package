@@ -943,7 +943,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
       switch (cell.type) {
         case 'checkbox':
-          return `<td class="tbl-cb-td${extraCls?' '+extraCls:''}"><div class="tbl-cb"><input type="checkbox"${cell.value?' checked':''} onclick="return false"></div></td>`;
+          return `<td class="tbl-cb-td${extraCls?' '+extraCls:''}"><div class="tbl-cb"><input type="checkbox"${cell.value?' checked':''} onclick="tblRowSel(this)"></div></td>`;
 
         case 'avatar-text': {
           const ini = cell.initials || (cell.value||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -1078,9 +1078,49 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     /* ── build one scrollable demo table ── */
     function demoTable(def) {
       const cols = def.columns || [];
-      const head = cols.map(c => rh(c)).join('');
+      const hasCb = cols.some(c => c.type === 'checkbox');
+      const hasActs = cols.some(c => c.type === 'actions');
+      const isBulk = hasCb && hasActs;
+
+      let thead;
+      if (isBulk) {
+        // Derive bulk actions from rows: union of all row actions minus 'edit'
+        const actsSet = new Set();
+        (def.rows||[]).forEach(row => {
+          (row.cells||[]).forEach(cell => {
+            if (cell && cell.type === 'actions') {
+              (cell.value||[]).filter(a => a !== 'edit').forEach(a => actsSet.add(a));
+            }
+          });
+        });
+        const bulkActs = [...actsSet];
+
+        const dataColCount = cols.filter(c => c.type !== 'checkbox' && c.type !== 'actions').length;
+        const cbThStyle = 'width:40px;padding:10px 0;text-align:center;background:var(--n3);border-bottom:1px solid var(--n4)';
+        const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
+
+        const normalCells = cols.map(c => {
+          if (c.type === 'checkbox') return `<th style="${cbThStyle}">${masterCb}</th>`;
+          return rh(c);
+        }).join('');
+
+        const bulkBtns = bulkActs.map(act =>
+          `<button class="tbl-bulk-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14,'currentColor')}<span>${escHtml(act.charAt(0).toUpperCase()+act.slice(1))}</span></button>`
+        ).join('');
+
+        const bulkCells =
+          `<th style="${cbThStyle.replace('var(--n3)','var(--b1)').replace('var(--n4)','var(--b3)')}">${masterCb}</th>` +
+          `<th colspan="${dataColCount}" style="background:var(--b1);border-bottom:1px solid var(--b3);padding:10px 16px"><div class="tbl-bulk-bar"><span class="tbl-bulk-cnt"></span><div class="tbl-bulk-actions">${bulkBtns}</div></div></th>` +
+          `<th class="tbl-acts-col" style="background:var(--b1);border-bottom:1px solid var(--b3)"></th>`;
+
+        thead = `<thead><tr class="tbl-hd-normal">${normalCells}</tr><tr class="tbl-hd-bulk" style="display:none">${bulkCells}</tr></thead>`;
+      } else {
+        const head = cols.map(c => rh(c)).join('');
+        thead = `<thead><tr>${head}</tr></thead>`;
+      }
+
       const body = (def.rows||[]).map(r => rr(r, cols)).join('');
-      return `<div class="tbl-outer"><div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+      return `<div class="tbl-outer"><div class="tbl-wrap"><table class="tbl">${thead}<tbody>${body}</tbody></table></div></div>`;
     }
 
     /* ── row types demo ── */
