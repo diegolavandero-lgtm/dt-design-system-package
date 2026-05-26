@@ -1,8 +1,8 @@
 {
   "title": "Tables",
   "titleKey": "nav.table",
-  "description": "Data tables for structured content. Cell height 44px. Header on N3. White row bg. Hover → N2. Selected → B1 with G5 left stripe. Checkbox selection column optional.",
-  "keywords": ["table", "rows", "hover", "selected", "columns", "cells", "badge", "avatar", "link", "actions"],
+  "description": "Data tables for structured content. Cell height 44px. Header on N3. White row bg. Hover → N2. Selected → B1 with G5 left stripe. Actions column is sticky at the right edge.",
+  "keywords": ["table", "rows", "hover", "selected", "columns", "cells", "badge", "avatar", "link", "actions", "switch", "rating", "chip", "skeleton"],
   "tokens": {
     "cellHeight":      "44px",
     "headerHeight":    "40px",
@@ -34,7 +34,7 @@
       "id": "hover",
       "label": "Hover",
       "bg": "#F0F2F5",
-      "description": "Row on mouseenter. Background N2 (#F0F2F5)."
+      "description": "Row on mouseenter. Background N2."
     },
     {
       "id": "selected",
@@ -52,101 +52,51 @@
     }
   ],
   "cellTypes": [
-    {
-      "id": "checkbox",
-      "label": "Checkbox",
-      "element": "td",
-      "width": "40px",
-      "description": "Row selection. 14px checkbox, accent-color B5.",
-      "example": { "type": "checkbox", "value": false }
-    },
-    {
-      "id": "header",
-      "label": "Header cell",
-      "element": "th",
-      "description": "Column label. Bold, bg N3. Sortable variant adds caret icon.",
-      "example": { "type": "header", "value": "Column name" }
-    },
-    {
-      "id": "text",
-      "label": "Text",
-      "element": "td",
-      "description": "Plain text. Color N7. Font 400 13px.",
-      "example": { "type": "text", "value": "Admin Master" }
-    },
-    {
-      "id": "text-secondary",
-      "label": "Text secondary",
-      "element": "td",
-      "description": "Muted/empty text. Color N5. Used for — placeholders and secondary values.",
-      "example": { "type": "text-secondary", "value": "—" }
-    },
-    {
-      "id": "text-icon",
-      "label": "Text + icon",
-      "element": "td",
-      "description": "14px leading icon + label. Used for locations, roles, categories.",
-      "example": { "type": "text-icon", "icon": "location", "value": "Av. Principal 123" }
-    },
-    {
-      "id": "link",
-      "label": "Link",
-      "element": "td",
-      "description": "Clickable text. Color B7, font-weight 600.",
-      "example": { "type": "link", "value": "#ORD-4821" }
-    },
-    {
-      "id": "badge",
-      "label": "Badge / Pill",
-      "element": "td",
-      "description": "Status indicator. Variants: success, warning, danger, info, neutral.",
+    { "id": "checkbox",        "label": "Checkbox",              "description": "Row selection. 14px, accent-color B5." },
+    { "id": "header",          "label": "Header cell",           "description": "Column label. Bold, bg N3. Sortable variant adds sort caret." },
+    { "id": "header-sub",      "label": "Header + subtext",      "description": "Header with small gray category text above the column name." },
+    { "id": "text",            "label": "Text",                  "description": "Plain text. Color N7. Font 400 13px." },
+    { "id": "text-secondary",  "label": "Text secondary",        "description": "Muted text. Color N5. Used for — placeholders." },
+    { "id": "icon-text",       "label": "Icon left + text",      "description": "14px icon on the left + label. Used for locations, categories." },
+    { "id": "text-icon-right", "label": "Text + icon right",     "description": "Label + 14px icon on the right. Used for external links, expand actions." },
+    { "id": "text-sub",        "label": "Text + sub",            "description": "Primary text + smaller gray subtext below. Two-line cell." },
+    { "id": "text-error",      "label": "Text + error",          "description": "Primary text + red error subtext below." },
+    { "id": "text-icon-error", "label": "Icon + text + error",   "description": "Left icon + primary text + red error subtext below." },
+    { "id": "link",            "label": "Link",                  "description": "Clickable text. Color B7, font-weight 600." },
+    { "id": "badge",           "label": "Badge / Pill",          "description": "Status badge. Variants: success, warning, danger, info, neutral.",
       "badgeVariants": [
         { "label": "Activo",      "variant": "success" },
         { "label": "Advertencia", "variant": "warning" },
         { "label": "Bloqueado",   "variant": "danger"  },
         { "label": "Info",        "variant": "info"    },
         { "label": "Inactivo",    "variant": "neutral" }
-      ],
-      "example": { "type": "badge", "value": "Activo", "variant": "success" }
+      ]
     },
-    {
-      "id": "avatar-text",
-      "label": "Avatar + text",
-      "element": "td",
-      "description": "28px filled circle with initials + name. Circle color assigned per user.",
-      "example": { "type": "avatar-text", "value": "Maya Johnson", "initials": "MJ", "color": "#1F60ED" }
-    },
-    {
-      "id": "date",
-      "label": "Date",
-      "element": "td",
-      "description": "Formatted date string. Format: DD-MM-YY HH:MM hrs.",
-      "example": { "type": "date", "value": "10-10-25 10:35 hrs" }
-    },
-    {
-      "id": "number",
-      "label": "Number",
-      "element": "td",
-      "description": "Right-aligned numeric value. Font tabular-nums.",
-      "example": { "type": "number", "value": "1,240" }
-    },
-    {
-      "id": "actions",
-      "label": "Actions",
-      "element": "td",
-      "description": "Icon-only action buttons. Most common: edit + delete. Right-aligned.",
-      "example": { "type": "actions", "value": ["edit", "delete"] }
-    }
+    { "id": "avatar-text",     "label": "Avatar + text",         "description": "28px filled circle with initials + name." },
+    { "id": "date",            "label": "Date",                  "description": "Formatted date string. Format: DD-MM-YY HH:MM hrs." },
+    { "id": "number",          "label": "Number",                "description": "Right-aligned numeric. Font tabular-nums." },
+    { "id": "rating",          "label": "Rating stars",          "description": "1–5 interactive star rating. Click to set." },
+    { "id": "switch",          "label": "Switch",                "description": "Toggle switch. Click to toggle on/off." },
+    { "id": "switch-text",     "label": "Switch + text",         "description": "Toggle switch with inline text label." },
+    { "id": "chip-lg",         "label": "Chip large",            "description": "Generic large chip tag. Background N2, border N3." },
+    { "id": "chip-sm",         "label": "Chip small",            "description": "Generic small chip tag. Compact padding, 11px font." },
+    { "id": "pill-new",        "label": "Pill · New",            "description": "Blue NEW pill indicator. Uppercase 9px, B1 bg." },
+    { "id": "loading-bar",     "label": "Loading bar",           "description": "Horizontal progress bar with percentage label. Value 0–100." },
+    { "id": "lazy",            "label": "Lazy load",             "description": "Skeleton shimmer for both header and data cells while loading." },
+    { "id": "actions",         "label": "Actions",               "description": "Max 2 icon-only action buttons. Sticky at the right edge of the table." }
   ],
   "columnTypeMap": {
-    "checkbox":     ["", "☐", "select", "check", "seleccionar"],
-    "avatar-text":  ["nombre", "name", "driver", "conductor", "operador", "user", "usuario", "cliente", "customer"],
-    "text-icon":    ["dirección", "address", "origen", "destino", "origin", "destination", "ubicación", "location"],
-    "link":         ["#", "id", "orden", "order", "pedido", "ruta", "route", "folio", "código", "code"],
-    "badge":        ["estado", "status", "state", "prioridad", "priority", "tipo", "type"],
-    "date":         ["fecha", "date", "created_at", "updated_at", "última", "last", "hora", "time", "conexión", "entrega", "delivery"],
-    "number":       ["cantidad", "qty", "count", "total", "km", "stops", "paradas", "distance", "distancia", "bultos", "piezas"],
-    "actions":      ["acciones", "actions", "opciones", "options", "…", "more"]
+    "checkbox":        ["", "☐", "select", "check", "seleccionar"],
+    "avatar-text":     ["nombre", "name", "driver", "conductor", "operador", "user", "usuario", "cliente", "customer"],
+    "icon-text":       ["dirección", "address", "origen", "destino", "origin", "destination", "ubicación", "location"],
+    "link":            ["#", "id", "orden", "order", "pedido", "ruta", "route", "folio", "código", "code"],
+    "badge":           ["estado", "status", "state", "prioridad", "priority", "tipo", "type"],
+    "date":            ["fecha", "date", "created_at", "updated_at", "última", "last", "hora", "time", "conexión", "entrega"],
+    "number":          ["cantidad", "qty", "count", "total", "km", "stops", "paradas", "distance", "distancia", "bultos"],
+    "switch":          ["activo", "active", "enabled", "habilitado", "toggle"],
+    "rating":          ["rating", "calificación", "score", "puntuación", "stars"],
+    "loading-bar":     ["progreso", "progress", "completion", "completado", "%"],
+    "actions":         ["acciones", "actions", "opciones", "options", "…", "more"]
   },
   "rowTypeDemo": {
     "columns": [
@@ -219,12 +169,12 @@
     "columns": [
       { "label": "",              "type": "checkbox"    },
       { "label": "Avatar + text", "type": "avatar-text" },
-      { "label": "Text + icon",   "type": "text-icon"   },
+      { "label": "Icon + text",   "type": "icon-text"   },
       { "label": "Link",          "type": "link"        },
       { "label": "Badge",         "type": "badge"       },
       { "label": "Date",          "type": "date"        },
       { "label": "Number",        "type": "number"      },
-      { "label": "Actions",       "type": "actions"     }
+      { "label": "Acciones",      "type": "actions"     }
     ],
     "rows": [
       {
@@ -232,7 +182,7 @@
         "cells": [
           { "type": "checkbox",    "value": false },
           { "type": "avatar-text", "value": "Maya Johnson",      "initials": "MJ", "color": "#1F60ED" },
-          { "type": "text-icon",   "icon": "location",           "value": "Av. Principal 123" },
+          { "type": "icon-text",   "icon": "location",            "value": "Av. Principal 123" },
           { "type": "link",        "value": "#ORD-4821" },
           { "type": "badge",       "value": "Activo",             "variant": "success" },
           { "type": "date",        "value": "10-10-25 10:35 hrs" },
@@ -245,7 +195,7 @@
         "cells": [
           { "type": "checkbox",       "value": false },
           { "type": "avatar-text",    "value": "Lucas Martínez",  "initials": "LM", "color": "#8777D9" },
-          { "type": "text-icon",      "icon": "location",         "value": "Calle Secundaria 45" },
+          { "type": "icon-text",      "icon": "location",          "value": "Calle Secundaria 45" },
           { "type": "link",           "value": "#ORD-3917" },
           { "type": "badge",          "value": "Advertencia",      "variant": "warning" },
           { "type": "text-secondary", "value": "—" },
@@ -254,5 +204,129 @@
         ]
       }
     ]
-  }
+  },
+  "cellTypeDemoGroups": [
+    {
+      "label": "Text & stacked variants",
+      "columns": [
+        { "label": "Text + sub",          "type": "text",          "sub": "Two-line" },
+        { "label": "Text + error",        "type": "text",          "sub": "Error state" },
+        { "label": "Icon + text + error", "type": "text",          "sub": "With icon" },
+        { "label": "Text + icon →",       "type": "text" },
+        { "label": "Acciones",            "type": "actions" }
+      ],
+      "rows": [
+        {
+          "state": "default",
+          "cells": [
+            { "type": "text-sub",        "value": "Maya Johnson",   "sub": "mayaj@dispatchtrack.com" },
+            { "type": "text-error",      "value": "lucas@company",  "error": "Email no verificado" },
+            { "type": "text-icon-error", "icon": "user", "value": "Aisha Patel", "error": "Sin permisos asignados" },
+            { "type": "text-icon-right", "icon": "document", "value": "Ver informe" },
+            { "type": "actions",         "value": ["edit", "delete"] }
+          ]
+        },
+        {
+          "state": "default",
+          "cells": [
+            { "type": "text-sub",        "value": "Liam Smith",     "sub": "Admin · Zona Norte" },
+            { "type": "text-error",      "value": "Formulario #82", "error": "3 campos requeridos" },
+            { "type": "text-icon-error", "icon": "route", "value": "Ruta RT-204", "error": "Fuera de zona" },
+            { "type": "text-icon-right", "icon": "message", "value": "Comentarios (3)" },
+            { "type": "actions",         "value": ["edit", "delete"] }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Interactive cells",
+      "columns": [
+        { "label": "Switch",        "type": "switch"      },
+        { "label": "Switch + text", "type": "switch-text" },
+        { "label": "Rating",        "type": "rating"      },
+        { "label": "Acciones",      "type": "actions"     }
+      ],
+      "rows": [
+        {
+          "state": "default",
+          "cells": [
+            { "type": "switch",       "value": true  },
+            { "type": "switch-text",  "value": true,  "label": "Habilitado" },
+            { "type": "rating",       "value": 4 },
+            { "type": "actions",      "value": ["edit", "delete"] }
+          ]
+        },
+        {
+          "state": "default",
+          "cells": [
+            { "type": "switch",       "value": false },
+            { "type": "switch-text",  "value": false, "label": "Deshabilitado" },
+            { "type": "rating",       "value": 2 },
+            { "type": "actions",      "value": ["edit", "delete"] }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Chips & pills",
+      "columns": [
+        { "label": "Chip large",  "type": "chip-lg"   },
+        { "label": "Chip small",  "type": "chip-sm"   },
+        { "label": "Pill · New",  "type": "pill-new"  },
+        { "label": "Acciones",    "type": "actions"   }
+      ],
+      "rows": [
+        {
+          "state": "default",
+          "cells": [
+            { "type": "chip-lg",  "value": "Zona Norte" },
+            { "type": "chip-sm",  "value": "Admin" },
+            { "type": "pill-new", "value": "New" },
+            { "type": "actions",  "value": ["edit", "delete"] }
+          ]
+        },
+        {
+          "state": "default",
+          "cells": [
+            { "type": "chip-lg",  "value": "Ruta Express" },
+            { "type": "chip-sm",  "value": "QC" },
+            { "type": "pill-new", "value": "New" },
+            { "type": "actions",  "value": ["edit", "delete"] }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Loading & skeleton",
+      "columns": [
+        { "label": "lazy", "type": "lazy" },
+        { "label": "lazy", "type": "lazy" },
+        { "label": "lazy", "type": "lazy" },
+        { "label": "Loading bar",   "type": "loading-bar" },
+        { "label": "Acciones",      "type": "actions"     }
+      ],
+      "rows": [
+        {
+          "state": "default",
+          "cells": [
+            { "type": "lazy" },
+            { "type": "lazy" },
+            { "type": "lazy" },
+            { "type": "loading-bar", "value": 68 },
+            { "type": "actions", "value": ["edit", "delete"] }
+          ]
+        },
+        {
+          "state": "default",
+          "cells": [
+            { "type": "lazy" },
+            { "type": "lazy" },
+            { "type": "lazy" },
+            { "type": "loading-bar", "value": 32 },
+            { "type": "actions", "value": ["edit", "delete"] }
+          ]
+        }
+      ]
+    }
+  ]
 }

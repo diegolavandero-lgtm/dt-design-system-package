@@ -928,111 +928,186 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── TABLE ── */
   table(data) {
-    /* ── sort svg ── */
     const sortBothSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg>`;
     const sortAscSvg  = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 20h20L16 8z"/></svg>`;
     const sortDescSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 12h20l-10 12z"/></svg>`;
 
-    /* ── render one cell ── */
-    function rc(cell) {
-      if (cell === null || cell === undefined) return `<td></td>`;
-      if (typeof cell !== 'object') return `<td>${escHtml(String(cell))}</td>`;
+    /* ── cell renderer ── */
+    function rc(cell, extraCls) {
+      const cls = extraCls ? ` class="${extraCls}"` : '';
+      if (cell === null || cell === undefined) return `<td${cls}></td>`;
+      if (typeof cell !== 'object') return `<td${cls}>${escHtml(String(cell))}</td>`;
 
       switch (cell.type) {
         case 'checkbox':
-          return `<td class="tbl-cb-td"><div class="tbl-cb"><input type="checkbox"${cell.value ? ' checked' : ''} onclick="return false"></div></td>`;
+          return `<td class="tbl-cb-td${extraCls?' '+extraCls:''}"><div class="tbl-cb"><input type="checkbox"${cell.value?' checked':''} onclick="return false"></div></td>`;
 
         case 'avatar-text': {
           const ini = cell.initials || (cell.value||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-          const col = cell.color || '#1F60ED';
-          return `<td><div class="tbl-av"><div class="tbl-av-dot" style="background:${col}">${escHtml(ini)}</div><span>${escHtml(cell.value||'')}</span></div></td>`;
+          return `<td${cls}><div class="tbl-av"><div class="tbl-av-dot" style="background:${cell.color||'#1F60ED'}">${escHtml(ini)}</div><span>${escHtml(cell.value||'')}</span></div></td>`;
         }
 
-        case 'text-icon': {
-          const ico = iconSvg(cell.icon || 'location', 14, 'var(--n5)');
-          return `<td><div class="tbl-ti">${ico}<span>${escHtml(cell.value||'')}</span></div></td>`;
+        case 'text-icon':
+        case 'icon-text': {
+          const ico = iconSvg(cell.icon||'location', 14, 'var(--n5)');
+          return `<td${cls}><div class="tbl-ti">${ico}<span>${escHtml(cell.value||'')}</span></div></td>`;
+        }
+
+        case 'text-icon-right': {
+          const ico = iconSvg(cell.icon||'document', 14, 'var(--n5)');
+          return `<td${cls}><div class="tbl-ti">${escHtml(cell.value||'')} ${ico}</div></td>`;
+        }
+
+        case 'text-sub':
+          return `<td${cls}><div class="tbl-stack"><span class="main">${escHtml(cell.value||'')}</span><span class="sub">${escHtml(cell.sub||'')}</span></div></td>`;
+
+        case 'text-error':
+          return `<td${cls}><div class="tbl-stack"><span class="main">${escHtml(cell.value||'')}</span><span class="err">${escHtml(cell.error||'')}</span></div></td>`;
+
+        case 'text-icon-error': {
+          const ico = iconSvg(cell.icon||'user', 14, 'var(--n5)');
+          return `<td${cls}><div class="tbl-stack"><div class="tbl-ti"><span class="main">${ico} ${escHtml(cell.value||'')}</span></div><span class="err">${escHtml(cell.error||'')}</span></div></td>`;
         }
 
         case 'link':
-          return `<td class="cell-lnk">${escHtml(cell.value||'')}</td>`;
+          return `<td class="cell-lnk${extraCls?' '+extraCls:''}">${escHtml(cell.value||'')}</td>`;
 
         case 'badge':
-          return `<td>${badgeHtml(cell.value||'', cell.variant||'neutral')}</td>`;
+          return `<td${cls}>${badgeHtml(cell.value||'', cell.variant||'neutral')}</td>`;
 
         case 'date':
-          return `<td>${escHtml(cell.value||'')}</td>`;
+          return `<td${cls}>${escHtml(cell.value||'')}</td>`;
 
         case 'number':
-          return `<td class="cell-num">${escHtml(String(cell.value||''))}</td>`;
+          return `<td class="cell-num${extraCls?' '+extraCls:''}">${escHtml(String(cell.value||''))}</td>`;
 
         case 'text-secondary':
-          return `<td class="cell-muted">${escHtml(cell.value||'')}</td>`;
+          return `<td class="cell-muted${extraCls?' '+extraCls:''}">${escHtml(cell.value||'')}</td>`;
+
+        case 'rating': {
+          const n = Math.round(cell.value||0);
+          const uid = 'sr'+Math.random().toString(36).slice(2,7);
+          const stars = [1,2,3,4,5].map(i =>
+            `<span class="star${i<=n?' on':''}" onclick="starSet(this)" onmouseenter="starHov(this,true)" onmouseleave="starHov(this,false)">★</span>`
+          ).join('');
+          return `<td${cls}><div class="tbl-stars" id="${uid}">${stars}</div></td>`;
+        }
+
+        case 'switch': {
+          const on = cell.value ? ' on' : '';
+          return `<td${cls}><div class="tbl-sw-track${on}" onclick="this.classList.toggle('on')"><div class="tbl-sw-thumb"></div></div></td>`;
+        }
+
+        case 'switch-text': {
+          const on = cell.value ? ' on' : '';
+          const lbl = escHtml(cell.label || (cell.value ? 'On' : 'Off'));
+          return `<td${cls}><div class="tbl-sw-wrap"><div class="tbl-sw-track${on}" onclick="this.classList.toggle('on')"><div class="tbl-sw-thumb"></div></div><span>${lbl}</span></div></td>`;
+        }
+
+        case 'chip-lg':
+          return `<td${cls}><span class="tbl-chip lg">${escHtml(cell.value||'')}</span></td>`;
+
+        case 'chip-sm':
+          return `<td${cls}><span class="tbl-chip sm">${escHtml(cell.value||'')}</span></td>`;
+
+        case 'pill-new':
+          return `<td${cls}><span class="tbl-pill-new">${escHtml(cell.value||'New')}</span></td>`;
+
+        case 'loading-bar': {
+          const pct = Math.min(100, Math.max(0, cell.value||0));
+          return `<td${cls}><div class="tbl-bar-wrap"><div class="tbl-bar"><div class="tbl-bar-fill" style="width:${pct}%"></div></div><span class="tbl-bar-pct">${pct}%</span></div></td>`;
+        }
+
+        case 'lazy':
+          return `<td${cls}><div class="tbl-skel cell"></div></td>`;
 
         case 'actions': {
-          const btns = (cell.value||[]).map(act =>
+          const btns = (cell.value||[]).slice(0,2).map(act =>
             `<button class="tbl-act-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14)}</button>`
           ).join('');
-          return `<td><div class="tbl-acts">${btns}</div></td>`;
+          return `<td class="tbl-acts-col${extraCls?' '+extraCls:''}"><div class="tbl-acts">${btns}</div></td>`;
         }
 
         default:
-          return `<td>${escHtml(String(cell.value !== undefined ? cell.value : ''))}</td>`;
+          return `<td${cls}>${escHtml(String(cell.value!==undefined?cell.value:''))}</td>`;
       }
     }
 
-    /* ── render one column header ── */
-    function rh(col) {
+    /* ── header renderer (supports sub-label and lazy) ── */
+    function rh(col, actsCls) {
+      const extra = actsCls ? ` class="${actsCls}"` : '';
+      if (col.type === 'lazy') {
+        return `<th${extra}><div class="tbl-skel hd"></div></th>`;
+      }
       const w = col.type === 'checkbox' ? ' style="width:40px"' : '';
-      const sv = col.sort === 'asc' ? sortAscSvg : col.sort === 'desc' ? sortDescSvg : col.sortable ? sortBothSvg : '';
-      return `<th${w}>${escHtml(col.label||'')}${sv}</th>`;
+      const sv = col.sort==='asc' ? sortAscSvg : col.sort==='desc' ? sortDescSvg : col.sortable ? sortBothSvg : '';
+      if (col.sub) {
+        return `<th${w}${extra}><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(col.sub)}</span><span>${escHtml(col.label||'')}${sv}</span></div></th>`;
+      }
+      if (col.type === 'actions') {
+        return `<th class="tbl-acts-col"${w}>${escHtml(col.label||'')}</th>`;
+      }
+      return `<th${w}${extra}>${escHtml(col.label||'')}${sv}</th>`;
     }
 
-    /* ── render one data row ── */
-    function rr(row) {
-      const cls = row.state==='hover' ? ' class="hov"' : row.state==='selected' ? ' class="sel"' : row.state==='disabled' ? ' class="dis"' : '';
-      return `<tr${cls}>${(row.cells||[]).map(c => rc(c)).join('')}</tr>`;
+    /* ── row renderer ── */
+    function rr(row, cols) {
+      const cls = row.state==='hover'?'hov':row.state==='selected'?'sel':row.state==='disabled'?'dis':'';
+      const cells = (row.cells||[]).map((c,i) => {
+        const colType = cols && cols[i] ? cols[i].type : null;
+        return rc(c);
+      }).join('');
+      return `<tr${cls?' class="'+cls+'"':''  }>${cells}</tr>`;
     }
 
-    /* ── row types demo table ── */
+    /* ── build one scrollable demo table ── */
+    function demoTable(def) {
+      const cols = def.columns || [];
+      const head = cols.map(c => rh(c)).join('');
+      const body = (def.rows||[]).map(r => rr(r, cols)).join('');
+      return `<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+    }
+
+    /* ── row types demo ── */
     const rd = data.rowTypeDemo || {};
-    const rdHead = (rd.columns||[]).map(c => rh(c)).join('');
-    const rdBody = (rd.rows||[]).map(r => rr(r)).join('');
+    const rdTable = demoTable(rd);
 
-    /* ── cell types demo table ── */
+    /* ── cell types demo ── */
     const cd = data.cellTypeDemo || {};
-    const cdHead = (cd.columns||[]).map(c => rh(c)).join('');
-    const cdBody = (cd.rows||[]).map(r => rr(r)).join('');
+    const cdTable = demoTable(cd);
 
-    /* ── row types spec list ── */
+    /* ── extended demo groups ── */
+    const groupSections = (data.cellTypeDemoGroups||[]).map(g =>
+      `<div style="margin-bottom:20px">
+        <div style="font:600 13px var(--font-sans);color:var(--n5);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;font-size:11px">${escHtml(g.label)}</div>
+        <div class="card flush">${demoTable(g)}</div>
+      </div>`
+    ).join('');
+
+    /* ── row state spec ── */
     const rowSpecRows = (data.rowTypes||[]).map(rt => {
-      const swStyle = `background:${rt.bg||'#fff'};${rt.stripeColor?`box-shadow:inset 3px 0 0 ${rt.stripeColor};`:''}${rt.opacity?`opacity:.4;`:''}`;
-      return `<tr>
-        <td><strong>${escHtml(rt.label)}</strong></td>
-        <td><span class="tbl-spec-sw" style="${swStyle}"></span><code>${escHtml(rt.bg||'—')}</code>${rt.stripeColor?` + <code>${escHtml(rt.stripeColor)}</code> stripe`:''}${rt.opacity?` · ${rt.opacity} opacity`:''}</td>
-        <td>${escHtml(rt.description)}</td>
-      </tr>`;
+      const sw = `background:${rt.bg||'#fff'};${rt.stripeColor?`box-shadow:inset 3px 0 0 ${rt.stripeColor};`:''}${rt.opacity?'opacity:.4;':''}`;
+      return `<tr><td><strong>${escHtml(rt.label)}</strong></td>
+        <td><span class="tbl-spec-sw" style="${sw}"></span><code>${escHtml(rt.bg||'—')}</code>${rt.stripeColor?` + <code>${escHtml(rt.stripeColor)}</code> stripe`:''}${rt.opacity?` · ${rt.opacity} opacity`:''}</td>
+        <td>${escHtml(rt.description)}</td></tr>`;
     }).join('');
 
     /* ── badge variants ── */
-    const badgeVars = (data.cellTypes||[]).find(ct => ct.badgeVariants);
-    const badgeVarHtml = badgeVars
-      ? badgeVars.badgeVariants.map(bv => badgeHtml(bv.label, bv.variant)).join('&nbsp;')
-      : '';
+    const badgeVars = (data.cellTypes||[]).find(ct=>ct.badgeVariants);
+    const badgeVarHtml = badgeVars ? badgeVars.badgeVariants.map(bv=>badgeHtml(bv.label,bv.variant)).join('&nbsp;') : '';
 
-    /* ── cell types spec list ── */
+    /* ── cell type spec ── */
     const cellSpecRows = (data.cellTypes||[]).map(ct =>
       `<tr><td><code>${escHtml(ct.id)}</code></td><td><strong>${escHtml(ct.label)}</strong></td><td>${escHtml(ct.description)}</td></tr>`
     ).join('');
 
     /* ── column type map ── */
-    const cmap = data.columnTypeMap || {};
-    const cmapRows = Object.entries(cmap).map(([type, patterns]) =>
-      `<tr><td><code>${escHtml(type)}</code></td><td>${patterns.map(p=>`<code style="margin-right:3px">${escHtml(p||'""')}</code>`).join('')}</td></tr>`
+    const cmapRows = Object.entries(data.columnTypeMap||{}).map(([type,ps]) =>
+      `<tr><td><code>${escHtml(type)}</code></td><td>${ps.map(p=>`<code style="margin-right:3px">${escHtml(p||'""')}</code>`).join('')}</td></tr>`
     ).join('');
 
     /* ── tokens ── */
-    const tok = data.tokens || {};
-    const tokRows = Object.entries(tok).map(([k,v]) =>
+    const tokRows = Object.entries(data.tokens||{}).map(([k,v]) =>
       `<tr><td><code>${escHtml(k)}</code></td><td>${escHtml(v)}</td></tr>`
     ).join('');
 
@@ -1041,12 +1116,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
       <div style="margin-bottom:28px">
         <div class="tbl-stitle">Row types</div>
-        <div class="card flush" style="margin-bottom:14px">
-          <table class="tbl">
-            <thead><tr>${rdHead}</tr></thead>
-            <tbody>${rdBody}</tbody>
-          </table>
-        </div>
+        <div class="card flush" style="margin-bottom:14px">${rdTable}</div>
         <div class="card">
           <table class="ttbl">
             <thead><tr><th>State</th><th>Background</th><th>Description</th></tr></thead>
@@ -1057,13 +1127,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
       <div style="margin-bottom:28px">
         <div class="tbl-stitle">Cell types</div>
-        <div class="card flush" style="margin-bottom:14px">
-          <table class="tbl">
-            <thead><tr>${cdHead}</tr></thead>
-            <tbody>${cdBody}</tbody>
-          </table>
-        </div>
-        ${badgeVarHtml ? `<div style="margin-bottom:14px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-right:10px">Badge variants</span>${badgeVarHtml}</div>` : ''}
+        <div class="card flush" style="margin-bottom:20px">${cdTable}</div>
+        ${groupSections}
+        ${badgeVarHtml?`<div style="margin-bottom:14px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-right:10px">Badge variants</span>${badgeVarHtml}</div>`:''}
         <div class="card">
           <table class="ttbl">
             <thead><tr><th>ID</th><th>Label</th><th>Description</th></tr></thead>
