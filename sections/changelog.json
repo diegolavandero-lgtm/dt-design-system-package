@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T20:12:03.462Z",
+  "generated": "2026-05-26T20:54:28.469Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "1ac5211",
+          "type": "feat",
+          "section": "Banners",
+          "message": "Add Alerts/Toasts section — replaces Banners in nav",
+          "author": "Diego"
+        },
         {
           "hash": "18dfeba",
           "type": "update",
