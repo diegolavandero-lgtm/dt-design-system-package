@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T18:43:03.552Z",
+  "generated": "2026-05-26T18:46:05.638Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "07f5a77",
+          "type": "fix",
+          "section": "Tables",
+          "message": "Tables: fix Acciones header overflow — reduce th padding to 4px sides",
+          "author": "Diego"
+        },
         {
           "hash": "c29d7d1",
           "type": "update",
