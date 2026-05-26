@@ -5,8 +5,8 @@
   "keywords": ["pills", "tags", "chips", "badges", "status", "filters", "labels"],
   "tokens": {
     "height": "22px",
-    "padding": "2px 9px",
-    "borderRadius": "999px",
+    "padding": "2px 4px",
+    "borderRadius": "4px",
     "fontSize": "11px",
     "fontWeight": "600",
     "iconSize": "12px",

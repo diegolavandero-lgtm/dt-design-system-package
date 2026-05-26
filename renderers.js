@@ -803,7 +803,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       'arrow':        '<path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>',
     };
 
-    const BASE_PILL = 'display:inline-flex;align-items:center;gap:4px;height:22px;padding:2px 9px;border-radius:999px;font:600 11px/1 var(--font-sans);white-space:nowrap;';
+    const BASE_PILL = 'display:inline-flex;align-items:center;gap:4px;height:22px;padding:2px 4px;border-radius:4px;font:600 11px/1 var(--font-sans);white-space:nowrap;';
     const X_BTN = `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7;flex-shrink:0"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
 
     function chipIcon(name, color) {
