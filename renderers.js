@@ -1076,7 +1076,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       const cols = def.columns || [];
       const head = cols.map(c => rh(c)).join('');
       const body = (def.rows||[]).map(r => rr(r, cols)).join('');
-      return `<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+      return `<div class="tbl-outer"><div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
     }
 
     /* ── row types demo ── */

@@ -197,11 +197,15 @@ button,input,select{font-family:inherit}
 .tbl-stitle{font:700 16px/1 var(--font-sans);color:var(--n7);margin:0 0 14px}
 .tbl-desc{font:400 13px/1.5 var(--font-sans);color:var(--n5);margin:0 0 14px}
 /* sticky actions column */
+.tbl-outer{position:relative}
+.tbl-outer::after{content:'';position:absolute;right:0;bottom:0;width:82px;height:5px;background:transparent;pointer-events:none;z-index:3}
+.tbl-outer:hover::after{background:var(--n1)}
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tbl-wrap::-webkit-scrollbar{height:5px}
 .tbl-wrap::-webkit-scrollbar-track{background:transparent}
-.tbl-wrap::-webkit-scrollbar-thumb{background:var(--n4);border-radius:3px}
-.tbl-wrap::-webkit-scrollbar-thumb:hover{background:var(--n5)}
+.tbl-wrap::-webkit-scrollbar-thumb{background:transparent;border-radius:3px}
+.tbl-outer:hover .tbl-wrap::-webkit-scrollbar-track{background:var(--n1)}
+.tbl-outer:hover .tbl-wrap::-webkit-scrollbar-thumb{background:var(--n4);border-radius:3px}
 .tbl th.tbl-acts-col{position:sticky;right:0;z-index:2;width:82px;min-width:82px;max-width:82px;background:var(--n3);box-shadow:-6px 0 12px -6px rgba(0,0,0,.14);text-align:center;padding:10px 4px}
 .tbl td.tbl-acts-col{position:sticky;right:0;z-index:1;width:82px;min-width:82px;max-width:82px;background:#fff;box-shadow:-6px 0 12px -6px rgba(0,0,0,.10);text-align:center}
 .tbl th.tbl-acts-col::before,.tbl td.tbl-acts-col::before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:1px;pointer-events:none}
