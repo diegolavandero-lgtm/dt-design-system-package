@@ -255,7 +255,7 @@
           { "type": "loading-bar",    "value": 52 },
           { "type": "rating",         "value": 3 },
           { "type": "switch",         "value": true  },
-          { "type": "actions",        "value": ["edit", "delete"] }
+          { "type": "actions",        "value": ["edit", "delete", "document", "message"] }
         ]
       },
       {
@@ -291,7 +291,7 @@
           { "type": "loading-bar", "value": 0 },
           { "type": "rating",      "value": 1 },
           { "type": "switch",      "value": false },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          { "type": "actions",     "value": ["edit", "delete", "document"] }
         ]
       }
     ]

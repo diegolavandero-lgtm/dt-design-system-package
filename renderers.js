@@ -65,6 +65,7 @@ const ICON_PATHS = {
   'messages':      '<path d="M17.74,30,16,29l4-7h6a2,2,0,0,0,2-2V8a2,2,0,0,0-2-2H6A2,2,0,0,0,4,8V20a2,2,0,0,0,2,2h9v2H6a4,4,0,0,1-4-4V8A4,4,0,0,1,6,4H26a4,4,0,0,1,4,4V20a4,4,0,0,1-4,4H21.16Z"/>',
   'help-circle':   '<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/><circle cx="16" cy="23.5" r="1.5"/><path d="M17,8H15.5A4.49,4.49,0,0,0,11,12.5V13h2v-.5A2.5,2.5,0,0,1,15.5,10H17a2.5,2.5,0,0,1,0,5H15v4.5h2V17a4.5,4.5,0,0,0,0-9Z"/>',
   'bell':          '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
+  'overflow-menu-vertical': '<circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/>',
 };
 
 function iconSvg(name, size, color) {
@@ -1023,9 +1024,18 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           return `<td${cls}><div class="tbl-skel cell"></div></td>`;
 
         case 'actions': {
-          const btns = (cell.value||[]).slice(0,2).map(act =>
-            `<button class="tbl-act-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14)}</button>`
-          ).join('');
+          const acts = cell.value || [];
+          let btns;
+          if (acts.length <= 2) {
+            btns = acts.map(act =>
+              `<button class="tbl-act-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14)}</button>`
+            ).join('');
+          } else {
+            const overflow = acts.slice(1);
+            const dataActs = escHtml(JSON.stringify(overflow));
+            btns = `<button class="tbl-act-btn" onclick="return false" title="${escHtml(acts[0])}">${iconSvg(acts[0],14)}</button>` +
+              `<button class="tbl-act-btn" data-acts="${dataActs}" onclick="tblMenu(this)" title="More options">${iconSvg('overflow-menu-vertical',14)}</button>`;
+          }
           return `<td class="tbl-acts-col${extraCls?' '+extraCls:''}"><div class="tbl-acts">${btns}</div></td>`;
         }
 
@@ -1046,7 +1056,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         return `<th${w}${extra}><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(col.sub)}</span><span>${escHtml(col.label||'')}${sv}</span></div></th>`;
       }
       if (col.type === 'actions') {
-        return `<th class="tbl-acts-col"${w}>${escHtml(col.label||'')}</th>`;
+        return `<th class="tbl-acts-col" style="text-align:center"${w}>${escHtml(col.label||'')}</th>`;
       }
       return `<th${w}${extra}>${escHtml(col.label||'')}${sv}</th>`;
     }

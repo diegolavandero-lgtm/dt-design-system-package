@@ -243,6 +243,12 @@ button,input,select{font-family:inherit}
 .tbl-hd-stack{display:flex;flex-direction:column;gap:1px}
 .tbl-hd-sub{font:400 10px var(--font-sans);color:var(--n5);text-transform:none;letter-spacing:0;margin-bottom:1px}
 
+/* actions overflow dropdown */
+.tbl-dropdown{position:fixed;background:#fff;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.16),0 0 0 1px rgba(0,0,0,.07);z-index:9999;min-width:168px;padding:4px 0}
+.tbl-dropdown-item{display:flex;align-items:center;gap:10px;padding:0 14px;height:40px;cursor:pointer;font:400 13px var(--font-sans);color:var(--n7);white-space:nowrap;transition:background .1s}
+.tbl-dropdown-item:first-child{background:var(--n2)}
+.tbl-dropdown-item:hover{background:var(--b1);color:var(--b7)}
+
 /* ── MODAL ── */
 .modal-stage{background:rgba(19,32,69,.45);padding:24px;border-radius:8px;display:flex;justify-content:center}
 .modal{width:500px;max-width:100%;background:#fff;border-radius:4px;padding:24px;border:1px solid #A3B5D1;box-shadow:0 8px 16px rgba(0,0,0,.15)}
@@ -859,6 +865,30 @@ function starHov(star, enter) {
   const all = star.closest('.tbl-stars').querySelectorAll('.star');
   const n = enter ? [...all].indexOf(star) : -1;
   all.forEach((s, i) => s.classList.toggle('hov', i <= n));
+}
+
+function tblMenu(btn) {
+  const existing = document.getElementById('tbl-drop');
+  if (existing) { existing.remove(); if (existing._src === btn) return; }
+  const acts = JSON.parse(btn.dataset.acts || '[]');
+  const drop = document.createElement('div');
+  drop.className = 'tbl-dropdown';
+  drop.id = 'tbl-drop';
+  drop._src = btn;
+  drop.innerHTML = acts.map(act =>
+    `<div class="tbl-dropdown-item">${iconSvg(act,14,'var(--n5)')}<span>${act.charAt(0).toUpperCase()+act.slice(1)}</span></div>`
+  ).join('');
+  document.body.appendChild(drop);
+  const r = btn.getBoundingClientRect();
+  const dropW = 180;
+  let left = r.right - dropW;
+  if (left < 8) left = 8;
+  drop.style.cssText = `top:${r.bottom + 4}px;left:${left}px`;
+  setTimeout(() => {
+    document.addEventListener('click', function h(e) {
+      if (!drop.contains(e.target)) { drop.remove(); document.removeEventListener('click', h); }
+    });
+  }, 0);
 }
 
 function switchTab(el) {
