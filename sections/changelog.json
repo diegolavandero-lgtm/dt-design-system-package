@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T18:01:48.407Z",
+  "generated": "2026-05-26T18:09:03.482Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "b59f85d",
+          "type": "fix",
+          "section": "Tables",
+          "message": "Tables: fix sticky divider + horizontal scroll",
+          "author": "Diego"
+        },
         {
           "hash": "1702590",
           "type": "update",
