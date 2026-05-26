@@ -58,8 +58,8 @@ const ICON_PATHS = {
   'location':      '<path d="M16,18a5,5,0,1,1,5-5A5.0057,5.0057,0,0,1,16,18Zm0-8a3,3,0,1,0,3,3A3.0033,3.0033,0,0,0,16,10Z"/><path d="M16,30,7.5645,20.0513c-.0479-.0571-.3482-.4515-.3482-.4515A10.8888,10.8888,0,0,1,5,13a11,11,0,0,1,22,0,10.8844,10.8844,0,0,1-2.2148,6.5973l-.0015.0025s-.3.3944-.3447.4474ZM8.8125,18.395c.001.0007.2334.3082.2866.3744L16,26.9079l6.91-8.15c.0439-.0552.2783-.3649.2788-.3657A8.901,8.901,0,0,0,25,13,9,9,0,1,0,7,13a8.9054,8.9054,0,0,0,1.8125,5.395Z"/>',
   'dashboard':     '<path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/>',
   'document':      '<path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/>',
-  'edit':          '<path d="M2 26h28v2H2z"/><path d="M25.4 9c.8-.8.8-2 0-2.8l-3.6-3.6c-.8-.8-2-.8-2.8 0l-15 15V24h6.4l15-15zm-5-5L24 7.6l-3 3-3.6-3.6 3-3zM6 22v-3.6l10-10 3.6 3.6-10 10H6z"/>',
-  'delete':        '<path d="M12 12h2v12h-2zm6 0h2v12h-2z"/><path d="M4 6v2h2l2 20h16l2-20h2V6H4zm4.23 22-1.84-20h19.22l-1.84 20H8.23z"/><path d="M10 4h12v2H10z"/>',
+  'edit':          '<path d="M2 26H30V28H2z"/><path d="M25.4,9c0.8-0.8,0.8-2,0-2.8c0,0,0,0,0,0l-3.6-3.6c-0.8-0.8-2-0.8-2.8,0c0,0,0,0,0,0l-15,15V24h6.4L25.4,9z M20.4,4L24,7.6l-3,3L17.4,7L20.4,4z M6,22v-3.6l10-10l3.6,3.6l-10,10H6z"/>',
+  'delete':        '<path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/>',
   // aliases for topbar icon order keys
   'alerts':        '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
   'messages':      '<path d="M17.74,30,16,29l4-7h6a2,2,0,0,0,2-2V8a2,2,0,0,0-2-2H6A2,2,0,0,0,4,8V20a2,2,0,0,0,2,2h9v2H6a4,4,0,0,1-4-4V8A4,4,0,0,1,6,4H26a4,4,0,0,1,4,4V20a4,4,0,0,1-4,4H21.16Z"/>',
@@ -532,10 +532,11 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
   /* ── ICONOGRAPHY ── */
   iconography(data) {
     const lib = data.library || {};
-    const icons = (data.icons || []).map(([name, inner]) => `
+    const icons = (data.icons || []).map(([name, inner, tag]) => `
       <div class="icon-cell">
         <svg viewBox="0 0 32 32" fill="currentColor">${inner}</svg>
         <span class="ic-lbl">${escHtml(name.toLowerCase())}</span>
+        ${tag ? `<span class="ic-tag">${escHtml(tag)}</span>` : ''}
       </div>`).join('');
 
     const order = (data.topbarOrder || []).map((n,i) =>
@@ -1111,6 +1112,15 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       `<tr><td><code>${escHtml(k)}</code></td><td>${escHtml(v)}</td></tr>`
     ).join('');
 
+    /* ── scroll demo ── */
+    const sd = data.scrollDemo;
+    const scrollSection = sd ? `
+      <div style="margin-bottom:28px">
+        <div class="tbl-stitle">Sticky actions · horizontal scroll</div>
+        <div class="tbl-desc">With many columns the Actions column stays fixed to the right edge — white background so it covers scrolled content. All other columns scroll under it.</div>
+        <div class="card flush">${demoTable(sd)}</div>
+      </div>` : '';
+
     return `
       ${sectionHeader(data)}
 
@@ -1124,6 +1134,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           </table>
         </div>
       </div>
+
+      ${scrollSection}
 
       <div style="margin-bottom:28px">
         <div class="tbl-stitle">Cell types</div>

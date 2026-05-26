@@ -195,10 +195,8 @@ button,input,select{font-family:inherit}
 .tbl-desc{font:400 13px/1.5 var(--font-sans);color:var(--n5);margin:0 0 14px}
 /* sticky actions column */
 .tbl-wrap{overflow-x:auto}
-.tbl th.tbl-acts-col{position:sticky;right:0;z-index:2;background:var(--n3);border-left:1px solid var(--n4)}
-.tbl td.tbl-acts-col{position:sticky;right:0;z-index:1;background:#fff;border-left:1px solid var(--n3)}
-.tbl tr.hov td.tbl-acts-col{background:var(--n2)}
-.tbl tr.sel td.tbl-acts-col{background:var(--b1)}
+.tbl th.tbl-acts-col{position:sticky;right:0;z-index:2;width:82px;min-width:82px;background:var(--n3);border-left:1px solid var(--n4);box-shadow:-5px 0 10px -4px rgba(0,0,0,.12)}
+.tbl td.tbl-acts-col{position:sticky;right:0;z-index:1;width:82px;min-width:82px;background:#fff;border-left:1px solid var(--n3);box-shadow:-5px 0 10px -4px rgba(0,0,0,.08)}
 /* cell: switch */
 .tbl-sw-track{width:30px;height:17px;border-radius:99px;background:var(--n4);position:relative;cursor:pointer;transition:background .15s;flex-shrink:0;display:inline-block}
 .tbl-sw-track.on{background:var(--b5)}
@@ -347,6 +345,7 @@ button,input,select{font-family:inherit}
 .icon-cell{border:1px solid var(--n3);border-radius:6px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;background:#fff}
 .icon-cell svg{width:20px;height:20px;fill:var(--n7);stroke:none}
 .icon-cell .ic-lbl{font:400 9px var(--font-sans);color:var(--n5);text-align:center;word-break:break-all}
+.icon-cell .ic-tag{font:600 8px var(--font-sans);color:var(--b7);background:var(--b1);border-radius:2px;padding:1px 4px;text-align:center;white-space:nowrap;line-height:1.5}
 
 /* ── LANGUAGE SWITCH ── */
 .lang-switch{display:inline-flex;border:1px solid rgba(255,255,255,.18);border-radius:6px;overflow:hidden;height:28px;flex-shrink:0}
