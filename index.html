@@ -712,7 +712,7 @@ async function navigate(id) {
 
   const route = findRoute(id);
   if (!route) {
-    view.innerHTML = '<div class="card"><p style="color:var(--r6)">Section not found: ' + id + '</p></div>';
+    navigate('overview');
     return;
   }
 
