@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T18:41:43.792Z",
+  "generated": "2026-05-26T18:43:03.552Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "c29d7d1",
+          "type": "update",
+          "section": "Tables",
+          "message": "Tables: center Acciones header and body cells via CSS class",
+          "author": "Diego"
+        },
         {
           "hash": "cac5173",
           "type": "fix",
