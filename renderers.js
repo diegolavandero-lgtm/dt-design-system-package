@@ -778,8 +778,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── CHIPS / PILLS ── */
   chips(data) {
-    const VARIANTS = ['text','dot','outline','icon-outline','icon-outline-x','icon-solid-x','solid'];
-    const VARIANT_LABELS = ['Text','Dot','Outline','Icon','Icon + ×','Solid + ×','Solid'];
+    const VARIANTS = ['text','no-outline','outline','icon-outline','icon-outline-x','icon-solid-x','solid'];
+    const VARIANT_LABELS = ['Text','No outline','Outline','Icon','Icon + ×','Solid + ×','Solid'];
 
     const CC = {
       info:    { light:'var(--b1)', bd:'var(--b3)', fg:'var(--b6)', solid:'var(--b5)', solidFg:'#fff' },
@@ -817,8 +817,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       switch (variant) {
         case 'text':
           return `<span style="${BASE_PILL}background:transparent;color:${c.fg}">${escHtml(label)}</span>`;
-        case 'dot':
-          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg}"><span style="width:6px;height:6px;border-radius:50%;background:${c.solid};flex-shrink:0"></span>${escHtml(label)}</span>`;
+        case 'no-outline':
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg}">${escHtml(label)}</span>`;
         case 'outline':
           return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${escHtml(label)}</span>`;
         case 'icon-outline':
