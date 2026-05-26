@@ -223,10 +223,11 @@ button,input,select{font-family:inherit}
 .tbl-stars .star.on{color:#FFAB00}
 .tbl-stars .star.hov{color:#FFAB00}
 /* cell: stacked text variants */
-.tbl-stack{display:flex;flex-direction:column;gap:1px}
-.tbl-stack .main{font:400 13px var(--font-sans);color:var(--n7);line-height:1.3}
-.tbl-stack .sub{font:400 11px var(--font-sans);color:var(--n5);line-height:1.3}
-.tbl-stack .err{font:400 11px var(--font-sans);color:var(--r6);line-height:1.3}
+.tbl-stack{display:block}
+.tbl-stack>*+*{margin-top:2px}
+.tbl-stack .main{display:block;font:400 13px var(--font-sans);color:var(--n7);line-height:1.3}
+.tbl-stack .sub{display:block;font:400 11px var(--font-sans);color:var(--n5);line-height:1.3}
+.tbl-stack .err{display:block;font:400 11px var(--font-sans);color:var(--r6);line-height:1.3}
 /* cell: chips */
 .tbl-chip{display:inline-flex;align-items:center;border-radius:4px;background:var(--n2);border:1px solid var(--n3);font:400 13px var(--font-sans);color:var(--n7);white-space:nowrap}
 .tbl-chip.lg{padding:5px 12px}

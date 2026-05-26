@@ -60,6 +60,7 @@ const ICON_PATHS = {
   'document':      '<path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/>',
   'edit':          '<path d="M2 26H30V28H2z"/><path d="M25.4,9c0.8-0.8,0.8-2,0-2.8c0,0,0,0,0,0l-3.6-3.6c-0.8-0.8-2-0.8-2.8,0c0,0,0,0,0,0l-15,15V24h6.4L25.4,9z M20.4,4L24,7.6l-3,3L17.4,7L20.4,4z M6,22v-3.6l10-10l3.6,3.6l-10,10H6z"/>',
   'delete':        '<path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/>',
+  'close-filled':  '<path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M21.4,23L16,17.6L10.6,23L9,21.4L14.4,16L9,10.6L10.6,9L16,14.4L21.4,9L23,10.6L17.6,16L23,21.4L21.4,23z"/>',
   // aliases for topbar icon order keys
   'alerts':        '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
   'messages':      '<path d="M17.74,30,16,29l4-7h6a2,2,0,0,0,2-2V8a2,2,0,0,0-2-2H6A2,2,0,0,0,4,8V20a2,2,0,0,0,2,2h9v2H6a4,4,0,0,1-4-4V8A4,4,0,0,1,6,4H26a4,4,0,0,1,4,4V20a4,4,0,0,1-4,4H21.16Z"/>',
@@ -967,9 +968,12 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           return `<td${cls}><div class="tbl-stack"><span class="main">${escHtml(cell.value||'')}</span><span class="err">${escHtml(cell.error||'')}</span></div></td>`;
 
         case 'text-icon-error': {
-          const ico = iconSvg(cell.icon||'user', 14, 'var(--n5)');
-          return `<td${cls}><div class="tbl-stack"><div class="tbl-ti"><span class="main">${ico} ${escHtml(cell.value||'')}</span></div><span class="err">${escHtml(cell.error||'')}</span></div></td>`;
+          const ico = iconSvg('close-filled', 14, 'var(--r6)');
+          return `<td${cls}><div class="tbl-stack"><div class="tbl-ti">${ico}<span class="main">${escHtml(cell.value||'')}</span></div><span class="err">${escHtml(cell.error||'')}</span></div></td>`;
         }
+
+        case 'sub-header':
+          return `<td${cls}><div class="tbl-stack"><span class="sub">${escHtml(cell.sub||cell.label||'')}</span><span class="main">${escHtml(cell.value||'')}</span></div></td>`;
 
         case 'link':
           return `<td class="cell-lnk${extraCls?' '+extraCls:''}">${escHtml(cell.value||'')}</td>`;

@@ -59,9 +59,10 @@
     { "id": "text-secondary",  "label": "Text secondary",        "description": "Muted text. Color N5. Used for — placeholders." },
     { "id": "icon-text",       "label": "Icon left + text",      "description": "14px icon on the left + label. Used for locations, categories." },
     { "id": "text-icon-right", "label": "Text + icon right",     "description": "Label + 14px icon on the right. Used for external links, expand actions." },
+    { "id": "sub-header",      "label": "Sub header + text",     "description": "Small gray label on top, primary content below. Useful for categorized cells." },
     { "id": "text-sub",        "label": "Text + sub",            "description": "Primary text + smaller gray subtext below. Two-line cell." },
     { "id": "text-error",      "label": "Text + error",          "description": "Primary text + red error subtext below." },
-    { "id": "text-icon-error", "label": "Icon + text + error",   "description": "Left icon + primary text + red error subtext below." },
+    { "id": "text-icon-error", "label": "Icon + text + error",   "description": "Red error icon + primary text + red error subtext below." },
     { "id": "link",            "label": "Link",                  "description": "Clickable text. Color B7, font-weight 600." },
     { "id": "badge",           "label": "Badge / Pill",          "description": "Status badge. Variants: success, warning, danger, info, neutral.",
       "badgeVariants": [
@@ -300,9 +301,10 @@
     {
       "label": "Text & stacked variants",
       "columns": [
-        { "label": "Text + sub",          "type": "text",          "sub": "Two-line" },
-        { "label": "Text + error",        "type": "text",          "sub": "Error state" },
-        { "label": "Icon + text + error", "type": "text",          "sub": "With icon" },
+        { "label": "Sub header + text",   "type": "text",    "sub": "New" },
+        { "label": "Text + sub",          "type": "text",    "sub": "Two-line" },
+        { "label": "Text + error",        "type": "text",    "sub": "Error state" },
+        { "label": "Icon + text + error", "type": "text",    "sub": "With icon" },
         { "label": "Text + icon →",       "type": "text" },
         { "label": "Acciones",            "type": "actions" }
       ],
@@ -310,9 +312,10 @@
         {
           "state": "default",
           "cells": [
-            { "type": "text-sub",        "value": "Maya Johnson",   "sub": "mayaj@dispatchtrack.com" },
-            { "type": "text-error",      "value": "lucas@company",  "error": "Email no verificado" },
-            { "type": "text-icon-error", "icon": "user", "value": "Aisha Patel", "error": "Sin permisos asignados" },
+            { "type": "sub-header",      "sub": "Tipo de ruta",  "value": "Entrega express" },
+            { "type": "text-sub",        "value": "Maya Johnson", "sub": "mayaj@dispatchtrack.com" },
+            { "type": "text-error",      "value": "lucas@company", "error": "Email no verificado" },
+            { "type": "text-icon-error", "value": "Aisha Patel",  "error": "Sin permisos asignados" },
             { "type": "text-icon-right", "icon": "document", "value": "Ver informe" },
             { "type": "actions",         "value": ["edit", "delete"] }
           ]
@@ -320,9 +323,10 @@
         {
           "state": "default",
           "cells": [
-            { "type": "text-sub",        "value": "Liam Smith",     "sub": "Admin · Zona Norte" },
+            { "type": "sub-header",      "sub": "Conductor",     "value": "Carlos Rivera" },
+            { "type": "text-sub",        "value": "Liam Smith",  "sub": "Admin · Zona Norte" },
             { "type": "text-error",      "value": "Formulario #82", "error": "3 campos requeridos" },
-            { "type": "text-icon-error", "icon": "route", "value": "Ruta RT-204", "error": "Fuera de zona" },
+            { "type": "text-icon-error", "value": "Ruta RT-204", "error": "Fuera de zona" },
             { "type": "text-icon-right", "icon": "message", "value": "Comentarios (3)" },
             { "type": "actions",         "value": ["edit", "delete"] }
           ]
