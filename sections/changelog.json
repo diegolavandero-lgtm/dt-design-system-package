@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T18:16:31.161Z",
+  "generated": "2026-05-26T18:34:03.898Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "9c7593e",
+          "type": "feat",
+          "section": "Tables",
+          "message": "Tables: center Acciones header, add overflow menu with dropdown for 3+ actions",
+          "author": "Diego"
+        },
         {
           "hash": "43005ae",
           "type": "fix",
