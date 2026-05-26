@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T19:23:45.064Z",
+  "generated": "2026-05-26T19:32:12.626Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "f95329b",
+          "type": "fix",
+          "section": "Tables",
+          "message": "Tables: fix stacked cell layout, red error icon, add sub-header variant",
+          "author": "Diego"
+        },
         {
           "hash": "5d39c11",
           "type": "update",
