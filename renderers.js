@@ -962,18 +962,18 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         }
 
         case 'text-sub':
-          return `<td${cls}><div class="tbl-stack"><span class="main">${escHtml(cell.value||'')}</span><span class="sub">${escHtml(cell.sub||'')}</span></div></td>`;
+          return `<td${cls}><span style="display:block;font:400 13px var(--font-sans);color:var(--n7);line-height:1.3">${escHtml(cell.value||'')}</span><span style="display:block;font:400 11px var(--font-sans);color:var(--n5);line-height:1.3;margin-top:2px">${escHtml(cell.sub||'')}</span></td>`;
 
         case 'text-error':
-          return `<td${cls}><div class="tbl-stack"><span class="main">${escHtml(cell.value||'')}</span><span class="err">${escHtml(cell.error||'')}</span></div></td>`;
+          return `<td${cls}><span style="display:block;font:400 13px var(--font-sans);color:var(--n7);line-height:1.3">${escHtml(cell.value||'')}</span><span style="display:block;font:400 11px var(--font-sans);color:var(--r6);line-height:1.3;margin-top:2px">${escHtml(cell.error||'')}</span></td>`;
 
         case 'text-icon-error': {
           const ico = iconSvg('close-filled', 14, 'var(--r6)');
-          return `<td${cls}><div class="tbl-stack"><div class="tbl-ti">${ico}<span class="main">${escHtml(cell.value||'')}</span></div><span class="err">${escHtml(cell.error||'')}</span></div></td>`;
+          return `<td${cls}><div style="display:flex;align-items:center;gap:6px">${ico}<span style="font:400 13px var(--font-sans);color:var(--n7);line-height:1.3">${escHtml(cell.value||'')}</span></div><span style="display:block;font:400 11px var(--font-sans);color:var(--r6);line-height:1.3;margin-top:2px">${escHtml(cell.error||'')}</span></td>`;
         }
 
         case 'sub-header':
-          return `<td${cls}><div class="tbl-stack"><span class="sub">${escHtml(cell.sub||cell.label||'')}</span><span class="main">${escHtml(cell.value||'')}</span></div></td>`;
+          return `<td${cls}><span style="display:block;font:400 11px var(--font-sans);color:var(--n5);line-height:1.3">${escHtml(cell.sub||cell.label||'')}</span><span style="display:block;font:400 13px var(--font-sans);color:var(--n7);line-height:1.3;margin-top:2px">${escHtml(cell.value||'')}</span></td>`;
 
         case 'link':
           return `<td class="cell-lnk${extraCls?' '+extraCls:''}">${escHtml(cell.value||'')}</td>`;
