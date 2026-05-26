@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T15:35:44.854Z",
+  "generated": "2026-05-26T15:57:07.604Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "b037b0b",
+          "type": "feat",
+          "section": "Tables",
+          "message": "Tables: sticky actions column + 14 new cell type variants",
+          "author": "Diego"
+        },
         {
           "hash": "7617325",
           "type": "update",
