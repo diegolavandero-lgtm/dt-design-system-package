@@ -1,0 +1,19 @@
+{
+  "title": "Alerts / Toasts",
+  "titleKey": "nav.alerts",
+  "description": "Toast notifications appear fixed at the top-right corner of the screen. They stack when multiple are active and auto-dismiss after 4 seconds. Text is always dynamic.",
+  "keywords": ["alerts", "toasts", "notifications", "info", "warning", "error", "success", "neutral", "loading"],
+  "variants": [
+    { "type": "success", "title": "Changes saved", "text": "Your settings have been updated successfully.", "hasClose": true },
+    { "type": "success", "title": "Copied to clipboard", "text": "The tracking link has been copied.", "hasClose": true, "actionLabel": "View" },
+    { "type": "error", "title": "Something went wrong", "text": "We couldn't process your request. Please try again.", "hasClose": true },
+    { "type": "error", "title": "Upload failed", "text": "The file exceeds the maximum size of 10 MB.", "hasClose": true, "actionLabel": "Retry" },
+    { "type": "warning", "title": "Action required", "text": "Your session is about to expire in 5 minutes.", "hasClose": true, "actionLabel": "Extend" },
+    { "type": "warning", "title": "Unsaved changes", "text": "You have unsaved changes that will be lost.", "hasClose": true },
+    { "type": "info", "title": "Update available", "text": "A new version of the app is ready to install.", "hasClose": true, "actionLabel": "Install" },
+    { "type": "info", "title": "Route optimized", "text": "12 stops reordered for optimal delivery.", "hasClose": true, "actionLabel": "Undo" },
+    { "type": "neutral", "title": "Order exported", "text": "25 orders have been exported to CSV.", "hasClose": true },
+    { "type": "neutral", "title": "Sync complete", "text": "All records are up to date.", "hasClose": false },
+    { "type": "loading", "title": "Processing orders", "text": "This may take a few seconds.", "hasClose": false }
+  ]
+}

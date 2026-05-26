@@ -799,27 +799,70 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
   },
 
-  /* ── BANNERS ── */
-  banners(data) {
+  /* ── ALERTS / TOASTS ── */
+  alerts(data) {
     const typeMap = {
-      success: {cls:'ok', iconPath:'M22 12A10 10 0 1 0 2 12A10 10 0 0 0 22 12ZM9 12 11 14 15 10'},
-      warning: {cls:'wr', iconPath:'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4'},
-      danger:  {cls:'er', iconPath:'M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM15 9l-6 6M9 9l6 6'},
-      info:    {cls:'in', iconPath:'M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM12 8h.01M12 12v4'},
+      success: { stroke: 'var(--g6)', iconPath: '<circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/>' },
+      error:   { stroke: 'var(--r6)', iconPath: '<circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/>' },
+      warning: { stroke: 'var(--o5)', iconPath: '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>' },
+      info:    { stroke: 'var(--b6)', iconPath: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>' },
+      neutral: { stroke: 'var(--n5)', iconPath: '<circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/>' },
+      loading: { stroke: 'var(--b5)', iconPath: null },
     };
 
-    const bns = (data.banners || []).map(b => {
-      const t = typeMap[b.type] || typeMap.info;
-      const text = b.title ? `<b>${escHtml(b.title)}</b> ${b.text}` : b.text;
-      return `<div class="bn ${t.cls}">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${b.iconColor}" stroke-width="2"><path d="${t.iconPath}"/></svg>
-        <span>${text}</span>
+    function toastIcon(type) {
+      const t = typeMap[type] || typeMap.info;
+      if (type === 'loading') {
+        return `<svg class="toast-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${t.stroke}" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
+      }
+      return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${t.stroke}" stroke-width="2">${t.iconPath}</svg>`;
+    }
+
+    function toastCard(v, isStatic) {
+      const closeBtn = v.hasClose !== false
+        ? `<button class="toast-close"${isStatic ? '' : ' onclick="dismissToast(this.closest(\'.toast\'))"'} title="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`
+        : '';
+      return `<div class="toast toast-${v.type}" style="${isStatic ? 'animation:none' : ''}">
+        <div class="toast-icon">${toastIcon(v.type)}</div>
+        <div class="toast-body">
+          ${v.title ? `<div class="toast-title">${escHtml(v.title)}</div>` : ''}
+          ${v.text  ? `<div class="toast-text">${escHtml(v.text)}</div>` : ''}
+          ${v.actionLabel ? `<button class="toast-action" onclick="return false">${escHtml(v.actionLabel)}</button>` : ''}
+        </div>
+        ${closeBtn}
       </div>`;
+    }
+
+    const previews = (data.variants || []).map(v => {
+      const typeLabel = v.type.charAt(0).toUpperCase() + v.type.slice(1);
+      const tags = [typeLabel, v.actionLabel ? '+ action' : '', v.hasClose === false ? 'no close' : ''].filter(Boolean).join(' · ');
+      return `<div>
+        <div style="font:500 11px var(--font-sans);color:var(--n45);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">${escHtml(tags)}</div>
+        ${toastCard(v, true)}
+      </div>`;
+    }).join('');
+
+    const triggerBtns = (data.variants || []).map(v => {
+      const opts = {};
+      if (v.hasClose === false) opts.hasClose = false;
+      if (v.actionLabel) opts.actionLabel = v.actionLabel;
+      const typeLabel = v.type.charAt(0).toUpperCase() + v.type.slice(1);
+      const btnLabel = [typeLabel, v.actionLabel ? '+ action' : '', v.hasClose === false ? '(no close)' : ''].filter(Boolean).join(' ');
+      return `<button class="btn sec" style="font-size:12px;height:30px;padding:0 12px"
+        onclick="showToast(${JSON.stringify(v.type)},${JSON.stringify(v.title||'')},${JSON.stringify(v.text||'')},${JSON.stringify(opts)})">${escHtml(btnLabel)}</button>`;
     }).join('');
 
     return `
       ${sectionHeader(data)}
-      <div class="card">${bns}</div>`;
+      <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;font-size:10px">Variants</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;margin-bottom:28px">
+        ${previews}
+      </div>
+      <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:12px;text-transform:uppercase;letter-spacing:.06em;font-size:10px">Interactive demo</div>
+      <div class="card">
+        <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 14px">Click to preview each toast at the top-right corner of the screen.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">${triggerBtns}</div>
+      </div>`;
   },
 
   /* ── MODAL ── */

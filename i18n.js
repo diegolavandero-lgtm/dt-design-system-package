@@ -55,7 +55,7 @@
     "nav.buttons": { "es": "Botones", "en": "Buttons" },
     "nav.inputs": { "es": "Inputs", "en": "Inputs" },
     "nav.badges": { "es": "Badges", "en": "Badges" },
-    "nav.banners": { "es": "Banners", "en": "Banners" },
+    "nav.alerts": { "es": "Alertas / Toasts", "en": "Alerts / Toasts" },
     "nav.modal": { "es": "Modal", "en": "Modal" },
     "nav.table": { "es": "Tabla", "en": "Table" },
     "nav.sidebar": { "es": "Sidebar", "en": "Sidebar" },

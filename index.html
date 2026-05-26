@@ -161,6 +161,29 @@ button,input,select{font-family:inherit}
 .bn.in{background:var(--b1);border-left:3px solid var(--b6)}
 .bn:last-child{margin-bottom:0}
 
+/* ── TOASTS ── */
+#toast-container{position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:360px}
+#toast-container .toast{pointer-events:all;animation:toast-in .2s ease forwards}
+.toast{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:6px;box-shadow:0 2px 14px rgba(0,0,0,.13),0 0 0 1px rgba(0,0,0,.06);padding:12px 14px;border-left:3px solid transparent}
+.toast.toast-success{border-left-color:var(--g6)}
+.toast.toast-error{border-left-color:var(--r6)}
+.toast.toast-warning{border-left-color:var(--o5)}
+.toast.toast-info{border-left-color:var(--b6)}
+.toast.toast-neutral{border-left-color:var(--n4)}
+.toast.toast-loading{border-left-color:var(--b5)}
+.toast-icon{flex-shrink:0;margin-top:1px}
+.toast-body{flex:1;min-width:0}
+.toast-title{font:600 13px var(--font-sans);color:var(--n7);margin-bottom:2px}
+.toast-text{font:400 12px/1.45 var(--font-sans);color:var(--n5)}
+.toast-action{display:inline-block;margin-top:6px;font:600 12px var(--font-sans);color:var(--b6);cursor:pointer;text-decoration:none;background:none;border:none;padding:0}
+.toast-action:hover{text-decoration:underline}
+.toast-close{flex-shrink:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;color:var(--n45);cursor:pointer;border-radius:3px;background:none;border:none;padding:0;margin-left:2px;margin-top:-2px;transition:color .1s,background .1s}
+.toast-close:hover{color:var(--n7);background:var(--n2)}
+.toast-spin{animation:toast-spin-anim .8s linear infinite;flex-shrink:0;margin-top:1px}
+@keyframes toast-in{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toast-out{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(16px)}}
+@keyframes toast-spin-anim{to{transform:rotate(360deg)}}
+
 /* ── TABLE ── */
 .tbl{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color:var(--n7)}
 .tbl-wrap>.tbl{width:auto;min-width:100%}
@@ -624,9 +647,9 @@ const NAV = [
     { id: 'badges', label: 'Badges & tags', i18n: 'nav.badges',
       icon: 'M12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2',
       path: 'sections/components/badges.json', renderer: 'badges' },
-    { id: 'banners', label: 'Banners', i18n: 'nav.banners',
-      icon: 'M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM12 8h.01M12 12v4',
-      path: 'sections/components/banners.json', renderer: 'banners' },
+    { id: 'alerts', label: 'Alerts / Toasts', i18n: 'nav.alerts',
+      icon: 'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0',
+      path: 'sections/components/alerts.json', renderer: 'alerts' },
     { id: 'modal', label: 'Modal', i18n: 'nav.modal',
       icon: 'M2 4h20v16H2zM2 9h20',
       path: 'sections/components/modal.json', renderer: 'modal' },
@@ -933,6 +956,52 @@ function tblBulkUpdate(table, n) {
   outer.classList.toggle('bulk-active', n >= 2);
   const cntEl = outer.querySelector('.tbl-bulk-cnt');
   if (cntEl) cntEl.textContent = n + ' selected';
+}
+
+/* ── TOASTS ── */
+function showToast(type, title, text, opts) {
+  opts = opts || {};
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+  const colorMap = {
+    success: 'var(--g6)', error: 'var(--r6)', warning: 'var(--o5)',
+    info: 'var(--b6)', neutral: 'var(--n5)', loading: 'var(--b5)'
+  };
+  const iconMap = {
+    success: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--g6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>`,
+    error:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--r6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>`,
+    warning: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--o5)" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    info:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>`,
+    neutral: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>`,
+    loading: `<svg class="toast-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--b5)" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`
+  };
+  const hasClose = opts.hasClose !== false;
+  const toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.innerHTML =
+    '<div class="toast-icon">' + (iconMap[type] || iconMap.info) + '</div>' +
+    '<div class="toast-body">' +
+      (title ? '<div class="toast-title">' + title + '</div>' : '') +
+      (text  ? '<div class="toast-text">'  + text  + '</div>' : '') +
+      (opts.actionLabel ? '<button class="toast-action" onclick="return false">' + opts.actionLabel + '</button>' : '') +
+    '</div>' +
+    (hasClose ? '<button class="toast-close" onclick="dismissToast(this.closest(\'.toast\'))" title="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>' : '');
+  container.appendChild(toast);
+  if (type !== 'loading') {
+    setTimeout(function() { dismissToast(toast); }, opts.duration || 4000);
+  }
+  return toast;
+}
+
+function dismissToast(toast) {
+  if (!toast || toast.dataset.dismissing) return;
+  toast.dataset.dismissing = '1';
+  toast.style.animation = 'toast-out .18s ease forwards';
+  setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 200);
 }
 
 function switchTab(el) {
