@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-26T15:57:07.604Z",
+  "generated": "2026-05-26T18:01:48.407Z",
   "days": [
     {
       "date": "2026-05-26",
       "entries": [
+        {
+          "hash": "1702590",
+          "type": "update",
+          "section": "Iconography",
+          "message": "Tables: 82px sticky actions col, scroll demo, Carbon icons sync",
+          "author": "Diego"
+        },
         {
           "hash": "b037b0b",
           "type": "feat",
