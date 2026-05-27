@@ -1535,9 +1535,51 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         </div>`;
     }
 
+    function buildSettingsLayout(p) {
+      const iconItems = (p.settingsItems || p.items).map(it => {
+        if (it.divider) return `<div style="height:1px;background:#E9ECF2;margin:4px 8px"></div>`;
+        const isSel = it.state === 'selected';
+        return `<div style="display:flex;align-items:center;height:40px;border-left:6px solid ${isSel?'#0052CC':'transparent'}">
+          <div style="display:flex;align-items:center;justify-content:center;flex:1;height:40px;${isSel?'background:rgba(75,130,250,.08)':''}">
+            ${iconSvg(it.icon, 18, isSel?'#0052CC':'#4B82FA')}
+          </div>
+        </div>`;
+      }).join('');
+
+      const sp = p.settingsPanel;
+      let panelHtml = '';
+      if (sp && sp.groups) {
+        const groupsHtml = sp.groups.map(g => {
+          const itemsHtml = (g.items || []).map(it => {
+            const isSel = it.state === 'selected';
+            const badge = it.count != null
+              ? `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 6px;border-radius:10px;background:var(--b2);color:var(--b6);font:600 11px/1 var(--font-sans)">${it.count}</span>`
+              : '';
+            return `<div style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 16px 0 ${isSel?'13px':'16px'};${isSel?'border-left:3px solid #0052CC;background:rgba(75,130,250,.08);':''}cursor:pointer">
+              <span style="font:${isSel?'700':'400'} 13px/1 var(--font-sans);color:${isSel?'#0052CC':'var(--n6)'}">${escHtml(it.label)}</span>
+              ${badge}
+            </div>`;
+          }).join('');
+          return `<div>
+            <div style="padding:12px 16px 4px;font:700 14px/1 var(--font-sans);color:var(--n7)">${escHtml(g.label)}</div>
+            ${itemsHtml}
+          </div>`;
+        }).join('');
+        const ver = sp.version ? `<div style="height:1px;background:#E9ECF2;margin:8px 16px"></div><div style="padding:10px 16px;font:400 12px var(--font-sans);color:var(--n5)">Versión ${escHtml(sp.version)}</div>` : '';
+        panelHtml = `<div style="width:220px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;overflow-y:auto;padding:8px 0">${groupsHtml}${ver}</div>`;
+      }
+
+      return `<div style="display:flex;border:1px solid var(--n3);border-radius:8px;overflow:hidden;height:420px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+        <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;overflow:hidden">${iconItems}</div>
+        ${panelHtml}
+        <div style="flex:1;background:var(--n1);padding:20px;display:flex;align-items:flex-start">
+          <span style="font:400 12px var(--font-sans);color:var(--n4)">Main content pushed right by settings panel</span>
+        </div>
+      </div>`;
+    }
+
     const productSections = products.map(p => {
       const interactiveItems = buildItems(p.items);
-      const settingsItems = buildItems(p.settingsItems || p.items);
 
       return `
         <div style="margin-bottom:40px">
@@ -1550,15 +1592,15 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             Desktop
           </div>
-          <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin-bottom:20px">
+          <div style="display:flex;flex-direction:column;gap:20px;margin-bottom:20px">
             <div style="display:flex;flex-direction:column;gap:7px">
               <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Collapsed → hover to expand</div>
               <div class="sbx">${interactiveItems}</div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:7px">
-              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Settings state</div>
-              <div class="sbx-static">${settingsItems}</div>
-            </div>
+            ${p.settingsPanel || p.settingsItems ? `<div style="display:flex;flex-direction:column;gap:7px">
+              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Settings mode — panel pushes content right</div>
+              ${buildSettingsLayout(p)}
+            </div>` : ''}
           </div>
 
           <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:10px;display:flex;align-items:center;gap:6px">

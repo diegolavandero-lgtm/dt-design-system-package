@@ -68,7 +68,57 @@
         { "icon": "receipt",        "label": "Módulo de Costos (nuevo)", "state": "default"  },
         { "divider": true },
         { "icon": "settings",       "label": "Ajustes",                  "state": "selected" }
-      ]
+      ],
+      "settingsPanel": {
+        "groups": [
+          {
+            "label": "Cuentas",
+            "items": [
+              { "label": "Configuración de cuenta", "state": "selected" }
+            ]
+          },
+          {
+            "label": "Usuarios",
+            "items": [
+              { "label": "Usuarios web",    "count": 18 },
+              { "label": "Usuarios móviles","count": 59 }
+            ]
+          },
+          {
+            "label": "Gestionar",
+            "items": [
+              { "label": "Vehículos" },
+              { "label": "Subestados" },
+              { "label": "Pruebas de entrega" },
+              { "label": "Formularios de ruta" },
+              { "label": "Centros de distribución" },
+              { "label": "Agrupaciones" },
+              { "label": "Alertas" },
+              { "label": "Notificaciones" },
+              { "label": "Configuración de Operación" }
+            ]
+          },
+          {
+            "label": "Configuración avanzada",
+            "items": [
+              { "label": "Importar Órdenes" },
+              { "label": "Campos personalizados" },
+              { "label": "Llaves API" },
+              { "label": "Webhooks" },
+              { "label": "Etiquetas de órdenes" },
+              { "label": "Seguridad" },
+              { "label": "Módulo de costo" }
+            ]
+          },
+          {
+            "label": "Widget",
+            "items": [
+              { "label": "Seguimiento de pedidos" }
+            ]
+          }
+        ],
+        "version": "20.25.10"
+      }
     },
     {
       "id": "plannerpro",
