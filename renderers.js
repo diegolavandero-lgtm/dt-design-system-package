@@ -670,84 +670,59 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── INPUTS ── */
   inputs(data) {
-    const IC = {
-      search:       'M11 11m-7 0a7 7 0 1 0 14 0a7 7 0 1 0-14 0M21 21 16.65 16.65',
-      'x-circle':   'M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM15 9l-6 6M9 9l6 6',
-      'check-circle':'M12 22A10 10 0 1 0 12 2A10 10 0 0 0 12 22ZM9 12l2 2 4-4',
-    };
-    const IC_COLOR = { 'x-circle': '#DE350B', 'check-circle': '#00875A' };
+    const searchSvg = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>`;
 
-    function trailingIcon(name) {
-      const p = IC[name] || IC.search;
-      const c = IC_COLOR[name] || 'currentColor';
-      return `<span class="hp-text-field__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${p}"/></svg></span>`;
-    }
+    function renderVariant(v, hasLabel) {
+      const isDisabled = v.state === 'disabled';
+      const isFocused  = v.state === 'focused';
+      const isFilled   = v.state === 'filled';
+      const isError    = v.state === 'error';
 
-    const cards = (data.variants || []).map(v => {
-      const p = v.props;
-      const hasValue  = !!p.value;
-      const isFocused = !!p.focused;
-      const isActive  = hasValue || isFocused;
+      let border = '1px solid var(--n3)';
+      if (isFocused || isFilled) border = '1px solid var(--n5)';
+      if (isError)               border = '1px solid var(--r6)';
+      if (isDisabled)            border = '1px solid var(--n3)';
 
-      const mods = [
-        p.dark      && 'dark',
-        isFocused   && 'focused',
-        p.textArea  && 'textarea',
-        p.fullWidth && 'fullwidth',
-        p.error     && 'error',
-        p.dense     && 'dense',
-        p.disabled  && 'disabled',
-        p.readOnly  && 'read-only',
-        p.trailingIcon && 'with-trailing-icon',
-        !p.label    && 'no-label',
-      ].filter(Boolean).map(m => `hp-text-field--${m}`).join(' ');
+      const bg         = isDisabled ? 'var(--n1)' : '#fff';
+      const focusRing  = isFocused  ? 'box-shadow:0 0 0 3px rgba(75,130,250,.18);' : '';
+      const dimmed     = isDisabled ? 'opacity:.55;cursor:not-allowed;' : '';
 
-      const labelActiveCls = isActive ? 'hp-text-field__label--active' : '';
-      const labelErrorCls  = p.error  ? 'hp-text-field__label--error'  : '';
+      const inputText  = v.value ? escHtml(v.value) : (v.placeholder ? escHtml(v.placeholder) : 'Placeholder');
+      const textColor  = v.value ? 'var(--n7)' : 'var(--n6)';
 
-      const fieldAttrs = [
-        p.disabled ? 'disabled' : '',
-        p.readOnly ? 'readonly' : '',
-        p.placeholder ? `placeholder="${escHtml(p.placeholder)}"` : '',
-        p.textArea && p.rows ? `rows="${p.rows}"` : '',
-      ].filter(Boolean).join(' ');
-
-      const fieldHtml = p.textArea
-        ? `<textarea class="hp-text-field__input" ${fieldAttrs}>${escHtml(p.value || '')}</textarea>`
-        : `<input class="hp-text-field__input" type="text" ${fieldAttrs} value="${escHtml(p.value || '')}">`;
-
-      const labelHtml = p.label
-        ? `<label class="hp-text-field__label ${labelActiveCls} ${labelErrorCls}">
-            ${p.required ? '<span class="hp-text-field__required-mark">*</span>' : ''}${escHtml(p.label)}
-          </label>`
+      const labelHtml = hasLabel
+        ? `<div style="font:600 12px/16px var(--font-sans);color:var(--n7);margin-bottom:4px">Label</div>`
         : '';
 
-      const iconHtml  = p.trailingIcon ? trailingIcon(p.trailingIcon) : '';
-      const helperHtml = `<div class="hp-text-field__helper-text">${escHtml(p.helperText || '')}</div>`;
-      const wrapStyle = p.dark ? 'background:var(--indigo);padding:14px;border-radius:6px;display:inline-block' : '';
+      const helperHtml = v.helperText
+        ? `<div style="font:400 12px/16px var(--font-sans);color:${isError ? 'var(--r6)' : 'var(--n5)'};margin-top:3px">${escHtml(v.helperText)}</div>`
+        : '';
 
-      return `
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="font:600 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">${escHtml(v.label)}</div>
-          <div style="${wrapStyle}">
-            <div class="hp-text-field ${mods}">
-              <div class="hp-text-field__content">
-                ${fieldHtml}
-                ${labelHtml}
-                ${iconHtml}
-              </div>
-              ${helperHtml}
-            </div>
-          </div>
-          <div style="font:400 11px var(--font-sans);color:var(--n45);line-height:1.4">${escHtml(v.description)}</div>
-        </div>`;
+      return `<div style="display:flex;flex-direction:column;width:200px">
+        <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">${escHtml(v.label)}</div>
+        ${labelHtml}
+        <div style="display:flex;align-items:center;height:32px;padding:0 10px;border:${border};border-radius:6px;background:${bg};gap:6px;${focusRing}${dimmed}">
+          <span style="font:400 14px/20px var(--font-sans);color:${textColor};flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${inputText}</span>
+          ${v.trailingIcon === 'search' ? searchSvg : ''}
+        </div>
+        ${helperHtml}
+      </div>`;
+    }
+
+    const groupSections = (data.variantGroups || []).map(group => {
+      const cards = (group.variants || []).map(v => renderVariant(v, group.id === 'with-label')).join('');
+      return `<div style="margin-bottom:32px">
+        <div style="font:700 16px/22px var(--font-sans);color:var(--n7);margin-bottom:4px">${escHtml(group.label)}</div>
+        <div style="font:400 14px/20px var(--font-sans);color:var(--n5);margin-bottom:20px">${escHtml(group.description)}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:20px 28px">${cards}</div>
+      </div>`;
     }).join('');
 
     const tokenRows = Object.entries(data.tokens || {}).map(([k, v]) =>
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
     ).join('');
 
-    const previewTab = `<div style="padding:20px;background:var(--n1)"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px 28px">${cards}</div></div>`;
+    const previewTab = `<div style="padding:24px;background:var(--n1)">${groupSections}</div>`;
     const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
     const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
 

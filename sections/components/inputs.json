@@ -1,98 +1,48 @@
 {
-  "title": "Text Field",
+  "title": "Inputs",
   "titleKey": "nav.inputs",
-  "description": "hp-text-field-react v10. Label flotante, 56px de alto (dense 40px), border-radius 4px, border $dt-neutral-n3. Interactivo — haz click en cualquier campo para probar. Source: @beetrack/hp-text-field-react.",
-  "keywords": ["inputs", "forms", "text", "field", "validation", "label", "helper", "textarea", "dense", "floating"],
+  "description": "32px height. Two groups: with label (forms) and without label (filters). Placeholder body-small neutral-6. Stroke neutral-3 inactive, neutral-5 active/filled. Text neutral-7 when filled. Width fills container by default.",
+  "keywords": ["inputs", "forms", "text", "field", "filter", "search", "label", "placeholder"],
   "tokens": {
-    "height": "56px",
-    "heightDense": "40px",
-    "borderRadius": "4px",
-    "borderDefault": "#E1E6ED",
-    "borderFocus": "#4B82FA",
-    "bgFocus": "#EDF5FF",
-    "borderError": "#DE350B",
-    "colorDisabled": "#8FA0BA",
-    "bgDisabled": "#E1E6ED",
-    "bgReadOnly": "#F5F6FA",
-    "labelColor": "#8FA0BA",
-    "labelActiveColor": "#67768D",
-    "labelFocusColor": "#1F60ED",
-    "labelActiveSize": "11px",
-    "labelDefaultSize": "14px"
+    "height": "32px",
+    "borderRadius": "6px",
+    "paddingHorizontal": "10px",
+    "bg": "#ffffff",
+    "strokeInactive": "var(--n3) · #E1E6ED",
+    "strokeActive": "var(--n5) · #67768D",
+    "strokeError": "var(--r6) · #DE350B",
+    "bgDisabled": "var(--n1) · #F5F6FA",
+    "placeholderColor": "var(--n6) · #4B5564",
+    "textColor": "var(--n7) · #39414D",
+    "textStyle": "body-small · 14px / 400",
+    "labelStyle": "caption-semibold · 12px / 600",
+    "helperStyle": "caption · 12px / 400"
   },
-  "variants": [
+  "variantGroups": [
     {
-      "id": "default",
-      "label": "Default",
-      "description": "Campo base con label flotante. Haz click para activar.",
-      "props": { "label": "Label", "placeholder": "Placeholder" }
+      "id": "with-label",
+      "label": "With label",
+      "description": "Used in forms. A caption-semibold label sits above the input.",
+      "variants": [
+        { "id": "default",  "label": "Default",  "state": "default",  "placeholder": "Placeholder" },
+        { "id": "filled",   "label": "Filled",   "state": "filled",   "value": "Valor ingresado" },
+        { "id": "focused",  "label": "Focused",  "state": "focused",  "placeholder": "Placeholder" },
+        { "id": "error",    "label": "Error",    "state": "error",    "value": "valor@incorrecto", "helperText": "Formato inválido" },
+        { "id": "disabled", "label": "Disabled", "state": "disabled", "value": "Valor bloqueado" }
+      ]
     },
     {
-      "id": "focus",
-      "label": "Focus",
-      "description": "Borde B5 (#4B82FA) + fondo B1 (#EDF5FF). Label sube y cambia a B6.",
-      "props": { "label": "Buscar ruta", "value": "Madrid Centro", "focused": true }
-    },
-    {
-      "id": "helper",
-      "label": "Helper text",
-      "description": "Texto de apoyo bajo el campo para dar contexto al usuario.",
-      "props": { "label": "Email", "helperText": "Lo usaremos solo para notificaciones críticas." }
-    },
-    {
-      "id": "trailing-icon",
-      "label": "Trailing icon",
-      "description": "Icono al final — búsqueda, limpiar, u otras acciones.",
-      "props": { "label": "Buscar", "trailingIcon": "search" }
-    },
-    {
-      "id": "required",
-      "label": "Required",
-      "description": "Marca * en rojo antes del label. Combinar con helperText.",
-      "props": { "label": "Nombre completo", "required": true, "helperText": "Cómo aparecerá en órdenes y reportes." }
-    },
-    {
-      "id": "error",
-      "label": "Error",
-      "description": "Borde R6 (#DE350B). helperText describe el problema específico.",
-      "props": { "label": "Email", "value": "walter@ejemp", "error": true, "helperText": "Formato de email inválido.", "trailingIcon": "x-circle" }
-    },
-    {
-      "id": "disabled",
-      "label": "Disabled",
-      "description": "No interactivo. Fondo N2 (#E1E6ED), texto N45 (#8FA0BA).",
-      "props": { "label": "Label", "value": "Valor bloqueado", "disabled": true }
-    },
-    {
-      "id": "readonly",
-      "label": "Read only",
-      "description": "Visible pero no editable. Fondo N1 (#F5F6FA).",
-      "props": { "label": "ID de orden", "value": "ORD-20240518-001", "readOnly": true }
-    },
-    {
-      "id": "dense",
-      "label": "Dense",
-      "description": "Altura 40px para layouts compactos (tablas, filtros).",
-      "props": { "label": "Buscar", "dense": true, "trailingIcon": "search" }
-    },
-    {
-      "id": "fullwidth",
-      "label": "Full width",
-      "description": "Se expande para ocupar todo el contenedor disponible.",
-      "props": { "label": "Dirección de entrega", "fullWidth": true }
-    },
-    {
-      "id": "dark",
-      "label": "Dark",
-      "description": "Tema oscuro para superficies con fondo N7 o Indigo.",
-      "props": { "label": "Label", "placeholder": "Placeholder", "dark": true }
-    },
-    {
-      "id": "textarea",
-      "label": "Text area",
-      "description": "Multi-línea. Prop textArea + rows/cols configurables.",
-      "props": { "label": "Notas de entrega", "textArea": true, "rows": "4", "placeholder": "Instrucciones especiales para el conductor…" }
+      "id": "no-label",
+      "label": "Without label",
+      "description": "Used in filters and compact contexts. No label above the field.",
+      "variants": [
+        { "id": "default",  "label": "Default",  "state": "default",  "placeholder": "Buscar..." },
+        { "id": "filled",   "label": "Filled",   "state": "filled",   "value": "Filtro activo" },
+        { "id": "focused",  "label": "Focused",  "state": "focused",  "placeholder": "Buscar..." },
+        { "id": "icon",     "label": "With icon", "state": "default", "placeholder": "Buscar...", "trailingIcon": "search" },
+        { "id": "disabled", "label": "Disabled", "state": "disabled", "value": "Valor bloqueado" }
+      ]
     }
   ],
-  "code": "import TextField from '@beetrack/hp-text-field-react'\nimport '@beetrack/hp-text-field-style'\n\n// Default\n<TextField\n  label='Label'\n  value={value}\n  onChange={e => setValue(e.target.value)}\n/>\n\n// Required + helper\n<TextField\n  label='Nombre'\n  value={value}\n  required\n  helperText='Aparecerá en órdenes y reportes'\n  onChange={e => setValue(e.target.value)}\n/>\n\n// Error state\n<TextField\n  label='Email'\n  value={value}\n  error\n  helperText='Formato de email inválido'\n  trailingIcon={<XCircle />}\n/>\n\n// Dense + trailing icon\n<TextField\n  label='Buscar'\n  dense\n  trailingIcon={<Search />}\n  onChange={e => setValue(e.target.value)}\n/>\n\n// TextArea\n<TextField\n  label='Notas de entrega'\n  textArea\n  rows='4'\n  value={value}\n  onChange={e => setValue(e.target.value)}\n/>\n\n// Disabled\n<TextField label='Label' value='Valor bloqueado' disabled />\n\n// Dark\n<TextField label='Label' dark />\n\n// Read only\n<TextField label='ID de orden' value='ORD-001' readOnly />"
+  "code": "/* ── With label (forms) ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <input\n    class=\"dt-input\"\n    type=\"text\"\n    placeholder=\"Placeholder\"\n    value={value}\n    onChange={e => setValue(e.target.value)}\n  />\n</div>\n\n/* ── Error state ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <input class=\"dt-input dt-input--error\" type=\"text\" value={value} />\n  <span class=\"dt-input-helper dt-input-helper--error\">Formato inválido</span>\n</div>\n\n/* ── Without label (filters) ── */\n<input\n  class=\"dt-input\"\n  type=\"text\"\n  placeholder=\"Buscar...\"\n  value={value}\n  onChange={e => setValue(e.target.value)}\n/>\n\n/* ── With search icon ── */\n<div class=\"dt-input-wrap\">\n  <input class=\"dt-input\" type=\"text\" placeholder=\"Buscar...\" />\n  <SearchIcon class=\"dt-input-icon\" />\n</div>\n\n/* ── Disabled ── */\n<input class=\"dt-input\" type=\"text\" value=\"Valor bloqueado\" disabled />\n\n/* ── CSS tokens ── */\n.dt-input {\n  height: 32px;\n  padding: 0 10px;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  background: #fff;\n  font: 400 14px/20px var(--font-sans);\n  color: var(--n7);\n  width: 100%;\n}\n.dt-input::placeholder { color: var(--n6); }\n.dt-input:focus {\n  outline: none;\n  border-color: var(--n5);\n  box-shadow: 0 0 0 3px rgba(75,130,250,.18);\n}\n.dt-input--error { border-color: var(--r6); }\n.dt-input:disabled {\n  background: var(--n1);\n  cursor: not-allowed;\n  opacity: .6;\n}\n.dt-input-label {\n  font: 600 12px/16px var(--font-sans);\n  color: var(--n7);\n  margin-bottom: 4px;\n  display: block;\n}\n.dt-input-helper {\n  font: 400 12px/16px var(--font-sans);\n  color: var(--n5);\n  margin-top: 3px;\n}\n.dt-input-helper--error { color: var(--r6); }"
 }
