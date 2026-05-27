@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T15:20:29.601Z",
+  "generated": "2026-05-27T16:08:06.454Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "c0faea6",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "Update LM sidebar icons to Carbon DS + categorize iconography",
+          "author": "Diego"
+        },
         {
           "hash": "cca2439",
           "type": "update",
