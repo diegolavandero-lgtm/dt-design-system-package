@@ -511,6 +511,8 @@ textarea.hp-text-field__input{resize:vertical;padding-top:0;align-self:auto;min-
   .voice-grid{grid-template-columns:1fr}
   .dv-row{grid-template-columns:repeat(6,1fr)}
 }
+input.dt-inp{outline:none}
+input.dt-inp::placeholder{color:var(--n6)}
 </style>
 </head>
 <body>
@@ -643,6 +645,9 @@ const NAV = [
     { id: 'tooltip', label: 'Tooltip', i18n: 'nav.tooltip',
       icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z',
       path: 'sections/components/tooltip.json', renderer: 'tooltip' },
+    { id: 'dropdowns', label: 'Dropdowns', i18n: 'nav.dropdowns',
+      icon: 'M3 7h18v2H3zM6 12h12v2H6zM9 17h6v2H9z',
+      path: 'sections/components/dropdowns.json', renderer: 'dropdowns' },
     { id: 'selection', label: 'Selection controls', i18n: 'nav.selection',
       icon: 'M9 11 12 14 22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
       path: 'sections/components/selection.json', renderer: 'selection' },
@@ -1150,6 +1155,103 @@ window.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('hashchange', () => {
   navigate(location.hash.replace('#', '') || 'overview');
 });
+
+/* ── Input interactivity ── */
+function handleValidation(el) {
+  const p = el.parentElement;
+  const err = p.querySelector('.vi-err');
+  const ok  = p.querySelector('.vi-ok');
+  if (!el.value) {
+    el.style.border = '2px solid var(--b6)';
+    if (err) err.style.display = 'none';
+    if (ok)  ok.style.display  = 'none';
+  } else if (el.validity.valid) {
+    el.style.border = '1px solid var(--g5)';
+    if (err) err.style.display = 'none';
+    if (ok)  ok.style.display  = 'flex';
+  } else {
+    el.style.border = '1px solid var(--r6)';
+    if (ok)  ok.style.display  = 'none';
+    if (err) err.style.display = 'flex';
+  }
+}
+
+/* ── Single select ── */
+function dtDrop(wrap) {
+  const menu = wrap.querySelector('.dt-dmenu');
+  const isOpen = wrap.classList.contains('dt-open');
+  document.querySelectorAll('.dt-drop-wrap.dt-open').forEach(w => dtDropClose(w));
+  if (!isOpen) {
+    wrap.classList.add('dt-open');
+    menu.style.display = 'block';
+    wrap.querySelector('.dt-dtrigger').style.border = '2px solid var(--b6)';
+    setTimeout(function() {
+      function h(e) { if (!wrap.contains(e.target)) { dtDropClose(wrap); document.removeEventListener('click', h); } }
+      document.addEventListener('click', h);
+    }, 0);
+  }
+}
+function dtDropClose(wrap) {
+  wrap.classList.remove('dt-open');
+  const menu = wrap.querySelector('.dt-dmenu');
+  if (menu) menu.style.display = 'none';
+  const t = wrap.querySelector('.dt-dtrigger');
+  if (!t) return;
+  const label = wrap.querySelector('.dt-dlabel');
+  const hasFill = label && label.dataset.filled === '1';
+  const isBorderless = t.dataset.theme === 'borderless';
+  t.style.border = isBorderless ? '1px solid transparent' : (hasFill ? '1px solid var(--n5)' : '1px solid var(--n3)');
+  t.style.background = hasFill ? '#fff' : (isBorderless ? 'transparent' : '#fff');
+}
+function dtPickOpt(optEl) {
+  const wrap  = optEl.closest('.dt-drop-wrap');
+  const label = wrap.querySelector('.dt-dlabel');
+  label.textContent    = optEl.dataset.val || optEl.textContent.trim();
+  label.style.color    = 'var(--n7)';
+  label.dataset.filled = '1';
+  dtDropClose(wrap);
+}
+
+/* ── Multiselect ── */
+function dtMultiDrop(wrap) {
+  const menu = wrap.querySelector('.dt-mmenu');
+  const isOpen = wrap.classList.contains('dt-mopen');
+  if (isOpen) { dtMultiClose(wrap); return; }
+  document.querySelectorAll('.dt-drop-wrap.dt-open').forEach(w => dtDropClose(w));
+  wrap.classList.add('dt-mopen');
+  menu.style.display = 'block';
+  wrap.querySelector('.dt-mtrigger').style.border = '2px solid var(--b6)';
+  setTimeout(function() {
+    function h(e) { if (!wrap.contains(e.target)) { dtMultiClose(wrap); document.removeEventListener('click', h); } }
+    document.addEventListener('click', h);
+  }, 0);
+}
+function dtMultiClose(wrap) {
+  wrap.classList.remove('dt-mopen');
+  const menu = wrap.querySelector('.dt-mmenu');
+  if (menu) menu.style.display = 'none';
+  const t = wrap.querySelector('.dt-mtrigger');
+  if (!t) return;
+  const chips = wrap.querySelector('.dt-mchips');
+  const hasChips = chips && chips.querySelector('span.dt-chip');
+  t.style.border = hasChips ? '1px solid var(--n5)' : '1px solid var(--n3)';
+}
+function dtMultiCheck(cb) {
+  const wrap    = cb.closest('.dt-drop-wrap');
+  const chips   = wrap.querySelector('.dt-mchips');
+  const allCbs  = [...wrap.querySelectorAll('.dt-mopt input[type=checkbox]')];
+  const checked = allCbs.filter(c => c.checked);
+  const xSvg = '<svg viewBox="0 0 32 32" width="9" height="9" fill="currentColor"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6z"/></svg>';
+  if (checked.length === 0) {
+    chips.innerHTML = '<span style="font:400 14px/20px var(--font-sans);color:var(--n6)">Select options...</span>';
+  } else {
+    chips.innerHTML = checked.map(c =>
+      `<span class="dt-chip" style="display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 6px;background:var(--b1);border:1px solid var(--b3);border-radius:999px;font:400 12px/1 var(--font-sans);color:var(--b6);flex-shrink:0">${xSvg}&nbsp;${c.dataset.label}</span>`
+    ).join('');
+  }
+  const t = wrap.querySelector('.dt-mtrigger');
+  t.style.border = checked.length ? '1px solid var(--n5)' : '1px solid var(--n3)';
+}
 </script>
 
 <!-- ── i18n + Changelog system (deferred) ── -->

@@ -43,6 +43,7 @@
     "nav.buttons": { "es": "Botones", "en": "Buttons" },
     "nav.inputs": { "es": "Inputs", "en": "Inputs" },
     "nav.tooltip": { "es": "Tooltip", "en": "Tooltip" },
+    "nav.dropdowns": { "es": "Dropdowns", "en": "Dropdowns" },
     "nav.badges": { "es": "Badges", "en": "Badges" },
     "nav.chips": { "es": "Pills / Tags", "en": "Pills / Tags" },
     "nav.banners": { "es": "Banners", "en": "Banners" },
