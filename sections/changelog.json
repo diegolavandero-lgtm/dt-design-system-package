@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T14:37:53.237Z",
+  "generated": "2026-05-27T14:40:26.551Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "691825b",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "Remove settings icon from sidebar — settings is in topbar",
+          "author": "Diego"
+        },
         {
           "hash": "ece3c8f",
           "type": "fix",
