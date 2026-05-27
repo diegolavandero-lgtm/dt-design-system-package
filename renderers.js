@@ -1556,25 +1556,27 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             const badge = it.count != null
               ? `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 6px;border-radius:10px;background:var(--b2);color:var(--b6);font:600 11px/1 var(--font-sans)">${it.count}</span>`
               : '';
-            return `<div style="display:flex;align-items:center;justify-content:space-between;height:34px;padding:0 16px 0 ${isSel?'13px':'16px'};${isSel?'border-left:3px solid #0052CC;background:rgba(75,130,250,.08);':''}">
+            return `<div style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 16px 0 14px;border-left:${isSel?'2px solid #0052CC':'2px solid #E9ECF2'};${isSel?'background:rgba(75,130,250,.08);':''}">
               <span style="font:${isSel?'700':'400'} 13px/1 var(--font-sans);color:${isSel?'#0052CC':'var(--n6)'}">${escHtml(it.label)}</span>
               ${badge}
             </div>`;
           }).join('');
-          return `<div>
-            <div style="padding:10px 16px 4px;font:700 11px/1 var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.06em">${escHtml(g.label)}</div>
-            ${itemsHtml}
+          return `<div style="margin-bottom:4px">
+            <div style="padding:12px 16px 6px;font:700 14px/1 var(--font-sans);color:var(--n7)">${escHtml(g.label)}</div>
+            <div style="margin-left:14px">${itemsHtml}</div>
           </div>`;
         }).join('');
         const ver = sp.version ? `<div style="height:1px;background:#E9ECF2;margin:8px 16px"></div><div style="padding:10px 16px;font:400 11px var(--font-sans);color:var(--n5)">Versión ${escHtml(sp.version)}</div>` : '';
-        panelHtml = `<div style="width:220px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;align-self:stretch">${groupsHtml}${ver}</div>`;
+        panelHtml = `<div style="width:224px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;align-self:stretch">${groupsHtml}${ver}</div>`;
       }
 
-      return `<div style="display:inline-flex;border:1px solid var(--n3);border-radius:0 0 24px 0;overflow:hidden;box-shadow:0 6px 12px rgba(0,0,0,.15)">
-        <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
-        ${panelHtml}
-        <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start">
-          <span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span>
+      return `<div style="display:inline-block;border-radius:0 0 24px 0;overflow:hidden;box-shadow:0 6px 12px rgba(0,0,0,.15);border:1px solid var(--n3)">
+        <div style="display:flex">
+          <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
+          ${panelHtml}
+          <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start">
+            <span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span>
+          </div>
         </div>
       </div>`;
     }
