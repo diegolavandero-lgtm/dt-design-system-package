@@ -668,8 +668,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       ])}`;
   },
 
-  /* ── INPUTS ── */
+  /* ── INPUTS & DROPDOWNS ── */
   inputs(data) {
+    // ─── Text input icons ───
     const ICONS = {
       search:  `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>`,
       error:   `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--r6)"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M15,8h2v12h-2V8z M16,24c-0.8,0-1.5-0.7-1.5-1.5S15.2,21,16,21s1.5,0.7,1.5,1.5S16.8,24,16,24z"/></svg>`,
@@ -764,13 +765,180 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
     }).join('');
 
-    const tokenRows = Object.entries(data.tokens || {}).map(([k, v]) =>
+    // ─── Dropdown internals ───
+    const opts      = data.dropdownOptions      || ['Todos','Esta semana','Este mes','Últimos 3 meses','Personalizado'];
+    const multiOpts = data.dropdownMultiOptions || ['Todos','Santiago','Valparaíso','Biobío','Maule'];
+
+    const CHEVRON = `<svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>`;
+    const LIST_IC = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0"><path d="M8 6H28V8H8zM4 6H6V8H4zM8 14H28V16H8zM4 14H6V16H4zM8 22H28V24H8zM4 22H6V24H4z"/></svg>`;
+    const X_SVG   = `<svg viewBox="0 0 32 32" width="9" height="9" fill="currentColor"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6z"/></svg>`;
+
+    function trig(type, { theme, state, filled, hasIcon }) {
+      const isBorder = theme === 'border';
+      const isHover  = state === 'hover';
+      const isActive = state === 'active';
+      const isDis    = state === 'disabled';
+
+      let border = isBorder ? '1px solid var(--n3)' : '1px solid transparent';
+      if (isActive) border = '2px solid var(--b6)';
+
+      let bg = isBorder ? '#fff' : 'transparent';
+      if (isHover) bg = 'var(--n2)';
+      if (isDis)   bg = 'var(--n1)';
+
+      const chevColor = isDis ? 'var(--n4)' : 'var(--n5)';
+      const dim       = isDis ? 'opacity:.55' : '';
+
+      let inner = '';
+      if (type === 'multi') {
+        const chipSt = isDis
+          ? 'display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 6px;background:var(--n3);border:1px solid var(--n4);border-radius:999px;font:400 12px/1 var(--font-sans);color:var(--n5)'
+          : 'display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 6px;background:var(--b1);border:1px solid var(--b3);border-radius:999px;font:400 12px/1 var(--font-sans);color:var(--b6)';
+        const chip = filled ? `<span style="${chipSt}">${X_SVG}&nbsp;All</span>` : `<span style="font:400 14px/20px var(--font-sans);color:var(--n5)">Placeholder...</span>`;
+        inner = `${hasIcon ? `<span style="color:var(--n5);display:flex">${LIST_IC}</span>` : ''}<div style="flex:1;min-width:0;overflow:hidden">${chip}</div>`;
+      } else {
+        const textColor = filled ? (isDis ? 'var(--n5)' : 'var(--n7)') : 'var(--n5)';
+        const val = filled ? 'example' : 'Placeholder...';
+        inner = `${hasIcon ? `<span style="color:var(--n5);display:flex">${LIST_IC}</span>` : ''}<span style="flex:1;font:400 14px/20px var(--font-sans);color:${textColor};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${val}</span>`;
+      }
+
+      return `<div style="display:flex;align-items:center;height:32px;padding:0 10px;border:${border};border-radius:6px;background:${bg};gap:6px;${dim};width:100%;box-sizing:border-box">
+        ${inner}<span style="color:${chevColor};display:flex;flex-shrink:0">${CHEVRON}</span>
+      </div>`;
+    }
+
+    function stateGrid(type, filled) {
+      const states  = ['normal','hover','active','disabled'];
+      const stLbls  = { normal:'Normal', hover:'Hover', active:'Active', disabled:'Disabled' };
+      const configs = [
+        { theme:'border',     hasIcon:false },
+        { theme:'border',     hasIcon:true  },
+        { theme:'borderless', hasIcon:false },
+        { theme:'borderless', hasIcon:true  },
+      ];
+
+      const h1 = `<div></div>
+        <div style="grid-column:span 2;font:700 12px/16px var(--font-sans);color:var(--n7);border-bottom:2px solid var(--n3);padding-bottom:6px">Theme: border</div>
+        <div style="grid-column:span 2;font:700 12px/16px var(--font-sans);color:var(--n7);border-bottom:2px solid var(--n3);padding-bottom:6px">Theme: borderless</div>`;
+      const h2 = `<div></div>` + configs.map(c =>
+        `<div style="font:400 12px/16px var(--font-sans);color:var(--n5)">${c.hasIcon ? 'With icon' : 'Simple'}</div>`
+      ).join('');
+      const rows = states.map(s => {
+        const cells = configs.map(c => `<div style="min-width:0">${trig(type, { ...c, state: s, filled })}</div>`).join('');
+        return `<div style="font:400 14px/20px var(--font-sans);color:var(--n5);white-space:nowrap">State: ${escHtml(stLbls[s])}</div>${cells}`;
+      }).join('');
+
+      return `<div style="margin-bottom:24px">
+        <div style="font:700 14px/20px var(--font-sans);color:var(--n7);margin-bottom:12px">Filled: ${filled ? 'T' : 'F'}</div>
+        <div style="display:grid;grid-template-columns:100px repeat(4,1fr);gap:8px 12px;align-items:center">${h1}${h2}${rows}</div>
+      </div>`;
+    }
+
+    const menuItems = opts.map(o => {
+      const safe = o.replace(/'/g, '&#39;');
+      return `<div onclick='dtPickOpt(this)' data-val='${safe}'
+        onmouseenter='this.style.background="var(--b1)";this.style.color="var(--b7)"'
+        onmouseleave='this.style.background="";this.style.color="var(--n7)"'
+        style='height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer'
+      >${escHtml(o)}</div>`;
+    }).join('');
+
+    const multiMenuItems = multiOpts.map(o => {
+      const safe = o.replace(/'/g, '&#39;');
+      return `<label class='dt-mopt' onclick='event.stopPropagation()'
+        onmouseenter='this.style.background="var(--b1)"'
+        onmouseleave='this.style.background=""'
+        style='height:36px;padding:0 12px;display:flex;align-items:center;gap:8px;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer'>
+        <input type='checkbox' data-label='${safe}' onchange='dtMultiCheck(this)' style='cursor:pointer;accent-color:var(--b6)'>
+        ${escHtml(o)}
+      </label>`;
+    }).join('');
+
+    function interactiveCard(label, trigHtml, menuHtml, isMulti) {
+      return `<div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">${escHtml(label)}</div>
+        <div class='dt-drop-wrap' style='position:relative;width:240px'>
+          ${trigHtml}
+          <div class='${isMulti ? 'dt-mmenu' : 'dt-dmenu'}' style='display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0'>
+            ${menuHtml}
+          </div>
+        </div>
+      </div>`;
+    }
+
+    const selTrig = (dataTheme, theme) => `<div class='dt-dtrigger' ${dataTheme}
+      onclick='dtDrop(this.parentElement)'
+      onmouseenter='if(!this.parentElement.classList.contains("dt-open"))this.style.background="var(--n2)"'
+      onmouseleave='if(!this.parentElement.classList.contains("dt-open"))this.style.background="${theme === 'borderless' ? 'transparent' : '#fff'}"'
+      style='display:flex;align-items:center;height:32px;padding:0 10px;border:${theme === 'border' ? '1px solid var(--n3)' : '1px solid transparent'};border-radius:6px;background:${theme === 'border' ? '#fff' : 'transparent'};cursor:pointer;gap:6px'>
+      <span class='dt-dlabel' style='flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)'>Select an option...</span>
+      <span style='color:var(--n5);display:flex;flex-shrink:0'>${CHEVRON}</span>
+    </div>`;
+
+    const multiTrig = `<div class='dt-mtrigger'
+      onclick='dtMultiDrop(this.parentElement)'
+      onmouseenter='if(!this.parentElement.classList.contains("dt-mopen"))this.style.background="var(--n2)"'
+      onmouseleave='if(!this.parentElement.classList.contains("dt-mopen"))this.style.background="#fff"'
+      style='display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px'>
+      <div class='dt-mchips' style='flex:1;display:flex;gap:4px;align-items:center;min-width:0;overflow:hidden'>
+        <span style='font:400 14px/20px var(--font-sans);color:var(--n6)'>Select options...</span>
+      </div>
+      <span style='color:var(--n5);display:flex;flex-shrink:0'>${CHEVRON}</span>
+    </div>`;
+
+    const dropInteractive = `<div style="margin-bottom:40px">
+      <div style="font:700 16px/22px var(--font-sans);color:var(--n7);margin-bottom:4px">Interactive</div>
+      <div style="font:400 14px/20px var(--font-sans);color:var(--n5);margin-bottom:20px">Click to open, select an option to see the filled state.</div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        ${interactiveCard('Select', selTrig("data-theme='border'", 'border'), menuItems, false)}
+        ${interactiveCard('Select — borderless', selTrig("data-theme='borderless'", 'borderless'), menuItems, false)}
+        ${interactiveCard('Multiselect', multiTrig, multiMenuItems, true)}
+      </div>
+    </div>`;
+
+    const selectSection = `<div style="margin-bottom:40px">
+      <div style="font:700 16px/22px var(--font-sans);color:var(--n7);margin-bottom:4px">Select</div>
+      <div style="font:400 14px/20px var(--font-sans);color:var(--n5);margin-bottom:20px">Single-value dropdown. Border and borderless themes.</div>
+      ${stateGrid('select', true)}${stateGrid('select', false)}
+    </div>`;
+
+    const multiSection = `<div style="margin-bottom:40px">
+      <div style="font:700 16px/22px var(--font-sans);color:var(--n7);margin-bottom:4px">Multiselect</div>
+      <div style="font:400 14px/20px var(--font-sans);color:var(--n5);margin-bottom:20px">Multiple selections shown as chips. Filled: T shows default "All" chip.</div>
+      ${stateGrid('multi', true)}${stateGrid('multi', false)}
+    </div>`;
+
+    // ─── Sub-section divider ───
+    const subHead = text => `<div style="font:700 18px/24px var(--font-sans);color:var(--n7);padding-bottom:14px;margin-bottom:24px;border-bottom:2px solid var(--n3)">${escHtml(text)}</div>`;
+
+    // ─── Combined tabs ───
+    const inputTokenRows = Object.entries(data.tokens || {}).map(([k, v]) =>
+      `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
+    ).join('');
+    const dropTokenRows = Object.entries(data.dropdownTokens || {}).map(([k, v]) =>
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
     ).join('');
 
-    const previewTab = `<div style="padding:24px;background:var(--n1)">${groupSections}</div>`;
-    const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
-    const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
+    const previewTab = `<div style="padding:24px;background:var(--n1)">
+      <div style="margin-bottom:48px">
+        ${subHead('Text inputs')}
+        ${groupSections}
+      </div>
+      <div>
+        ${subHead('Dropdowns')}
+        ${dropInteractive}${selectSection}${multiSection}
+      </div>
+    </div>`;
+
+    const combinedCode = (data.code || '') + '\n\n\n/* ──────────── DROPDOWNS ──────────── */\n\n' + (data.dropdownCode || '');
+    const codeTab = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(combinedCode)}</pre></div>`;
+
+    const tokensTab = `<div style="padding:16px">
+      <div style="font:700 14px/20px var(--font-sans);color:var(--n7);margin-bottom:12px">Text inputs</div>
+      <table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${inputTokenRows}</tbody></table>
+      <div style="font:700 14px/20px var(--font-sans);color:var(--n7);margin:24px 0 12px">Dropdowns</div>
+      <table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${dropTokenRows}</tbody></table>
+    </div>`;
 
     return `
       ${sectionHeader(data)}

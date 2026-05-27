@@ -41,7 +41,7 @@
     "nav.icons": { "es": "Íconos", "en": "Icons" },
     "nav.components": { "es": "Componentes", "en": "Components" },
     "nav.buttons": { "es": "Botones", "en": "Buttons" },
-    "nav.inputs": { "es": "Inputs", "en": "Inputs" },
+    "nav.inputs": { "es": "Inputs & Dropdowns", "en": "Inputs & Dropdowns" },
     "nav.tooltip": { "es": "Tooltip", "en": "Tooltip" },
     "nav.dropdowns": { "es": "Dropdowns", "en": "Dropdowns" },
     "nav.badges": { "es": "Badges", "en": "Badges" },
