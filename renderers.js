@@ -675,7 +675,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       search:  `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>`,
       error:   `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--r6)"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M15,8h2v12h-2V8z M16,24c-0.8,0-1.5-0.7-1.5-1.5S15.2,21,16,21s1.5,0.7,1.5,1.5S16.8,24,16,24z"/></svg>`,
       success: `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--g5)"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M14,21.5L8.5,16l1.4-1.4L14,18.6l8.1-8.1l1.4,1.4L14,21.5z"/></svg>`,
-      info:    `<svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M17,22h-2v-8h2V22z M16,9.5c-0.6,0-1,0.4-1,1s0.4,1,1,1s1-0.4,1-1S16.6,9.5,16,9.5z"/></svg>`,
+      infoOut: `<svg class="ico-out" viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28ZM17,22H15V14h2ZM16,10a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,10Z"/></svg>`,
+      infoFil: `<svg class="ico-fil" viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--n5);display:none"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm-1,8h2v2H15Zm4,14H13V22h2V16H13V14h4v8h2Z"/></svg>`,
     };
 
     function renderVariant(v, hasLabel) {
@@ -734,9 +735,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
       const infoTip = v.labelTooltip
         ? `<span style="position:relative;display:inline-flex;align-items:center;cursor:default"
-            onmouseenter="let t=this.querySelector('.inp-tt');t.style.opacity='1';t.style.visibility='visible'"
-            onmouseleave="let t=this.querySelector('.inp-tt');t.style.opacity='0';t.style.visibility='hidden'">
-            ${ICONS.info}
+            onmouseenter="let t=this.querySelector('.inp-tt');t.style.opacity='1';t.style.visibility='visible';this.querySelector('.ico-out').style.display='none';this.querySelector('.ico-fil').style.display='inline-flex'"
+            onmouseleave="let t=this.querySelector('.inp-tt');t.style.opacity='0';t.style.visibility='hidden';this.querySelector('.ico-out').style.display='inline-flex';this.querySelector('.ico-fil').style.display='none'">
+            ${ICONS.infoOut}${ICONS.infoFil}
             <div class="inp-tt" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:8px 10px;border-radius:6px;font:400 12px/16px var(--font-sans);width:180px;white-space:normal;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .15s;z-index:99">${escHtml(v.labelTooltip)}<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div></div>
           </span>`
         : '';
@@ -954,57 +955,114 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
   tooltip(data) {
     const text = data.content || 'Tooltip content';
 
+    // Carbon information icons — outline (default) and filled (hover)
+    const OUT_PATH = 'M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28ZM17,22H15V14h2ZM16,10a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,10Z';
+    const FIL_PATH = 'M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm-1,8h2v2H15Zm4,14H13V22h2V16H13V14h4v8h2Z';
+    const icoOut    = `<svg viewBox="0 0 32 32" width="16" height="16" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="${OUT_PATH}"/></svg>`;
+    const icoFil    = `<svg viewBox="0 0 32 32" width="16" height="16" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="${FIL_PATH}"/></svg>`;
+    const icoOutCls = `<svg class="ico-out" viewBox="0 0 32 32" width="16" height="16" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="${OUT_PATH}"/></svg>`;
+    const icoFilCls = `<svg class="ico-fil" viewBox="0 0 32 32" width="16" height="16" fill="currentColor" style="flex-shrink:0;color:var(--n5);display:none"><path d="${FIL_PATH}"/></svg>`;
+    const X_CLOSE   = `<svg viewBox="0 0 32 32" width="10" height="10" fill="currentColor"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6z"/></svg>`;
+
+    const subHead = t => `<div style="font:700 18px/24px var(--font-sans);color:var(--n7);padding-bottom:14px;margin-bottom:28px;border-bottom:2px solid var(--n3)">${escHtml(t)}</div>`;
+    const cardLabel = t => `<div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">${escHtml(t)}</div>`;
+    const tip = (pos, arrow, extra='') => `<div style="position:absolute;${pos};background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;z-index:2${extra ? ';' + extra : ''}">${escHtml(text)}<div style="position:absolute;${arrow};width:0;height:0"></div></div>`;
+
+    // ─── Section 1: Info icon states ───
+    const stateDefault = `<div>
+      ${cardLabel('Default')}
+      <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">Label ${icoOut}</div>
+    </div>`;
+
+    const stateHover = `<div>
+      ${cardLabel('Hover')}
+      <div style="padding-top:88px">
+        <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
+          Label
+          <div style="position:relative;display:inline-flex;align-items:center">
+            ${tip('bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)','top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)')}
+            ${icoFil}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    const stateInteractive = `<div>
+      ${cardLabel('Interactive')}
+      <div style="padding-top:88px">
+        <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
+          Label
+          <span style="position:relative;display:inline-flex;align-items:center;cursor:default"
+            onmouseenter="let t=this.querySelector('.tt-ico');t.style.opacity='1';t.style.visibility='visible';this.querySelector('.ico-out').style.display='none';this.querySelector('.ico-fil').style.display='inline-flex'"
+            onmouseleave="let t=this.querySelector('.tt-ico');t.style.opacity='0';t.style.visibility='hidden';this.querySelector('.ico-out').style.display='inline-flex';this.querySelector('.ico-fil').style.display='none'">
+            ${icoOutCls}${icoFilCls}
+            <div class="tt-ico" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">${escHtml(text)}<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div></div>
+          </span>
+        </div>
+      </div>
+    </div>`;
+
+    const iconSection = `<div style="margin-bottom:52px">
+      ${subHead('Info icon')}
+      <div style="display:flex;flex-wrap:wrap;gap:32px 56px;align-items:flex-end">${stateDefault}${stateHover}${stateInteractive}</div>
+    </div>`;
+
+    // ─── Section 2: Placements (filled icon = tooltip is showing) ───
     function makeCard(placement) {
       const isTop    = placement === 'top';
       const isBottom = placement === 'bottom';
       const isLeft   = placement === 'left';
-
       let tipPos, arrowPos, spacer;
       if (isTop) {
         tipPos   = 'bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)';
         arrowPos = 'top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)';
-        spacer   = 'padding-top:68px';
+        spacer   = 'padding-top:88px';
       } else if (isBottom) {
         tipPos   = 'top:calc(100% + 8px);left:50%;transform:translateX(-50%)';
         arrowPos = 'bottom:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid var(--n7)';
-        spacer   = 'padding-bottom:68px';
+        spacer   = 'padding-bottom:88px';
       } else if (isLeft) {
         tipPos   = 'right:calc(100% + 8px);top:50%;transform:translateY(-50%)';
         arrowPos = 'left:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid var(--n7)';
-        spacer   = 'padding-left:160px';
+        spacer   = 'padding-left:190px';
       } else {
         tipPos   = 'left:calc(100% + 8px);top:50%;transform:translateY(-50%)';
         arrowPos = 'right:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:5px solid var(--n7)';
-        spacer   = 'padding-right:160px';
+        spacer   = 'padding-right:190px';
       }
-
-      return `<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-        <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">${escHtml(placement)}</div>
+      return `<div>
+        ${cardLabel(placement)}
         <div style="${spacer}">
-          <div style="position:relative;display:inline-block">
-            <div style="position:absolute;${tipPos};background:var(--n7);color:#fff;padding:8px 10px;border-radius:6px;font:400 12px/16px var(--font-sans);width:150px;white-space:normal;z-index:1">
-              ${escHtml(text)}
-              <div style="position:absolute;${arrowPos};width:0;height:0"></div>
-            </div>
-            <button style="height:32px;padding:0 14px;border:1px solid var(--n3);border-radius:6px;background:#fff;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:default;white-space:nowrap">Trigger</button>
+          <div style="position:relative;display:inline-flex;align-items:center">
+            ${tip(tipPos, arrowPos)}
+            ${icoFil}
           </div>
         </div>
       </div>`;
     }
 
-    const staticCards = ['top','bottom','left','right'].map(p => makeCard(p)).join('');
+    const placementsSection = `<div style="margin-bottom:52px">
+      ${subHead('Placements')}
+      <div style="display:flex;flex-wrap:wrap;gap:32px 56px;align-items:flex-end">${['top','bottom','left','right'].map(p => makeCard(p)).join('')}</div>
+    </div>`;
 
-    const interactive = `<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-      <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Interactive</div>
-      <div style="padding-top:68px">
-        <div style="position:relative;display:inline-block"
-          onmouseenter="let t=this.querySelector('.tt-live');t.style.opacity='1';t.style.visibility='visible'"
-          onmouseleave="let t=this.querySelector('.tt-live');t.style.opacity='0';t.style.visibility='hidden'">
-          <div class="tt-live" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:8px 10px;border-radius:6px;font:400 12px/16px var(--font-sans);width:150px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:1;pointer-events:none">
-            ${escHtml(text)}
-            <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
+    // ─── Section 3: Persistent (with close button) ───
+    const persistentSection = `<div>
+      ${subHead('Persistent (with close)')}
+      <div style="font:400 14px/20px var(--font-sans);color:var(--n5);margin-top:-18px;margin-bottom:24px">Tooltip stays visible until the user closes it manually.</div>
+      <div style="padding-top:96px;display:inline-flex">
+        <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
+          Label
+          <div class="tt-persist-wrap" style="position:relative;display:inline-flex;align-items:center">
+            <div class="tt-persist" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 28px 10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;z-index:2">
+              ${escHtml(text)}
+              <button onclick="this.closest('.tt-persist-wrap').querySelector('.tt-persist').style.display='none'"
+                style="position:absolute;top:8px;right:8px;background:transparent;border:none;color:#fff;cursor:pointer;padding:2px;display:flex;align-items:center;opacity:.6;line-height:1"
+                onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.6'">${X_CLOSE}</button>
+              <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
+            </div>
+            ${icoFil}
           </div>
-          <button style="height:32px;padding:0 14px;border:1px solid var(--n3);border-radius:6px;background:#fff;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer;white-space:nowrap">Hover me</button>
         </div>
       </div>
     </div>`;
@@ -1013,7 +1071,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
     ).join('');
 
-    const previewTab = `<div style="padding:32px;background:var(--n1)"><div style="display:flex;flex-wrap:wrap;gap:32px 48px;align-items:flex-start">${staticCards}${interactive}</div></div>`;
+    const previewTab = `<div style="padding:32px;background:var(--n1)">${iconSection}${placementsSection}${persistentSection}</div>`;
     const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
     const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
 
