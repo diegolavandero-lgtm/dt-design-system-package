@@ -108,6 +108,9 @@ const ICON_PATHS = {
   'download':          '<path d="M26,24v4H6V24H4v4a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V24Z"/><path d="M26,14,24.59,12.59,17,20.17V2H15V20.17L7.41,12.59,6,14,16,24Z"/>',
   'document-text':     '<path d="M25.7,9.3l-7-7A1,1,0,0,0,18,2H8A2,2,0,0,0,6,4V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V10A1,1,0,0,0,25.7,9.3ZM18,4.4,23.6,10H18ZM24,28H8V4h8v8h8Z"/><path d="M11,14H21V16H11Z"/><path d="M11,18H21V20H11Z"/><path d="M11,22H17V24H11Z"/>',
   'settings':          '<path d="M27,16.76c0-.25,0-.5,0-.76s0-.51,0-.76l1.92-1.68A2,2,0,0,0,29.3,11.14l-2.36-4a2,2,0,0,0-2.37-.9L22.43,7a9.56,9.56,0,0,0-1.31-.75l-.51-2.14A2,2,0,0,0,18.64,2.5H13.92A2,2,0,0,0,12,4.11L11.44,6.26A9.56,9.56,0,0,0,10.13,7L7.83,6.24a2,2,0,0,0-2.37.9L3.1,11.14a2,2,0,0,0,.48,2.46L5.5,15.24c0,.25,0,.5,0,.76s0,.51,0,.76L3.58,18.44a2,2,0,0,0-.48,2.46l2.36,4a2,2,0,0,0,2.37.9l2.29-.77A9.56,9.56,0,0,0,11.44,25.74l.51,2.14A2,2,0,0,0,13.92,29.5h4.72a2,2,0,0,0,1.93-1.61l.51-2.14A9.56,9.56,0,0,0,22.23,25l2.29.77a2,2,0,0,0,2.37-.9l2.36-4a2,2,0,0,0-.48-2.46ZM26,19.14l1.28,1.12L25,24l-1.69-.57A7.64,7.64,0,0,1,21,24.77L20.41,27H17.59L17,24.77a7.64,7.64,0,0,1-2.32-1.34L13,24l-2.29-3.74,1.28-1.12a7.65,7.65,0,0,1,0-2.28L10.71,15.74,13,12l1.69.57A7.64,7.64,0,0,1,17,11.23L17.59,9h2.82L21,11.23a7.64,7.64,0,0,1,2.32,1.34L25,12l2.29,3.74-1.28,1.12A7.65,7.65,0,0,1,26,19.14Z"/><path d="M16,12a4,4,0,1,0,4,4A4,4,0,0,0,16,12Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,16,18Z"/>',
+  'plan':              '<path d="M24,4H8A2,2,0,0,0,6,6V26a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V6A2,2,0,0,0,24,4ZM8,26V6H24V26Z"/><path d="M11 9H21V11H11z"/><path d="M11 13H21V15H11z"/><path d="M11 17H21V19H11z"/><path d="M11 21H16V23H11z"/>',
+  'recently-viewed':   '<path d="M16,4A12,12,0,0,0,6.34,8.34L4,6V12h6L7.75,9.75A10,10,0,1,1,16,26V28A12,12,0,0,0,16,4Z"/><polygon points="17 8 15 8 15 17 23 17 23 15 17 15 17 8"/>',
+  'data-base':         '<path d="M16,4C8.27,4,2,6.69,2,10V22c0,3.31,6.27,6,14,6s14-2.69,14-6V10C30,6.69,23.73,4,16,4ZM28,22c0,1.86-5.23,4-12,4S4,23.86,4,22V18.74A21.59,21.59,0,0,0,16,21a21.59,21.59,0,0,0,12-2.26ZM28,16c0,1.86-5.23,4-12,4S4,17.86,4,16V12.74A21.59,21.59,0,0,0,16,15a21.59,21.59,0,0,0,12-2.26ZM16,13C9.23,13,4,10.86,4,9s5.23-4,12-4,12,2.14,12,4S22.77,13,16,13Z"/>',
 };
 
 function iconSvg(name, size, color) {
@@ -2060,7 +2063,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         panelHtml = `<div style="width:224px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;align-self:stretch;border-radius:0 0 24px 0;overflow:hidden">${groupsHtml}${ver}</div>`;
       }
 
-      return `<div class="sbx-settings" style="border:1px solid var(--n3);border-radius:0 0 24px 0;overflow:hidden">
+      return `<div class="sbx-settings" style="border:1px solid var(--n3);border-radius:0 0 24px 0;overflow:hidden;min-height:600px">
         <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
         ${panelHtml}
         <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start;border-radius:0 0 24px 0">
@@ -2086,7 +2089,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           <div style="display:flex;flex-direction:column;gap:20px;margin-bottom:20px">
             <div style="display:flex;flex-direction:column;gap:7px">
               <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Collapsed → hover to expand</div>
-              <div class="sbx">${interactiveItems}</div>
+              <div class="sbx" style="min-height:600px">${interactiveItems}</div>
             </div>
             ${p.settingsPanel || p.settingsItems ? `<div style="display:flex;flex-direction:column;gap:7px">
               <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Settings mode — panel pushes content right</div>

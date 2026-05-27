@@ -123,20 +123,18 @@
       "name": "Planner Pro",
       "color": "#47D09A",
       "items": [
-        { "icon": "planner-route", "label": "Planificador", "state": "selected" },
-        { "icon": "time",          "label": "Historial",    "state": "default"  },
-        { "icon": "download",      "label": "Importador",   "state": "default"  },
-        { "icon": "document-text", "label": "Bases",        "state": "default"  },
+        { "icon": "plan",            "label": "Planificador", "state": "selected" },
+        { "icon": "recently-viewed", "label": "Historial",    "state": "default"  },
+        { "icon": "document-import", "label": "Importador",   "state": "default"  },
+        { "icon": "data-base",       "label": "Bases",        "state": "default"  },
         { "divider": true },
-        { "icon": "settings",      "label": "Ajustes",      "state": "default"  }
+        { "icon": "settings",        "label": "Ajustes",      "state": "default"  }
       ],
       "settingsItems": [
-        { "icon": "planner-route", "label": "Planificador", "state": "default"  },
-        { "icon": "time",          "label": "Historial",    "state": "default"  },
-        { "icon": "download",      "label": "Importador",   "state": "default"  },
-        { "icon": "document-text", "label": "Bases",        "state": "default"  },
-        { "divider": true },
-        { "icon": "settings",      "label": "Ajustes",      "state": "selected" }
+        { "icon": "plan",            "label": "Planificador", "state": "default" },
+        { "icon": "recently-viewed", "label": "Historial",    "state": "default" },
+        { "icon": "document-import", "label": "Importador",   "state": "default" },
+        { "icon": "data-base",       "label": "Bases",        "state": "default" }
       ],
       "settingsPanel": {
         "groups": [
