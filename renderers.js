@@ -1449,6 +1449,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       .sbx-sep{height:1px;background:#E9ECF2;margin:4px 14px}
       .sbx-static{width:240px;background:#fff;border-radius:0 0 24px 0;box-shadow:0 6px 12px rgba(0,0,0,.15);padding:8px 0;flex-shrink:0}
       .sbx-static .sbx-lbl{opacity:1}
+      .sbx-settings{display:inline-flex;overflow:hidden;border-radius:0 0 24px 0;box-shadow:0 6px 12px rgba(0,0,0,.15);border:1px solid var(--n3)}
 
       /* mobile drawer rows — bigger touch targets */
       .mob-row{display:flex;align-items:center;height:48px;cursor:pointer;padding:0 16px;gap:14px}
@@ -1570,13 +1571,11 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         panelHtml = `<div style="width:224px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;align-self:stretch">${groupsHtml}${ver}</div>`;
       }
 
-      return `<div style="display:inline-block;border-radius:0 0 24px 0;overflow:hidden;box-shadow:0 6px 12px rgba(0,0,0,.15);border:1px solid var(--n3)">
-        <div style="display:flex">
-          <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
-          ${panelHtml}
-          <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start">
-            <span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span>
-          </div>
+      return `<div class="sbx-settings">
+        <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
+        ${panelHtml}
+        <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start">
+          <span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span>
         </div>
       </div>`;
     }
