@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T15:13:21.791Z",
+  "generated": "2026-05-27T15:15:02.316Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "fdec282",
+          "type": "fix",
+          "section": "General",
+          "message": "Fix border-radius: move background to outer container",
+          "author": "Diego"
+        },
         {
           "hash": "f9edf7f",
           "type": "update",
