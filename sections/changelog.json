@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T21:38:07.725Z",
+  "generated": "2026-05-27T22:02:41.997Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "e209d5e",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "Sidebar PP: update Carbon icons, remove settings from settingsItems, homologate height",
+          "author": "Diego"
+        },
         {
           "hash": "4ccaba2",
           "type": "feat",
