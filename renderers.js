@@ -67,6 +67,14 @@ const ICON_PATHS = {
   'help-circle':   '<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/><circle cx="16" cy="23.5" r="1.5"/><path d="M17,8H15.5A4.49,4.49,0,0,0,11,12.5V13h2v-.5A2.5,2.5,0,0,1,15.5,10H17a2.5,2.5,0,0,1,0,5H15v4.5h2V17a4.5,4.5,0,0,0,0-9Z"/>',
   'bell':          '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
   'overflow-menu-vertical': '<circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/>',
+  // status / pill icons
+  'calendar':          '<path d="M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z"/>',
+  'check':             '<path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>',
+  'checkmark-filled':  '<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/>',
+  'ban':               '<path d="M16 2A14 14 0 1 0 30 16 14 14 0 0 0 16 2zm-12 14A12 12 0 0 1 22.9 5.41L5.41 22.9A11.93 11.93 0 0 1 4 16zm12 12a11.93 11.93 0 0 1-6.9-2.41L26.59 9.1A11.93 11.93 0 0 1 28 16 12 12 0 0 1 16 28z"/>',
+  'refresh':           '<path d="M12 10H6.78A11 11 0 0 1 27 16h2A13 13 0 0 0 6 6.68V2H4v8h8zM20 22h5.22A11 11 0 0 1 5 16H3a13 13 0 0 0 23 9.32V30h2v-8H20z"/>',
+  'warning':           '<path d="M16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z"/><path d="M15 12H17V21H15z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/>',
+  'arrow-right':       '<path d="M18 6L16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.607 18 26 28 16 18 6z"/>',
 };
 
 function iconSvg(name, size, color) {
@@ -789,31 +797,13 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       neutral: { light:'var(--n2)', bd:'var(--n4)', fg:'var(--n6)', solid:'var(--n5)', solidFg:'#fff' },
     };
 
-    const ICON_PATHS_CHIP = {
-      'calendar':     '<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/>',
-      'truck':        '<path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-6zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>',
-      'location':     '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
-      'route':        '<path d="M19 15.18V7c0-2.21-1.79-4-4-4s-4 1.79-4 4v10c0 1.1-.9 2-2 2s-2-.9-2-2V8.82C8.16 8.4 9 7.3 9 6c0-1.66-1.34-3-3-3S3 4.34 3 6c0 1.3.84 2.4 2 2.82V17c0 2.21 1.79 4 4 4s4-1.79 4-4V7c0-1.1.9-2 2-2s2 .9 2 2v8.18c-1.16.41-2 1.51-2 2.82 0 1.66 1.34 3 3 3s3-1.34 3-3c0-1.3-.84-2.4-2-2.82z"/>',
-      'check':        '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
-      'x-circle':     '<path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>',
-      'ban':          '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69l11.21-11.21C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"/>',
-      'refresh':      '<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>',
-      'warning':      '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>',
-      'check-double': '<path d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"/>',
-      'arrow':        '<path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>',
-    };
-
-    const BASE_PILL = 'display:inline-flex;align-items:center;gap:4px;height:22px;padding:2px 4px;border-radius:4px;font:600 11px/1 var(--font-sans);white-space:nowrap;';
-    const X_BTN = `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="opacity:.7;flex-shrink:0"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
-
-    function chipIcon(name, color) {
-      const path = ICON_PATHS_CHIP[name];
-      if (!path) return '';
-      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="${color}" style="flex-shrink:0">${path}</svg>`;
-    }
+    const BASE_PILL = 'display:inline-flex;align-items:center;gap:4px;height:22px;padding:2px 6px;border-radius:4px;font:600 11px/1 var(--font-sans);white-space:nowrap;';
+    const X_BTN = iconSvg('close', 10, 'currentColor').replace('<svg ', '<svg style="opacity:.7;flex-shrink:0" ');
 
     function renderVariant(label, icon, colorKey, variant) {
       const c = CC[colorKey] || CC.neutral;
+      const ic = icon ? iconSvg(icon, 12, c.fg) : '';
+      const icS = icon ? iconSvg(icon, 12, c.solidFg) : '';
       switch (variant) {
         case 'text':
           return `<span style="${BASE_PILL}background:transparent;color:${c.fg}">${escHtml(label)}</span>`;
@@ -822,11 +812,11 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         case 'outline':
           return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${escHtml(label)}</span>`;
         case 'icon-outline':
-          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${icon ? chipIcon(icon, c.fg) : ''}${escHtml(label)}</span>`;
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${ic}${escHtml(label)}</span>`;
         case 'icon-outline-x':
-          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${icon ? chipIcon(icon, c.fg) : ''}${escHtml(label)}${X_BTN}</span>`;
+          return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${ic}${escHtml(label)}${X_BTN}</span>`;
         case 'icon-solid-x':
-          return `<span style="${BASE_PILL}background:${c.solid};color:${c.solidFg}">${icon ? chipIcon(icon, c.solidFg) : ''}${escHtml(label)}${X_BTN}</span>`;
+          return `<span style="${BASE_PILL}background:${c.solid};color:${c.solidFg}">${icS}${escHtml(label)}${X_BTN}</span>`;
         case 'solid':
           return `<span style="${BASE_PILL}background:${c.solid};color:${c.solidFg}">${escHtml(label)}</span>`;
         default:
@@ -836,9 +826,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
     function renderSimplePill(p) {
       const c = CC[p.color] || CC.neutral;
-      const icon = p.icon ? chipIcon(p.icon, c.fg) : '';
+      const ic = p.icon ? iconSvg(p.icon, 12, c.fg) : '';
       const dismiss = p.dismissible ? X_BTN : '';
-      return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${icon}${escHtml(p.label)}${dismiss}</span>`;
+      return `<span style="${BASE_PILL}background:${c.light};color:${c.fg};border:1px solid ${c.bd}">${ic}${escHtml(p.label)}${dismiss}</span>`;
     }
 
     const tokens = data.tokens || {};
