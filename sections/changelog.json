@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T19:39:50.633Z",
+  "generated": "2026-05-27T20:05:50.019Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "06a6a9e",
+          "type": "feat",
+          "section": "Inputs",
+          "message": "Add Dropdowns + make inputs interactive",
+          "author": "Diego"
+        },
         {
           "hash": "3f2f65c",
           "type": "fix",
