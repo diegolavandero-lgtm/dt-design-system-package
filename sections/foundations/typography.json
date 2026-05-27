@@ -1,34 +1,31 @@
 {
   "title": "Typography",
   "titleKey": "nav.typography",
-  "description": "DM Sans para toda la UI del producto (400/500/700). Roboto Mono para código. Source: styles/packages/typography/src/",
-  "keywords": ["typography", "type", "font", "dm sans", "roboto", "scale", "weight"],
+  "description": "DM Sans for all UI text. 11 type styles defined below — use ONLY these. Never introduce a custom size or weight not in this scale. When referencing a screenshot, match to the closest style in this scale.",
+  "keywords": ["typography", "type", "font", "dm sans", "scale", "weight"],
+  "rule": "Every text element must use one of the 11 type styles below. Do not invent sizes or weights outside this scale. When working from a visual reference, pick the closest matching style — do not create a new one.",
   "fonts": [
     {
       "family": "DM Sans",
-      "token": "$honeypot-font-family",
-      "weights": [400, 500, 700],
-      "role": "UI principal",
-      "specimen": "Aa Bb Cc 123",
-      "sample": "Crear orden · Exportar a Planner",
-      "note": "400 (regular) · 500 (medium) · 700 (bold) + italics"
-    },
-    {
-      "family": "Roboto Mono",
-      "weights": [400],
-      "role": "Código solamente",
-      "specimen": "const hp = require('@beetrack/hp')",
-      "note": "Solo para tokens, snippets y labels de código"
+      "token": "--dt-font-family",
+      "weights": [400, 600, 700],
+      "role": "All UI text — headers, body, captions, labels",
+      "specimen": "Aa Bb Cc Dd 0123456789",
+      "sample": "Crear orden · Exportar a Planner · Última conexión hace 3h",
+      "note": "400 regular · 600 semi-bold · 700 bold · all with italic variants"
     }
   ],
   "scale": [
-    { "name": "hero",      "mixin": "hp-typography__hero",      "size": 26, "lineHeight": 32, "weight": 500, "font": "DM Sans",     "sample": "Dispatch order #44812",                     "mobile": { "size": 22, "lineHeight": 28, "weight": 500 } },
-    { "name": "title",     "mixin": "hp-typography__title",     "size": 22, "lineHeight": 28, "weight": 700, "font": "DM Sans",     "sample": "Rutas en curso",                            "mobile": { "size": 18, "lineHeight": 24, "weight": 700 } },
-    { "name": "subtitle",  "mixin": "hp-typography__subtitle",  "size": 18, "lineHeight": 20, "weight": 500, "font": "DM Sans",     "sample": "Información de usuario",                    "mobile": { "size": 16, "lineHeight": 20, "weight": 500 } },
-    { "name": "body",      "mixin": "hp-typography__body",      "size": 16, "lineHeight": 20, "weight": 400, "font": "DM Sans",     "sample": "Tienes cambios sin guardar. Si cierras este modal…", "mobile": { "size": 14, "lineHeight": 20, "weight": 400 } },
-    { "name": "bodysmall", "mixin": "hp-typography__bodysmall", "size": 14, "lineHeight": 18, "weight": 400, "font": "DM Sans",     "sample": "Admin Master · Última conexión hace 3h",    "mobile": { "size": 13, "lineHeight": 18, "weight": 400 } },
-    { "name": "button",    "mixin": "hp-typography__button",    "size": 16, "lineHeight": 16, "weight": 500, "font": "DM Sans",     "sample": "Guardar · Cancelar · Eliminar",             "mobile": { "size": 14, "lineHeight": 16, "weight": 500 } },
-    { "name": "micro",     "mixin": "hp-typography__micro",     "size": 12, "lineHeight": 16, "weight": 400, "font": "DM Sans",     "sample": "1–25 de 340 · 10-10-25 10:35 hrs",         "mobile": { "size": 11, "lineHeight": 14, "weight": 400 } },
-    { "name": "code",      "mixin": "hp-typography__code",      "size": 16, "lineHeight": 21, "weight": 400, "font": "Roboto Mono", "sample": "$dt-primary-main: #4B82FA",                 "mobile": { "size": 13, "lineHeight": 18, "weight": 400 } }
+    { "name": "title",             "token": "dt-type-title",             "size": 28, "lineHeight": 34, "weight": 700, "italic": false, "sample": "Resumen de operaciones" },
+    { "name": "subtitle",          "token": "dt-type-subtitle",          "size": 22, "lineHeight": 28, "weight": 700, "italic": false, "sample": "Información de usuario" },
+    { "name": "header-large",      "token": "dt-type-header-large",      "size": 18, "lineHeight": 24, "weight": 700, "italic": false, "sample": "Rutas en curso · Flota activa" },
+    { "name": "header-small",      "token": "dt-type-header-small",      "size": 16, "lineHeight": 22, "weight": 700, "italic": false, "sample": "Últimas 24 horas" },
+    { "name": "body-large",        "token": "dt-type-body-large",        "size": 16, "lineHeight": 24, "weight": 400, "italic": false, "sample": "Tienes cambios sin guardar. Si cierras este modal perderás el progreso." },
+    { "name": "body-large-italic", "token": "dt-type-body-large-italic", "size": 16, "lineHeight": 24, "weight": 400, "italic": true,  "sample": "Tienes cambios sin guardar. Si cierras este modal perderás el progreso." },
+    { "name": "body-large-bold",   "token": "dt-type-body-large-bold",   "size": 16, "lineHeight": 24, "weight": 700, "italic": false, "sample": "Tienes cambios sin guardar. Si cierras este modal perderás el progreso." },
+    { "name": "body-small",        "token": "dt-type-body-small",        "size": 14, "lineHeight": 20, "weight": 400, "italic": false, "sample": "Admin Master · Última conexión hace 3h" },
+    { "name": "body-small-bold",   "token": "dt-type-body-small-bold",   "size": 14, "lineHeight": 20, "weight": 700, "italic": false, "sample": "Admin Master · Última conexión hace 3h" },
+    { "name": "caption",           "token": "dt-type-caption",           "size": 12, "lineHeight": 16, "weight": 400, "italic": false, "sample": "1–25 de 340 · 10-10-25 10:35 hrs" },
+    { "name": "caption-semibold",  "token": "dt-type-caption-semibold",  "size": 12, "lineHeight": 16, "weight": 600, "italic": false, "sample": "1–25 de 340 · 10-10-25 10:35 hrs" }
   ]
 }

@@ -242,7 +242,7 @@ const renderers = {
 <span class="kw">@import</span> <span class="str">'~@beetrack/hp-tokens-style'</span>;
 
 <span class="cm">/* O carga las fuentes directamente */</span>
-<span class="kw">@import</span> <span class="str">url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=Roboto+Mono&amp;display=swap')</span>;
+<span class="kw">@import</span> <span class="str">url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&amp;display=swap')</span>;
 
 <span class="cm">/* Tokens clave de colors.scss */</span>
 ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</span>:${escHtml(l.split(':').slice(1).join(':'))}`).join('\n')}</pre></div>
@@ -422,80 +422,53 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
   typography(data) {
     const fonts = (data.fonts || []).map(f => `
       <div>
-        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">${f.family} ${f.token ? `— <code>${f.token}</code>` : ''}</div>
-        <div style="font:700 32px/1.1 '${f.family}';letter-spacing:-.02em;color:var(--n7)">${f.specimen}</div>
-        ${f.sample ? `<div style="font:400 16px/20px '${f.family}';color:var(--n7);margin-top:7px">${f.sample}</div>` : ''}
-        <div style="font:400 11px var(--font-mono);color:var(--n5);margin-top:7px">${f.note}</div>
+        <div style="font:500 10px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--n5);margin-bottom:7px">${escHtml(f.family)} ${f.token ? `— <code>${escHtml(f.token)}</code>` : ''}</div>
+        <div style="font:700 32px/1.1 'DM Sans',sans-serif;letter-spacing:-.02em;color:var(--n7)">${escHtml(f.specimen)}</div>
+        ${f.sample ? `<div style="font:400 14px/20px 'DM Sans',sans-serif;color:var(--n7);margin-top:7px">${escHtml(f.sample)}</div>` : ''}
+        <div style="font:400 12px 'DM Sans',sans-serif;color:var(--n5);margin-top:7px">${escHtml(f.note)}</div>
       </div>`).join('');
 
     function weightLabel(w) {
-      return w === 700 ? 'Bold' : w === 500 ? 'Medium' : 'Regular';
+      return w >= 700 ? 'Bold' : w >= 600 ? 'Semi-bold' : w >= 500 ? 'Medium' : 'Regular';
     }
 
     const scaleRows = (data.scale || []).map(s => {
-      const fontVal = s.font === 'Roboto Mono' ? `'Roboto Mono'` : `'DM Sans'`;
-      const mob = s.mobile || {};
-      const mobSize = mob.size || s.size;
-      const mobLH   = mob.lineHeight || s.lineHeight;
-      const mobW    = mob.weight || s.weight;
-      const sameSize = mobSize === s.size && mobLH === s.lineHeight && mobW === s.weight;
-
-      const desktopPreview = `<div style="font:${s.weight} ${s.size}px/${s.lineHeight}px ${fontVal};color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.sample)}</div>`;
-      const mobilePreview  = `<div style="font:${mobW} ${mobSize}px/${mobLH}px ${fontVal};color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.sample)}</div>`;
-
-      const desktopSpec = `<span style="font:500 10px var(--font-mono);color:var(--n5)">${s.size}/${s.lineHeight}px · ${weightLabel(s.weight)}</span>`;
-      const mobileSpec  = sameSize
-        ? `<span style="font:500 10px var(--font-mono);color:var(--n45)">—</span>`
-        : `<span style="font:500 10px var(--font-mono);color:var(--n5)">${mobSize}/${mobLH}px · ${weightLabel(mobW)}</span>`;
+      const style = `font-style:${s.italic ? 'italic' : 'normal'}`;
+      const preview = `<div style="font:${s.weight} ${s.size}px/${s.lineHeight}px 'DM Sans',sans-serif;${style};color:var(--n7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.sample)}</div>`;
+      const spec    = `<span style="font:400 11px 'DM Sans',sans-serif;color:var(--n5)">${s.size}/${s.lineHeight}px · ${weightLabel(s.weight)}${s.italic ? ' Italic' : ''}</span>`;
+      const tokenEl = s.token ? `<code style="font:400 10px 'DM Sans',sans-serif;color:var(--n45)">${escHtml(s.token)}</code>` : '';
 
       return `
         <tr style="border-bottom:1px solid var(--n3)">
-          <td style="padding:12px 14px;vertical-align:middle;width:110px">
-            <div style="font:700 11px var(--font-sans);color:var(--n7)">${escHtml(s.name)}</div>
-            <div style="font:400 10px var(--font-mono);color:var(--n45);margin-top:2px">${escHtml(s.mixin)}</div>
+          <td style="padding:14px 16px;vertical-align:middle;width:160px;white-space:nowrap">
+            <div style="font:700 12px 'DM Sans',sans-serif;color:var(--n7)">${escHtml(s.name)}</div>
+            <div style="margin-top:3px">${tokenEl}</div>
           </td>
-          <td style="padding:12px 14px;vertical-align:middle;border-left:1px solid var(--n3)">
-            <div style="font:600 9px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);margin-bottom:5px;display:flex;align-items:center;gap:5px">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-              Desktop
-            </div>
-            ${desktopPreview}
-            <div style="margin-top:3px">${desktopSpec}</div>
-          </td>
-          <td style="padding:12px 14px;vertical-align:middle;border-left:1px solid var(--n3)">
-            <div style="font:600 9px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);margin-bottom:5px;display:flex;align-items:center;gap:5px">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-              Mobile
-            </div>
-            ${mobilePreview}
-            <div style="margin-top:3px">${mobileSpec}</div>
+          <td style="padding:14px 16px;vertical-align:middle;border-left:1px solid var(--n3)">
+            ${preview}
+            <div style="margin-top:4px">${spec}</div>
           </td>
         </tr>`;
     }).join('');
 
+    const ruleNote = data.rule ? `
+      <div class="bn in" style="margin-bottom:14px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span style="font:400 13px 'DM Sans',sans-serif;color:var(--n7)"><strong>Rule:</strong> ${escHtml(data.rule)}</span>
+      </div>` : '';
+
     return `
       ${sectionHeader(data)}
       <div class="card" style="margin-bottom:12px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">${fonts}</div>
+        <div>${fonts}</div>
       </div>
-      <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Type scale — <code>hp-typography__*</code></h3>
+      ${ruleNote}
       <div class="card flush">
         <table style="width:100%;border-collapse:collapse">
           <thead>
             <tr style="background:var(--n2);border-bottom:1px solid var(--n4)">
-              <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);width:110px">Style</th>
-              <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
-                <span style="display:flex;align-items:center;gap:5px">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                  Desktop
-                </span>
-              </th>
-              <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
-                <span style="display:flex;align-items:center;gap:5px">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                  Mobile
-                </span>
-              </th>
+              <th style="padding:10px 16px;font:700 12px 'DM Sans',sans-serif;text-align:left;color:var(--n7);width:160px">Style · Token</th>
+              <th style="padding:10px 16px;font:700 12px 'DM Sans',sans-serif;text-align:left;color:var(--n7);border-left:1px solid var(--n3)">Preview · Specs</th>
             </tr>
           </thead>
           <tbody>${scaleRows}</tbody>
