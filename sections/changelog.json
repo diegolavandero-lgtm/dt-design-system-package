@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T14:40:26.551Z",
+  "generated": "2026-05-27T14:56:36.248Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "eafe8ef",
+          "type": "fix",
+          "section": "General",
+          "message": "Fix settings panel spacing and border-radius",
+          "author": "Diego"
+        },
         {
           "hash": "691825b",
           "type": "update",
