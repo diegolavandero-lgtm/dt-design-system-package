@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T16:21:51.654Z",
+  "generated": "2026-05-27T16:37:03.308Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "a8b27a8",
+          "type": "update",
+          "section": "Inputs",
+          "message": "Rework Inputs section — 32px height, two variant groups, inline styles",
+          "author": "Diego"
+        },
         {
           "hash": "3f2a352",
           "type": "update",
