@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T15:06:15.468Z",
+  "generated": "2026-05-27T15:11:34.201Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "cbffe0e",
+          "type": "fix",
+          "section": "General",
+          "message": "Fix settings panel border-radius via CSS class",
+          "author": "Diego"
+        },
         {
           "hash": "fbd0159",
           "type": "fix",
