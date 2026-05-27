@@ -2,8 +2,20 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T00:03:29.662Z",
+  "generated": "2026-05-27T13:56:58.251Z",
   "days": [
+    {
+      "date": "2026-05-27",
+      "entries": [
+        {
+          "hash": "2aefcc2",
+          "type": "update",
+          "section": "Badges",
+          "message": "Align table badge/chip cells to Pills / Tags styling",
+          "author": "Diego"
+        }
+      ]
+    },
     {
       "date": "2026-05-26",
       "entries": [
