@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T20:17:49.497Z",
+  "generated": "2026-05-27T20:25:43.279Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "42f5f12",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "Fix inputs & dropdowns: placeholder color, focus bg, chip dismiss",
+          "author": "Diego"
+        },
         {
           "hash": "75273eb",
           "type": "update",
