@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T15:11:34.201Z",
+  "generated": "2026-05-27T15:13:21.791Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "f9edf7f",
+          "type": "update",
+          "section": "General",
+          "message": "Apply border-radius directly to bottom-right flex child",
+          "author": "Diego"
+        },
         {
           "hash": "cbffe0e",
           "type": "fix",
