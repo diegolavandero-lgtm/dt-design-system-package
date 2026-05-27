@@ -65,9 +65,7 @@
         { "icon": "task-complete",  "label": "Rendición de Documentos",  "state": "default"  },
         { "icon": "store",          "label": "Retiro en tienda",         "state": "default"  },
         { "icon": "upload",         "label": "Importar",                 "state": "default"  },
-        { "icon": "receipt",        "label": "Módulo de Costos (nuevo)", "state": "default"  },
-        { "divider": true },
-        { "icon": "settings",       "label": "Ajustes",                  "state": "selected" }
+        { "icon": "receipt",        "label": "Módulo de Costos (nuevo)", "state": "default"  }
       ],
       "settingsPanel": {
         "groups": [
@@ -130,9 +128,7 @@
         { "icon": "truck",     "label": "Flota",       "state": "default" },
         { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
         { "icon": "grid",      "label": "Recursos",    "state": "default" },
-        { "icon": "user",      "label": "Usuarios",    "state": "default" },
-        { "divider": true },
-        { "icon": "settings",  "label": "Ajustes",     "state": "default" }
+        { "icon": "user",      "label": "Usuarios",    "state": "default" }
       ],
       "settingsItems": [
         { "icon": "route",     "label": "Rutas",       "state": "default" },
@@ -140,9 +136,7 @@
         { "icon": "truck",     "label": "Flota",       "state": "default" },
         { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
         { "icon": "grid",      "label": "Recursos",    "state": "default" },
-        { "icon": "user",      "label": "Usuarios",    "state": "default" },
-        { "divider": true },
-        { "icon": "settings",  "label": "Ajustes",     "state": "selected" }
+        { "icon": "user",      "label": "Usuarios",    "state": "default" }
       ]
     },
     {
@@ -155,9 +149,7 @@
         { "icon": "route",     "label": "Rutas",       "state": "default" },
         { "icon": "truck",     "label": "Flota",       "state": "default" },
         { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
-        { "icon": "bell",      "label": "Alertas",     "state": "default" },
-        { "divider": true },
-        { "icon": "settings",  "label": "Ajustes",     "state": "default" }
+        { "icon": "bell",      "label": "Alertas",     "state": "default" }
       ],
       "settingsItems": [
         { "icon": "grid",      "label": "Dashboard",   "state": "default" },
@@ -165,9 +157,7 @@
         { "icon": "route",     "label": "Rutas",       "state": "default" },
         { "icon": "truck",     "label": "Flota",       "state": "default" },
         { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
-        { "icon": "bell",      "label": "Alertas",     "state": "default" },
-        { "divider": true },
-        { "icon": "settings",  "label": "Ajustes",     "state": "selected" }
+        { "icon": "bell",      "label": "Alertas",     "state": "default" }
       ]
     }
   ]
