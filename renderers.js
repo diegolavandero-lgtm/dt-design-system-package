@@ -35,8 +35,17 @@ function tabCard(tabs) {
 }
 
 function badgeHtml(label, type) {
-  const cls = {success:'bg',danger:'br',warning:'bo',info:'bb',neutral:'bn',outline:'bx'}[type] || 'bn';
-  return `<span class="badge ${cls}">${label}</span>`;
+  const PC = {
+    success: { bg:'var(--g1)', bd:'var(--g3)', fg:'var(--g7)' },
+    danger:  { bg:'var(--r1)', bd:'var(--r3)', fg:'var(--r6)' },
+    error:   { bg:'var(--r1)', bd:'var(--r3)', fg:'var(--r6)' },
+    warning: { bg:'var(--o1)', bd:'var(--o3)', fg:'var(--o7)' },
+    info:    { bg:'var(--b1)', bd:'var(--b3)', fg:'var(--b6)' },
+    neutral: { bg:'var(--n2)', bd:'var(--n4)', fg:'var(--n6)' },
+    outline: { bg:'#fff',      bd:'var(--n4)', fg:'var(--n6)' },
+  };
+  const c = PC[type] || PC.neutral;
+  return `<span style="display:inline-flex;align-items:center;height:22px;padding:2px 6px;border-radius:4px;border:1px solid ${c.bd};background:${c.bg};color:${c.fg};font:600 11px/1 var(--font-sans);white-space:nowrap">${escHtml(label)}</span>`;
 }
 
 /* ── CARBON DESIGN SYSTEM ICONS (IBM) — viewBox 0 0 32 32, fill-based ── */
@@ -1204,10 +1213,10 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           return `<td${cls}><span class="tbl-chip lg">${escHtml(cell.value||'')}</span></td>`;
 
         case 'chip-sm':
-          return `<td${cls}><span class="tbl-chip sm">${escHtml(cell.value||'')}</span></td>`;
+          return `<td${cls}><span style="display:inline-flex;align-items:center;height:22px;padding:2px 6px;border-radius:4px;border:1px solid var(--n4);background:var(--n2);color:var(--n6);font:600 11px/1 var(--font-sans);white-space:nowrap">${escHtml(cell.value||'')}</span></td>`;
 
         case 'pill-new':
-          return `<td${cls}><span class="tbl-pill-new">${escHtml(cell.value||'New')}</span></td>`;
+          return `<td${cls}><span style="display:inline-flex;align-items:center;height:22px;padding:2px 6px;border-radius:4px;border:1px solid var(--b3);background:var(--b1);color:var(--b6);font:600 11px/1 var(--font-sans);white-space:nowrap">${escHtml(cell.value||'New')}</span></td>`;
 
         case 'loading-bar': {
           const pct = Math.min(100, Math.max(0, cell.value||0));
