@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T13:56:58.251Z",
+  "generated": "2026-05-27T14:24:30.341Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "21c302c",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "Update Last Mile sidebar to match full app nav (15 items)",
+          "author": "Diego"
+        },
         {
           "hash": "2aefcc2",
           "type": "update",
