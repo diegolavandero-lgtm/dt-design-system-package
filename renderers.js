@@ -670,28 +670,44 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
   /* ── INPUTS ── */
   inputs(data) {
-    const searchSvg = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>`;
+    const ICONS = {
+      search:  `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>`,
+      error:   `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--r6)"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M15,8h2v12h-2V8z M16,24c-0.8,0-1.5-0.7-1.5-1.5S15.2,21,16,21s1.5,0.7,1.5,1.5S16.8,24,16,24z"/></svg>`,
+      success: `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0;color:var(--g5)"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M14,21.5L8.5,16l1.4-1.4L14,18.6l8.1-8.1l1.4,1.4L14,21.5z"/></svg>`,
+      info:    `<svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0;color:var(--n5)"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M17,22h-2v-8h2V22z M16,9.5c-0.6,0-1,0.4-1,1s0.4,1,1,1s1-0.4,1-1S16.6,9.5,16,9.5z"/></svg>`,
+    };
 
     function renderVariant(v, hasLabel) {
       const isDisabled = v.state === 'disabled';
       const isFocused  = v.state === 'focused';
       const isFilled   = v.state === 'filled';
       const isError    = v.state === 'error';
+      const isValid    = v.state === 'valid';
 
       let border = '1px solid var(--n3)';
-      if (isFocused || isFilled) border = '1px solid var(--n5)';
-      if (isError)               border = '1px solid var(--r6)';
-      if (isDisabled)            border = '1px solid var(--n3)';
+      if (isFocused)  border = '2px solid var(--b6)';
+      if (isFilled)   border = '1px solid var(--n5)';
+      if (isError)    border = '1px solid var(--r6)';
+      if (isValid)    border = '1px solid var(--g5)';
+      if (isDisabled) border = '1px solid var(--n3)';
 
-      const bg         = isDisabled ? 'var(--n1)' : '#fff';
-      const focusRing  = isFocused  ? 'box-shadow:0 0 0 3px rgba(75,130,250,.18);' : '';
-      const dimmed     = isDisabled ? 'opacity:.55;cursor:not-allowed;' : '';
+      const bg     = isDisabled ? 'var(--n1)' : '#fff';
+      const dimmed = isDisabled ? 'opacity:.55;cursor:not-allowed;' : '';
 
-      const inputText  = v.value ? escHtml(v.value) : (v.placeholder ? escHtml(v.placeholder) : 'Placeholder');
-      const textColor  = v.value ? 'var(--n7)' : 'var(--n6)';
+      const inputText = v.value ? escHtml(v.value) : (v.placeholder ? escHtml(v.placeholder) : 'Placeholder');
+      const textColor = v.value ? 'var(--n7)' : 'var(--n6)';
+
+      const infoTip = v.labelTooltip
+        ? `<span style="position:relative;display:inline-flex;align-items:center;cursor:default"
+            onmouseenter="let t=this.querySelector('.inp-tt');t.style.opacity='1';t.style.visibility='visible'"
+            onmouseleave="let t=this.querySelector('.inp-tt');t.style.opacity='0';t.style.visibility='hidden'">
+            ${ICONS.info}
+            <div class="inp-tt" style="position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:8px 10px;border-radius:6px;font:400 12px/16px var(--font-sans);width:180px;white-space:normal;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .15s;z-index:99">${escHtml(v.labelTooltip)}<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div></div>
+          </span>`
+        : '';
 
       const labelHtml = hasLabel
-        ? `<div style="font:600 12px/16px var(--font-sans);color:var(--n7);margin-bottom:4px">Label</div>`
+        ? `<div style="display:flex;align-items:center;gap:4px;font:400 12px/16px var(--font-sans);color:var(--n7);margin-bottom:4px">Label${infoTip}</div>`
         : '';
 
       const helperHtml = v.helperText
@@ -701,9 +717,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       return `<div style="display:flex;flex-direction:column;width:200px">
         <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">${escHtml(v.label)}</div>
         ${labelHtml}
-        <div style="display:flex;align-items:center;height:32px;padding:0 10px;border:${border};border-radius:6px;background:${bg};gap:6px;${focusRing}${dimmed}">
+        <div style="display:flex;align-items:center;height:32px;padding:0 10px;border:${border};border-radius:6px;background:${bg};gap:6px;${dimmed}">
           <span style="font:400 14px/20px var(--font-sans);color:${textColor};flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${inputText}</span>
-          ${v.trailingIcon === 'search' ? searchSvg : ''}
+          ${ICONS[v.trailingIcon] || ''}
         </div>
         ${helperHtml}
       </div>`;
@@ -723,6 +739,82 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     ).join('');
 
     const previewTab = `<div style="padding:24px;background:var(--n1)">${groupSections}</div>`;
+    const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
+    const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
+
+    return `
+      ${sectionHeader(data)}
+      ${tabCard([
+        {label:'Preview', content: previewTab},
+        {label:'Code',    content: codeTab},
+        {label:'Tokens',  content: tokensTab},
+      ])}`;
+  },
+
+  /* ── TOOLTIP ── */
+  tooltip(data) {
+    const text = data.content || 'Tooltip content';
+
+    function makeCard(placement) {
+      const isTop    = placement === 'top';
+      const isBottom = placement === 'bottom';
+      const isLeft   = placement === 'left';
+
+      let tipPos, arrowPos, spacer;
+      if (isTop) {
+        tipPos   = 'bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)';
+        arrowPos = 'top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)';
+        spacer   = 'padding-top:68px';
+      } else if (isBottom) {
+        tipPos   = 'top:calc(100% + 8px);left:50%;transform:translateX(-50%)';
+        arrowPos = 'bottom:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid var(--n7)';
+        spacer   = 'padding-bottom:68px';
+      } else if (isLeft) {
+        tipPos   = 'right:calc(100% + 8px);top:50%;transform:translateY(-50%)';
+        arrowPos = 'left:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid var(--n7)';
+        spacer   = 'padding-left:160px';
+      } else {
+        tipPos   = 'left:calc(100% + 8px);top:50%;transform:translateY(-50%)';
+        arrowPos = 'right:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:5px solid var(--n7)';
+        spacer   = 'padding-right:160px';
+      }
+
+      return `<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">${escHtml(placement)}</div>
+        <div style="${spacer}">
+          <div style="position:relative;display:inline-block">
+            <div style="position:absolute;${tipPos};background:var(--n7);color:#fff;padding:8px 10px;border-radius:6px;font:400 12px/16px var(--font-sans);width:150px;white-space:normal;z-index:1">
+              ${escHtml(text)}
+              <div style="position:absolute;${arrowPos};width:0;height:0"></div>
+            </div>
+            <button style="height:32px;padding:0 14px;border:1px solid var(--n3);border-radius:6px;background:#fff;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:default;white-space:nowrap">Trigger</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    const staticCards = ['top','bottom','left','right'].map(p => makeCard(p)).join('');
+
+    const interactive = `<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Interactive</div>
+      <div style="padding-top:68px">
+        <div style="position:relative;display:inline-block"
+          onmouseenter="let t=this.querySelector('.tt-live');t.style.opacity='1';t.style.visibility='visible'"
+          onmouseleave="let t=this.querySelector('.tt-live');t.style.opacity='0';t.style.visibility='hidden'">
+          <div class="tt-live" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:8px 10px;border-radius:6px;font:400 12px/16px var(--font-sans);width:150px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:1;pointer-events:none">
+            ${escHtml(text)}
+            <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
+          </div>
+          <button style="height:32px;padding:0 14px;border:1px solid var(--n3);border-radius:6px;background:#fff;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer;white-space:nowrap">Hover me</button>
+        </div>
+      </div>
+    </div>`;
+
+    const tokenRows = Object.entries(data.tokens || {}).map(([k, v]) =>
+      `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
+    ).join('');
+
+    const previewTab = `<div style="padding:32px;background:var(--n1)"><div style="display:flex;flex-wrap:wrap;gap:32px 48px;align-items:flex-start">${staticCards}${interactive}</div></div>`;
     const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
     const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
 

@@ -1,0 +1,20 @@
+{
+  "title": "Tooltip",
+  "titleKey": "nav.tooltip",
+  "description": "Dark surface (neutral-7) tooltip with caption text. Appears on hover. Arrow points toward the trigger. Max-width 200px. Four placements: top, bottom, left, right.",
+  "keywords": ["tooltip", "hover", "help", "info", "popover"],
+  "tokens": {
+    "bg": "var(--n7) · #39414D",
+    "textColor": "#ffffff",
+    "borderRadius": "6px",
+    "padding": "8px 10px",
+    "maxWidth": "200px",
+    "textStyle": "caption · 12px / 400",
+    "arrowSize": "5px",
+    "showDelay": "0ms",
+    "zIndex": "999"
+  },
+  "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.",
+  "placements": ["top", "bottom", "left", "right"],
+  "code": "/* ── Basic tooltip (top placement) ── */\n<Tooltip content=\"Help text here\" placement=\"top\">\n  <button>Hover me</button>\n</Tooltip>\n\n/* ── Info icon trigger (label) ── */\n<label class=\"dt-input-label\">\n  Field label\n  <Tooltip content=\"This field controls X behavior.\">\n    <InfoFilledIcon />\n  </Tooltip>\n</label>\n\n/* ── React hook example ── */\nfunction useTooltip() {\n  const [visible, setVisible] = useState(false);\n  const ref = useRef(null);\n  return {\n    ref,\n    visible,\n    triggerProps: {\n      onMouseEnter: () => setVisible(true),\n      onMouseLeave: () => setVisible(false),\n    },\n  };\n}\n\n/* ── CSS tokens ── */\n.dt-tooltip {\n  position: absolute;\n  background: var(--n7);\n  color: #fff;\n  padding: 8px 10px;\n  border-radius: 6px;\n  font: 400 12px/16px var(--font-sans);\n  max-width: 200px;\n  white-space: normal;\n  pointer-events: none;\n  z-index: 999;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .15s;\n}\n.dt-tooltip.visible {\n  opacity: 1;\n  visibility: visible;\n}\n/* Arrow (top placement) */\n.dt-tooltip::after {\n  content: '';\n  position: absolute;\n  top: 100%;\n  left: 50%;\n  transform: translateX(-50%);\n  border: 5px solid transparent;\n  border-top-color: var(--n7);\n}"
+}

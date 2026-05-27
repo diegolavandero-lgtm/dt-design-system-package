@@ -1,34 +1,38 @@
 {
   "title": "Inputs",
   "titleKey": "nav.inputs",
-  "description": "32px height. Two groups: with label (forms) and without label (filters). Placeholder body-small neutral-6. Stroke neutral-3 inactive, neutral-5 active/filled. Text neutral-7 when filled. Width fills container by default.",
-  "keywords": ["inputs", "forms", "text", "field", "filter", "search", "label", "placeholder"],
+  "description": "32px height. Two groups: with label (forms) and without label (filters). Placeholder body-small neutral-6. Stroke neutral-3 inactive, neutral-5 filled. 2px blue-6 focused. Error icon red, valid icon green-5. Width fills container.",
+  "keywords": ["inputs", "forms", "text", "field", "filter", "search", "label", "placeholder", "validation"],
   "tokens": {
     "height": "32px",
     "borderRadius": "6px",
     "paddingHorizontal": "10px",
     "bg": "#ffffff",
     "strokeInactive": "var(--n3) · #E1E6ED",
-    "strokeActive": "var(--n5) · #67768D",
+    "strokeFocused": "var(--b6) · #1F60ED · 2px",
+    "strokeFilled": "var(--n5) · #67768D",
     "strokeError": "var(--r6) · #DE350B",
+    "strokeValid": "var(--g5) · #36B37E",
     "bgDisabled": "var(--n1) · #F5F6FA",
     "placeholderColor": "var(--n6) · #4B5564",
     "textColor": "var(--n7) · #39414D",
     "textStyle": "body-small · 14px / 400",
-    "labelStyle": "caption-semibold · 12px / 600",
+    "labelStyle": "caption · 12px / 400",
     "helperStyle": "caption · 12px / 400"
   },
   "variantGroups": [
     {
       "id": "with-label",
       "label": "With label",
-      "description": "Used in forms. A caption-semibold label sits above the input.",
+      "description": "Used in forms. A caption label sits above the input.",
       "variants": [
-        { "id": "default",  "label": "Default",  "state": "default",  "placeholder": "Placeholder" },
-        { "id": "filled",   "label": "Filled",   "state": "filled",   "value": "Valor ingresado" },
-        { "id": "focused",  "label": "Focused",  "state": "focused",  "placeholder": "Placeholder" },
-        { "id": "error",    "label": "Error",    "state": "error",    "value": "valor@incorrecto", "helperText": "Formato inválido" },
-        { "id": "disabled", "label": "Disabled", "state": "disabled", "value": "Valor bloqueado" }
+        { "id": "default",  "label": "Default",      "state": "default",  "placeholder": "Placeholder" },
+        { "id": "filled",   "label": "Filled",        "state": "filled",   "value": "example" },
+        { "id": "focused",  "label": "Focused",       "state": "focused",  "placeholder": "Placeholder" },
+        { "id": "error",    "label": "Error",         "state": "error",    "value": "example", "trailingIcon": "error", "helperText": "Optional helper text" },
+        { "id": "valid",    "label": "Valid",         "state": "valid",    "value": "example", "trailingIcon": "success" },
+        { "id": "disabled", "label": "Disabled",      "state": "disabled", "value": "example" },
+        { "id": "tooltip",  "label": "With tooltip",  "state": "default",  "placeholder": "Placeholder", "labelTooltip": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor." }
       ]
     },
     {
@@ -36,13 +40,13 @@
       "label": "Without label",
       "description": "Used in filters and compact contexts. No label above the field.",
       "variants": [
-        { "id": "default",  "label": "Default",  "state": "default",  "placeholder": "Buscar..." },
-        { "id": "filled",   "label": "Filled",   "state": "filled",   "value": "Filtro activo" },
-        { "id": "focused",  "label": "Focused",  "state": "focused",  "placeholder": "Buscar..." },
-        { "id": "icon",     "label": "With icon", "state": "default", "placeholder": "Buscar...", "trailingIcon": "search" },
-        { "id": "disabled", "label": "Disabled", "state": "disabled", "value": "Valor bloqueado" }
+        { "id": "default",  "label": "Default",   "state": "default",  "placeholder": "Buscar..." },
+        { "id": "filled",   "label": "Filled",    "state": "filled",   "value": "Filtro activo" },
+        { "id": "focused",  "label": "Focused",   "state": "focused",  "placeholder": "Buscar..." },
+        { "id": "icon",     "label": "With icon", "state": "default",  "placeholder": "Buscar...", "trailingIcon": "search" },
+        { "id": "disabled", "label": "Disabled",  "state": "disabled", "value": "Valor bloqueado" }
       ]
     }
   ],
-  "code": "/* ── With label (forms) ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <input\n    class=\"dt-input\"\n    type=\"text\"\n    placeholder=\"Placeholder\"\n    value={value}\n    onChange={e => setValue(e.target.value)}\n  />\n</div>\n\n/* ── Error state ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <input class=\"dt-input dt-input--error\" type=\"text\" value={value} />\n  <span class=\"dt-input-helper dt-input-helper--error\">Formato inválido</span>\n</div>\n\n/* ── Without label (filters) ── */\n<input\n  class=\"dt-input\"\n  type=\"text\"\n  placeholder=\"Buscar...\"\n  value={value}\n  onChange={e => setValue(e.target.value)}\n/>\n\n/* ── With search icon ── */\n<div class=\"dt-input-wrap\">\n  <input class=\"dt-input\" type=\"text\" placeholder=\"Buscar...\" />\n  <SearchIcon class=\"dt-input-icon\" />\n</div>\n\n/* ── Disabled ── */\n<input class=\"dt-input\" type=\"text\" value=\"Valor bloqueado\" disabled />\n\n/* ── CSS tokens ── */\n.dt-input {\n  height: 32px;\n  padding: 0 10px;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  background: #fff;\n  font: 400 14px/20px var(--font-sans);\n  color: var(--n7);\n  width: 100%;\n}\n.dt-input::placeholder { color: var(--n6); }\n.dt-input:focus {\n  outline: none;\n  border-color: var(--n5);\n  box-shadow: 0 0 0 3px rgba(75,130,250,.18);\n}\n.dt-input--error { border-color: var(--r6); }\n.dt-input:disabled {\n  background: var(--n1);\n  cursor: not-allowed;\n  opacity: .6;\n}\n.dt-input-label {\n  font: 600 12px/16px var(--font-sans);\n  color: var(--n7);\n  margin-bottom: 4px;\n  display: block;\n}\n.dt-input-helper {\n  font: 400 12px/16px var(--font-sans);\n  color: var(--n5);\n  margin-top: 3px;\n}\n.dt-input-helper--error { color: var(--r6); }"
+  "code": "/* ── With label (forms) ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <input\n    class=\"dt-input\"\n    type=\"text\"\n    placeholder=\"Placeholder\"\n    value={value}\n    onChange={e => setValue(e.target.value)}\n  />\n</div>\n\n/* ── Label with tooltip ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">\n    Label\n    <Tooltip content=\"Help text here\"><InfoIcon /></Tooltip>\n  </label>\n  <input class=\"dt-input\" type=\"text\" />\n</div>\n\n/* ── Error state ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <div class=\"dt-input-wrap\">\n    <input class=\"dt-input dt-input--error\" type=\"text\" value={value} />\n    <ErrorFilledIcon class=\"dt-input-icon dt-input-icon--error\" />\n  </div>\n  <span class=\"dt-input-helper dt-input-helper--error\">Optional helper text</span>\n</div>\n\n/* ── Valid state ── */\n<div class=\"dt-input-wrap\">\n  <input class=\"dt-input dt-input--valid\" type=\"text\" value={value} />\n  <CheckmarkFilledIcon class=\"dt-input-icon dt-input-icon--valid\" />\n</div>\n\n/* ── Without label (filters) ── */\n<input\n  class=\"dt-input\"\n  type=\"text\"\n  placeholder=\"Buscar...\"\n  value={value}\n  onChange={e => setValue(e.target.value)}\n/>\n\n/* ── Disabled ── */\n<input class=\"dt-input\" type=\"text\" value=\"Valor bloqueado\" disabled />\n\n/* ── CSS tokens ── */\n.dt-input {\n  height: 32px;\n  padding: 0 10px;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  background: #fff;\n  font: 400 14px/20px var(--font-sans);\n  color: var(--n7);\n  width: 100%;\n}\n.dt-input::placeholder { color: var(--n6); }\n.dt-input:focus {\n  outline: none;\n  border: 2px solid var(--b6);\n}\n.dt-input--error { border-color: var(--r6); }\n.dt-input--valid  { border-color: var(--g5); }\n.dt-input:disabled {\n  background: var(--n1);\n  cursor: not-allowed;\n  opacity: .6;\n}\n.dt-input-label {\n  font: 400 12px/16px var(--font-sans);\n  color: var(--n7);\n  margin-bottom: 4px;\n  display: flex;\n  align-items: center;\n  gap: 4px;\n}\n.dt-input-helper {\n  font: 400 12px/16px var(--font-sans);\n  color: var(--n5);\n  margin-top: 3px;\n}\n.dt-input-helper--error { color: var(--r6); }"
 }
