@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T14:24:30.341Z",
+  "generated": "2026-05-27T14:30:59.823Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "af70677",
+          "type": "feat",
+          "section": "Sidebar",
+          "message": "Add settings panel state to LM sidebar",
+          "author": "Diego"
+        },
         {
           "hash": "21c302c",
           "type": "update",
