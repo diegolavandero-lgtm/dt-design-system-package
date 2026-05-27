@@ -1574,7 +1574,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       return `<div class="sbx-settings">
         <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
         ${panelHtml}
-        <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start">
+        <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start;border-radius:0 0 24px 0">
           <span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span>
         </div>
       </div>`;
