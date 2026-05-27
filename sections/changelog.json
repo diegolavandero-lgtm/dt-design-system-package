@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T20:40:15.614Z",
+  "generated": "2026-05-27T20:59:54.047Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "81db1d4",
+          "type": "update",
+          "section": "Icons",
+          "message": "Tooltip: Carbon info outline/filled icons, persistent variant, icon states",
+          "author": "Diego"
+        },
         {
           "hash": "17444f7",
           "type": "fix",
