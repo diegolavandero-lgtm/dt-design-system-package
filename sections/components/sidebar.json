@@ -123,21 +123,51 @@
       "name": "Planner Pro",
       "color": "#47D09A",
       "items": [
-        { "icon": "route",     "label": "Rutas",       "state": "selected" },
-        { "icon": "package",   "label": "Órdenes",     "state": "default" },
-        { "icon": "truck",     "label": "Flota",       "state": "default" },
-        { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
-        { "icon": "grid",      "label": "Recursos",    "state": "default" },
-        { "icon": "user",      "label": "Usuarios",    "state": "default" }
+        { "icon": "planner-route", "label": "Planificador", "state": "selected" },
+        { "icon": "time",          "label": "Historial",    "state": "default"  },
+        { "icon": "download",      "label": "Importador",   "state": "default"  },
+        { "icon": "document-text", "label": "Bases",        "state": "default"  },
+        { "divider": true },
+        { "icon": "settings",      "label": "Ajustes",      "state": "default"  }
       ],
       "settingsItems": [
-        { "icon": "route",     "label": "Rutas",       "state": "default" },
-        { "icon": "package",   "label": "Órdenes",     "state": "default" },
-        { "icon": "truck",     "label": "Flota",       "state": "default" },
-        { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
-        { "icon": "grid",      "label": "Recursos",    "state": "default" },
-        { "icon": "user",      "label": "Usuarios",    "state": "default" }
-      ]
+        { "icon": "planner-route", "label": "Planificador", "state": "default"  },
+        { "icon": "time",          "label": "Historial",    "state": "default"  },
+        { "icon": "download",      "label": "Importador",   "state": "default"  },
+        { "icon": "document-text", "label": "Bases",        "state": "default"  },
+        { "divider": true },
+        { "icon": "settings",      "label": "Ajustes",      "state": "selected" }
+      ],
+      "settingsPanel": {
+        "groups": [
+          {
+            "label": "Cuenta",
+            "items": [
+              { "label": "Configuración de cuenta", "state": "selected" },
+              { "label": "Vehículos utilizados" }
+            ]
+          },
+          {
+            "label": "Gestionar",
+            "items": [
+              { "label": "Vehículos" },
+              { "label": "Centros de despacho" },
+              { "label": "Geocercas" },
+              { "label": "Parámetros planificador" }
+            ]
+          },
+          {
+            "label": "Configuración avanzada",
+            "items": [
+              { "label": "Grupos de tags" },
+              { "label": "API keys" },
+              { "label": "Webhooks" },
+              { "label": "Agrupaciones" }
+            ]
+          }
+        ],
+        "version": "20.25.09 | M. V5"
+      }
     },
     {
       "id": "ondemand",
