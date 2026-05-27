@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T20:59:54.047Z",
+  "generated": "2026-05-27T21:38:07.725Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "4ccaba2",
+          "type": "feat",
+          "section": "Sidebar",
+          "message": "Sidebar: add PlannerPro structure with correct nav items and settings panel",
+          "author": "Diego"
+        },
         {
           "hash": "81db1d4",
           "type": "update",
