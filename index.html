@@ -512,7 +512,7 @@ textarea.hp-text-field__input{resize:vertical;padding-top:0;align-self:auto;min-
   .dv-row{grid-template-columns:repeat(6,1fr)}
 }
 input.dt-inp{outline:none}
-input.dt-inp::placeholder{color:var(--n6)}
+input.dt-inp::placeholder{color:var(--n3)}
 </style>
 </head>
 <body>
@@ -1181,7 +1181,9 @@ function dtDrop(wrap) {
   if (!isOpen) {
     wrap.classList.add('dt-open');
     menu.style.display = 'block';
-    wrap.querySelector('.dt-dtrigger').style.border = '2px solid var(--b6)';
+    const t = wrap.querySelector('.dt-dtrigger');
+    t.style.border = '2px solid var(--b6)';
+    t.style.background = 'var(--b1)';
     setTimeout(function() {
       function h(e) { if (!wrap.contains(e.target)) { dtDropClose(wrap); document.removeEventListener('click', h); } }
       document.addEventListener('click', h);
@@ -1217,7 +1219,9 @@ function dtMultiDrop(wrap) {
   document.querySelectorAll('.dt-drop-wrap.dt-open').forEach(w => dtDropClose(w));
   wrap.classList.add('dt-mopen');
   menu.style.display = 'block';
-  wrap.querySelector('.dt-mtrigger').style.border = '2px solid var(--b6)';
+  const t = wrap.querySelector('.dt-mtrigger');
+  t.style.border = '2px solid var(--b6)';
+  t.style.background = 'var(--b1)';
   setTimeout(function() {
     function h(e) { if (!wrap.contains(e.target)) { dtMultiClose(wrap); document.removeEventListener('click', h); } }
     document.addEventListener('click', h);
@@ -1232,22 +1236,34 @@ function dtMultiClose(wrap) {
   const chips = wrap.querySelector('.dt-mchips');
   const hasChips = chips && chips.querySelector('span.dt-chip');
   t.style.border = hasChips ? '1px solid var(--n5)' : '1px solid var(--n3)';
+  t.style.background = '#fff';
 }
-function dtMultiCheck(cb) {
-  const wrap    = cb.closest('.dt-drop-wrap');
-  const chips   = wrap.querySelector('.dt-mchips');
-  const allCbs  = [...wrap.querySelectorAll('.dt-mopt input[type=checkbox]')];
+function dtRenderChips(wrap) {
+  const chips  = wrap.querySelector('.dt-mchips');
+  const allCbs = [...wrap.querySelectorAll('.dt-mopt input[type=checkbox]')];
   const checked = allCbs.filter(c => c.checked);
   const xSvg = '<svg viewBox="0 0 32 32" width="9" height="9" fill="currentColor"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6z"/></svg>';
   if (checked.length === 0) {
     chips.innerHTML = '<span style="font:400 14px/20px var(--font-sans);color:var(--n6)">Select options...</span>';
   } else {
-    chips.innerHTML = checked.map(c =>
-      `<span class="dt-chip" style="display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 6px;background:var(--b1);border:1px solid var(--b3);border-radius:999px;font:400 12px/1 var(--font-sans);color:var(--b6);flex-shrink:0">${xSvg}&nbsp;${c.dataset.label}</span>`
-    ).join('');
+    chips.innerHTML = checked.map(c => {
+      const lbl = c.dataset.label;
+      const safe = lbl.replace(/"/g, '&quot;');
+      return `<span class="dt-chip" style="display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 6px;background:var(--b1);border:1px solid var(--b3);border-radius:999px;font:400 12px/1 var(--font-sans);color:var(--b6);flex-shrink:0"><span onclick='event.stopPropagation();dtChipRemove(this,"${safe}")' style='cursor:pointer;display:flex;align-items:center;opacity:.7'>${xSvg}</span>&nbsp;${lbl}</span>`;
+    }).join('');
   }
   const t = wrap.querySelector('.dt-mtrigger');
   t.style.border = checked.length ? '1px solid var(--n5)' : '1px solid var(--n3)';
+}
+function dtMultiCheck(cb) {
+  dtRenderChips(cb.closest('.dt-drop-wrap'));
+}
+function dtChipRemove(btn, label) {
+  const wrap = btn.closest('.dt-drop-wrap');
+  wrap.querySelectorAll('.dt-mopt input[type=checkbox]').forEach(function(cb) {
+    if (cb.dataset.label === label) { cb.checked = false; }
+  });
+  dtRenderChips(wrap);
 }
 </script>
 

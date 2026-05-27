@@ -694,15 +694,16 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       if (isDisabled) border = '1px solid var(--n3)';
 
       const bg       = isDisabled ? 'var(--n1)' : '#fff';
+      const initBg   = isFocused ? 'var(--b1)' : bg;
       const padR     = (needsValIcons || v.trailingIcon) ? '34px' : '10px';
       const initVal  = v.value || '';
       const ph       = v.placeholder || 'Placeholder';
 
       const onFocus = needsValIcons
-        ? `this.style.border='2px solid var(--b6)';this.parentElement.querySelectorAll('.vi').forEach(function(i){i.style.display='none'})`
-        : `this.style.border='2px solid var(--b6)';this.style.background='#fff'`;
+        ? `this.style.border='2px solid var(--b6)';this.style.background='var(--b1)';this.parentElement.querySelectorAll('.vi').forEach(function(i){i.style.display='none'})`
+        : `this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'`;
       const onBlur = needsValIcons
-        ? `if(!this.value){this.style.border='1px solid var(--n3)';this.parentElement.querySelectorAll('.vi').forEach(function(i){i.style.display='none'})}else{handleValidation(this)}`
+        ? `if(!this.value){this.style.border='1px solid var(--n3)';this.style.background='${bg}';this.parentElement.querySelectorAll('.vi').forEach(function(i){i.style.display='none'})}else{handleValidation(this);this.style.background='${bg}'}`
         : `this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='${bg}'`;
       const onMEnter = `if(!this.disabled&&document.activeElement!==this)this.style.background='var(--n2)'`;
       const onMLeave = `if(!this.disabled&&document.activeElement!==this)this.style.background='${bg}'`;
@@ -713,7 +714,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         value="${escHtml(initVal)}"
         placeholder="${escHtml(ph)}"
         ${isDisabled ? 'disabled' : ''}
-        style="width:100%;height:32px;padding:0 ${padR} 0 10px;border:${border};border-radius:6px;font:400 14px/20px var(--font-sans);background:${bg};color:var(--n7);box-sizing:border-box${isDisabled ? ';opacity:.55;cursor:not-allowed' : ''}"
+        style="width:100%;height:32px;padding:0 ${padR} 0 10px;border:${border};border-radius:6px;font:400 14px/20px var(--font-sans);background:${initBg};color:var(--n7);box-sizing:border-box${isDisabled ? ';opacity:.55;cursor:not-allowed' : ''}"
         onfocus="${onFocus}"
         onblur="${onBlur}"
         onmouseenter="${onMEnter}"
