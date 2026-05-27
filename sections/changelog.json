@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T16:37:03.308Z",
+  "generated": "2026-05-27T19:39:50.633Z",
   "days": [
     {
       "date": "2026-05-27",
       "entries": [
+        {
+          "hash": "3f2f65c",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "Fix inputs + add Tooltip component",
+          "author": "Diego"
+        },
         {
           "hash": "a8b27a8",
           "type": "update",
