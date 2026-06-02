@@ -1,5 +1,5 @@
 /* ================================================================
-   renderers.js — DT Design System
+   renderers.js — DT Design System v2.4.1
    Each renderer takes a data object (from JSON) and returns HTML.
 ================================================================ */
 
