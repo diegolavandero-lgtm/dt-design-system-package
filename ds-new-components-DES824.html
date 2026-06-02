@@ -1,0 +1,1352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New DS Components — DES824 · DispatchTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#F0F2F5;font-family:'DM Sans',system-ui,sans-serif;color:#39414D;font-size:14px;line-height:1.5}
+a{color:#0052CC;text-decoration:none}a:hover{text-decoration:underline}
+button{font-family:inherit;cursor:pointer}
+
+/* ── DS TOKENS ── */
+:root{
+  --indigo:#132045;
+  --n1:#F5F6FA;--n2:#F0F2F5;--n3:#E1E6ED;--n4:#C5D2E7;--n45:#8FA0BA;--n5:#67768D;--n6:#4B5564;--n7:#39414D;
+  --b1:#EDF5FF;--b2:#D1E0FF;--b3:#ADC7FF;--b5:#4B82FA;--b6:#1F60ED;--b7:#0052CC;
+  --g1:#E3FCEF;--g5:#36B37E;--g6:#00875A;
+  --r1:#FFEBE6;--r5:#FF5630;--r6:#DE350B;
+  --o1:#FFFAE6;--o3:#FFE380;--o5:#FFAB00;--o7:#FF8B00;
+  --font-sans:'DM Sans',system-ui,sans-serif;
+  --font-mono:'Roboto Mono',monospace;
+}
+
+/* ── TOPBAR ── */
+.gh-top{position:sticky;top:0;z-index:200;height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 22px;gap:16px}
+.gh-top .logo img{height:18px;display:block}
+.gh-top .badge-new{font:700 10px var(--font-sans);background:var(--o5);color:#fff;padding:2px 8px;border-radius:999px;letter-spacing:.04em}
+.gh-top .slot{width:88px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:var(--indigo);font:700 11px var(--font-sans);margin-left:auto;flex-shrink:0}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:240px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);padding:14px 0;position:sticky;top:52px;align-self:start;max-height:calc(100vh - 52px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--n3);border-radius:2px}
+.grp-lbl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);padding:10px 20px 5px}
+.snav{display:flex;align-items:center;gap:8px;padding:7px 20px;font:500 13px var(--font-sans);color:var(--n7);border-left:3px solid transparent;text-decoration:none;cursor:pointer}
+.snav:hover{background:var(--n1)}
+.snav.active{background:var(--b1);border-left-color:var(--b5);font-weight:700;color:var(--b7)}
+.snav .tag{font:600 9px var(--font-sans);background:var(--o1);color:var(--o7);padding:1px 6px;border-radius:999px;margin-left:auto;letter-spacing:.03em}
+.snav .new{background:var(--g1);color:var(--g6)}
+.main{flex:1;padding:32px 40px 80px;min-width:0}
+
+/* ── PAGE HEADER ── */
+.main h1{font:700 28px/1.2 var(--font-sans);letter-spacing:-.01em;margin:0 0 6px;color:var(--n7)}
+.main .sub{font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 10px;max-width:660px}
+.ticket-chip{display:inline-flex;align-items:center;gap:6px;font:700 11px var(--font-mono);background:var(--b1);color:var(--b7);border:1px solid var(--b3);padding:3px 10px;border-radius:4px;margin-bottom:28px}
+
+/* ── SECTION ── */
+.sec{margin:0 0 56px;scroll-margin-top:80px}
+.sec h2{font:700 20px/1.3 var(--font-sans);margin:0 0 4px;color:var(--n7);display:flex;align-items:center;gap:10px}
+.sec h2 .anch{font:500 11px var(--font-mono);color:var(--n5);background:var(--n2);padding:2px 7px;border-radius:4px}
+.sec h2 .status{font:700 9px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.status-new{background:var(--g1);color:var(--g6)}
+.status-ext{background:var(--o1);color:var(--o7)}
+.status-rule{background:var(--b1);color:var(--b7)}
+.sec .desc{font:400 13px/1.6 var(--font-sans);color:var(--n5);margin:0 0 16px;max-width:680px}
+
+/* ── CARD ── */
+.card{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;margin:0 0 12px}
+.card.flush{padding:0;overflow:hidden}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--n3);background:#FAFBFD}
+.card-hdr .ttl{font:700 12px var(--font-sans);color:var(--n7)}
+.card-hdr .meta{font:400 11px var(--font-mono);color:var(--n5)}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--n3);background:#FAFBFD}
+.t-tab{padding:9px 14px;font:500 12px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent}
+.t-tab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);background:#fff}
+.tp{display:none}.tp.on{display:block}
+
+/* ── USAGE TABLE ── */
+.utbl{width:100%;border-collapse:collapse;font:400 12px var(--font-sans)}
+.utbl th{background:var(--n2);font:700 11px var(--font-sans);text-align:left;padding:8px 12px;border-bottom:1px solid var(--n4);color:var(--n7)}
+.utbl td{padding:8px 12px;border-bottom:1px solid var(--n3);vertical-align:top}
+.utbl tr:last-child td{border:0}
+.utbl code{font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px}
+
+/* ── DO / DON'T ── */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.do-box{border-radius:6px;padding:14px;border:1px solid var(--n3);background:#fff}
+.do-box.do{border-left:3px solid var(--g6)}
+.do-box.dont{border-left:3px solid var(--r6)}
+.do-box .lbl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.do-box.do .lbl{color:var(--g6)}
+.do-box.dont .lbl{color:var(--r6)}
+
+/* ═══════════════════════════
+   COMPONENT PREVIEWS
+═══════════════════════════ */
+
+/* 1 · TOGGLE STATES */
+.toggle-grid{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-end;padding:20px}
+.toggle-item{display:flex;flex-direction:column;align-items:center;gap:8px}
+.toggle-item .lbl{font:500 11px var(--font-sans);color:var(--n5);text-align:center}
+.toggle-item .token{font:400 10px var(--font-mono);color:var(--n45);text-align:center}
+.swt{width:34px;height:20px;border-radius:999px;background:var(--n4);position:relative;cursor:pointer;flex-shrink:0;transition:background .15s}
+.swt.on{background:var(--b6)}
+.swt:after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(19,32,69,.2)}
+.swt.on:after{left:16px}
+.swt.locked{background:var(--n3);cursor:not-allowed;opacity:.7}
+.swt.locked:after{background:#F5F6FA;box-shadow:none}
+.swt.empty-disabled{background:var(--n3);cursor:not-allowed;opacity:.4}
+.swt.empty-disabled:after{background:#F5F6FA;box-shadow:none}
+.swt.ch-paused{background:var(--o5);cursor:pointer}
+.swt.ch-paused:after{left:2px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='%23FFAB00'%3E%3Crect x='5' y='3' width='5' height='18' rx='1'/%3E%3Crect x='14' y='3' width='5' height='18' rx='1'/%3E%3C/svg%3E") no-repeat center}
+
+/* 2 · COVERAGE RING */
+.ring-demo{display:flex;gap:32px;align-items:center;flex-wrap:wrap;padding:20px}
+.ring{position:relative;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ring::after{content:'';position:absolute;width:48px;height:48px;border-radius:50%;background:#fff}
+.ring span{position:relative;z-index:1;font:700 13px var(--font-sans);color:var(--n7)}
+
+/* 3 · COLLAPSIBLE GROUP */
+.grp-demo{border:1px solid var(--n3);border-radius:6px;overflow:hidden;margin:0}
+.grp-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#FAFBFD;cursor:pointer;user-select:none}
+.grp-hdr .chev{width:14px;height:14px;color:var(--n5);transition:transform .15s}
+.grp-hdr.open .chev{transform:rotate(90deg) }
+.grp-dot{width:9px;height:9px;border-radius:50%}
+.grp-title{font:700 13px var(--font-sans);color:var(--n7);flex:1}
+.grp-count{font:500 11px var(--font-sans);color:var(--n5)}
+.grp-body{border-top:1px solid var(--n3)}
+.grp-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #F5F6FA;font:400 13px var(--font-sans);color:var(--n7)}
+.grp-row:last-child{border-bottom:0}
+.grp-row .rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.grp-row .sub{font-size:11px;color:var(--n5);margin-top:2px}
+
+/* 4 · MULTI-SELECT */
+.ms-wrap{position:relative;width:280px}
+.ms-trigger{width:100%;border:1px solid var(--n4);border-radius:6px;background:#fff;font:400 13px var(--font-sans);color:var(--n7);padding:9px 32px 9px 12px;cursor:pointer;text-align:left;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.ms-trigger.open{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.2)}
+.ms-dd{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;background:#fff;border:1px solid var(--n4);border-radius:6px;box-shadow:0 8px 24px rgba(19,32,69,.12)}
+.ms-gl{font:700 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);padding:9px 12px 3px}
+.ms-opt{display:flex;align-items:center;gap:9px;padding:7px 12px;font:400 13px var(--font-sans);color:var(--n7);cursor:pointer}
+.ms-opt:hover{background:var(--n1)}
+.ms-opt.sel{background:var(--b1);color:var(--b7)}
+.ms-opt input{width:15px;height:15px;accent-color:var(--b6);pointer-events:none;flex-shrink:0}
+
+/* 5 · FILTER BUILDER */
+.filter-demo{display:flex;flex-direction:column;gap:8px;padding:20px}
+.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-row select,.filter-row .f-inp{height:34px;border:1px solid var(--n3);border-radius:6px;font:400 13px var(--font-sans);color:var(--n7);background:#fff;padding:0 10px;outline:none}
+.filter-row select{padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;appearance:none;-webkit-appearance:none}
+.filter-row .f-inp{min-width:100px}
+.conn{font:700 11px var(--font-sans);background:#EAE6FF;color:#5243AA;border:1px solid #C0B6F2;border-radius:4px;padding:4px 10px;cursor:pointer}
+.f-remove{font:700 12px var(--font-sans);background:#FFEBE6;color:#BF2600;border:1px solid #FF8F73;border-radius:4px;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.f-add{display:inline-flex;align-items:center;gap:6px;font:700 13px var(--font-sans);padding:6px 14px;border-radius:100px;background:var(--b6);color:#fff;border:0;cursor:pointer;margin-top:4px;font-size:13px}
+
+/* 6 · CHANNEL MASTER */
+.ch-card{background:#fff;border:1px solid var(--n3);border-radius:6px;overflow:hidden;width:300px}
+.ch-lbl{font:700 10px var(--font-sans);letter-spacing:.09em;text-transform:uppercase;color:var(--n5);padding:12px 16px 8px;border-bottom:1px solid #F5F6FA}
+.ch-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #F5F6FA}
+.ch-row:last-of-type{border-bottom:0}
+.ch-ico{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ch-ico svg{width:15px;height:15px}
+.ch-ico.email{background:var(--g1);color:var(--g6)}
+.ch-ico.sms{background:var(--n2);color:var(--n45)}
+.ch-info{flex:1;min-width:0}
+.ch-info .nm{font:600 13px var(--font-sans);color:var(--n7)}
+.ch-info .st{font-size:11px;margin-top:1px}
+.ch-info .st.on{color:var(--g6)}
+.ch-info .st.off{color:var(--n45);display:flex;align-items:center;gap:4px}
+.ch-info .st.off svg{width:10px;height:10px}
+
+/* 7 · STEP NAV */
+.stepnav-demo{display:flex;gap:8px;flex-wrap:wrap;padding:20px;background:#F0F2F5;border-radius:6px}
+.step-chip{display:inline-flex;align-items:center;gap:7px;font:600 12px var(--font-sans);color:var(--n5);background:#fff;border:1px solid var(--n3);border-radius:100px;padding:5px 12px 5px 6px}
+.step-chip .num{width:18px;height:18px;border-radius:50%;background:var(--n3);color:var(--n5);font:700 11px var(--font-sans);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-chip.active{color:var(--b7);border-color:var(--b6);background:var(--b1)}
+.step-chip.active .num{background:var(--b6);color:#fff}
+.step-chip.done .num{background:var(--g6);color:#fff}
+.step-chip.done{color:var(--n5)}
+
+/* 8 · VAR CHIP PALETTE */
+.var-palette{padding:16px 20px}
+.var-label{font:700 11px var(--font-sans);color:var(--n5);margin-bottom:8px}
+.var-chips{display:flex;flex-wrap:wrap;gap:5px}
+.var-chip{font:600 11px var(--font-sans);background:#F0EDFF;color:#5243AA;border:1px solid #DBD4FA;border-radius:4px;padding:3px 8px;cursor:pointer;transition:.12s}
+.var-chip:hover{background:#DBD4FA}
+
+/* 9 · KEBAB MENU */
+.kebab-demo{position:relative;display:inline-block}
+.kebab-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--n3);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.kebab-btn svg{width:16px;height:16px;color:var(--n5);fill:currentColor}
+.kebab-menu-demo{position:absolute;top:36px;right:0;z-index:30;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 8px 24px rgba(19,32,69,.14);min-width:150px;padding:4px}
+.km-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:4px;font:400 13px var(--font-sans);color:var(--n7);cursor:pointer}
+.km-item:hover{background:var(--n1)}
+.km-item.danger{color:var(--r6)}
+.km-item svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.km-sep{height:1px;background:var(--n2);margin:4px 0}
+
+/* 10 · COLOR PICKER */
+.color-combo{display:flex;align-items:center;gap:8px}
+.color-combo input[type=color]{width:38px;height:38px;padding:3px;border:1px solid var(--n3);border-radius:6px;cursor:pointer;flex-shrink:0;background:#fff}
+.color-combo .hex-inp{height:38px;border:1px solid var(--n3);border-radius:6px;font:400 13px var(--font-mono);color:var(--n7);padding:0 12px;width:120px;letter-spacing:.04em;text-transform:uppercase}
+.color-combo .hex-inp:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.2);outline:none}
+
+/* 11 · INLINE EMPTY STATE */
+.empty-row-demo{border:1px solid var(--n3);border-radius:6px;overflow:hidden}
+.e-row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid #F5F6FA;font:400 13px var(--font-sans);color:var(--n7)}
+.e-row:last-child{border-bottom:0}
+.e-row .edot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.e-row .esub{font-size:11px;margin-top:2px}
+.e-row .esub a{font-weight:600;color:var(--b7)}
+.e-row .esub .muted{color:var(--n45)}
+
+/* 12 · SMS PREVIEW */
+.sms-ui{background:#F2F2F7;border-radius:10px;overflow:hidden;width:280px;font-family:-apple-system,sans-serif}
+.sms-bar{background:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #E5E5EA}
+.sms-av{width:32px;height:32px;border-radius:50%;background:#C7C7CC;display:flex;align-items:center;justify-content:center;font:600 12px sans-serif;color:#fff;flex-shrink:0}
+.sms-nm{font:600 13px sans-serif;color:#000}
+.sms-st{font:400 10px sans-serif;color:#8E8E93}
+.sms-body{padding:14px;display:flex;flex-direction:column;gap:4px;min-height:100px}
+.sms-date-label{text-align:center;font:400 10px sans-serif;color:#8E8E93;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.sms-bbl{display:inline-block;max-width:85%;background:#E5E5EA;border-radius:18px 18px 18px 4px;padding:9px 13px;font:400 13px sans-serif;color:#000;line-height:1.45}
+.sms-ts{font:400 10px sans-serif;color:#8E8E93;padding-left:2px;margin-top:2px}
+.sms-bar2{background:#fff;border-top:1px solid #E5E5EA;padding:7px 12px;display:flex;align-items:center;gap:8px}
+.sms-field{flex:1;background:#F2F2F7;border-radius:20px;padding:6px 12px;font:400 12px sans-serif;color:#8E8E93}
+
+/* 13 · WA PREVIEW */
+.wa-ui{background:#E5DDD5;border-radius:10px;overflow:hidden;width:280px;font-family:-apple-system,sans-serif}
+.wa-top{background:#128C7E;padding:10px 14px;display:flex;align-items:center;gap:8px}
+.wa-av{width:34px;height:34px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font:700 13px sans-serif;color:#fff;flex-shrink:0}
+.wa-nm{font:600 13px sans-serif;color:#fff}
+.wa-st{font:400 11px sans-serif;color:rgba(255,255,255,.72)}
+.wa-body{padding:10px 12px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-height:100px}
+.wa-date-label{align-self:center;background:rgba(255,255,255,.9);border-radius:8px;padding:3px 12px;font:500 11px sans-serif;color:#667781;margin-bottom:4px}
+.wa-bbl{display:inline-block;max-width:85%;background:#E7FFDB;border-radius:8px 8px 2px 8px;padding:7px 10px 5px;font:400 13px sans-serif;color:#111;line-height:1.45;position:relative;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.wa-bbl::after{content:'';position:absolute;bottom:0;right:-7px;border-style:solid;border-width:0 0 9px 9px;border-color:transparent transparent transparent #E7FFDB}
+.wa-meta{display:flex;align-items:center;justify-content:flex-end;gap:3px;margin-top:3px}
+.wa-time{font:400 10px sans-serif;color:#667781}
+.wa-ticks{color:#53BDEB;font-size:13px;letter-spacing:-1px}
+.wa-bar2{background:#F0F0F0;padding:7px 10px;display:flex;align-items:center;gap:8px}
+.wa-field{flex:1;background:#fff;border-radius:22px;padding:7px 12px;font:400 12px sans-serif;color:#8E8E93}
+.wa-send{width:38px;height:38px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wa-send svg{width:16px;height:16px;stroke:#fff;stroke-width:2.2;fill:none;margin-left:2px}
+
+/* 14 · CONTEXT MODAL COPY */
+.modal-demo{background:#fff;border-radius:8px;border:1px solid #A3B5D1;padding:24px;max-width:420px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.modal-demo h3{font:700 20px/1.3 var(--font-sans);color:#546884;margin-bottom:8px}
+.modal-demo p{font:400 13px/1.6 var(--font-sans);color:var(--n5);margin-bottom:20px}
+.modal-footer{display:flex;gap:10px}
+.btn-outline{padding:8px 20px;border-radius:100px;border:1px solid var(--n4);background:#fff;font:700 13px var(--font-sans);color:var(--n7);cursor:pointer}
+.btn-primary{padding:8px 20px;border-radius:100px;border:0;background:var(--b6);font:700 13px var(--font-sans);color:#fff;cursor:pointer}
+
+/* banner correction */
+.banner-compare{display:flex;flex-direction:column;gap:8px}
+.bn{display:flex;gap:9px;padding:10px 12px;border-radius:4px;align-items:flex-start;font:400 12px/1.5 var(--font-sans);color:var(--n7)}
+.bn svg{flex-shrink:0;margin-top:1px}
+.bn.info{background:var(--b1);border-left:3px solid var(--b6)}
+.bn.warn{background:var(--o1);border-left:3px solid var(--o5)}
+.bn .bn-lbl{font:700 11px var(--font-sans);color:inherit;margin-bottom:2px}
+
+
+/* SUMMARY BAR */
+.summary-bar{background:#fff;border:1px solid var(--n3);border-radius:10px;padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.sum-ring{position:relative;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sum-ring::after{content:'';position:absolute;width:38px;height:38px;border-radius:50%;background:#fff}
+.sum-ring span{position:relative;z-index:1;font:700 12px var(--font-sans);color:var(--n7)}
+.sum-stats{display:flex;gap:20px;flex-wrap:wrap}
+.sum-stat{display:flex;align-items:center;gap:7px;font:500 13px var(--font-sans);color:var(--n7)}
+.sum-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sum-count{font-weight:700}
+.sum-label{color:var(--n5)}
+.sum-export{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font:700 13px var(--font-sans);padding:7px 16px;border-radius:100px;border:1px solid var(--n4);background:#fff;color:var(--n7);cursor:pointer;transition:.12s}
+.sum-export:hover{background:var(--n1);border-color:var(--n45)}
+.sum-export svg{width:14px;height:14px;flex-shrink:0}
+
+/* REVIEW CARD */
+.rc{margin:0 0 20px;border:1px solid var(--n3);border-radius:10px;overflow:hidden;background:#fff;border-left:4px solid var(--n3);transition:border-color .15s}
+.rc[data-status="approved"]{border-color:var(--g5);border-left-color:var(--g5)}
+.rc[data-status="skipped"]{border-color:#FFCDD2;border-left-color:var(--r5)}
+.rc-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;background:#FAFBFD;transition:background .12s}
+.rc-head:hover{background:#F5F6FA}
+.rc[data-status="approved"] .rc-head{background:#F0FDF6}
+.rc[data-status="skipped"] .rc-head{background:#FFF5F5}
+.rc-chev{width:16px;height:16px;color:var(--n45);flex-shrink:0;transition:transform .15s}
+.rc.open .rc-chev{transform:rotate(90deg)}
+.rc-meta{flex:1;min-width:0;display:flex;align-items:center;gap:8px;overflow:hidden}
+.rc-title{font:700 14px var(--font-sans);color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-tag{font:700 9px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;flex-shrink:0}
+.rc-tag.new{background:var(--g1);color:var(--g6)}
+.rc-tag.ext{background:var(--o1);color:var(--o7)}
+.rc-tag.rule{background:var(--b1);color:var(--b7)}
+.rc-decision{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.rc-btn{font:700 12px var(--font-sans);padding:5px 14px;border-radius:100px;cursor:pointer;transition:.12s;border:1.5px solid transparent;line-height:1}
+.rc-btn.approve{border-color:var(--g5);color:var(--g6);background:#fff}
+.rc-btn.approve:hover{background:var(--g1)}
+.rc-btn.approve.active{background:var(--g6);color:#fff;border-color:var(--g6)}
+.rc-btn.skip{border-color:var(--n4);color:var(--n5);background:#fff}
+.rc-btn.skip:hover{background:var(--r1);border-color:var(--r5);color:var(--r6)}
+.rc-btn.skip.active{background:var(--r6);color:#fff;border-color:var(--r6)}
+.rc-badge{font:700 10px var(--font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;flex-shrink:0;background:var(--n2);color:var(--n5);min-width:72px;text-align:center}
+.rc-badge.approved{background:var(--g1);color:var(--g6)}
+.rc-badge.skipped{background:var(--r1);color:var(--r6)}
+.rc-body{display:none;padding:24px;border-top:1px solid var(--n3)}
+.rc.open .rc-body{display:block}
+.rc-notes{margin-top:24px;padding-top:20px;border-top:1px solid var(--n3)}
+.rc-notes label{display:block;font:700 13px var(--font-sans);color:var(--n7);margin-bottom:8px}
+.rc-notes textarea{width:100%;border:1px solid var(--n3);border-radius:6px;font:400 13px var(--font-sans);color:var(--n7);padding:10px 12px;resize:vertical;min-height:80px;outline:none;transition:border-color .12s;line-height:1.5}
+.rc-notes textarea:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.2)}
+.rc-notes textarea::placeholder{color:var(--n45)}
+.rc-notes-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-bottom:4px}
+.rc-toast{position:fixed;bottom:24px;right:24px;background:var(--n7);color:#fff;font:500 13px var(--font-sans);padding:10px 18px;border-radius:8px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(19,32,69,.2);z-index:999;transform:translateY(60px);opacity:0;transition:.22s}
+.rc-toast.show{transform:translateY(0);opacity:1}
+
+/* responsive */
+@media(max-width:900px){.layout{flex-direction:column}.sidebar{width:100%;position:static;max-height:none;border-right:0;border-bottom:1px solid var(--n3)}.main{padding:20px 18px 60px}.do-dont{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="gh-top">
+  <a href="notifications-settings-DES824.html" style="display:flex;align-items:center;height:20px">
+    <img src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile" style="height:20px">
+  </a>
+  <span class="badge-new">DES-824 · New components</span>
+  <div class="slot">DT</div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="grp-lbl">Controls</div>
+  <a class="snav active" href="#toggles">Toggle states <span class="tag">EXTENDED</span></a>
+  <a class="snav" href="#coverage">Coverage ring <span class="tag new">NEW</span></a>
+  <a class="snav" href="#stepper">Step navigator <span class="tag new">NEW</span></a>
+  <a class="snav" href="#color-picker">Color + hex input <span class="tag new">NEW</span></a>
+
+  <div class="grp-lbl" style="margin-top:8px">Data & selection</div>
+  <a class="snav" href="#multiselect">Multi-select dropdown <span class="tag new">NEW</span></a>
+  <a class="snav" href="#filter-builder">Filter builder <span class="tag new">NEW</span></a>
+  <a class="snav" href="#var-palette">Variable palette <span class="tag new">NEW</span></a>
+
+  <div class="grp-lbl" style="margin-top:8px">Layout patterns</div>
+  <a class="snav" href="#collapsible-group">Collapsible group <span class="tag new">NEW</span></a>
+  <a class="snav" href="#channel-master">Channel master control <span class="tag new">NEW</span></a>
+  <a class="snav" href="#kebab">Kebab row menu <span class="tag new">NEW</span></a>
+  <a class="snav" href="#empty-inline">Inline empty state <span class="tag new">NEW</span></a>
+
+  <div class="grp-lbl" style="margin-top:8px">Preview patterns</div>
+  <a class="snav" href="#sms-preview">SMS preview <span class="tag new">NEW</span></a>
+  <a class="snav" href="#wa-preview">WhatsApp preview <span class="tag new">NEW</span></a>
+
+  <div class="grp-lbl" style="margin-top:8px">Rules & semantics</div>
+  <a class="snav" href="#context-modal">Context-aware modal copy <span class="tag new">NEW</span></a>
+  <a class="snav" href="#banner-rule">Info vs Warning banner <span class="tag">RULE</span></a>
+  <a class="snav" href="#paused-semantics">Paused channel semantics <span class="tag new">NEW</span></a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <h1>New DS components</h1>
+  <p class="sub">Components and patterns built for DES-824 (Notification Settings) that aren't yet in the design system. Reviewed and ready for documentation.</p>
+  <span class="ticket-chip">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    DES-824 · Notification Settings redesign
+  </span>
+
+  <div class="summary-bar">
+    <div class="sum-ring" id="sum-ring" style="background:conic-gradient(var(--n4) 0deg,var(--n3) 0deg 360deg)"><span>0/16</span></div>
+    <div class="sum-stats">
+      <div class="sum-stat"><span class="sum-dot" style="background:var(--g5)"></span><span class="sum-count" id="sum-approved">0</span><span class="sum-label">approved</span></div>
+      <div class="sum-stat"><span class="sum-dot" style="background:var(--r5)"></span><span class="sum-count" id="sum-skipped">0</span><span class="sum-label">skipped</span></div>
+      <div class="sum-stat"><span class="sum-dot" style="background:var(--n4)"></span><span class="sum-count" id="sum-pending">16</span><span class="sum-label">pending</span></div>
+    </div>
+    <button class="sum-export" onclick="exportDecisions()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy decisions
+    </button>
+  </div>
+  <!-- ═══ 1 · TOGGLE STATES ═══ -->
+  <div class="rc" id="rc-toggles" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-toggles', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Toggle / Switch — extended states</span><span class="rc-tag ext">EXTENDED</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-toggles','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-toggles','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="toggles">
+    <h2>Toggle / Switch — extended states <span class="anch">#toggles</span> <span class="status status-ext">EXTENDED</span></h2>
+    <p class="desc">The existing DS switch (<code>.swt</code>) covers on / off / locked. Three additional states are needed to cover notification settings flows where the reason for being "off" carries distinct meaning.</p>
+    <div class="card flush">
+      <div class="card-hdr"><span class="ttl">All five states</span><span class="meta">.swt</span></div>
+      <div class="toggle-grid">
+        <div class="toggle-item">
+          <div class="swt on"></div>
+          <div class="lbl">On</div>
+          <div class="token">.swt.on</div>
+        </div>
+        <div class="toggle-item">
+          <div class="swt"></div>
+          <div class="lbl">Off</div>
+          <div class="token">.swt</div>
+        </div>
+        <div class="toggle-item">
+          <div class="swt locked"></div>
+          <div class="lbl">Locked</div>
+          <div class="token">.swt.locked</div>
+        </div>
+        <div class="toggle-item">
+          <div class="swt empty-disabled"></div>
+          <div class="lbl">Not configured</div>
+          <div class="token">.swt.empty-disabled <span style="color:var(--o7)">NEW</span></div>
+        </div>
+        <div class="toggle-item">
+          <div class="swt ch-paused"></div>
+          <div class="lbl">Paused</div>
+          <div class="token">.swt.ch-paused <span style="color:var(--o7)">NEW</span></div>
+        </div>
+      </div>
+    </div>
+    <table class="utbl" style="margin-top:12px">
+      <thead><tr><th>State</th><th>Visual</th><th>Meaning</th><th>Interaction</th></tr></thead>
+      <tbody>
+        <tr><td><code>.swt.locked</code></td><td>Gray, 70% opacity</td><td>Feature not available for this account</td><td>Not clickable</td></tr>
+        <tr><td><code>.swt.empty-disabled</code></td><td>Gray, 40% opacity</td><td>Nothing configured yet — toggle has no target</td><td>Not clickable · CTA is "+ Add"</td></tr>
+        <tr><td><code>.swt.ch-paused</code></td><td>Amber <code>--o5</code>, ⏸ in thumb</td><td>Manually paused by user · still configured</td><td>Clickable to resume</td></tr>
+      </tbody>
+    </table>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-toggles',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-toggles','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-toggles','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 2 · COVERAGE RING ═══ -->
+  <div class="rc" id="rc-coverage" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-coverage', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Coverage ring</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-coverage','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-coverage','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="coverage">
+    <h2>Coverage ring <span class="anch">#coverage</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">A donut-style progress indicator showing X of N items configured. Uses <code>conic-gradient</code>. The DS has no progress indicator today.</p>
+    <div class="card flush">
+      <div class="card-hdr"><span class="ttl">Variants</span></div>
+      <div class="ring-demo">
+        <div>
+          <div class="ring" style="background:conic-gradient(var(--b6) 0deg 111deg,var(--n3) 111deg 360deg)"><span>4/13</span></div>
+          <div style="text-align:center;font:500 11px var(--font-sans);color:var(--n5);margin-top:6px">Partial</div>
+        </div>
+        <div>
+          <div class="ring" style="background:conic-gradient(var(--g6) 0deg 360deg,var(--n3) 360deg 360deg)"><span>13/13</span></div>
+          <div style="text-align:center;font:500 11px var(--font-sans);color:var(--n5);margin-top:6px">Complete</div>
+        </div>
+        <div>
+          <div class="ring" style="background:conic-gradient(var(--n4) 0deg 0deg,var(--n3) 0deg 360deg)"><span>0/13</span></div>
+          <div style="text-align:center;font:500 11px var(--font-sans);color:var(--n5);margin-top:6px">Empty</div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;gap:4px;font:400 12px var(--font-sans);color:var(--n5);max-width:240px">
+          <div>• <strong>Partial:</strong> <code>--b6</code> (cobalt)</div>
+          <div>• <strong>Complete:</strong> <code>--g6</code> (green)</div>
+          <div>• <strong>Empty:</strong> <code>--n3</code> (neutral)</div>
+          <div style="margin-top:6px">Inner circle: 38px white overlay on 64px ring. Label: 13px 700.</div>
+        </div>
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-coverage',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-coverage','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-coverage','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 3 · STEP NAVIGATOR ═══ -->
+  <div class="rc" id="rc-stepper" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-stepper', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Step navigator</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-stepper','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-stepper','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="stepper">
+    <h2>Step navigator <span class="anch">#stepper</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">Numbered pill chips that track progress through a long form via scroll-spy. Steps can be hidden conditionally (e.g. Display step hides when channel is SMS). Sticky to the top of the content area.</p>
+    <div class="card">
+      <div class="stepnav-demo">
+        <div class="step-chip done"><span class="num"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Trigger</div>
+        <div class="step-chip done"><span class="num"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Channel</div>
+        <div class="step-chip active"><span class="num">3</span>Audience</div>
+        <div class="step-chip"><span class="num">4</span>Message</div>
+        <div class="step-chip"><span class="num">5</span>Schedule</div>
+        <div class="step-chip"><span class="num">6</span>Display</div>
+      </div>
+    </div>
+    <div class="do-dont" style="margin-top:12px">
+      <div class="do-box do"><div class="lbl">✓ Do</div><div style="font:400 12px var(--font-sans);color:var(--n6)">Use scroll-spy to update active state automatically. Let users click to jump to any section.</div></div>
+      <div class="do-box dont"><div class="lbl">✗ Don't</div><div style="font:400 12px var(--font-sans);color:var(--n6)">Block progression by locking steps. All sections should always be reachable.</div></div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-stepper',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-stepper','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-stepper','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 4 · COLOR + HEX INPUT ═══ -->
+  <div class="rc" id="rc-color-picker" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-color-picker', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Color + hex input</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-color-picker','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-color-picker','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="color-picker">
+    <h2>Color picker + hex input <span class="anch">#color-picker</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">A paired control: native <code>&lt;input type="color"&gt;</code> swatch + synchronized hex text field. Both stay in sync. Hex input validates, normalizes (#prefix, uppercase), and reverts to last valid value on blur.</p>
+    <div class="card" style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
+      <div>
+        <div style="font:700 13px var(--font-sans);margin-bottom:8px">Theme color</div>
+        <div class="color-combo">
+          <input type="color" value="#1F60ED">
+          <input class="hex-inp" type="text" value="#1F60ED" maxlength="7">
+        </div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Applied to header band and CTA button.</div>
+      </div>
+      <div style="font:400 12px var(--font-sans);color:var(--n5);max-width:280px;padding-top:8px">
+        <strong style="color:var(--n7)">Validation rules:</strong><br>
+        • Accepts with or without # prefix<br>
+        • Accepts 3-char shorthand (#F00 → #FF0000)<br>
+        • On blur: uppercase + add # if missing<br>
+        • Invalid input: reverts to last valid color
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-color-picker',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-color-picker','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-color-picker','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 5 · MULTI-SELECT ═══ -->
+  <div class="rc" id="rc-multiselect" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-multiselect', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Multi-select dropdown</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-multiselect','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-multiselect','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="multiselect">
+    <h2>Multi-select dropdown (grouped) <span class="anch">#multiselect</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">Custom dropdown with grouped <code>optgroup</code>-style sections, per-option checkboxes, and a trigger that summarizes the selection. The DS has no multi-select today.</p>
+    <div class="card" style="padding:20px;min-height:260px;position:relative">
+      <div style="font:700 13px var(--font-sans);margin-bottom:8px">Groups</div>
+      <div class="ms-wrap">
+        <button class="ms-trigger open">Proveedores – Paris</button>
+        <div class="ms-dd">
+          <div class="ms-gl">Proveedores</div>
+          <label class="ms-opt sel"><input type="checkbox" checked>Proveedores – Paris</label>
+          <label class="ms-opt"><input type="checkbox">Proveedores – Ripley</label>
+          <div class="ms-gl">Temperatura</div>
+          <label class="ms-opt"><input type="checkbox">Temperatura – Conge</label>
+          <label class="ms-opt"><input type="checkbox">Temperatura – Fresco</label>
+          <div class="ms-gl">Zonas</div>
+          <label class="ms-opt"><input type="checkbox">Zona Norte</label>
+        </div>
+      </div>
+      <div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:14px;position:relative;z-index:0">Trigger shows comma-separated summary. Clicking outside closes. Focus styling matches <code>.inp:focus</code>.</div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-multiselect',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-multiselect','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-multiselect','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 6 · FILTER BUILDER ═══ -->
+  <div class="rc" id="rc-filter-builder" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-filter-builder', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Filter builder</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-filter-builder','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-filter-builder','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="filter-builder">
+    <h2>Filter builder <span class="anch">#filter-builder</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">Dynamic row-based filter UI. Each row has a field selector, value input, a connector (OR / AND toggle), and a Remove action. Rows are added with "+ Add new filter".</p>
+    <div class="card flush">
+      <div class="card-hdr"><span class="ttl">Filters</span></div>
+      <div class="filter-demo">
+        <div class="filter-row">
+          <select><option>Zone</option><option>Vehicle type</option><option>Substatus</option></select>
+          <input class="f-inp" type="text" placeholder="Value…" value="Zona Norte">
+          <button class="f-remove">Remove</button>
+        </div>
+        <div class="filter-row">
+          <button class="conn">OR</button>
+          <select><option>Substatus</option><option>Zone</option></select>
+          <input class="f-inp" type="text" placeholder="Value…" value="Entregado exitoso">
+          <button class="f-remove">Remove</button>
+        </div>
+        <button class="f-add">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add new filter
+        </button>
+      </div>
+    </div>
+    <table class="utbl" style="margin-top:12px">
+      <thead><tr><th>Element</th><th>Token / color</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Connector chip (OR/AND)</td><td><code>#EAE6FF / #5243AA</code></td><td>Click to toggle between OR and AND</td></tr>
+        <tr><td>Remove button</td><td><code>--r1 / --r7</code></td><td>Removes row; next sibling's connector is also removed</td></tr>
+        <tr><td>Add new filter</td><td><code>.btn.primary</code> pill</td><td>Appends a new blank row</td></tr>
+      </tbody>
+    </table>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-filter-builder',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-filter-builder','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-filter-builder','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 7 · VAR PALETTE ═══ -->
+  <div class="rc" id="rc-var-palette" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-var-palette', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Variable chip palette</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-var-palette','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-var-palette','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="var-palette">
+    <h2>Variable / token chip palette <span class="anch">#var-palette</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">An inline row of clickable chips that insert template variables at the cursor position in a text or rich-text field. Used below Subject, Body, Footer, and SMS message fields.</p>
+    <div class="card flush">
+      <div class="card-hdr"><span class="ttl">Full palette (16 variables)</span></div>
+      <div class="var-palette">
+        <div class="var-label">Insert:</div>
+        <div class="var-chips">
+          <span class="var-chip">contact_name</span>
+          <span class="var-chip">contact_identifier</span>
+          <span class="var-chip">code</span>
+          <span class="var-chip">status</span>
+          <span class="var-chip">sub_status</span>
+          <span class="var-chip">address</span>
+          <span class="var-chip">estimated_hour</span>
+          <span class="var-chip">arrived_at_date</span>
+          <span class="var-chip">arrived_at_hour</span>
+          <span class="var-chip">mobile_user</span>
+          <span class="var-chip">mobile_user_phone</span>
+          <span class="var-chip">vehicle_id</span>
+          <span class="var-chip">company_name</span>
+          <span class="var-chip">custom_field</span>
+          <span class="var-chip">review_link</span>
+          <span class="var-chip">widget</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font:400 12px var(--font-sans);color:var(--n5)">Color: <code>#F0EDFF / #5243AA</code> (purple-tinted to distinguish from action chips). Clicking inserts <code>:variable_name:</code> at cursor. Works in both plain <code>input</code> and <code>contenteditable</code> rich text.</div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-var-palette',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-var-palette','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-var-palette','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 8 · COLLAPSIBLE GROUP ═══ -->
+  <div class="rc" id="rc-collapsible-group" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-collapsible-group', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Collapsible group</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-collapsible-group','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-collapsible-group','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="collapsible-group">
+    <h2>Collapsible group <span class="anch">#collapsible-group</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">An accordion-style section group with: chevron toggle, colored lifecycle dot, title, and "X of Y configured" count. Header row with column labels is hidden when collapsed. Used to organize the notification status matrix.</p>
+    <div class="card flush">
+      <div class="grp-demo">
+        <div class="grp-hdr open" onclick="this.classList.toggle('open');this.nextElementSibling.style.display=this.classList.contains('open')?'block':'none'">
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          <span class="grp-dot" style="background:#36B37E"></span>
+          <span class="grp-title">Delivery outcome</span>
+          <span class="grp-count">3 of 3 configured</span>
+        </div>
+        <div class="grp-body">
+          <div class="grp-row"><span class="rdot" style="background:#36B37E"></span><div><div>Delivered</div><div class="sub">Customer delivery confirmation</div></div></div>
+          <div class="grp-row"><span class="rdot" style="background:#36B37E"></span><div><div>Partial delivery</div><div class="sub">Entrega parcial</div></div></div>
+          <div class="grp-row"><span class="rdot" style="background:#36B37E"></span><div><div>Collect</div><div class="sub">Ready for pickup</div></div></div>
+        </div>
+      </div>
+    </div>
+    <table class="utbl" style="margin-top:12px">
+      <thead><tr><th>Lifecycle</th><th>Dot color</th><th>Statuses</th></tr></thead>
+      <tbody>
+        <tr><td>Before delivery</td><td><code>#8FA0BA</code> (slate)</td><td>Pending · Pre-delivery · Route started</td></tr>
+        <tr><td>On the way</td><td><code>--b5</code> (cobalt)</td><td>Arrival plan · Grouped · Delayed · Route deviation · Unexpected stops</td></tr>
+        <tr><td>Delivery outcome</td><td><code>--g5</code> (green)</td><td>Delivered · Partial delivery · Collect</td></tr>
+        <tr><td>Exceptions</td><td><code>--o7</code> (orange)</td><td>Not delivered · Rectify address</td></tr>
+      </tbody>
+    </table>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-collapsible-group',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-collapsible-group','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-collapsible-group','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 9 · CHANNEL MASTER ═══ -->
+  <div class="rc" id="rc-channel-master" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-channel-master', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Channel master control</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-channel-master','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-channel-master','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="channel-master">
+    <h2>Channel master control <span class="anch">#channel-master</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">A stacked list of delivery channels showing: icon tile, channel name, status label (Enabled / Not enabled), and a toggle. Distinct from a plain toggle row — the icon and status label make the account-level availability immediately clear.</p>
+    <div class="card" style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+      <div class="ch-card">
+        <div class="ch-lbl">Channels</div>
+        <div class="ch-row">
+          <div class="ch-ico email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></div>
+          <div class="ch-info"><div class="nm">Email</div><div class="st on">Enabled · sending automatically</div></div>
+          <div class="swt on"></div>
+        </div>
+        <div class="ch-row">
+          <div class="ch-ico sms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="ch-info"><div class="nm">SMS</div><div class="st off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Not enabled</div></div>
+          <div class="swt locked"></div>
+        </div>
+        <div class="ch-row">
+          <div class="ch-ico sms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+          <div class="ch-info"><div class="nm">WhatsApp</div><div class="st off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Not enabled</div></div>
+          <div class="swt locked"></div>
+        </div>
+      </div>
+      <div style="font:400 12px var(--font-sans);color:var(--n5);max-width:260px;padding-top:8px">
+        <strong style="color:var(--n7)">Icon tile colors:</strong><br>
+        • Email: <code>--g1 / --g6</code> (green) <br>
+        • SMS: <code>--n2 / --n45</code> (neutral)<br>
+        • WhatsApp: <code>--n2 / --n45</code> (neutral)<br><br>
+        When a channel is enabled, the icon tile takes its brand color. "Not enabled" always shows the neutral locked toggle.
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-channel-master',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-channel-master','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-channel-master','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 10 · KEBAB ═══ -->
+  <div class="rc" id="rc-kebab" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-kebab', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Kebab row menu</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-kebab','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-kebab','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="kebab">
+    <h2>Kebab row menu <span class="anch">#kebab</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">A hover-revealed ⋮ button that opens a positioned contextual menu with row-level actions (Edit, Preview, Delete). Per the DS convention: row actions live in a kebab, not as permanent inline buttons that add visual noise.</p>
+    <div class="card" style="display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start">
+      <div>
+        <div style="font:700 12px var(--font-sans);color:var(--n5);margin-bottom:8px">Default (hover to reveal)</div>
+        <div class="kebab-demo">
+          <button class="kebab-btn">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div>
+        <div style="font:700 12px var(--font-sans);color:var(--n5);margin-bottom:8px">Open state</div>
+        <div class="kebab-demo" style="min-height:140px">
+          <button class="kebab-btn">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+          </button>
+          <div class="kebab-menu-demo">
+            <div class="km-item"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>Edit content</div>
+            <div class="km-item"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Preview</div>
+            <div class="km-sep"></div>
+            <div class="km-item danger"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Delete</div>
+          </div>
+        </div>
+      </div>
+      <div style="font:400 12px var(--font-sans);color:var(--n5);max-width:220px;padding-top:8px">
+        Triggered on row <code>:hover</code>. Closes on outside click or Esc. Destructive action (Delete) always below a separator, always in <code>--r6</code>.
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-kebab',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-kebab','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-kebab','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 11 · INLINE EMPTY STATE ═══ -->
+  <div class="rc" id="rc-empty-inline" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-empty-inline', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Inline empty state</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-empty-inline','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-empty-inline','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="empty-inline">
+    <h2>Inline empty state <span class="anch">#empty-inline</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">A row-level empty state within a matrix or table: a "not configured" indicator with an inline "+ Add" CTA. Different from a page-level empty state — it coexists with configured rows.</p>
+    <div class="card flush">
+      <div class="card-hdr"><span class="ttl">Empty vs configured row</span></div>
+      <div class="empty-row-demo">
+        <div class="e-row" style="background:#FCFCFD">
+          <span class="edot" style="background:#8FA0BA"></span>
+          <div>
+            <div>Pending</div>
+            <div class="esub"><a href="#">+ Add notification</a></div>
+          </div>
+        </div>
+        <div class="e-row" style="background:#FCFCFD">
+          <span class="edot" style="background:#FF8B00"></span>
+          <div>
+            <div style="display:flex;align-items:center;gap:6px">Not delivered <span style="font:700 10px var(--font-sans);background:var(--r1);color:var(--r7);padding:1px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.03em">Critical</span></div>
+            <div class="esub"><span class="muted">No notification —</span> <a href="#">customers aren't told why delivery failed.</a></div>
+          </div>
+        </div>
+        <div class="e-row">
+          <span class="edot" style="background:#36B37E"></span>
+          <div>
+            <div>Delivered</div>
+            <div class="esub" style="color:var(--n5)">Customer delivery confirmation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="font:400 12px var(--font-sans);color:var(--n5);margin-top:8px">For critical statuses, the empty CTA copy should name the consequence of not configuring, not just say "+ Add notification". This nudges completion for high-impact statuses.</div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-empty-inline',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-empty-inline','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-empty-inline','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 12 · SMS PREVIEW ═══ -->
+  <div class="rc" id="rc-sms-preview" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-sms-preview', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">SMS preview UI</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-sms-preview','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-sms-preview','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="sms-preview">
+    <h2>SMS preview UI <span class="anch">#sms-preview</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">An SMS message preview rendered as an Apple Messages-style chat UI. No device frame — just the app chrome. Used in the notification editor live preview pane.</p>
+    <div class="card" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+      <div class="sms-ui">
+        <div class="sms-bar">
+          <div class="sms-av">AC</div>
+          <div><div class="sms-nm">ACME Co</div><div class="sms-st">Text Message</div></div>
+        </div>
+        <div class="sms-body">
+          <div class="sms-date-label">Today 14:47</div>
+          <div>
+            <div class="sms-bbl">Hi Ana Pérez, your ACME Co order 44812 is on the way. Track it: track.dt.com/44812</div>
+            <div class="sms-ts">Delivered</div>
+          </div>
+        </div>
+        <div class="sms-bar2">
+          <div class="sms-field">iMessage</div>
+        </div>
+      </div>
+      <div style="font:400 12px var(--font-sans);color:var(--n5);max-width:240px;padding-top:4px">
+        <strong style="color:var(--n7)">Specs:</strong><br>
+        • Background: <code>#F2F2F7</code><br>
+        • Bubble: <code>#E5E5EA</code>, radius 18px 18px 18px 4px<br>
+        • Font: system-ui (not DM Sans)<br>
+        • No device frame — app UI only<br><br>
+        Variables resolve to sample data. Live updates as user types.
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-sms-preview',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-sms-preview','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-sms-preview','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 13 · WHATSAPP PREVIEW ═══ -->
+  <div class="rc" id="rc-wa-preview" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-wa-preview', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">WhatsApp preview UI</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-wa-preview','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-wa-preview','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="wa-preview">
+    <h2>WhatsApp preview UI <span class="anch">#wa-preview</span> <span class="status status-new">NEW</span></h2>
+    <p class="desc">A WhatsApp-faithful chat preview. No device frame. Exact WA colors, bubble tail, blue double-tick, and input bar. Used in the notification editor when WhatsApp is selected as the channel.</p>
+    <div class="card" style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+      <div class="wa-ui">
+        <div class="wa-top">
+          <div class="wa-av">AC</div>
+          <div><div class="wa-nm">ACME Co</div><div class="wa-st">online</div></div>
+        </div>
+        <div class="wa-body">
+          <div class="wa-date-label">Today</div>
+          <div class="wa-bbl">
+            Hi Ana Pérez, your ACME Co order 44812 is on the way. Track it: track.dt.com/44812
+            <div class="wa-meta"><span class="wa-time">14:47</span><span class="wa-ticks">✓✓</span></div>
+          </div>
+        </div>
+        <div class="wa-bar2">
+          <div class="wa-field">Message</div>
+          <div class="wa-send"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="white" stroke="none"/></svg></div>
+        </div>
+      </div>
+      <div style="font:400 12px var(--font-sans);color:var(--n5);max-width:240px;padding-top:4px">
+        <strong style="color:var(--n7)">Exact WA colors:</strong><br>
+        • Header: <code>#128C7E</code><br>
+        • Chat bg: <code>#E5DDD5</code><br>
+        • Sent bubble: <code>#E7FFDB</code><br>
+        • Bubble tail: CSS triangle on bottom-right<br>
+        • Double-tick: <code>#53BDEB</code> (blue = delivered)<br><br>
+        Font: system-ui for authenticity.
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-wa-preview',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-wa-preview','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-wa-preview','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 14 · MODAL COPY ═══ -->
+  <div class="rc" id="rc-context-modal" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-context-modal', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Context-aware modal copy</span><span class="rc-tag rule">RULE</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-context-modal','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-context-modal','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="context-modal">
+    <h2>Context-aware confirm modal copy <span class="anch">#context-modal</span> <span class="status status-rule">RULE</span></h2>
+    <p class="desc">The confirmation modal copy should be specific and consequence-led. Title = the action. Body = the impact. Copy must reference the exact item being affected, not use generic "confirm" language.</p>
+    <div class="do-dont">
+      <div class="do-box do">
+        <div class="lbl">✓ Do — specific + consequence</div>
+        <div class="modal-demo">
+          <h3>Disable the "Delivered" notification?</h3>
+          <p>Customers will no longer be notified when an order reaches "Delivered". You can turn it back on at any time.</p>
+          <div class="modal-footer"><button class="btn-outline">Cancel</button><button class="btn-primary">Accept</button></div>
+        </div>
+      </div>
+      <div class="do-box dont">
+        <div class="lbl">✗ Don't — generic + repetitive</div>
+        <div class="modal-demo">
+          <h3>Are you sure want to disable this option?</h3>
+          <p>Are you sure you want to disable this notification option?</p>
+          <div class="modal-footer"><button class="btn-outline">Cancel</button><button class="btn-primary">Accept</button></div>
+        </div>
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-context-modal',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-context-modal','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-context-modal','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 15 · BANNER RULE ═══ -->
+  <div class="rc" id="rc-banner-rule" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-banner-rule', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Info vs Warning banner</span><span class="rc-tag rule">RULE</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-banner-rule','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-banner-rule','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="banner-rule">
+    <h2>Info vs Warning banner — semantic rule <span class="anch">#banner-rule</span> <span class="status status-rule">RULE</span></h2>
+    <p class="desc">The <code>.bn</code> banner component has four intents. The amber (warning) banner was being misused for informational messages in production. Rule: amber = something requires the user's attention NOW. Blue = neutral system information.</p>
+    <div class="banner-compare">
+      <div>
+        <div style="font:700 11px var(--font-sans);color:var(--g6);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">✓ Blue — informational</div>
+        <div class="bn info">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r=".5" fill="#1F60ED" stroke="none"/></svg>
+          <span>To enable SMS or WhatsApp notifications, contact <a href="#">support@dispatchtrack.com</a>. You can still design the message now.</span>
+        </div>
+      </div>
+      <div>
+        <div style="font:700 11px var(--font-sans);color:var(--o7);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">✓ Amber — action required</div>
+        <div class="bn warn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><path d="M10.3 3.1L1.6 18a2 2 0 0 0 1.7 3h17.4a2 2 0 0 0 1.7-3L13.7 3.1a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>You have unsaved changes. Leaving this page will discard your notification template.</span>
+        </div>
+      </div>
+    </div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-banner-rule',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-banner-rule','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-banner-rule','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+  <!-- ═══ 16 · PAUSED SEMANTICS ═══ -->
+  <div class="rc" id="rc-paused-semantics" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-paused-semantics', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Paused channel semantics</span><span class="rc-tag rule">RULE</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-paused-semantics','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-paused-semantics','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="paused-semantics">
+    <h2>Paused channel semantics <span class="anch">#paused-semantics</span> <span class="status status-rule">RULE</span></h2>
+    <p class="desc">The toggle in a notification row operates at the <strong>channel level</strong>, not the notification level. Three distinct states must be visually communicated in any settings UI where notifications can be configured per channel.</p>
+    <div class="card">
+      <table class="utbl">
+        <thead><tr><th>State</th><th>Toggle visual</th><th>Meaning</th><th>Sub-label</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Active</strong></td>
+            <td><div class="swt on" style="display:inline-block"></div></td>
+            <td>Channel is sending</td>
+            <td>Original notification name</td>
+          </tr>
+          <tr>
+            <td><strong>Paused (1 of N)</strong></td>
+            <td><div class="swt ch-paused" style="display:inline-block"></div></td>
+            <td>This channel manually paused · Others still active</td>
+            <td><em>"Email paused · SMS still active"</em></td>
+          </tr>
+          <tr>
+            <td><strong>All paused</strong></td>
+            <td><div class="swt ch-paused" style="display:inline-block"></div></td>
+            <td>No channel sending — notification silent</td>
+            <td><em>"No channel active · Notifications not being sent"</em></td>
+          </tr>
+          <tr>
+            <td><strong>Not configured</strong></td>
+            <td><div class="swt empty-disabled" style="display:inline-block"></div></td>
+            <td>No notification created yet</td>
+            <td><em>"+ Add notification"</em> (CTA, not status)</td>
+          </tr>
+          <tr>
+            <td><strong>Locked</strong></td>
+            <td><div class="swt locked" style="display:inline-block"></div></td>
+            <td>Channel not enabled for account</td>
+            <td>Account-level channel status</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;font:400 12px var(--font-sans);color:var(--n5)"><strong style="color:var(--n7)">Key rule:</strong> the amber <code>--o5</code> ⏸ toggle is only used when a user <em>intentionally</em> disables a channel that was previously active. It must never appear for channels that are locked or unconfigured — those use gray.</div>
+
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-paused-semantics',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-paused-semantics','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-paused-semantics','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+      </section>
+    </div><!-- /rc-body -->
+  </div><!-- /rc -->
+
+
+</main>
+</div>
+
+<script>
+
+const STORAGE_KEY='ds-review-des824';
+let state={};
+try{state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));updateSummary();updateSidebarBadges();}
+
+function toggleRC(id,e){
+  if(e&&e.target.closest('.rc-decision,.rc-notes'))return;
+  document.getElementById(id).classList.toggle('open');
+}
+
+function setDecision(id,decision){
+  const el=document.getElementById(id);
+  el.dataset.status=decision;
+  el.querySelectorAll('.rc-btn').forEach(b=>b.classList.remove('active'));
+  el.querySelector('.rc-btn.'+decision)?.classList.add('active');
+  const badge=el.querySelector('.rc-badge');
+  badge.textContent=decision==='approved'?'✓ Approved':'✗ Skipped';
+  badge.className='rc-badge '+decision;
+  if(!el.classList.contains('open'))el.classList.add('open');
+  if(!state[id])state[id]={};
+  state[id].decision=decision;
+  save();
+}
+
+function saveNote(id,val){
+  if(!state[id])state[id]={};
+  state[id].notes=val;
+  save();
+}
+
+function updateSummary(){
+  const all=document.querySelectorAll('.rc');
+  let approved=0,skipped=0,pending=0;
+  all.forEach(el=>{
+    const s=el.dataset.status;
+    if(s==='approved')approved++;
+    else if(s==='skipped')skipped++;
+    else pending++;
+  });
+  const total=all.length,reviewed=approved+skipped;
+  const deg=total?Math.round((reviewed/total)*360):0;
+  const ring=document.getElementById('sum-ring');
+  if(ring){
+    ring.style.background=reviewed===0
+      ?'conic-gradient(var(--n4) 0deg,var(--n3) 0deg 360deg)'
+      :'conic-gradient(var(--b6) 0deg '+deg+'deg,var(--n3) '+deg+'deg 360deg)';
+    ring.querySelector('span').textContent=reviewed+'/'+total;
+  }
+  const eid=id=>document.getElementById(id);
+  if(eid('sum-approved'))eid('sum-approved').textContent=approved;
+  if(eid('sum-skipped'))eid('sum-skipped').textContent=skipped;
+  if(eid('sum-pending'))eid('sum-pending').textContent=pending;
+}
+
+function updateSidebarBadges(){
+  document.querySelectorAll('.rc').forEach(el=>{
+    const secId=el.id.replace('rc-','');
+    const nav=document.querySelector('.snav[href="#'+secId+'"]');
+    if(!nav)return;
+    let badge=nav.querySelector('.dec-badge');
+    const status=el.dataset.status;
+    if(status==='pending'){if(badge)badge.remove();return;}
+    if(!badge){badge=document.createElement('span');badge.className='dec-badge';nav.appendChild(badge);}
+    badge.textContent=status==='approved'?'✓':'✗';
+    badge.style.cssText='font:700 10px var(--font-sans);margin-left:auto;padding:1px 6px;border-radius:999px;'
+      +(status==='approved'?'background:var(--g1);color:var(--g6)':'background:var(--r1);color:var(--r6)');
+  });
+}
+
+function exportDecisions(){
+  const lines=['# DS Review — DES-824\n'];
+  document.querySelectorAll('.rc').forEach(el=>{
+    const title=el.querySelector('.rc-title').textContent;
+    const status=el.dataset.status;
+    const notes=el.querySelector('textarea')?.value||'';
+    const icon=status==='approved'?'✅':status==='skipped'?'❌':'⏳';
+    lines.push(icon+' **'+title+'**'+(status==='pending'?' — Pending':''));
+    if(notes)lines.push('   → '+notes);
+    lines.push('');
+  });
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+    const t=document.getElementById('rc-toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+  });
+}
+
+// restore
+document.querySelectorAll('.rc').forEach(el=>{
+  const s=state[el.id];
+  if(!s)return;
+  if(s.decision)setDecision(el.id,s.decision);
+  if(s.notes){const ta=el.querySelector('textarea');if(ta)ta.value=s.notes;}
+});
+updateSummary();
+updateSidebarBadges();
+
+// scroll-spy
+const navs2=[...document.querySelectorAll('.snav')];
+const obs2=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    navs2.forEach(n=>n.classList.remove('active'));
+    const secId=e.target.id.replace('rc-','');
+    const m=navs2.find(n=>n.getAttribute('href')==='#'+secId);
+    if(m)m.classList.add('active');
+  });
+},{rootMargin:'-20% 0px -60% 0px'});
+document.querySelectorAll('.rc').forEach(s=>obs2.observe(s));
+
+</script>
+<div class="rc-toast" id="rc-toast">&#10003; Decisions copied to clipboard</div>
+</body>
+</html>

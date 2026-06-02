@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New Notification — DispatchTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;color:#39414D;background:#F0F2F5}
+a{color:#0052CC;text-decoration:none}a:hover{text-decoration:underline}
+button{font-family:inherit;cursor:pointer}
+
+/* ── TOPBAR (identical to live) ── */
+.topbar{position:sticky;top:0;z-index:200;height:52px;background:#132045;display:flex;align-items:center;padding:0 0 0 16px;flex-shrink:0}
+.topbar-logo{display:flex;align-items:center;height:20px;text-decoration:none}
+.topbar-logo img{height:20px;width:auto;display:block}
+.topbar-icons{margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px}
+.topbar-icons svg{width:18px;height:18px;color:rgba(255,255,255,.85);display:block;cursor:pointer;flex-shrink:0}
+.topbar-icons svg:hover{color:#fff}
+.bell-wrap{position:relative}
+.bell-wrap::after{content:'';position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045}
+.topbar-slot{height:52px;width:88px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:#132045;font-size:13px;font-weight:700;flex-shrink:0;margin-left:8px}
+
+/* ── SHELL + SIDEBAR (identical to live) ── */
+.shell{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{display:flex;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden}
+.sb-icons{width:44px;flex-shrink:0;background:#132045;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px;overflow-y:auto}
+.sb-icon-btn{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.sb-icon-btn svg{width:18px;height:18px;color:rgba(255,255,255,.55);display:block}
+.sb-icon-btn:hover svg{color:rgba(255,255,255,.9)}
+.sb-icon-btn.active{background:rgba(255,255,255,.12)}
+.sb-icon-btn.active svg{color:#fff}
+.sb-nav{width:212px;flex-shrink:0;background:#fff;border-right:1px solid #E1E6ED;overflow-y:auto;padding-bottom:24px}
+.sb-nav::-webkit-scrollbar{width:4px}.sb-nav::-webkit-scrollbar-thumb{background:#E1E6ED;border-radius:2px}
+.sb-group{padding:16px 0 4px 16px;font-size:13px;font-weight:700;color:#39414D}
+.sb-item{display:flex;align-items:center;justify-content:space-between;padding:7px 12px 7px 24px;font-size:13px;color:#4B5564;cursor:pointer;border-left:2px solid transparent;line-height:1.3}
+.sb-item:hover{color:#0052CC;background:#F5F6FA}
+.sb-item.active{color:#0052CC;font-weight:700;background:#EDF5FF;border-left-color:#0052CC}
+.sb-badge{font-size:11px;font-weight:600;background:#EDF5FF;color:#0052CC;padding:1px 7px;border-radius:999px;margin-left:4px}
+
+/* ── MAIN ── */
+.main{flex:1;min-width:0;overflow:auto;height:calc(100vh - 52px)}
+
+/* sticky header w/ DS buttons */
+.page-header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid #E1E6ED;padding:12px 24px;display:flex;align-items:center;gap:12px}
+.ph-titles{flex:1;min-width:0}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:#67768D;margin-bottom:2px}
+.breadcrumb a{color:#67768D;font-weight:500}.breadcrumb a:hover{color:#0052CC}
+.breadcrumb .sep{opacity:.5}
+.page-header h1{font-size:19px;font-weight:700;color:#39414D}
+.btn{font-size:14px;font-weight:700;padding:6px 16px;border-radius:100px;height:34px;border:1px solid #1F60ED;background:#fff;color:#1F60ED;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+.btn:hover{background:#EDF5FF}
+.btn.primary{background:#1F60ED;color:#fff;border-color:#1F60ED}
+.btn.primary:hover{background:#0052CC;border-color:#0052CC}
+.btn.ghost{border-color:#C5D2E7;color:#39414D}
+.btn.ghost:hover{background:#F5F6FA;border-color:#8FA0BA}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+
+/* step nav */
+.stepnav{position:sticky;top:59px;z-index:40;background:#F0F2F5;padding:14px 24px 6px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid #E1E6ED}
+.step-chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#67768D;background:#fff;border:1px solid #E1E6ED;border-radius:100px;padding:5px 12px 5px 6px;cursor:pointer;transition:.12s}
+.step-chip .num{width:18px;height:18px;border-radius:50%;background:#E1E6ED;color:#67768D;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-chip:hover{border-color:#ADC7FF}
+.step-chip.active{color:#0052CC;border-color:#1F60ED;background:#EDF5FF}
+.step-chip.active .num{background:#1F60ED;color:#fff}
+.step-chip.hide{display:none}
+
+/* content layout */
+.content{display:flex;gap:20px;padding:20px 24px 80px;align-items:flex-start}
+.form-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+.preview-col{width:380px;flex-shrink:0;position:sticky;top:112px}
+
+/* section card */
+.section{background:#fff;border:1px solid #E1E6ED;border-radius:8px;overflow:hidden;scroll-margin-top:120px}
+.section-head{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-bottom:1px solid #F0F2F5}
+.section-num{width:26px;height:26px;border-radius:50%;background:#EDF5FF;color:#0052CC;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.section-head h2{font-size:15px;font-weight:700;color:#39414D}
+.section-head p{font-size:12px;color:#67768D;margin-top:2px}
+.section-body{padding:18px 20px}
+
+/* fields */
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.field>label{display:block;font-size:13px;font-weight:700;color:#39414D;margin-bottom:6px}
+.req{color:#DE350B}
+.hint{font-size:11px;color:#67768D;margin-top:5px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.inp,select.inp,textarea.inp{width:100%;border:1px solid #C5D2E7;border-radius:6px;background:#fff;font:400 13px 'DM Sans';color:#39414D;padding:9px 12px;outline:none;transition:border-color .12s,box-shadow .12s}
+.inp:focus,select.inp:focus,textarea.inp:focus{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.2)}
+select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+textarea.inp{resize:vertical;min-height:72px;line-height:1.5}
+
+/* check rows */
+.checks{display:flex;flex-direction:column;gap:2px}
+.chk-row{display:flex;align-items:flex-start;gap:9px;padding:7px 0;font-size:13px;color:#39414D;cursor:pointer}
+.chk-row input{width:16px;height:16px;accent-color:#0052CC;cursor:pointer;flex-shrink:0;margin-top:1px}
+.chk-row .ct{flex:1}
+.chk-row .ct .cs{display:block;font-size:11px;color:#67768D;margin-top:1px}
+
+/* segmented channel control (channel-first) */
+.channel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.channel-opt{border:1.5px solid #E1E6ED;border-radius:8px;padding:14px;cursor:pointer;text-align:center;transition:.12s;position:relative}
+.channel-opt:hover{border-color:#ADC7FF;background:#F9FBFF}
+.channel-opt.sel{border-color:#1F60ED;background:#EDF5FF}
+.channel-opt .ch-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.channel-opt .ch-ic svg{width:18px;height:18px}
+.channel-opt.sel .ch-ic{background:#fff}
+.channel-opt .ch-nm{font-size:13px;font-weight:700;color:#39414D}
+.channel-opt .ch-tag{font-size:10px;font-weight:600;margin-top:3px;color:#8FA0BA}
+.channel-opt.sel:after{content:'';position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;background:#1F60ED url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") no-repeat center}
+
+/* info banner (blue — replaces amber) */
+.info-banner{display:flex;gap:9px;align-items:flex-start;background:#EDF5FF;border:1px solid #ADC7FF;border-radius:6px;padding:10px 12px;font-size:12px;color:#39414D;line-height:1.55}
+.info-banner svg{width:14px;height:14px;color:#0052CC;flex-shrink:0;margin-top:1px}
+.info-banner a{color:#0052CC;font-weight:600}
+
+/* rich text editor */
+.rte-toolbar{display:flex;align-items:center;gap:2px;border:1px solid #C5D2E7;border-bottom:0;border-radius:6px 6px 0 0;padding:5px 8px;background:#FAFBFD}
+.rte-toolbar button{width:28px;height:28px;border:0;background:transparent;border-radius:4px;color:#4B5564;display:flex;align-items:center;justify-content:center}
+.rte-toolbar button:hover{background:#E1E6ED}
+.rte-toolbar button svg{width:15px;height:15px}
+.rte-toolbar .div{width:1px;height:18px;background:#E1E6ED;margin:0 4px}
+.rte{border:1px solid #C5D2E7;border-radius:0 0 6px 6px;min-height:96px;padding:10px 12px;font-size:13px;line-height:1.6;color:#39414D;outline:none}
+.rte:focus{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.2)}
+.rte[contenteditable]:empty:before{content:attr(data-ph);color:#8FA0BA}
+
+/* variable palette */
+.var-row{display:flex;align-items:flex-start;gap:5px;flex-wrap:wrap;margin-top:8px}
+.var-row .vlabel{font-size:11px;font-weight:600;color:#67768D;margin-right:2px;padding-top:4px;flex-shrink:0}
+.var-chip{font-size:11px;font-weight:600;font-family:'DM Sans';background:#F0EDFF;color:#5243AA;border:1px solid #DBD4FA;border-radius:4px;padding:3px 8px;cursor:pointer;transition:.12s;white-space:nowrap}
+.var-chip:hover{background:#DBD4FA}
+
+/* char counter */
+.counter{font-size:11px;color:#67768D;text-align:right;margin-top:5px}
+.counter.over{color:#DE350B;font-weight:700}
+
+/* ── GROUP multi-select dropdown ── */
+.multiselect{position:relative}
+.ms-trigger{width:100%;border:1px solid #C5D2E7;border-radius:6px;background:#fff;font:400 13px 'DM Sans';color:#39414D;padding:9px 32px 9px 12px;outline:none;cursor:pointer;text-align:left;transition:border-color .12s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.ms-trigger:focus,.ms-trigger.open{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.2)}
+.ms-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;background:#fff;border:1px solid #C5D2E7;border-radius:6px;box-shadow:0 8px 24px rgba(19,32,69,.12);max-height:220px;overflow-y:auto;display:none}
+.ms-dropdown.open{display:block}
+.ms-group-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#67768D;padding:10px 12px 4px}
+.ms-option{display:flex;align-items:center;gap:9px;padding:7px 12px;font-size:13px;color:#39414D;cursor:pointer;transition:background .1s}
+.ms-option:hover{background:#F5F6FA}
+.ms-option.sel{background:#EDF5FF;color:#0052CC}
+.ms-option input{width:15px;height:15px;accent-color:#0052CC;cursor:pointer;flex-shrink:0}
+
+/* ── FILTERS builder ── */
+.filter-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-row select,.filter-row input.inp{font-size:13px}
+.filter-row select{flex:1;min-width:120px;height:34px}
+.filter-row input.inp{flex:1;min-width:100px;height:34px;padding:0 10px}
+.filter-connector{font-size:11px;font-weight:700;background:#EAE6FF;color:#5243AA;border:1px solid #C0B6F2;border-radius:4px;padding:3px 8px;cursor:pointer;transition:background .12s}
+.filter-connector:hover{background:#C0B6F2}
+.filter-remove{font-size:12px;font-weight:700;background:#FFEBE6;color:#BF2600;border:1px solid #FF8F73;border-radius:4px;padding:4px 10px;cursor:pointer;transition:background .12s;white-space:nowrap}
+.filter-remove:hover{background:#FF8F73;color:#fff}
+
+/* display grid */
+.display-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 18px}
+
+/* collapsible advanced */
+.advanced summary{cursor:pointer;font-size:13px;font-weight:700;color:#0052CC;padding:14px 20px;list-style:none;display:flex;align-items:center;gap:8px;border-top:1px solid #F0F2F5}
+.advanced summary::-webkit-details-marker{display:none}
+.advanced summary svg{width:14px;height:14px;transition:transform .15s}
+.advanced[open] summary svg{transform:rotate(90deg)}
+.advanced .section-body{padding-top:4px}
+
+/* ── PREVIEW PANE ── */
+.preview-card{background:#fff;border:1px solid #E1E6ED;border-radius:8px;overflow:hidden}
+.preview-head{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #E1E6ED;background:#FAFBFD}
+.preview-head .pv-eyebrow{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#67768D;flex:1}
+.preview-head .pv-mode{font-size:11px;font-weight:700;color:#0052CC;background:#EDF5FF;padding:2px 9px;border-radius:999px}
+.preview-stage{padding:18px;background:#EEF1F5;max-height:calc(100vh - 220px);overflow:auto}
+
+/* email render */
+.pv-email{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(19,32,69,.1);font-size:12px}
+.pv-band{height:6px;background:#cccccc}
+.pv-logo{padding:14px 18px 6px;display:flex;align-items:center;gap:8px}
+.pv-logo .mk{width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#306EF2,#0052CC);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px}
+.pv-logo .co{font-weight:700;color:#39414D;font-size:13px}
+.pv-subject{padding:4px 18px 0;font-size:14px;font-weight:700;color:#39414D}
+.pv-body{padding:10px 18px;color:#4B5564;line-height:1.6}
+.pv-body p{margin-bottom:8px}
+.tok{background:#E3FCEF;color:#006844;border-radius:3px;padding:0 3px;font-weight:600}
+.pv-mapblock{margin:6px 18px;height:96px;border-radius:6px;background:linear-gradient(135deg,#DCE6F5,#C9D7EE);position:relative;overflow:hidden;border:1px solid #E1E6ED}
+.pv-mapblock:after{content:'';position:absolute;left:30%;top:60%;width:12px;height:12px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#0C47C7;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.pv-mapblock .road{position:absolute;left:0;right:0;top:50%;height:3px;background:rgba(255,255,255,.7)}
+.pv-items{margin:6px 18px;border:1px solid #E1E6ED;border-radius:6px;overflow:hidden}
+.pv-items .it{display:flex;justify-content:space-between;padding:7px 10px;border-bottom:1px solid #F0F2F5;font-size:11px}
+.pv-items .it:last-child{border-bottom:0}
+.pv-items .it span:first-child{color:#39414D}
+.pv-items .it span:last-child{color:#67768D}
+.pv-cta{margin:10px 18px;text-align:center}
+.pv-cta a{display:inline-block;background:#1F60ED;color:#fff;font-weight:700;font-size:12px;padding:8px 18px;border-radius:100px}
+.pv-feedback{margin:6px 18px 12px;text-align:center;color:#67768D;font-size:11px}
+.pv-feedback .stars{font-size:16px;color:#FFAB00;letter-spacing:2px;margin-top:3px}
+.pv-footer{padding:10px 18px;border-top:1px solid #F0F2F5;color:#8FA0BA;font-size:11px;line-height:1.5}
+.pv-photo{display:flex;align-items:center;gap:8px;padding:8px 18px;color:#4B5564;font-size:11px}
+.pv-photo .av{width:30px;height:30px;border-radius:50%;background:#C5D2E7;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+
+/* ── SMS preview (no device frame) ── */
+.sms-ui{background:#F2F2F7;border-radius:12px;overflow:hidden;font-family:-apple-system,'SF Pro Text',sans-serif}
+.sms-bar{background:#fff;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #E5E5EA}
+.sms-bar .sms-av{width:32px;height:32px;border-radius:50%;background:#C7C7CC;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+.sms-bar .sms-info{flex:1;min-width:0}
+.sms-bar .sms-name{font-size:13px;font-weight:600;color:#000}
+.sms-bar .sms-sub{font-size:10px;color:#8E8E93}
+.sms-bar .sms-icons{display:flex;gap:14px;color:#007AFF}
+.sms-bar .sms-icons svg{width:18px;height:18px;stroke:#007AFF;stroke-width:1.8;fill:none}
+.sms-body{padding:16px 14px;display:flex;flex-direction:column;gap:4px;min-height:160px}
+.sms-date{text-align:center;font-size:10px;color:#8E8E93;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.sms-bubble-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.sms-bubble{display:inline-block;max-width:88%;background:#E5E5EA;border-radius:18px 18px 18px 4px;padding:9px 13px;font-size:13px;line-height:1.45;color:#000;white-space:pre-wrap;word-break:break-word}
+.sms-ts{font-size:10px;color:#8E8E93;padding-left:2px}
+.sms-input-row{background:#fff;border-top:1px solid #E5E5EA;padding:8px 12px;display:flex;align-items:center;gap:8px}
+.sms-input-row .sms-field{flex:1;background:#F2F2F7;border-radius:20px;padding:7px 12px;font-size:12px;color:#8E8E93}
+.sms-input-row svg{width:20px;height:20px;color:#007AFF;flex-shrink:0}
+
+/* ── WhatsApp preview (no device frame) ── */
+.wa-ui{background:#E5DDD5;border-radius:12px;overflow:hidden;font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif}
+.wa-bar{background:#128C7E;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.wa-bar .wa-back{color:rgba(255,255,255,.85);font-size:18px;font-weight:300;margin-right:-4px}
+.wa-bar .wa-av{width:36px;height:36px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.wa-bar .wa-info{flex:1;min-width:0}
+.wa-bar .wa-name{font-size:14px;font-weight:600;color:#fff;line-height:1.2}
+.wa-bar .wa-status{font-size:11px;color:rgba(255,255,255,.72);margin-top:1px}
+.wa-bar .wa-icons{display:flex;gap:20px}
+.wa-bar .wa-icons svg{width:20px;height:20px;stroke:rgba(255,255,255,.9);stroke-width:1.8;fill:none}
+.wa-body{
+  background-color:#E5DDD5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='300' height='300' fill='%23E5DDD5'/%3E%3Cg opacity='.06' fill='%23000'%3E%3Cpath d='M0 0h10v10H0zm20 0h10v10H20zm40 0h10v10H40zm60 0h10v10H60zm20 0h10v10H80zm80 0h10v10h-10zM10 10h10v10H10zm30 0h10v10H30zm50 0h10v10H50zm70 0h10v10H70zm50 0h10v10h-10z'/%3E%3C/g%3E%3C/svg%3E");
+  padding:10px 12px 6px;
+  display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-height:160px;
+}
+.wa-date{align-self:center;background:rgba(255,255,255,.9);border-radius:8px;padding:3px 12px;font-size:11.5px;color:#667781;margin-bottom:4px;font-weight:500;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.wa-bubble-wrap{display:flex;justify-content:flex-end;width:100%}
+.wa-bubble{
+  display:inline-block;max-width:82%;
+  background:#E7FFDB;
+  border-radius:8px 8px 2px 8px;
+  padding:6px 10px 4px 10px;
+  font-size:13.5px;line-height:1.45;color:#111;
+  position:relative;
+  box-shadow:0 1px 1px rgba(0,0,0,.12);
+  word-break:break-word;
+}
+.wa-bubble::after{
+  content:'';position:absolute;bottom:0;right:-8px;
+  width:0;height:0;
+  border-style:solid;border-width:0 0 10px 10px;
+  border-color:transparent transparent transparent #E7FFDB;
+}
+.wa-bubble-text{margin-bottom:4px}
+.wa-bubble-meta{display:flex;align-items:center;justify-content:flex-end;gap:3px;float:right;margin-left:8px;margin-top:2px}
+.wa-bubble-meta .wa-time{font-size:11px;color:#8696A0;white-space:nowrap}
+.wa-bubble-meta .wa-ticks{color:#53BDEB;font-size:14px;line-height:1;letter-spacing:-2px}
+.wa-input-row{background:#F0F0F0;border-top:1px solid #D9D9D9;padding:7px 10px;display:flex;align-items:center;gap:8px}
+.wa-input-row .wa-emoji{font-size:20px;cursor:pointer;line-height:1}
+.wa-input-row .wa-field{flex:1;background:#fff;border-radius:22px;padding:7px 14px;font-size:13px;color:#8E8E93;line-height:1.3}
+.wa-input-row .wa-attach{color:#8696A0}
+.wa-input-row svg{width:22px;height:22px;flex-shrink:0}
+.wa-send{width:42px;height:42px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.wa-send svg{width:18px;height:18px;stroke:#fff;stroke-width:2.2;fill:none;margin-left:2px}
+
+/* required-summary banner */
+.save-summary{display:flex;align-items:center;gap:8px;font-size:12px;color:#67768D;margin-left:auto}
+.save-summary .dot{width:7px;height:7px;border-radius:50%;background:#36B37E}
+
+/* toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#00875A;color:#fff;font-size:13px;font-weight:500;padding:10px 18px;border-radius:6px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(19,32,69,.18);z-index:999;transform:translateY(60px);opacity:0;transition:.22s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast svg{width:16px;height:16px;stroke:#fff;stroke-width:3;fill:none}
+
+@media(max-width:1180px){.preview-col{display:none}.content{padding-right:24px}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="topbar-logo" href="#" aria-label="DispatchTrack Last Mile"><img src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile"></a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="4" height="4" rx=".5"/><rect x="10" y="3" width="4" height="4" rx=".5"/><rect x="17" y="3" width="4" height="4" rx=".5"/><rect x="3" y="10" width="4" height="4" rx=".5"/><rect x="10" y="10" width="4" height="4" rx=".5"/><rect x="17" y="10" width="4" height="4" rx=".5"/><rect x="3" y="17" width="4" height="4" rx=".5"/><rect x="10" y="17" width="4" height="4" rx=".5"/><rect x="17" y="17" width="4" height="4" rx=".5"/></svg>
+    <div class="bell-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-icons">
+      <div class="sb-icon-btn" title="Activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="sb-icon-btn" title="Routes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h4"/></svg></div>
+      <div class="sb-icon-btn" title="Orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+      <div class="sb-icon-btn" title="Fleet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+      <div class="sb-icon-btn" title="Stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div class="sb-icon-btn" title="Alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+      <div class="sb-icon-btn" title="Customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      <div class="sb-icon-btn" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+      <div class="sb-icon-btn" title="Map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <div class="sb-icon-btn active" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+      <div class="sb-icon-btn" title="Upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      <div class="sb-icon-btn" title="Integrations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-group">Account</div><div class="sb-item">Account configuration</div>
+      <div class="sb-group">Users</div><div class="sb-item">Web users <span class="sb-badge">20</span></div><div class="sb-item">Mobile users <span class="sb-badge">9</span></div>
+      <div class="sb-group">Manage</div>
+      <div class="sb-item">Vehicles</div><div class="sb-item">Substatuses</div><div class="sb-item">Proof of deliveries</div><div class="sb-item">Route forms</div><div class="sb-item">Places</div><div class="sb-item">Group categories</div><div class="sb-item">Alerts</div>
+      <div class="sb-item active">Notifications</div>
+      <div class="sb-item">Operation setup</div>
+      <div class="sb-group">Advanced Settings</div>
+      <div class="sb-item">Import Orders</div><div class="sb-item">Custom fields</div><div class="sb-item">API Keys</div><div class="sb-item">Webhooks</div><div class="sb-item">Order labels</div><div class="sb-item">Security</div><div class="sb-item">Cost module configuration</div>
+      <div class="sb-group">Widget</div><div class="sb-item">Order tracking</div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- sticky header -->
+    <div class="page-header">
+      <div class="ph-titles">
+        <div class="breadcrumb"><a href="notifications-settings-DES824.html">Notifications</a><span class="sep">/</span><span>New notification</span></div>
+        <h1>New notification</h1>
+      </div>
+      <button class="btn ghost" onclick="window.location='notifications-settings-DES824.html'">Cancel</button>
+      <button class="btn ghost" onclick="toast('Test sent to your email')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send test
+      </button>
+      <button class="btn primary" onclick="toast('Notification saved')">Save notification</button>
+    </div>
+
+    <!-- step nav -->
+    <div class="stepnav" id="stepnav">
+      <div class="step-chip active" data-target="s1" onclick="goStep('s1')"><span class="num">1</span>Trigger</div>
+      <div class="step-chip" data-target="s2" onclick="goStep('s2')"><span class="num">2</span>Channel</div>
+      <div class="step-chip" data-target="s3" onclick="goStep('s3')"><span class="num">3</span>Audience</div>
+      <div class="step-chip" data-target="s4" onclick="goStep('s4')"><span class="num">4</span>Message</div>
+      <div class="step-chip" data-target="s5" onclick="goStep('s5')"><span class="num">5</span>Schedule</div>
+      <div class="step-chip" data-target="s6" onclick="goStep('s6')"><span class="num">6</span>Display</div>
+    </div>
+
+    <div class="content">
+      <!-- FORM -->
+      <div class="form-col">
+
+        <!-- 1 · TRIGGER -->
+        <section class="section" id="s1">
+          <div class="section-head"><div class="section-num">1</div><div><h2>Trigger</h2><p>When should this notification be sent?</p></div></div>
+          <div class="section-body">
+            <div class="field">
+              <label>Notification name <span class="req">*</span></label>
+              <input class="inp" placeholder="e.g. Delivered — customer confirmation">
+              <div class="hint">Internal name. Customers never see this.</div>
+            </div>
+            <div class="row2">
+              <div class="field" style="margin-bottom:0">
+                <label>Delivery status <span class="req">*</span></label>
+                <select class="inp">
+                  <optgroup label="Before delivery">
+                    <option>Pending</option>
+                    <option>Pre-delivery</option>
+                    <option>Route started</option>
+                  </optgroup>
+                  <optgroup label="On the way">
+                    <option>Arrival plan</option>
+                    <option>Grouped</option>
+                    <option>Delayed</option>
+                    <option>Route deviation</option>
+                    <option>Unexpected stops</option>
+                  </optgroup>
+                  <optgroup label="Delivery outcome">
+                    <option>Delivered</option>
+                    <option>Partial delivery</option>
+                    <option>Collect</option>
+                  </optgroup>
+                  <optgroup label="Exceptions">
+                    <option>Not delivered</option>
+                    <option>Rectify address</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label>Substatuses</label>
+                <select class="inp"><option>All substatuses</option><option>Choose specific…</option></select>
+              </div>
+            </div>
+            <details class="advanced">
+              <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>Advanced targeting</summary>
+              <div class="section-body">
+                <div class="checks">
+                  <label class="chk-row"><input type="checkbox"><span class="ct">Send only to pickup dispatches<span class="cs">Orders the customer collects at a store/locker</span></span></label>
+                  <label class="chk-row"><input type="checkbox"><span class="ct">Send only to trunk (line-haul) dispatches<span class="cs">Inter-warehouse transfers, not final delivery</span></span></label>
+                </div>
+                <!-- GROUP multi-select -->
+                <div class="field" style="margin:14px 0 0">
+                  <label>Groups</label>
+                  <div class="multiselect" id="ms-group">
+                    <button type="button" class="ms-trigger" id="ms-trigger" onclick="toggleMs()">All options</button>
+                    <div class="ms-dropdown" id="ms-dropdown">
+                      <div class="ms-group-label">Proveedores</div>
+                      <label class="ms-option"><input type="checkbox" onchange="updateMsTrigger()">Proveedores – Paris</label>
+                      <label class="ms-option"><input type="checkbox" onchange="updateMsTrigger()">Proveedores – Ripley</label>
+                      <label class="ms-option"><input type="checkbox" onchange="updateMsTrigger()">Proveedores – Falabella</label>
+                      <div class="ms-group-label">Temperatura</div>
+                      <label class="ms-option"><input type="checkbox" onchange="updateMsTrigger()">Temperatura – Conge</label>
+                      <label class="ms-option"><input type="checkbox" onchange="updateMsTrigger()">Temperatura – Fresco</label>
+                      <div class="ms-group-label">Zonas</div>
+                      <label class="ms-option"><input type="checkbox" onchange="updateMsTrigger()">Zona Norte</label>
+                      <label class="ms-option"><input type="checkbox" onchange="updateMsTrigger()">Zona Sur</label>
+                    </div>
+                  </div>
+                  <div class="hint">Limit this notification to specific order groups. Leave empty to send to all.</div>
+                </div>
+
+                <!-- FILTERS builder -->
+                <div class="field" style="margin:14px 0 0">
+                  <label>Filters</label>
+                  <div class="filter-rows" id="filter-rows"></div>
+                  <button class="btn primary" style="height:34px;border-radius:100px;font-size:13px" onclick="addFilter()">+ Add new filter</button>
+                  <div class="hint">Narrow by any order field — e.g. zone, vehicle type, custom field value.</div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- 2 · CHANNEL (channel-first) -->
+        <section class="section" id="s2">
+          <div class="section-head"><div class="section-num">2</div><div><h2>Channel</h2><p>Pick the delivery channel. The message editor adapts to your choice.</p></div></div>
+          <div class="section-body">
+            <div class="channel-grid">
+              <div class="channel-opt sel" data-ch="email" onclick="setChannel('email')">
+                <div class="ch-ic" style="background:#E6FCFF;color:#006B7D"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></div>
+                <div class="ch-nm">Email</div><div class="ch-tag" style="color:#006844">Enabled</div>
+              </div>
+              <div class="channel-opt" data-ch="sms" onclick="setChannel('sms')">
+                <div class="ch-ic" style="background:#F0EDFF;color:#5243AA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                <div class="ch-nm">SMS</div><div class="ch-tag">Not enabled</div>
+              </div>
+              <div class="channel-opt" data-ch="whatsapp" onclick="setChannel('whatsapp')">
+                <div class="ch-ic" style="background:#E3FCEF;color:#006844"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+                <div class="ch-nm">WhatsApp</div><div class="ch-tag">Not enabled</div>
+              </div>
+            </div>
+            <div class="info-banner" id="channel-note" style="margin-top:14px;display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r=".5" fill="currentColor" stroke="none"/></svg>
+              <span id="channel-note-txt"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 · AUDIENCE -->
+        <section class="section" id="s3">
+          <div class="section-head"><div class="section-num">3</div><div><h2>Audience</h2><p>Who receives this notification?</p></div></div>
+          <div class="section-body">
+            <div class="checks">
+              <label class="chk-row"><input type="checkbox" checked><span class="ct">End customer<span class="cs">The recipient of the order</span></span></label>
+              <label class="chk-row"><input type="checkbox"><span class="ct">Internal team<span class="cs">Dispatchers / operators on this account</span></span></label>
+              <label class="chk-row"><input type="checkbox"><span class="ct">Custom-field recipients<span class="cs">Addresses stored in order custom fields</span></span></label>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4 · MESSAGE (channel-adaptive) -->
+        <section class="section" id="s4">
+          <div class="section-head"><div class="section-num">4</div><div><h2>Message</h2><p id="msg-sub">Compose the email your customer receives.</p></div></div>
+          <div class="section-body">
+
+            <!-- EMAIL fields -->
+            <div id="email-fields">
+              <div class="info-banner" style="margin-bottom:16px">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r=".5" fill="currentColor" stroke="none"/></svg>
+                <span>You're using the <strong>new email template</strong>. <a href="#" onclick="toast('Switched to classic template');return false">Switch to classic</a></span>
+              </div>
+              <div class="row2">
+                <div class="field"><label>Sender name</label><input class="inp" id="f-sender" value="ACME Co Deliveries" oninput="updatePreview()" onfocus="setFocus(this)"></div>
+                <div class="field"><label>Reply-to email</label><input class="inp" value="notifications@acme.co"></div>
+              </div>
+              <div class="field">
+                <label>Subject <span class="req">*</span></label>
+                <input class="inp" id="f-subject" value=":company_name: · Update on order :code:" oninput="updatePreview()" onfocus="setFocus(this)">
+                <div class="var-row"><span class="vlabel">Insert:</span>
+                  <span class="var-chip" onclick="insertVar(':contact_name:')">contact_name</span>
+                  <span class="var-chip" onclick="insertVar(':contact_identifier:')">contact_identifier</span>
+                  <span class="var-chip" onclick="insertVar(':code:')">code</span>
+                  <span class="var-chip" onclick="insertVar(':status:')">status</span>
+                  <span class="var-chip" onclick="insertVar(':sub_status:')">sub_status</span>
+                  <span class="var-chip" onclick="insertVar(':address:')">address</span>
+                  <span class="var-chip" onclick="insertVar(':estimated_hour:')">estimated_hour</span>
+                  <span class="var-chip" onclick="insertVar(':arrived_at_date:')">arrived_at_date</span>
+                  <span class="var-chip" onclick="insertVar(':arrived_at_hour:')">arrived_at_hour</span>
+                  <span class="var-chip" onclick="insertVar(':mobile_user:')">mobile_user</span>
+                  <span class="var-chip" onclick="insertVar(':mobile_user_phone:')">mobile_user_phone</span>
+                  <span class="var-chip" onclick="insertVar(':vehicle_id:')">vehicle_id</span>
+                  <span class="var-chip" onclick="insertVar(':company_name:')">company_name</span>
+                  <span class="var-chip" onclick="insertVar(':custom_field:')">custom_field</span>
+                  <span class="var-chip" onclick="insertVar(':review_link:')">review_link</span>
+                  <span class="var-chip" onclick="insertVar(':widget:')">widget</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Body <span class="req">*</span></label>
+                <div class="rte-toolbar">
+                  <button onclick="fmt('bold')" title="Bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"/></svg></button>
+                  <button onclick="fmt('italic')" title="Italic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+                  <button onclick="fmt('underline')" title="Underline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 0 0 12 0V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></button>
+                  <div class="div"></div>
+                  <button onclick="fmt('insertUnorderedList')" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg></button>
+                  <button onclick="fmt('createLink')" title="Link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></button>
+                </div>
+                <div class="rte" id="f-body" contenteditable="true" data-ph="Write the message…" oninput="updatePreview()" onfocus="setFocus(this)"><p>Hi :contact_name:,</p><p>Good news — your order :code: from :company_name: has been delivered. Estimated window was :eta:.</p></div>
+                <div class="var-row"><span class="vlabel">Insert:</span>
+                  <span class="var-chip" onclick="insertVar(':contact_name:')">contact_name</span>
+                  <span class="var-chip" onclick="insertVar(':contact_identifier:')">contact_identifier</span>
+                  <span class="var-chip" onclick="insertVar(':code:')">code</span>
+                  <span class="var-chip" onclick="insertVar(':status:')">status</span>
+                  <span class="var-chip" onclick="insertVar(':sub_status:')">sub_status</span>
+                  <span class="var-chip" onclick="insertVar(':address:')">address</span>
+                  <span class="var-chip" onclick="insertVar(':estimated_hour:')">estimated_hour</span>
+                  <span class="var-chip" onclick="insertVar(':arrived_at_date:')">arrived_at_date</span>
+                  <span class="var-chip" onclick="insertVar(':arrived_at_hour:')">arrived_at_hour</span>
+                  <span class="var-chip" onclick="insertVar(':mobile_user:')">mobile_user</span>
+                  <span class="var-chip" onclick="insertVar(':mobile_user_phone:')">mobile_user_phone</span>
+                  <span class="var-chip" onclick="insertVar(':vehicle_id:')">vehicle_id</span>
+                  <span class="var-chip" onclick="insertVar(':company_name:')">company_name</span>
+                  <span class="var-chip" onclick="insertVar(':custom_field:')">custom_field</span>
+                  <span class="var-chip" onclick="insertVar(':review_link:')">review_link</span>
+                  <span class="var-chip" onclick="insertVar(':widget:')">widget</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Footer</label>
+                <div class="rte" id="f-footer" contenteditable="true" data-ph="Footer text…" oninput="updatePreview()" onfocus="setFocus(this)">Need help? Reply to this email or visit your tracking page.</div>
+              </div>
+              <div class="row2">
+                <div class="field" style="margin-bottom:0">
+                  <label>Header image</label>
+                  <button class="btn ghost" style="height:34px;width:100%" onclick="toast('Image picker opens here')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Upload header image
+                  </button>
+                  <div class="hint">Displayed at the top of the email. Recommended: 600×200 px.</div>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                  <label>Footer image</label>
+                  <button class="btn ghost" style="height:34px;width:100%" onclick="toast('Image picker opens here')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Upload footer image
+                  </button>
+                  <div class="hint">Displayed at the bottom of the email.</div>
+                </div>
+              </div>
+              <div class="row2" style="margin-top:14px">
+                <div class="field" style="margin-bottom:0">
+                  <label>Theme color</label>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <input type="color" id="f-theme" value="#306EF2"
+                      oninput="document.getElementById('f-theme-hex').value=this.value;updatePreview()"
+                      style="width:38px;height:38px;padding:3px;border:1px solid #C5D2E7;border-radius:6px;cursor:pointer;flex-shrink:0;background:#fff">
+                    <input class="inp" type="text" id="f-theme-hex" value="#306EF2" maxlength="7"
+                      placeholder="#000000"
+                      style="font-family:'DM Sans',monospace;text-transform:uppercase;letter-spacing:.04em"
+                      oninput="syncColorPicker(this.value)"
+                      onblur="normalizeHex(this)">
+                  </div>
+                  <div class="hint">Applied to the header band and CTA button.</div>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                  <label>Widget</label>
+                  <select class="inp" id="f-widget">
+                    <option value="">No widget</option>
+                    <option value="tracking">Order tracking</option>
+                    <option value="rating">Delivery rating</option>
+                    <option value="reschedule">Reschedule delivery</option>
+                    <option value="address">Address update</option>
+                  </select>
+                  <div class="hint">Embed an interactive widget in the email body.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SMS / WHATSAPP single field -->
+            <div id="msg-fields" style="display:none">
+              <div class="field">
+                <label>Message <span class="req">*</span></label>
+                <textarea class="inp" id="f-msg" maxlength="320" rows="4" oninput="updatePreview()" onfocus="setFocus(this)">Hi :contact_name:, your :company_name: order :code: is on the way. Track it: :tracking_link:</textarea>
+                <div class="counter" id="msg-counter">0 / 160 · 1 segment</div>
+                <div class="var-row"><span class="vlabel">Insert:</span>
+                  <span class="var-chip" onclick="insertVar(':contact_name:')">contact_name</span>
+                  <span class="var-chip" onclick="insertVar(':contact_identifier:')">contact_identifier</span>
+                  <span class="var-chip" onclick="insertVar(':code:')">code</span>
+                  <span class="var-chip" onclick="insertVar(':status:')">status</span>
+                  <span class="var-chip" onclick="insertVar(':sub_status:')">sub_status</span>
+                  <span class="var-chip" onclick="insertVar(':address:')">address</span>
+                  <span class="var-chip" onclick="insertVar(':estimated_hour:')">estimated_hour</span>
+                  <span class="var-chip" onclick="insertVar(':arrived_at_date:')">arrived_at_date</span>
+                  <span class="var-chip" onclick="insertVar(':arrived_at_hour:')">arrived_at_hour</span>
+                  <span class="var-chip" onclick="insertVar(':mobile_user:')">mobile_user</span>
+                  <span class="var-chip" onclick="insertVar(':mobile_user_phone:')">mobile_user_phone</span>
+                  <span class="var-chip" onclick="insertVar(':vehicle_id:')">vehicle_id</span>
+                  <span class="var-chip" onclick="insertVar(':company_name:')">company_name</span>
+                  <span class="var-chip" onclick="insertVar(':custom_field:')">custom_field</span>
+                  <span class="var-chip" onclick="insertVar(':review_link:')">review_link</span>
+                  <span class="var-chip" onclick="insertVar(':widget:')">widget</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 5 · SCHEDULE -->
+        <section class="section" id="s5">
+          <div class="section-head"><div class="section-num">5</div><div><h2>Schedule</h2><p>When can this notification go out?</p></div></div>
+          <div class="section-body">
+            <label class="chk-row" style="padding-top:0"><input type="checkbox" id="quiet-toggle" onchange="document.getElementById('quiet-window').style.display=this.checked?'grid':'none'"><span class="ct">Set quiet hours<span class="cs">Hold notifications outside this window and send them when it reopens</span></span></label>
+            <div class="row2" id="quiet-window" style="display:none;margin-top:8px">
+              <div class="field" style="margin-bottom:0"><label>Send from</label><input class="inp" type="time" value="08:00"></div>
+              <div class="field" style="margin-bottom:0"><label>Send until</label><input class="inp" type="time" value="20:00"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6 · DISPLAY (email only) -->
+        <section class="section" id="s6">
+          <div class="section-head"><div class="section-num">6</div><div><h2>Display on email</h2><p>Pick which blocks appear in the message. Changes show live in the preview.</p></div></div>
+          <div class="section-body">
+            <div class="display-grid">
+              <label class="chk-row"><input type="checkbox" data-pv="logo" checked onchange="updatePreview()"><span class="ct">Company logo</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="map" checked onchange="updatePreview()"><span class="ct">Map</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="forms" onchange="updatePreview()"><span class="ct">Forms</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="cta" checked onchange="updatePreview()"><span class="ct">Widget link</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="items" checked onchange="updatePreview()"><span class="ct">Items info</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="customitems" onchange="updatePreview()"><span class="ct">Custom field items</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="photo" onchange="updatePreview()"><span class="ct">Driver photo</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="dispatch" checked onchange="updatePreview()"><span class="ct">Shipping details</span></label>
+              <label class="chk-row"><input type="checkbox" data-pv="feedback" checked onchange="updatePreview()"><span class="ct">Feedback</span></label>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /form-col -->
+
+      <!-- PREVIEW -->
+      <div class="preview-col">
+        <div class="preview-card">
+          <div class="preview-head">
+            <span class="pv-eyebrow">Live preview</span>
+            <span class="pv-mode" id="pv-mode">Email</span>
+          </div>
+          <div class="preview-stage" id="pv-stage"><!-- rendered by JS --></div>
+        </div>
+        <div class="hint" style="text-align:center;margin-top:8px">Sample data shown. Variables like <span class="tok">:contact_name:</span> resolve per order.</div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="toast-msg">Saved</span></div>
+
+<script>
+const SAMPLE={
+  ':contact_name:':'Ana Pérez',
+  ':contact_identifier:':'ID-8821',
+  ':code:':'44812',
+  ':status:':'Delivered',
+  ':sub_status:':'En bodega',
+  ':address:':'Av. Providencia 1234, Santiago',
+  ':estimated_hour:':'14:30–15:00',
+  ':arrived_at_date:':'02/06/2026',
+  ':arrived_at_hour:':'14:47',
+  ':mobile_user:':'Juan Díaz',
+  ':mobile_user_phone:':'+56 9 1234 5678',
+  ':vehicle_id:':'TRK-042',
+  ':company_name:':'ACME Co',
+  ':custom_field:':'Frágil',
+  ':review_link:':'review.dt.com/44812',
+  ':widget:':'track.dt.com/w/44812',
+  ':eta:':'14:30–15:00',
+  ':tracking_link:':'track.dt.com/44812'
+};
+let channel='email';
+let lastFocus=null;
+
+function setFocus(el){lastFocus=el;}
+function fmt(cmd){
+  if(cmd==='createLink'){const url=prompt('Link URL:','https://');if(url)document.execCommand(cmd,false,url);}
+  else document.execCommand(cmd,false,null);
+  updatePreview();
+}
+function insertVar(token){
+  const el=lastFocus;
+  if(!el){toast('Click into a field first');return;}
+  if(el.isContentEditable){el.focus();document.execCommand('insertText',false,token);}
+  else{
+    const s=el.selectionStart??el.value.length,e=el.selectionEnd??el.value.length;
+    el.value=el.value.slice(0,s)+token+el.value.slice(e);
+    el.focus();el.selectionStart=el.selectionEnd=s+token.length;
+  }
+  updatePreview();
+}
+function resolve(str){return String(str).replace(/:[a-z_]+:/g,m=>SAMPLE[m]!==undefined?SAMPLE[m]:m);}
+function resolveHi(str){return String(str).replace(/:[a-z_]+:/g,m=>SAMPLE[m]!==undefined?SAMPLE[m]:'<span class="tok">'+m+'</span>');}
+
+function setChannel(ch){
+  channel=ch;
+  document.querySelectorAll('.channel-opt').forEach(o=>o.classList.toggle('sel',o.dataset.ch===ch));
+  const isEmail=ch==='email';
+  document.getElementById('email-fields').style.display=isEmail?'':'none';
+  document.getElementById('msg-fields').style.display=isEmail?'none':'';
+  document.getElementById('s6').style.display=isEmail?'':'none';
+  document.querySelector('.step-chip[data-target="s6"]').classList.toggle('hide',!isEmail);
+  document.getElementById('pv-mode').textContent={email:'Email',sms:'SMS',whatsapp:'WhatsApp'}[ch];
+  document.getElementById('msg-sub').textContent=isEmail?'Compose the email your customer receives.':'Compose the '+ (ch==='sms'?'SMS':'WhatsApp') +' your customer receives. Keep it short.';
+  const note=document.getElementById('channel-note');
+  if(isEmail){note.style.display='none';}
+  else{note.style.display='';document.getElementById('channel-note-txt').innerHTML=(ch==='sms'?'SMS':'WhatsApp')+' is not enabled for this account. You can design the message now and <a href="#">contact support@dispatchtrack.com</a> to activate sending.';}
+  updatePreview();
+}
+
+function updatePreview(){
+  const stage=document.getElementById('pv-stage');
+  if(channel==='email'){
+    const theme=document.getElementById('f-theme').value;
+    const subject=resolve(document.getElementById('f-subject').value);
+    const body=resolveHi(document.getElementById('f-body').innerHTML);
+    const footer=resolveHi(document.getElementById('f-footer').innerHTML);
+    const on=k=>{const c=document.querySelector('.display-grid input[data-pv="'+k+'"]');return c&&c.checked;};
+    let h='<div class="pv-email"><div class="pv-band" style="background:'+theme+'"></div>';
+    if(on('logo'))h+='<div class="pv-logo"><div class="mk" style="background:linear-gradient(135deg,'+theme+',#0052CC)">AC</div><div class="co">ACME Co</div></div>';
+    h+='<div class="pv-subject">'+subject+'</div>';
+    h+='<div class="pv-body">'+body+'</div>';
+    if(on('photo'))h+='<div class="pv-photo"><div class="av">JD</div>Delivered by Juan D.</div>';
+    if(on('map'))h+='<div class="pv-mapblock"><div class="road"></div></div>';
+    if(on('items'))h+='<div class="pv-items"><div class="it"><span>2× Office chair</span><span>Delivered</span></div><div class="it"><span>1× Standing desk</span><span>Delivered</span></div></div>';
+    if(on('cta'))h+='<div class="pv-cta"><a href="#" style="background:'+theme+'">Track your order</a></div>';
+    if(footer.replace(/<[^>]+>/g,'').trim())h+='<div class="pv-footer">'+footer+'</div>';
+    if(on('feedback'))h+='<div class="pv-feedback">How was your delivery?<div class="stars">★★★★★</div></div>';
+    h+='</div>';
+    stage.innerHTML=h;
+  }else{
+    const sender=resolve(document.getElementById('f-sender')?document.getElementById('f-sender').value:'ACME Co');
+    const msg=resolveHi(document.getElementById('f-msg').value);
+    const wa=channel==='whatsapp';
+    const now='14:47';
+    if(wa){
+      stage.innerHTML='<div class="wa-ui">'
+        +'<div class="wa-bar">'
+          +'<div class="wa-av">AC</div>'
+          +'<div class="wa-info"><div class="wa-name">ACME Co</div><div class="wa-status">online</div></div>'
+          +'<div class="wa-icons">'
+            +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
+            +'<svg viewBox="0 0 24 24" fill="currentColor" style="color:rgba(255,255,255,.9)"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>'
+          +'</div>'
+        +'</div>'
+        +'<div class="wa-body">'
+          +'<div class="wa-date">Today</div>'
+          +'<div class="wa-bubble-wrap">'
+            +'<div class="wa-bubble">'
+              +'<div class="wa-bubble-text">'+msg+'</div>'
+              +'<div class="wa-bubble-meta"><span class="wa-time">'+now+'</span><span class="wa-ticks">✓✓</span></div>'
+            +'</div>'
+          +'</div>'
+        +'</div>'
+        +'<div class="wa-input-row">'
+          +'<span class="wa-emoji">😊</span>'
+          +'<div class="wa-field">Message</div>'
+          +'<svg viewBox="0 0 24 24" fill="none" stroke="#8696A0" stroke-width="1.8" class="wa-attach"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'
+          +'<div class="wa-send"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2" fill="white" stroke="none"/></svg></div>'
+        +'</div>'
+        +'</div>';
+    } else {
+      stage.innerHTML=`
+        <div class="sms-ui">
+          <div class="sms-bar">
+            <div class="sms-av">AC</div>
+            <div class="sms-info">
+              <div class="sms-name">ACME Co</div>
+              <div class="sms-sub">Text Message</div>
+            </div>
+            <div class="sms-icons">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.39 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 3.18 2 2 0 0 1 4.11 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+          </div>
+          <div class="sms-body">
+            <div class="sms-date">Today ${now}</div>
+            <div class="sms-bubble-wrap">
+              <div class="sms-bubble">${msg}</div>
+              <div class="sms-ts">Delivered</div>
+            </div>
+          </div>
+          <div class="sms-input-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:#007AFF"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 12h8M12 8l4 4-4 4"/></svg>
+            <div class="sms-field">iMessage</div>
+            <svg viewBox="0 0 24 24" fill="currentColor" style="color:#007AFF"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm1.414-11.414l-4.95 4.95-1.414-1.415 4.95-4.95 1.414 1.415z"/></svg>
+          </div>
+        </div>`;
+    }
+    // counter
+    const raw=resolve(document.getElementById('f-msg').value).length;
+    const seg=Math.max(1,Math.ceil(raw/160));
+    const c=document.getElementById('msg-counter');
+    c.textContent=raw+' / 160 · '+seg+' segment'+(seg>1?'s':'');
+    c.classList.toggle('over',raw>160);
+  }
+}
+
+/* step scrollspy */
+function goStep(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+const mainEl=document.querySelector('.main');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.step-chip').forEach(c=>c.classList.toggle('active',c.dataset.target===e.target.id));}});},{root:mainEl,rootMargin:'-130px 0px -55% 0px',threshold:0});
+document.querySelectorAll('.section').forEach(s=>obs.observe(s));
+
+function syncColorPicker(val){
+  // accept with or without #, 3 or 6 char hex
+  const clean=val.startsWith('#')?val:'#'+val;
+  const valid=/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(clean);
+  if(valid){
+    document.getElementById('f-theme').value=clean.length===4
+      ?'#'+clean[1]+clean[1]+clean[2]+clean[2]+clean[3]+clean[3]
+      :clean;
+    updatePreview();
+  }
+}
+function normalizeHex(el){
+  // on blur: ensure # prefix and uppercase, fall back to last valid
+  let v=el.value.trim();
+  if(!v.startsWith('#'))v='#'+v;
+  if(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(v)){
+    if(v.length===4)v='#'+v[1]+v[1]+v[2]+v[2]+v[3]+v[3];
+    el.value=v.toUpperCase();
+    document.getElementById('f-theme').value=v;
+    updatePreview();
+  } else {
+    // revert to whatever the color picker has
+    el.value=document.getElementById('f-theme').value.toUpperCase();
+  }
+}
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('show'),2400);}
+
+/* ── GROUP multi-select ── */
+function toggleMs(){
+  const dd=document.getElementById('ms-dropdown');
+  const tr=document.getElementById('ms-trigger');
+  const open=dd.classList.contains('open');
+  dd.classList.toggle('open',!open);
+  tr.classList.toggle('open',!open);
+}
+function updateMsTrigger(){
+  const checked=[...document.querySelectorAll('#ms-dropdown input:checked')].map(i=>i.closest('.ms-option').textContent.trim());
+  document.getElementById('ms-trigger').textContent=checked.length?checked.join(', '):'All options';
+  document.querySelectorAll('#ms-dropdown .ms-option').forEach(o=>o.classList.toggle('sel',o.querySelector('input').checked));
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#ms-group')){
+    document.getElementById('ms-dropdown').classList.remove('open');
+    document.getElementById('ms-trigger').classList.remove('open');
+  }
+});
+
+/* ── FILTERS builder ── */
+const FILTER_FIELDS=['Select field','Zone','Vehicle type','Substatus','Order label','Custom field 1','Custom field 2','Pickup type','Trunk dispatch'];
+let filterCount=0;
+function addFilter(){
+  filterCount++;
+  const rows=document.getElementById('filter-rows');
+  const isFirst=rows.children.length===0;
+  const row=document.createElement('div');
+  row.className='filter-row';
+  row.id='filter-'+filterCount;
+  row.innerHTML=
+    (!isFirst?'<button type="button" class="filter-connector" onclick="toggleConnector(this)">OR</button>':'')+
+    '<select class="inp">'+FILTER_FIELDS.map((f,i)=>'<option'+(i===0?' disabled selected':'')+'>'+f+'</option>').join('')+'</select>'+
+    '<input class="inp" type="text" placeholder="Value…">'+
+    '<button type="button" class="filter-remove" onclick="removeFilter(\'filter-'+filterCount+'\')">Remove</button>';
+  rows.appendChild(row);
+}
+function removeFilter(id){
+  const el=document.getElementById(id);
+  if(el){
+    // if the removed row had a connector before it, remove it from the next sibling
+    el.remove();
+    // re-strip leading connector if first row now has one
+    const first=document.getElementById('filter-rows').firstElementChild;
+    if(first){const conn=first.querySelector('.filter-connector');if(conn)conn.remove();}
+  }
+}
+function toggleConnector(btn){btn.textContent=btn.textContent==='OR'?'AND':'OR';}
+
+updatePreview();
+</script>
+</body>
+</html>
