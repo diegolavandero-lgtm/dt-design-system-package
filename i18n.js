@@ -75,6 +75,7 @@
     "nav.inputs": { "es": "Inputs y formularios", "en": "Inputs & forms" },
     "nav.badges": { "es": "Badges y etiquetas", "en": "Badges & tags" },
     "nav.table": { "es": "Tablas", "en": "Tables" },
+    "nav.filters": { "es": "Filtros", "en": "Filters" },
     "nav.pages": { "es": "Páginas", "en": "Pages" },
     "nav.pages.table": { "es": "Página de tabla", "en": "Table page" },
 

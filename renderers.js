@@ -76,6 +76,9 @@ const ICON_PATHS = {
   'help-circle':   '<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/><circle cx="16" cy="23.5" r="1.5"/><path d="M17,8H15.5A4.49,4.49,0,0,0,11,12.5V13h2v-.5A2.5,2.5,0,0,1,15.5,10H17a2.5,2.5,0,0,1,0,5H15v4.5h2V17a4.5,4.5,0,0,0,0-9Z"/>',
   'bell':          '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
   'overflow-menu-vertical': '<circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/>',
+  'chevron--down':  '<path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/>',
+  'filter--add':    '<path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="26 20 24 20 24 17 21 17 21 15 24 15 24 12 26 12 26 15 29 15 29 17 26 17 26 20"/>',
+  'filter--remove': '<path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="29 15 27.586 13.586 25 16.172 22.414 13.586 21 15 23.586 17.586 21 20.172 22.414 21.586 25 19 27.586 21.586 29 20.172 26.414 17.586 29 15"/>',
   // sidebar / navigation icons
   'group':            '<path d="M16,8a5,5,0,1,0,5,5A5,5,0,0,0,16,8Zm0,8a3,3,0,1,1,3-3A3,3,0,0,1,16,16Z"/><path d="M26,12a4,4,0,1,0,4,4A4,4,0,0,0,26,12Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,26,18Z"/><path d="M6,12a4,4,0,1,0,4,4A4,4,0,0,0,6,12Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,6,18Z"/><path d="M24.23,21.85A14.08,14.08,0,0,0,16,20a14.08,14.08,0,0,0-8.23,1.85A1,1,0,0,0,7.33,23V28h2V23.38A12.18,12.18,0,0,1,16,22a12.18,12.18,0,0,1,6.67,1.38V28h2V23A1,1,0,0,0,24.23,21.85Z"/><path d="M4,25.63V28H2V23A8,8,0,0,1,5,21.1a5.94,5.94,0,0,1-1.27-1.74A6,6,0,0,0,0,25V28H2V25.63A6.17,6.17,0,0,1,4,25.63Z"/><path d="M28.27,19.36A5.94,5.94,0,0,1,27,21.1,8,8,0,0,1,30,23v5h2V25A6,6,0,0,0,28.27,19.36Z"/>',
   'receipt':          '<path d="M26,2H6A2,2,0,0,0,4,4V30l4-2,4,2,4-2,4,2,4-2,4,2V4A2,2,0,0,0,26,2Zm0,26.18-2-1-4,2-4-2-4,2-4-2-2,1V4H26ZM9,10H23V12H9Zm0,6H23V18H9Zm0,6H17V24H9Z"/>',
@@ -2674,6 +2677,97 @@ async function downloadAllPins() {
           </div><!-- end main -->
         </div><!-- end layout row -->
       </div><!-- end card -->
+    `;
+  },
+
+  filters(data) {
+    const fields = data.fields || [];
+
+    const renderField = (f) => {
+      if (f.type === 'select') {
+        return `<div class="inp" style="min-width:140px;cursor:pointer;justify-content:space-between;gap:8px;flex-shrink:0">
+          <span style="font:400 13px var(--font-sans);color:var(--n5)">${escHtml(f.placeholder)}</span>
+          ${iconSvg('chevron--down', 14, 'var(--n5)')}
+        </div>`;
+      }
+      if (f.type === 'date') {
+        return `<div class="inp" style="min-width:200px;justify-content:space-between;gap:8px;flex-shrink:0;cursor:pointer">
+          <span style="font:400 13px var(--font-sans);color:var(--n5)">${escHtml(f.placeholder)}</span>
+          ${iconSvg('calendar', 14, 'var(--n5)')}
+        </div>`;
+      }
+      // text
+      return `<div class="inp" style="flex:1;min-width:120px">
+        <input placeholder="${escHtml(f.placeholder)}" style="flex:1;border:0;outline:0;font:400 13px var(--font-sans);color:var(--n7);background:transparent;min-width:0" readonly>
+      </div>`;
+    };
+
+    const iconBtn = (icon, borderColor, fillColor, title) =>
+      `<button title="${escHtml(title)}" style="width:32px;height:32px;border:1px solid ${borderColor};border-radius:6px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0">
+        ${iconSvg(icon, 16, fillColor)}
+      </button>`;
+
+    const filterBar = `
+      <div class="card" style="padding:14px 16px;margin:0 0 24px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${fields.map(renderField).join('')}
+          <button class="btn sec" style="flex-shrink:0">${escHtml(data.filterBtnLabel || 'Filtrar')}</button>
+          ${iconBtn('filter--add',    'var(--o5)', 'var(--o5)', 'Add filter')}
+          ${iconBtn('filter--remove', 'var(--r6)', 'var(--r6)', 'Remove filters')}
+        </div>
+      </div>`;
+
+    const rules = (data.rules || []).map(r =>
+      `<li style="font:400 13px/1.6 var(--font-sans);color:var(--n6);padding:3px 0">${escHtml(r)}</li>`
+    ).join('');
+
+    const specRows = [
+      ['Text input',    '.inp class · flex:1 · no label · placeholder only'],
+      ['Select',        '.inp class · min-width:140px · chevron--down Carbon icon · cursor:pointer'],
+      ['Date picker',   '.inp class · min-width:200px · calendar Carbon icon · cursor:pointer'],
+      ['Filtrar',       '.btn.sec · secondary pill button from DS'],
+      ['filter--add',   '32×32px · border-radius:6px · border + fill var(--o5) · Carbon filter--add icon'],
+      ['filter--remove','32×32px · border-radius:6px · border + fill var(--r6) · Carbon filter--remove icon'],
+    ].map(([comp, spec]) => `<tr>
+      <td style="padding:8px 12px;font:600 13px var(--font-sans);color:var(--n7);white-space:nowrap">${escHtml(comp)}</td>
+      <td style="padding:8px 12px;font:400 12px var(--font-mono);color:var(--n5)">${escHtml(spec)}</td>
+    </tr>`).join('');
+
+    return `
+      ${sectionHeader(data)}
+
+      <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Filter bar</h3>
+      ${filterBar}
+
+      <div class="card flush" style="margin-bottom:24px">
+        <div class="card-hdr"><span class="ttl">Component specs</span></div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="background:var(--n2);text-align:left;padding:8px 12px;font:700 11px var(--font-sans);color:var(--n7);border-bottom:1px solid var(--n4)">Component</th>
+            <th style="background:var(--n2);text-align:left;padding:8px 12px;font:700 11px var(--font-sans);color:var(--n7);border-bottom:1px solid var(--n4)">Spec</th>
+          </tr></thead>
+          <tbody>${specRows}</tbody>
+        </table>
+      </div>
+
+      <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Icon buttons</h3>
+      <div class="card" style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          ${iconBtn('filter--add','var(--o5)','var(--o5)','Add filter')}
+          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--add</span>
+          <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--o5)</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          ${iconBtn('filter--remove','var(--r6)','var(--r6)','Remove filters')}
+          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--remove</span>
+          <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--r6)</span>
+        </div>
+        <div style="flex:1;min-width:200px;font:400 12px/1.6 var(--font-sans);color:var(--n5)">
+          Carbon Design System icons — <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">filter--add</code> and <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">filter--remove</code>. Both registered in the DS iconography section under <strong style="color:var(--n7)">Filters</strong>.
+        </div>
+      </div>
+
+      ${rules ? `<ul style="margin:16px 0 0;padding:0 0 0 18px">${rules}</ul>` : ''}
     `;
   },
 

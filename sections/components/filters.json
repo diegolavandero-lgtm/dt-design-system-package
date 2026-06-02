@@ -1,0 +1,19 @@
+{
+  "title": "Filters",
+  "titleKey": "nav.filters",
+  "description": "Standard filter bar pattern. DS inputs without labels, secondary Filtrar button, and two Carbon icon buttons: filter--add (orange) and filter--remove (red).",
+  "fields": [
+    { "type": "text",   "placeholder": "Nombre" },
+    { "type": "select", "placeholder": "Estado" },
+    { "type": "date",   "placeholder": "Fecha de creación" },
+    { "type": "text",   "placeholder": "Label" }
+  ],
+  "filterBtnLabel": "Filtrar",
+  "rules": [
+    "Inputs use the DS .inp class — no label, placeholder only.",
+    "Flexible inputs (text) grow with flex:1; fixed-width inputs (select, date) have a min-width.",
+    "Filtrar uses .btn.sec — secondary pill button from DS.",
+    "filter--add icon button: 32×32px, border-radius:6px, border 1px var(--o5), icon fill var(--o5).",
+    "filter--remove icon button: 32×32px, border-radius:6px, border 1px var(--r6), icon fill var(--r6)."
+  ]
+}
