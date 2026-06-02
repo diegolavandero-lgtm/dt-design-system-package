@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-02T21:11:06.364Z",
+  "generated": "2026-06-02T21:24:16.141Z",
   "days": [
     {
       "date": "2026-06-02",
       "entries": [
+        {
+          "hash": "f12ea5a",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "Pages/Table: use exact DS LM Topbar + Sidebar desktop components",
+          "author": "Diego"
+        },
         {
           "hash": "3e0e627",
           "type": "feat",
