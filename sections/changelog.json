@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-02T20:07:56.994Z",
+  "generated": "2026-06-02T21:11:06.364Z",
   "days": [
     {
       "date": "2026-06-02",
       "entries": [
+        {
+          "hash": "3e0e627",
+          "type": "feat",
+          "section": "Tables",
+          "message": "Pages: add Table page to index.html — NAV entry, JSON data, renderer",
+          "author": "Diego"
+        },
         {
           "hash": "ade0fd0",
           "type": "update",
