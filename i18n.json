@@ -63,5 +63,10 @@
     "nav.changelog": { "es": "Cambios", "en": "Changelog" },
     "nav.selection": { "es": "Controles de selección", "en": "Selection controls" },
     "nav.iconography": { "es": "Iconografía", "en": "Iconography" }
+,
+    "nav.patterns": { "es": "Patterns", "en": "Patterns" },
+    "nav.screenExamples": { "es": "Screen examples", "en": "Screen examples" },
+    "section.screenExamples.desc": { "es": "Pantallas de ejemplo construidas con los componentes del Design System.", "en": "Example screens built with Design System components." },
+    "section.screenExamples.invoices": { "es": "Invoice list", "en": "Invoice list" }
   }
 }
