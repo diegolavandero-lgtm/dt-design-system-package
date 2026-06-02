@@ -2683,33 +2683,40 @@ async function downloadAllPins() {
   filters(data) {
     const fields = data.fields || [];
 
+    // ── renders each field as an exact DS .inp (no label) ─────────────
+    const fh = `onfocusin="this.classList.add('foc')" onfocusout="this.classList.remove('foc')"`;
+
     const renderField = (f) => {
       if (f.type === 'select') {
-        return `<div class="inp" style="min-width:140px;cursor:pointer;justify-content:space-between;gap:8px;flex-shrink:0">
-          <span style="font:400 13px var(--font-sans);color:var(--n5)">${escHtml(f.placeholder)}</span>
-          ${iconSvg('chevron--down', 14, 'var(--n5)')}
+        return `<div class="inp" style="flex:1;padding:0 10px 0 14px" ${fh}>
+          <select style="flex:1;border:0;outline:0;font:400 13px var(--font-sans);color:var(--n6);background:transparent;min-width:0;-webkit-appearance:none;appearance:none;cursor:pointer">
+            <option value="" disabled selected>${escHtml(f.placeholder)}</option>
+            ${(f.options||[]).map(o=>`<option>${escHtml(o)}</option>`).join('')}
+          </select>
+          <span class="ic">${iconSvg('chevron--down', 14, 'currentColor')}</span>
         </div>`;
       }
       if (f.type === 'date') {
-        return `<div class="inp" style="min-width:200px;justify-content:space-between;gap:8px;flex-shrink:0;cursor:pointer">
-          <span style="font:400 13px var(--font-sans);color:var(--n5)">${escHtml(f.placeholder)}</span>
-          ${iconSvg('calendar', 14, 'var(--n5)')}
+        return `<div class="inp" style="flex:1;padding:0 10px 0 14px" ${fh}>
+          <input type="text" placeholder="${escHtml(f.placeholder)}">
+          <span class="ic">${iconSvg('calendar', 14, 'currentColor')}</span>
         </div>`;
       }
-      // text
-      return `<div class="inp" style="flex:1;min-width:120px">
-        <input placeholder="${escHtml(f.placeholder)}" style="flex:1;border:0;outline:0;font:400 13px var(--font-sans);color:var(--n7);background:transparent;min-width:0" readonly>
+      return `<div class="inp" style="flex:1" ${fh}>
+        <input type="text" placeholder="${escHtml(f.placeholder)}">
       </div>`;
     };
 
+    // ── icon buttons (filter--add orange, filter--remove red) ─────────
     const iconBtn = (icon, borderColor, fillColor, title) =>
-      `<button title="${escHtml(title)}" style="width:32px;height:32px;border:1px solid ${borderColor};border-radius:6px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0">
+      `<button title="${escHtml(title)}" style="width:40px;height:40px;border:1px solid ${borderColor};border-radius:6px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0">
         ${iconSvg(icon, 16, fillColor)}
       </button>`;
 
+    // ── filter bar: fills card width, inputs flex:1 ────────────────────
     const filterBar = `
-      <div class="card" style="padding:14px 16px;margin:0 0 24px">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div class="card" style="margin:0 0 28px">
+        <div style="display:flex;align-items:center;gap:8px">
           ${fields.map(renderField).join('')}
           <button class="btn sec" style="flex-shrink:0">${escHtml(data.filterBtnLabel || 'Filtrar')}</button>
           ${iconBtn('filter--add',    'var(--o5)', 'var(--o5)', 'Add filter')}
@@ -2717,41 +2724,14 @@ async function downloadAllPins() {
         </div>
       </div>`;
 
-    const rules = (data.rules || []).map(r =>
-      `<li style="font:400 13px/1.6 var(--font-sans);color:var(--n6);padding:3px 0">${escHtml(r)}</li>`
-    ).join('');
-
-    const specRows = [
-      ['Text input',    '.inp class · flex:1 · no label · placeholder only'],
-      ['Select',        '.inp class · min-width:140px · chevron--down Carbon icon · cursor:pointer'],
-      ['Date picker',   '.inp class · min-width:200px · calendar Carbon icon · cursor:pointer'],
-      ['Filtrar',       '.btn.sec · secondary pill button from DS'],
-      ['filter--add',   '32×32px · border-radius:6px · border + fill var(--o5) · Carbon filter--add icon'],
-      ['filter--remove','32×32px · border-radius:6px · border + fill var(--r6) · Carbon filter--remove icon'],
-    ].map(([comp, spec]) => `<tr>
-      <td style="padding:8px 12px;font:600 13px var(--font-sans);color:var(--n7);white-space:nowrap">${escHtml(comp)}</td>
-      <td style="padding:8px 12px;font:400 12px var(--font-mono);color:var(--n5)">${escHtml(spec)}</td>
-    </tr>`).join('');
-
     return `
       ${sectionHeader(data)}
 
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Filter bar</h3>
       ${filterBar}
 
-      <div class="card flush" style="margin-bottom:24px">
-        <div class="card-hdr"><span class="ttl">Component specs</span></div>
-        <table style="width:100%;border-collapse:collapse">
-          <thead><tr>
-            <th style="background:var(--n2);text-align:left;padding:8px 12px;font:700 11px var(--font-sans);color:var(--n7);border-bottom:1px solid var(--n4)">Component</th>
-            <th style="background:var(--n2);text-align:left;padding:8px 12px;font:700 11px var(--font-sans);color:var(--n7);border-bottom:1px solid var(--n4)">Spec</th>
-          </tr></thead>
-          <tbody>${specRows}</tbody>
-        </table>
-      </div>
-
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Icon buttons</h3>
-      <div class="card" style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
+      <div class="card" style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin:0 0 28px">
         <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
           ${iconBtn('filter--add','var(--o5)','var(--o5)','Add filter')}
           <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--add</span>
@@ -2763,11 +2743,16 @@ async function downloadAllPins() {
           <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--r6)</span>
         </div>
         <div style="flex:1;min-width:200px;font:400 12px/1.6 var(--font-sans);color:var(--n5)">
-          Carbon Design System icons — <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">filter--add</code> and <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">filter--remove</code>. Both registered in the DS iconography section under <strong style="color:var(--n7)">Filters</strong>.
+          Carbon Design System icons. <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">filter--add</code> and <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">filter--remove</code> — registered in Iconography → Filters.
         </div>
       </div>
 
-      ${rules ? `<ul style="margin:16px 0 0;padding:0 0 0 18px">${rules}</ul>` : ''}
+      <div class="card flush">
+        <div class="card-hdr"><span class="ttl">Rules</span></div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+          ${(data.rules||[]).map(r=>`<div style="font:400 13px/1.5 var(--font-sans);color:var(--n6)">${escHtml(r)}</div>`).join('')}
+        </div>
+      </div>
     `;
   },
 
