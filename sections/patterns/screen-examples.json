@@ -1,0 +1,19 @@
+{
+  "title": "Screen examples",
+  "description": "Pantallas de ejemplo construidas con los componentes del Design System. Muestran cómo combinar Topbar, Sidebar, Table, Badges y Buttons en una UI real de DispatchTrack.",
+  "screenTitle": "Invoice list",
+  "pageTitle": "Invoices",
+  "primaryBtn": "Primary",
+  "secondaryBtn": "Secondary",
+  "paginationLabel": "11 – 20 of 117",
+  "rows": [
+    { "document": "INVLM-202610", "status": "Upcoming", "total": "$500,000", "pending": "—",          "currency": "CLP", "account": "PJ Norte", "dueDate": "11/10/2026" },
+    { "document": "NCQC-202610",  "status": "Applied",  "total": "-$100,000","pending": "-50,000",   "currency": "CLP", "account": "PJ Oeste", "dueDate": "01/10/2026" },
+    { "document": "NCQC-202611",  "status": "Pending",  "total": "-$100,000","pending": "—",          "currency": "CLP", "account": "PJ Oeste", "dueDate": "—", "checked": true },
+    { "document": "INVQC-202617", "status": "Pending",  "total": "$600,000", "pending": "$300,000",  "currency": "CLP", "account": "PJ Oeste", "dueDate": "—" },
+    { "document": "INVQC-20268",  "status": "Pending",  "total": "$600,000", "pending": "$600,000",  "currency": "CLP", "account": "PJ Oeste", "dueDate": "11/10/2026" },
+    { "document": "INVLM-202607", "status": "Overdue",  "total": "$530,000", "pending": "$530,000",  "currency": "CLP", "account": "PJ Sur",   "dueDate": "11/10/2026" },
+    { "document": "INVLM-202607", "status": "Paid",     "total": "$530,000", "pending": "$0",        "currency": "CLP", "account": "PJ Sur",   "dueDate": "11/10/2026" },
+    { "document": "INVLM-202609", "status": "Paid",     "total": "$450,000", "pending": "$0",        "currency": "CLP", "account": "PJ Sur",   "dueDate": "11/10/2026" }
+  ]
+}
