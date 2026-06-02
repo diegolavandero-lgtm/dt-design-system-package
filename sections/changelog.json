@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-02T21:45:52.754Z",
+  "generated": "2026-06-02T21:53:00.727Z",
   "days": [
     {
       "date": "2026-06-02",
       "entries": [
+        {
+          "hash": "518aaba",
+          "type": "update",
+          "section": "Inputs",
+          "message": "Filters: copy exact tokens and inline styles from inputs.json + buttons.json",
+          "author": "Diego"
+        },
         {
           "hash": "125c07d",
           "type": "update",
