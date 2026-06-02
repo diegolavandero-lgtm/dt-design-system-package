@@ -2,11 +2,32 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-02T18:58:26.115Z",
+  "generated": "2026-06-02T19:03:07.689Z",
   "days": [
     {
       "date": "2026-06-02",
       "entries": [
+        {
+          "hash": "c81f52c",
+          "type": "feat",
+          "section": "General",
+          "message": "feat: add screen-examples section data",
+          "author": "Cristina"
+        },
+        {
+          "hash": "780e2d0",
+          "type": "feat",
+          "section": "General",
+          "message": "feat: add screenexamples renderer",
+          "author": "Cristina"
+        },
+        {
+          "hash": "20e9d50",
+          "type": "feat",
+          "section": "General",
+          "message": "feat: add Screen examples to NAV",
+          "author": "Cristina"
+        },
         {
           "hash": "14a847f",
           "type": "feat",
