@@ -2678,6 +2678,26 @@ async function downloadAllPins() {
   },
 
   tablepage(data) {
+    // ── inject sidebar CSS (same as sidebar renderer) ──────────────────
+    const sbStyle = `<style>
+      .sbx{width:52px;overflow:hidden;transition:width .25s cubic-bezier(.4,0,.2,1);background:#fff;border-radius:0;box-shadow:none;border-right:1px solid var(--n3);padding:8px 0;flex-shrink:0;cursor:default}
+      .sbx:hover{width:240px}
+      .sbx-row{display:flex;align-items:center;height:40px;cursor:pointer}
+      .sbx-row:hover .sbx-bg{background:rgba(75,130,250,.04)}
+      .sbx-row.sel .sbx-bg{background:rgba(75,130,250,.08)}
+      .sbx-bar{width:6px;height:40px;flex-shrink:0;background:transparent}
+      .sbx-row.sel .sbx-bar{background:#0052CC}
+      .sbx-bg{display:flex;align-items:center;height:40px;flex:1;transition:background .12s;overflow:hidden}
+      .sbx-ico{width:46px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+      .sbx-ico svg{display:block}
+      .sbx-row .sbx-ico svg{fill:#4B82FA}
+      .sbx-row.sel .sbx-ico svg{fill:#0052CC}
+      .sbx-lbl{font:400 13px/1 'DM Sans',sans-serif;color:#39414D;white-space:nowrap;opacity:0;transition:opacity .18s .06s;overflow:hidden;flex:1}
+      .sbx:hover .sbx-lbl{opacity:1}
+      .sbx-row.sel .sbx-lbl{font-weight:600;color:#0052CC}
+      .sbx-sep{height:1px;background:#E9ECF2;margin:4px 14px}
+    </style>`;
+
     const statusStyle = {
       'entregado':    { bg:'var(--g1)',  fg:'var(--g6)' },
       'no entregado': { bg:'var(--r1)',  fg:'var(--r6)' },
@@ -2691,128 +2711,123 @@ async function downloadAllPins() {
       const chk = r.selected
         ? `<div class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`
         : `<div class="chk"></div>`;
-      const rowBg = r.selected ? 'background:var(--b1)' : r.hover ? 'background:var(--n2)' : '';
-      const selStripe = r.selected ? `box-shadow:inset 3px 0 0 var(--g5)` : '';
-      return `<tr style="${rowBg}">
-        <td style="padding:8px 8px 8px 14px;${selStripe}">${chk}</td>
-        <td style="padding:8px 10px"><a style="color:var(--b7);font-weight:600;cursor:pointer">${escHtml(r.order)}</a></td>
-        <td style="padding:8px 10px"><span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font:600 11px var(--font-sans);background:${sc.bg};color:${sc.fg}">${escHtml(r.status)}</span></td>
-        <td style="padding:8px 10px;color:var(--n45);font:400 12px var(--font-sans)">—</td>
-        <td style="padding:8px 10px;font:400 12px var(--font-sans)">${escHtml(r.vehicle || '—')}</td>
-        <td style="padding:8px 10px;font:400 12px var(--font-sans)">${escHtml(r.client)}</td>
-        <td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--n6)">${r.date !== '—' ? escHtml(r.date) : ''}${r.dateNote ? `<span style="color:var(--n45);margin-left:4px">${escHtml(r.dateNote)}</span>` : (r.date === '—' ? '<span style="color:var(--n45)">—</span>' : '')}</td>
-        <td style="padding:8px 8px;text-align:right"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="2"><circle cx="12" cy="5" r="1" fill="var(--n45)"/><circle cx="12" cy="12" r="1" fill="var(--n45)"/><circle cx="12" cy="19" r="1" fill="var(--n45)"/></svg></td>
+      const trClass = r.selected ? ' class="sel"' : r.hover ? ' class="hov"' : '';
+      return `<tr${trClass}>
+        <td style="padding:9px 8px 9px 16px">${chk}</td>
+        <td><a class="lnk" style="cursor:pointer">${escHtml(r.order)}</a></td>
+        <td><span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font:600 11px var(--font-sans);background:${sc.bg};color:${sc.fg}">${escHtml(r.status)}</span></td>
+        <td style="color:var(--n45)">—</td>
+        <td>${escHtml(r.vehicle||'—')}</td>
+        <td>${escHtml(r.client)}</td>
+        <td>${r.date!=='—'?escHtml(r.date):'<span style="color:var(--n45)">—</span>'}${r.dateNote?`<span style="color:var(--n45);margin-left:4px">${escHtml(r.dateNote)}</span>`:''}</td>
+        <td style="text-align:right">${iconSvg('overflow-menu-vertical',16,'var(--n45)')}</td>
       </tr>`;
     }).join('');
 
-    const navItems = [
-      { d:'M22 12h-4l-3 9L9 3l-3 9H2',                                           sel:false },
-      { d:'M9 19h4a4 4 0 0 0 0-8H11a4 4 0 0 1 0-8h4',                            sel:false },
-      { d:'M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z', sel:true },
-      { d:'M1 3h15v13H1zM16 8h4l3 3v5h-7V8zM5.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM18.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z', sel:false },
-      { d:'M18 20V10M12 20V4M6 20v-6',                                             sel:false },
-      { d:'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9',                         sel:false },
-      { d:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0-4 4v2M12 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', sel:false },
+    // ── DS Sidebar items (Carbon icons, Órdenes selected) ─────────────
+    const sbItems = [
+      { icon:'dashboard',         label:'Actividad' },
+      { icon:'network-3',         label:'Rutas' },
+      { icon:'document-multiple', label:'Órdenes', sel:true },
+      { icon:'delivery',          label:'Flota' },
+      { icon:'chart-column',      label:'Estadísticas' },
+      { icon:'notification',      label:'Alertas' },
+      { icon:'events',            label:'Clientes' },
+      { divider:true },
+      { icon:'settings',          label:'Ajustes' },
     ];
 
-    const sidebarHtml = navItems.map(ic => {
-      const selStyle = ic.sel ? `background:var(--b1);border-radius:0 30px 30px 0;width:47px;align-self:flex-end;position:relative` : `border-radius:30px`;
-      const indicator = ic.sel ? `<span style="position:absolute;left:0;top:5px;bottom:5px;width:3px;background:var(--b5);border-radius:0 3px 3px 0"></span>` : '';
-      const stroke = ic.sel ? 'var(--b6)' : 'var(--b7)';
-      return `<div style="height:36px;display:flex;align-items:center;justify-content:center;${selStyle}">
-        ${indicator}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2"><path d="${ic.d}"/></svg>
+    const sidebarHtml = sbItems.map(it => {
+      if (it.divider) return `<div class="sbx-sep"></div>`;
+      const sel = it.sel ? ' sel' : '';
+      return `<div class="sbx-row${sel}">
+        <div class="sbx-bar"></div>
+        <div class="sbx-bg">
+          <div class="sbx-ico">${iconSvg(it.icon, 18)}</div>
+          <span class="sbx-lbl">${escHtml(it.label)}</span>
+        </div>
       </div>`;
     }).join('');
 
-    const fsel = (label) => `<div style="height:32px;border:1px solid var(--n3);border-radius:4px;background:#fff;padding:0 8px;font:400 12px var(--font-sans);color:var(--n6);display:inline-flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;cursor:pointer">${escHtml(label)}<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>`;
-    const finp  = (ph) => `<div style="height:32px;border:1px solid var(--n3);border-radius:4px;background:#fff;padding:0 10px;font:400 12px var(--font-sans);color:var(--n5);display:inline-flex;align-items:center;gap:6px;min-width:160px;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>${escHtml(ph)}</div>`;
-    const fdate = (ph) => `<div style="height:32px;border:1px solid var(--n3);border-radius:4px;background:#fff;padding:0 8px;font:400 12px var(--font-sans);color:var(--n5);display:inline-flex;align-items:center;gap:6px;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${escHtml(ph)}</div>`;
+    // ── Filter helpers ─────────────────────────────────────────────────
+    const fsel = (lbl) => `<div class="inp" style="height:32px;min-width:0;flex-shrink:0;cursor:pointer;justify-content:space-between;gap:4px;padding:0 8px"><span style="font:400 12px var(--font-sans);color:var(--n6);white-space:nowrap">${escHtml(lbl)}</span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>`;
+    const finp  = (ph) => `<div class="inp" style="height:32px;flex-shrink:0;min-width:160px;gap:6px;padding:0 10px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span style="font:400 12px var(--font-sans);color:var(--n5)">${escHtml(ph)}</span></div>`;
+    const fdate = (ph) => `<div class="inp" style="height:32px;flex-shrink:0;gap:6px;padding:0 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span style="font:400 12px var(--font-sans);color:var(--n5)">${escHtml(ph)}</span></div>`;
     const fibtn = (active) => active
-      ? `<div style="width:28px;height:28px;border-radius:4px;border:1px solid var(--o5);background:var(--o5);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>`
-      : `<div style="width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--r5)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`;
+      ? `<button class="btn" style="width:32px;height:32px;padding:0;border-radius:6px;background:var(--o5);border:1px solid var(--o5);flex-shrink:0;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 32 32" fill="#fff"><path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/></svg></button>`
+      : `<button class="btn sec" style="width:32px;height:32px;padding:0;border-radius:6px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 32 32" fill="var(--r6)"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16z"/></svg></button>`;
 
     const [f1, f2, f3, f4] = data.filters?.row1 || [];
     const [s1, s2, s3, s4] = data.filters?.row2 || [];
 
     return `
+      ${sbStyle}
       <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">${escHtml(data.title)}</h1>
       <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px">${escHtml(data.description)}</p>
 
       <div class="card flush" style="border-radius:8px;overflow:hidden">
 
-        <!-- Topbar LM -->
-        <div style="height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 0 0 20px;flex-shrink:0">
-          <svg height="18" viewBox="0 0 227 20" fill="none" style="display:block"><path d="M152 15.7V0H153.9V15.7H152Z" fill="#F27B42"/><path d="M165.5 4.9H167.3V15.7H165.5V13.8C164.6 15.3 163.2 16 161.5 16C158.6 16 156.1 13.5 156.1 10.3C156.1 7.1 158.6 4.7 161.5 4.7C163.2 4.7 164.6 5.4 165.5 6.8V4.9ZM161.7 14.2C163.3 14.2 165.5 12.8 165.5 10.3C165.5 7.8 163.3 6.5 161.7 6.5C160.1 6.5 157.9 7.8 157.9 10.3C157.9 12.8 160.1 14.2 161.7 14.2Z" fill="#F27B42"/><path d="M141.7 14.4V3.2H143.3V14.4H141.7Z" fill="#0052CC"/><path d="M6.9 0.1H0V15.6H7C9.2 15.6 10.8 14 10.8 11.8V3.9C10.8 1.6 9.2 0.1 6.9 0.1ZM8 12.1C8 12.8 7.7 13.1 7 13.1H2.8V2.6H7C7.7 2.6 8 2.9 8 3.6V12.1Z" fill="#0052CC"/><path d="M15.3 4.2H12.5V15.6H15.3V4.2Z" fill="#0052CC"/><path d="M15.3 0.1H12.5V2.7H15.3V0.1Z" fill="#F27B42"/><path d="M92.4 0H82.4V2.5H86V15.6H88.8V2.5H92.4V0Z" fill="#0052CC"/></svg>
-          <div style="flex:1"></div>
-          <div style="display:flex;align-items:center;gap:22px;padding-right:0">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            <div style="position:relative"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span style="position:absolute;top:-4px;right:-4px;background:var(--r5);color:#fff;font:700 8px var(--font-sans);min-width:14px;height:14px;border-radius:999px;border:2px solid var(--indigo);display:flex;align-items:center;justify-content:center;padding:0 2px">1</span></div>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            <div style="width:28px;height:28px;border-radius:999px;background:var(--b4);display:flex;align-items:center;justify-content:center;font:700 10px var(--font-sans);color:#fff;flex-shrink:0;cursor:pointer">DL</div>
-            <div style="width:92px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:var(--indigo);font:700 11px var(--font-sans);flex-shrink:0">ACME CO</div>
+        <!-- Topbar: exact DS LM desktop component -->
+        <div class="tbar" style="border-radius:0;padding:0 0 0 22px">
+          <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
+          <div class="acts">
+            ${iconSvg('apps',18,'#fff')}
+            ${iconSvg('help',18,'#fff')}
+            ${iconSvg('messages',18,'#fff')}
+            <div class="bell">${iconSvg('alerts',18,'#fff')}</div>
+            ${iconSvg('user',18,'#fff')}
           </div>
+          <div class="slot">ACME CO</div>
         </div>
 
         <!-- Body -->
         <div style="display:flex;min-height:540px">
 
-          <!-- Sidebar collapsed -->
-          <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;gap:4px">
-            <div style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--b6),var(--b7));display:flex;align-items:center;justify-content:center;font:700 10px var(--font-sans);color:#fff;margin-bottom:10px;flex-shrink:0">DT</div>
-            ${sidebarHtml}
-            <div style="width:26px;border-top:1px solid var(--n3);margin:5px 0;flex-shrink:0"></div>
-            <div style="margin-top:auto;height:36px;width:36px;border-radius:30px;display:flex;align-items:center;justify-content:center">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--b7)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>
-            </div>
-          </div>
+          <!-- Sidebar: exact DS sidebar desktop component -->
+          <div class="sbx">${sidebarHtml}</div>
 
           <!-- Main content -->
-          <div style="flex:1;padding:18px 22px 14px;min-width:0;display:flex;flex-direction:column;gap:10px;overflow:hidden">
+          <div style="flex:1;padding:20px 24px 16px;min-width:0;display:flex;flex-direction:column;gap:12px;overflow:hidden;background:var(--n2)">
 
             <!-- Page header -->
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-              <span style="font:700 22px/1 var(--font-sans);color:var(--n7)">${escHtml(data.pageTitle)}</span>
-              <div style="display:flex;gap:8px;align-items:center">
-                <button class="btn sec" style="font-size:12px;padding:6px 12px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h8"/></svg>${escHtml(data.buttons?.log || 'Bitácora')}</button>
-                <button class="btn sec" style="font-size:12px;padding:6px 12px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>${escHtml(data.buttons?.export || 'Exportar a excel')}</button>
-                <button class="btn pri" style="font-size:12px;padding:6px 14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>${escHtml(data.buttons?.create || 'Nueva orden')}</button>
-              </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="font:700 22px/1 var(--font-sans);color:var(--n7);flex:1">${escHtml(data.pageTitle)}</span>
+              <button class="btn sec" style="font-size:12px;padding:6px 12px;gap:5px">${iconSvg('plan',13,'var(--b7)')}${escHtml(data.buttons?.log||'Bitácora')}</button>
+              <button class="btn sec" style="font-size:12px;padding:6px 12px;gap:5px">${iconSvg('download',13,'var(--b7)')}${escHtml(data.buttons?.export||'Exportar a excel')}</button>
+              <button class="btn pri" style="font-size:12px;padding:6px 14px;gap:5px"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
             </div>
 
-            <!-- Filter bar -->
-            <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;flex-shrink:0">
-              <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap">
-                ${fsel(f1||'Código de orden')}${fsel(f2||'Tipo de fecha')}${fdate(f3||'Seleccionar fecha')}${fsel(f4||'Estado')}
-                <div style="display:inline-flex;align-items:center;gap:6px;font:400 12px var(--font-sans);color:var(--n6);white-space:nowrap;flex-shrink:0"><div class="chk"></div>Filtrar por último despacho</div>
-                <div style="margin-left:auto;display:inline-flex;gap:5px">${fibtn(true)}${fibtn(false)}</div>
+            <!-- Filter bar (white card) -->
+            <div class="card" style="padding:10px 12px;display:flex;flex-direction:column;gap:8px;margin:0">
+              <div style="display:flex;align-items:center;gap:6px">
+                ${fsel(f1||'Código de orden')}${fsel(f2||'Tipo de fecha para filtrar')}${fdate(f3||'Seleccionar fecha')}${fsel(f4||'Estado')}
+                <div style="display:inline-flex;align-items:center;gap:6px;font:400 12px var(--font-sans);color:var(--n6);white-space:nowrap;flex-shrink:0"><div class="chk" style="flex-shrink:0"></div>Filtrar por último despacho</div>
+                <div style="margin-left:auto;display:inline-flex;gap:5px;flex-shrink:0">${fibtn(true)}${fibtn(false)}</div>
               </div>
-              <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap">
+              <div style="display:flex;align-items:center;gap:6px">
                 ${fsel(s1||'Subestado')}${finp(s2||'Nombre del contacto')}${fsel(s3||'Identificador de contacto')}${fsel(s4||'Vehículo')}
-                <div style="margin-left:auto;display:inline-flex;gap:5px">${fibtn(true)}${fibtn(false)}</div>
+                <div style="margin-left:auto;display:inline-flex;gap:5px;flex-shrink:0">${fibtn(true)}${fibtn(false)}</div>
               </div>
             </div>
 
-            <!-- Table -->
-            <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;flex-shrink:0">
+            <!-- Table (exact DS table component) -->
+            <div class="card flush" style="margin:0">
               <table class="tbl">
                 <thead><tr>
-                  <th style="width:22px;padding:8px 8px 8px 14px"><div class="chk"></div></th>
-                  ${(data.columns||[]).map(c=>`<th style="font:600 12px var(--font-sans);padding:8px 10px">${escHtml(c)}</th>`).join('')}
-                  <th style="width:24px"></th>
+                  <th style="width:40px;padding:9px 8px 9px 16px"><div class="chk"></div></th>
+                  ${(data.columns||[]).map(c=>`<th>${escHtml(c)}</th>`).join('')}
+                  <th style="width:28px"></th>
                 </tr></thead>
                 <tbody>${rows}</tbody>
               </table>
             </div>
 
             <!-- Pagination -->
-            <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;flex-shrink:0">
-              <button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n6)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
-              <button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--b6);background:var(--b6);display:inline-flex;align-items:center;justify-content:center;font:700 12px var(--font-sans);color:#fff;cursor:pointer">1</button>
-              ${[2,3].map(n=>`<button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;font:500 12px var(--font-sans);color:var(--n6);cursor:pointer">${n}</button>`).join('')}
-              <button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n6)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px">
+              <button style="width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n6)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--b6);background:var(--b6);display:inline-flex;align-items:center;justify-content:center;font:700 12px var(--font-sans);color:#fff;cursor:pointer;padding:0 4px">1</button>
+              ${[2,3].map(n=>`<button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;font:500 12px var(--font-sans);color:var(--n6);cursor:pointer;padding:0 4px">${n}</button>`).join('')}
+              <button style="width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n6)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
             </div>
 
           </div><!-- end main -->
