@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-02T21:24:16.141Z",
+  "generated": "2026-06-02T21:33:42.240Z",
   "days": [
     {
       "date": "2026-06-02",
       "entries": [
+        {
+          "hash": "f09a44c",
+          "type": "feat",
+          "section": "Iconography",
+          "message": "Components: add Filters section with filter--add / filter--remove Carbon icons",
+          "author": "Diego"
+        },
         {
           "hash": "f12ea5a",
           "type": "update",
