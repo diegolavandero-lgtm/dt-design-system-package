@@ -1,0 +1,21 @@
+{
+  "title": "Table page",
+  "description": "Full-page template for list views. Built with LM Topbar, collapsed 52px Sidebar, filter bar, data table, and pagination. Use only DS components and tokens.",
+  "pageTitle": "Órdenes",
+  "buttons": { "log": "Bitácora", "export": "Exportar a excel", "create": "Nueva orden" },
+  "filters": {
+    "row1": ["Código de orden", "Tipo de fecha para filtrar", "Seleccionar fecha", "Estado"],
+    "row2": ["Subestado", "Nombre del contacto", "Identificador de contacto", "Vehículo"]
+  },
+  "columns": ["Orden", "Estado", "Subestado", "Vehículo", "Cliente", "Fecha de ruta"],
+  "rows": [
+    { "order": "73AWS30-05",       "status": "Por entregar", "vehicle": "VEH001", "client": "Boxman Ltda",         "date": "2026-06-02", "dateNote": "Est. 2 horas" },
+    { "order": "73AWS30-03",       "status": "No entregado", "vehicle": "VEH001", "client": "Boxman Ltda",         "date": "2026-06-02", "dateNote": "hace 4 horas" },
+    { "order": "73AWS30-01",       "status": "Entregado",    "vehicle": "VEH001", "client": "Raul Perez",          "date": "2026-06-02", "dateNote": "hace 4 horas", "selected": true },
+    { "order": "73AWS30-02",       "status": "No entregado", "vehicle": "VEH001", "client": "Armando Fernandez",   "date": "2026-06-02", "dateNote": "hace 4 horas" },
+    { "order": "73AWS30-07",       "status": "Por entregar", "vehicle": "VEH001", "client": "Armando Fernandez",   "date": "2026-06-02", "dateNote": "Est. 1 hora",  "hover": true },
+    { "order": "37373AWS01-CON05", "status": "Asignada",     "vehicle": "VEH001", "client": "Boxman Ltda",         "date": "2026-06-02" },
+    { "order": "8",                "status": "Ingresada",    "vehicle": "—",      "client": "John Smith",          "date": "—" },
+    { "order": "3",                "status": "Ingresada",    "vehicle": "—",      "client": "John Smith",          "date": "—" }
+  ]
+}
