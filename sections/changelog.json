@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-02T19:03:07.689Z",
+  "generated": "2026-06-02T19:07:05.656Z",
   "days": [
     {
       "date": "2026-06-02",
       "entries": [
+        {
+          "hash": "26ea0c6",
+          "type": "fix",
+          "section": "General",
+          "message": "fix: bump version comment to bust Vercel cache",
+          "author": "Cristina"
+        },
         {
           "hash": "c81f52c",
           "type": "feat",
