@@ -2,8 +2,27 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-05-27T22:02:41.997Z",
+  "generated": "2026-06-02T18:58:26.115Z",
   "days": [
+    {
+      "date": "2026-06-02",
+      "entries": [
+        {
+          "hash": "14a847f",
+          "type": "feat",
+          "section": "General",
+          "message": "feat: add i18n keys for Screen examples section",
+          "author": "Cristina"
+        },
+        {
+          "hash": "d9ae0d8",
+          "type": "feat",
+          "section": "General",
+          "message": "feat: add Screen examples section with Invoice list pattern",
+          "author": "Cristina"
+        }
+      ]
+    },
     {
       "date": "2026-05-27",
       "entries": [
