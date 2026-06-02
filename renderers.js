@@ -111,164 +111,6 @@ const ICON_PATHS = {
   'plan':              '<path d="M24,4H8A2,2,0,0,0,6,6V26a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V6A2,2,0,0,0,24,4ZM8,26V6H24V26Z"/><path d="M11 9H21V11H11z"/><path d="M11 13H21V15H11z"/><path d="M11 17H21V19H11z"/><path d="M11 21H16V23H11z"/>',
   'recently-viewed':   '<path d="M16,4A12,12,0,0,0,6.34,8.34L4,6V12h6L7.75,9.75A10,10,0,1,1,16,26V28A12,12,0,0,0,16,4Z"/><polygon points="17 8 15 8 15 17 23 17 23 15 17 15 17 8"/>',
   'data-base':         '<path d="M16,4C8.27,4,2,6.69,2,10V22c0,3.31,6.27,6,14,6s14-2.69,14-6V10C30,6.69,23.73,4,16,4ZM28,22c0,1.86-5.23,4-12,4S4,23.86,4,22V18.74A21.59,21.59,0,0,0,16,21a21.59,21.59,0,0,0,12-2.26ZM28,16c0,1.86-5.23,4-12,4S4,17.86,4,16V12.74A21.59,21.59,0,0,0,16,15a21.59,21.59,0,0,0,12-2.26ZM16,13C9.23,13,4,10.86,4,9s5.23-4,12-4,12,2.14,12,4S22.77,13,16,13Z"/>',
-  /* ── SCREEN EXAMPLES ── */
-  screenexamples(data) {
-    const rows = (data.rows || []).map(r => {
-      const statusColors = {
-        paid:     { bg:'var(--g1)', fg:'var(--g6)' },
-        applied:  { bg:'var(--g1)', fg:'var(--g6)' },
-        pending:  { bg:'var(--o1)', fg:'var(--o7)' },
-        upcoming: { bg:'var(--n2)', fg:'var(--n7)' },
-        overdue:  { bg:'var(--r1)', fg:'var(--r6)' },
-      };
-      const sc = statusColors[r.status?.toLowerCase()] || statusColors.upcoming;
-      const checked = r.checked
-        ? `<div class="chk on" style="cursor:pointer"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`
-        : `<div class="chk" style="cursor:pointer"></div>`;
-      return `<tr>
-        <td style="padding:9px 8px 9px 16px">${checked}</td>
-        <td><a class="lnk" style="cursor:pointer">${escHtml(r.document)}</a></td>
-        <td><span style="display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font:600 11px var(--font-sans);background:${sc.bg};color:${sc.fg}">${escHtml(r.status)}</span></td>
-        <td>${escHtml(r.total)}</td>
-        <td>${escHtml(r.pending || '—')}</td>
-        <td>${escHtml(r.currency)}</td>
-        <td>${escHtml(r.account)}</td>
-        <td>${escHtml(r.dueDate || '—')}</td>
-      </tr>`;
-    }).join('');
-
-    const sideIcons = [
-      { path: 'M22 12h-4l-3 9L9 3l-3 9H2', active: true },
-      { path: 'M1 3h15v13H1zM16 8l4-2 2 2v9H16V8zM5.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM18.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z' },
-      { path: 'M18 20V10M12 20V4M6 20v-6' },
-      { path: 'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z' },
-      { path: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6' },
-      { path: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18' },
-    ];
-
-    const sidebarHtml = sideIcons.map(ic => {
-      const activeStyle = ic.active
-        ? `background:var(--b1);position:relative`
-        : ``;
-      const indicator = ic.active
-        ? `<span style="position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--b5);border-radius:0 3px 3px 0"></span>`
-        : '';
-      const stroke = ic.active ? 'var(--b6)' : 'var(--n5)';
-      return `<div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;${activeStyle}">
-        ${indicator}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2"><path d="${ic.path}"/></svg>
-      </div>`;
-    }).join('');
-
-    return `
-      <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">${escHtml(data.title)}</h1>
-      <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px">${escHtml(data.description)}</p>
-
-      <h3 style="font:700 15px var(--font-sans);margin:0 0 12px;color:var(--n7)">${escHtml(data.screenTitle || 'Invoice list')}</h3>
-
-      <div class="card flush" style="border-radius:8px;overflow:hidden">
-
-        <!-- Topbar -->
-        <div style="height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0">
-          <span style="font:700 15px var(--font-sans);color:#fff;letter-spacing:-.01em">DispatchTrack</span>
-          <span style="color:rgba(255,255,255,.3);font-size:14px">|</span>
-          <span style="font:700 13px var(--font-sans);color:#F27B42">lastmile</span>
-          <div style="flex:1"></div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <div style="position:relative">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span style="position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--r5);border:2px solid var(--indigo)"></span>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-
-        <!-- Layout -->
-        <div style="display:flex;min-height:520px">
-
-          <!-- Sidebar collapsed -->
-          <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px">
-            ${sidebarHtml}
-            <div style="margin-top:auto;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-            </div>
-          </div>
-
-          <!-- Main -->
-          <div style="flex:1;min-width:0;padding:28px 32px;background:var(--n1)">
-
-            <!-- Header -->
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-              <h1 style="font:700 24px/1.2 var(--font-sans);color:var(--n7);margin:0">${escHtml(data.pageTitle || 'Invoices')}</h1>
-              <div style="display:flex;gap:8px">
-                <button class="btn sec">${escHtml(data.secondaryBtn || 'Secondary')}</button>
-                <button class="btn pri">${escHtml(data.primaryBtn || 'Primary')}</button>
-              </div>
-            </div>
-
-            <!-- Filters -->
-            <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-              <div class="inp" style="flex:1;min-width:130px;max-width:210px">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2" class="ic"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input placeholder="Document" style="margin-left:8px">
-              </div>
-              <div class="inp" style="flex:1;min-width:130px;max-width:210px"><input placeholder="Account"></div>
-              <div class="inp" style="flex:1;min-width:120px;max-width:170px;cursor:pointer;justify-content:space-between">
-                <span style="color:var(--n5);font-size:13px">Status</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </div>
-              <div class="inp" style="flex:1;min-width:120px;max-width:170px;cursor:pointer;justify-content:space-between">
-                <span style="color:var(--n5);font-size:13px">Currency</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </div>
-              <button class="btn sec" style="flex-shrink:0">Filter</button>
-              <button class="btn sec" style="flex-shrink:0;padding:8px 10px">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </button>
-            </div>
-
-            <!-- Table -->
-            <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden">
-              <table class="tbl">
-                <thead>
-                  <tr>
-                    <th style="width:32px;padding:9px 8px 9px 16px"><div class="chk"></div></th>
-                    <th>Document</th>
-                    <th>Status</th>
-                    <th>Total amount</th>
-                    <th>Pending amount</th>
-                    <th>Currency</th>
-                    <th>Account</th>
-                    <th>Due date</th>
-                  </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-              </table>
-
-              <!-- Pagination -->
-              <div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:12px 16px;border-top:1px solid var(--n3);font:400 13px var(--font-sans);color:var(--n5);flex-wrap:wrap">
-                <span style="margin-right:8px">${escHtml(data.paginationLabel || '11 – 20 of 117')}</span>
-                <button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5)">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
-                <button style="width:28px;height:28px;border:none;border-radius:4px;background:var(--b6);color:#fff;font:700 12px var(--font-sans);cursor:pointer">1</button>
-                <span style="padding:0 2px;color:var(--n4)">···</span>
-                ${[4,5,6,7,8].map(n=>`<button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;font:500 12px var(--font-sans);color:var(--n7);cursor:pointer">${n}</button>`).join('')}
-                <span style="padding:0 2px;color:var(--n4)">···</span>
-                <button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;font:500 12px var(--font-sans);color:var(--n7);cursor:pointer">12</button>
-                <button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5)">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
-              </div>
-            </div>
-
-          </div><!-- end main -->
-        </div><!-- end layout row -->
-      </div><!-- end card -->
-    `;
-  },
-
 
 };
 
@@ -2675,5 +2517,165 @@ async function downloadAllPins() {
       <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px">${desc}</p>
       <div class="card" style="padding:24px 28px">${body}</div>`;
   },
+
+
+  /* ── SCREEN EXAMPLES ── */
+  screenexamples(data) {
+    const rows = (data.rows || []).map(r => {
+      const statusColors = {
+        paid:     { bg:'var(--g1)', fg:'var(--g6)' },
+        applied:  { bg:'var(--g1)', fg:'var(--g6)' },
+        pending:  { bg:'var(--o1)', fg:'var(--o7)' },
+        upcoming: { bg:'var(--n2)', fg:'var(--n7)' },
+        overdue:  { bg:'var(--r1)', fg:'var(--r6)' },
+      };
+      const sc = statusColors[r.status?.toLowerCase()] || statusColors.upcoming;
+      const checked = r.checked
+        ? `<div class="chk on" style="cursor:pointer"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`
+        : `<div class="chk" style="cursor:pointer"></div>`;
+      return `<tr>
+        <td style="padding:9px 8px 9px 16px">${checked}</td>
+        <td><a class="lnk" style="cursor:pointer">${escHtml(r.document)}</a></td>
+        <td><span style="display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font:600 11px var(--font-sans);background:${sc.bg};color:${sc.fg}">${escHtml(r.status)}</span></td>
+        <td>${escHtml(r.total)}</td>
+        <td>${escHtml(r.pending || '—')}</td>
+        <td>${escHtml(r.currency)}</td>
+        <td>${escHtml(r.account)}</td>
+        <td>${escHtml(r.dueDate || '—')}</td>
+      </tr>`;
+    }).join('');
+
+    const sideIcons = [
+      { path: 'M22 12h-4l-3 9L9 3l-3 9H2', active: true },
+      { path: 'M1 3h15v13H1zM16 8l4-2 2 2v9H16V8zM5.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM18.5 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z' },
+      { path: 'M18 20V10M12 20V4M6 20v-6' },
+      { path: 'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z' },
+      { path: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6' },
+      { path: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18' },
+    ];
+
+    const sidebarHtml = sideIcons.map(ic => {
+      const activeStyle = ic.active
+        ? `background:var(--b1);position:relative`
+        : ``;
+      const indicator = ic.active
+        ? `<span style="position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--b5);border-radius:0 3px 3px 0"></span>`
+        : '';
+      const stroke = ic.active ? 'var(--b6)' : 'var(--n5)';
+      return `<div style="width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;${activeStyle}">
+        ${indicator}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2"><path d="${ic.path}"/></svg>
+      </div>`;
+    }).join('');
+
+    return `
+      <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">${escHtml(data.title)}</h1>
+      <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px">${escHtml(data.description)}</p>
+
+      <h3 style="font:700 15px var(--font-sans);margin:0 0 12px;color:var(--n7)">${escHtml(data.screenTitle || 'Invoice list')}</h3>
+
+      <div class="card flush" style="border-radius:8px;overflow:hidden">
+
+        <!-- Topbar -->
+        <div style="height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0">
+          <span style="font:700 15px var(--font-sans);color:#fff;letter-spacing:-.01em">DispatchTrack</span>
+          <span style="color:rgba(255,255,255,.3);font-size:14px">|</span>
+          <span style="font:700 13px var(--font-sans);color:#F27B42">lastmile</span>
+          <div style="flex:1"></div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <div style="position:relative">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span style="position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--r5);border:2px solid var(--indigo)"></span>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.65)" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+
+        <!-- Layout -->
+        <div style="display:flex;min-height:520px">
+
+          <!-- Sidebar collapsed -->
+          <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px">
+            ${sidebarHtml}
+            <div style="margin-top:auto;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+            </div>
+          </div>
+
+          <!-- Main -->
+          <div style="flex:1;min-width:0;padding:28px 32px;background:var(--n1)">
+
+            <!-- Header -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+              <h1 style="font:700 24px/1.2 var(--font-sans);color:var(--n7);margin:0">${escHtml(data.pageTitle || 'Invoices')}</h1>
+              <div style="display:flex;gap:8px">
+                <button class="btn sec">${escHtml(data.secondaryBtn || 'Secondary')}</button>
+                <button class="btn pri">${escHtml(data.primaryBtn || 'Primary')}</button>
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+              <div class="inp" style="flex:1;min-width:130px;max-width:210px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2" class="ic"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input placeholder="Document" style="margin-left:8px">
+              </div>
+              <div class="inp" style="flex:1;min-width:130px;max-width:210px"><input placeholder="Account"></div>
+              <div class="inp" style="flex:1;min-width:120px;max-width:170px;cursor:pointer;justify-content:space-between">
+                <span style="color:var(--n5);font-size:13px">Status</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="inp" style="flex:1;min-width:120px;max-width:170px;cursor:pointer;justify-content:space-between">
+                <span style="color:var(--n5);font-size:13px">Currency</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <button class="btn sec" style="flex-shrink:0">Filter</button>
+              <button class="btn sec" style="flex-shrink:0;padding:8px 10px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+
+            <!-- Table -->
+            <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th style="width:32px;padding:9px 8px 9px 16px"><div class="chk"></div></th>
+                    <th>Document</th>
+                    <th>Status</th>
+                    <th>Total amount</th>
+                    <th>Pending amount</th>
+                    <th>Currency</th>
+                    <th>Account</th>
+                    <th>Due date</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+
+              <!-- Pagination -->
+              <div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:12px 16px;border-top:1px solid var(--n3);font:400 13px var(--font-sans);color:var(--n5);flex-wrap:wrap">
+                <span style="margin-right:8px">${escHtml(data.paginationLabel || '11 – 20 of 117')}</span>
+                <button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <button style="width:28px;height:28px;border:none;border-radius:4px;background:var(--b6);color:#fff;font:700 12px var(--font-sans);cursor:pointer">1</button>
+                <span style="padding:0 2px;color:var(--n4)">···</span>
+                ${[4,5,6,7,8].map(n=>`<button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;font:500 12px var(--font-sans);color:var(--n7);cursor:pointer">${n}</button>`).join('')}
+                <span style="padding:0 2px;color:var(--n4)">···</span>
+                <button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;font:500 12px var(--font-sans);color:var(--n7);cursor:pointer">12</button>
+                <button style="width:28px;height:28px;border:1px solid var(--n3);border-radius:4px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+            </div>
+
+          </div><!-- end main -->
+        </div><!-- end layout row -->
+      </div><!-- end card -->
+    `;
+  },
+
 
 };
