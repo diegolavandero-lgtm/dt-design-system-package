@@ -61,21 +61,17 @@ input,select{font-family:inherit}
 .main{flex:1;padding:0;min-width:0;overflow:auto;display:flex;flex-direction:column}
 
 /* page header */
-.page-header{background:#fff;border-bottom:1px solid #E1E6ED;padding:16px 24px;display:flex;align-items:flex-start;gap:12px}
-.page-header-text{flex:1}
-.page-header h1{font-size:20px;font-weight:700;color:#39414D;margin-bottom:3px}
-.page-header p{font-size:13px;color:#67768D;line-height:1.5}
-.page-header-actions{display:flex;align-items:center;gap:8px;padding-top:2px}
+.page-header{background:#fff;border-bottom:1px solid #E1E6ED;padding:14px 24px;display:flex;align-items:center;gap:12px}
+.page-header h1{font-size:20px;font-weight:700;color:#39414D;flex:1}
+.page-header-actions{display:flex;align-items:center;gap:8px}
 
-/* buttons */
-.btn{font-size:13px;font-weight:700;font-family:inherit;padding:6px 14px;border-radius:100px;height:32px;border:1px solid #C5D2E7;background:#fff;color:#39414D;cursor:pointer;transition:background .12s,color .12s,border-color .12s;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;line-height:1}
-.btn:hover{background:#F5F6FA}
+/* buttons — outline blue by default, matching Notifications header */
+.btn{font-size:13px;font-weight:700;font-family:inherit;padding:6px 14px;border-radius:100px;height:32px;border:1px solid #1F60ED;background:#fff;color:#1F60ED;cursor:pointer;transition:background .12s,color .12s,border-color .12s;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;line-height:1}
+.btn:hover{background:#EDF5FF}
 .btn.primary{background:#1F60ED;color:#fff;border-color:#1F60ED}
 .btn.primary:hover{background:#0052CC;border-color:#0052CC}
 .btn.primary:disabled{background:#C5D2E7;border-color:#C5D2E7;color:#8FA0BA;cursor:not-allowed}
 .btn svg{width:14px;height:14px;flex-shrink:0}
-.btn.ghost{border-color:transparent;background:transparent;color:#0052CC}
-.btn.ghost:hover{background:#EDF5FF;border-color:transparent}
 
 /* content */
 .content{flex:1;padding:20px 24px 100px}
@@ -308,12 +304,9 @@ input,select{font-family:inherit}
 
   <!-- page header -->
   <div class="page-header">
-    <div class="page-header-text">
-      <h1>Alertas</h1>
-      <p>Configura qué eventos operacionales disparan alertas en tu cuenta. Los cambios aplican a todos los usuarios.</p>
-    </div>
+    <h1>Alertas</h1>
     <div class="page-header-actions">
-      <button class="btn ghost" onclick="exportExcel()">
+      <button class="btn" onclick="exportExcel()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Exportar a Excel
       </button>
