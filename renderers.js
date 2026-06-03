@@ -2699,21 +2699,34 @@ async function downloadAllPins() {
     const onMEnter = `if(document.activeElement!==this)this.style.background='var(--n2)'`;
     const onMLeave = `if(document.activeElement!==this)this.style.background='${BG}'`;
 
+    // ── exact dt-drop-wrap from inputs renderer ────────────────────────
+    const dtSelect = (placeholder, options) => {
+      const items = (options||[]).map(o => {
+        const safe = o.replace(/'/g,"&#39;");
+        return `<div onclick="dtPickOpt(this)" data-val="${safe}"
+          onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
+          onmouseleave="this.style.background='';this.style.color='var(--n7)'"
+          style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer"
+        >${escHtml(o)}</div>`;
+      }).join('');
+      return `<div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
+        <div class="dt-dtrigger" data-theme="border"
+          onclick="dtDrop(this.parentElement)"
+          onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+          onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+          style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+          <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(placeholder)}</span>
+          <span style="color:var(--n5);display:flex;flex-shrink:0">${CHEVRON}</span>
+        </div>
+        <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">
+          ${items}
+        </div>
+      </div>`;
+    };
+
     const renderField = (f) => {
       if (f.type === 'select') {
-        // select: same tokens, chevron absolutely positioned, appearance:none
-        return `<div style="position:relative;flex:1;min-width:0">
-          <select style="${inpBase};padding:0 28px 0 10px;-webkit-appearance:none;appearance:none;cursor:pointer;color:var(--n5)"
-            onfocus="${onFocus}"
-            onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='${BG}';if(this.value)this.style.color='var(--n7)'"
-            onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
-            onmouseleave="if(document.activeElement!==this)this.style.background='${BG}'"
-          >
-            <option value="" disabled selected>${escHtml(f.placeholder)}</option>
-            ${(f.options||[]).map(o=>`<option value="${escHtml(o)}">${escHtml(o)}</option>`).join('')}
-          </select>
-          <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5)">${CHEVRON}</div>
-        </div>`;
+        return dtSelect(f.placeholder, f.options);
       }
       if (f.type === 'date') {
         // date: text input with calendar icon overlay
@@ -2907,29 +2920,33 @@ async function downloadAllPins() {
 
               <!-- Filter bar (from Filters component) -->
               <div style="display:flex;align-items:center;gap:8px">
-                <div style="position:relative;flex:1;min-width:0">
+                <div style="flex:1;min-width:0">
                   <input type="text" placeholder="Código de orden" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
                 </div>
-                <div style="position:relative;flex:1;min-width:0">
-                  <select style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n5);box-sizing:border-box;outline:none;padding:0 28px 0 10px;-webkit-appearance:none;appearance:none;cursor:pointer" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';if(this.value)this.style.color='var(--n7)'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
-                    <option value="" disabled selected>Tipo de fecha para filtrar</option>
-                    <option value="fecha-creacion">Fecha de creación</option>
-                    <option value="fecha-ruta">Fecha de ruta</option>
-                  </select>
-                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5);pointer-events:none"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></div>
+                <div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
+                  <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)" onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'" onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'" style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+                    <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Tipo de fecha para filtrar</span>
+                    <span style="color:var(--n5);display:flex;flex-shrink:0"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></span>
+                  </div>
+                  <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">
+                    <div onclick="dtPickOpt(this)" data-val="Fecha de creación" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Fecha de creación</div>
+                    <div onclick="dtPickOpt(this)" data-val="Fecha de ruta" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Fecha de ruta</div>
+                  </div>
                 </div>
                 <div style="position:relative;flex:1;min-width:0">
                   <input type="text" placeholder="Seleccionar fecha" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 34px 0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
                   <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5);pointer-events:none"><svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0"><path d="M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z"/></svg></div>
                 </div>
-                <div style="position:relative;flex:1;min-width:0">
-                  <select style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n5);box-sizing:border-box;outline:none;padding:0 28px 0 10px;-webkit-appearance:none;appearance:none;cursor:pointer" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';if(this.value)this.style.color='var(--n7)'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
-                    <option value="" disabled selected>Estado</option>
-                    <option value="entregado">Entregado</option>
-                    <option value="no-entregado">No entregado</option>
-                    <option value="por-entregar">Por entregar</option>
-                  </select>
-                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5);pointer-events:none"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></div>
+                <div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
+                  <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)" onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'" onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'" style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+                    <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Estado</span>
+                    <span style="color:var(--n5);display:flex;flex-shrink:0"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></span>
+                  </div>
+                  <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">
+                    <div onclick="dtPickOpt(this)" data-val="Entregado" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Entregado</div>
+                    <div onclick="dtPickOpt(this)" data-val="No entregado" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">No entregado</div>
+                    <div onclick="dtPickOpt(this)" data-val="Por entregar" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Por entregar</div>
+                  </div>
                 </div>
                 <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'" onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'">Filtrar</button>
                 <button title="Add more filters" style="width:32px;height:32px;border:1px solid var(--b6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
