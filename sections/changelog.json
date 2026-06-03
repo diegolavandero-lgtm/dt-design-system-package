@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:37:51.385Z",
+  "generated": "2026-06-03T20:40:52.642Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "83e098f",
+          "type": "update",
+          "section": "General",
+          "message": "feat(DES-824): separate outbound channels into individual cards with dummy data",
+          "author": "Carlos"
+        },
         {
           "hash": "032eea8",
           "type": "update",
