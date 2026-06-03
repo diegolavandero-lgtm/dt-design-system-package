@@ -1245,6 +1245,18 @@ function normalizeHex(el){
 function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>t.classList.remove('show'),2400);}
 
 /* ── GROUP multi-select ── */
+let _msScrollHandler=null;
+function closeMs(){
+  const dd=document.getElementById('ms-dropdown');
+  const tr=document.getElementById('ms-trigger');
+  dd.classList.remove('open');
+  tr.classList.remove('open');
+  if(_msScrollHandler){
+    document.querySelector('.main-scroll')?.removeEventListener('scroll',_msScrollHandler);
+    window.removeEventListener('scroll',_msScrollHandler);
+    _msScrollHandler=null;
+  }
+}
 function toggleMs(){
   const dd=document.getElementById('ms-dropdown');
   const tr=document.getElementById('ms-trigger');
@@ -1254,9 +1266,16 @@ function toggleMs(){
     dd.style.top=(r.bottom+4)+'px';
     dd.style.left=r.left+'px';
     dd.style.width=r.width+'px';
+    dd.classList.add('open');
+    tr.classList.add('open');
+    // Close on any scroll
+    _msScrollHandler=()=>closeMs();
+    const scrollEl=document.querySelector('.main')||window;
+    scrollEl.addEventListener('scroll',_msScrollHandler,{passive:true});
+    if(scrollEl!==window) window.addEventListener('scroll',_msScrollHandler,{passive:true});
+  } else {
+    closeMs();
   }
-  dd.classList.toggle('open',!open);
-  tr.classList.toggle('open',!open);
 }
 function updateMsTrigger(){
   const checked=[...document.querySelectorAll('#ms-dropdown input:checked')].map(i=>i.closest('.ms-option').textContent.trim());
