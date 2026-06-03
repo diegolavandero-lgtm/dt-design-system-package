@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:23:14.722Z",
+  "generated": "2026-06-03T15:25:41.496Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "91f400f",
+          "type": "update",
+          "section": "Tables",
+          "message": "Table page: use exact DS table component structure",
+          "author": "Diego"
+        },
         {
           "hash": "5237787",
           "type": "fix",
