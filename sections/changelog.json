@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:49:04.337Z",
+  "generated": "2026-06-03T14:50:41.711Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "63f46d0",
+          "type": "update",
+          "section": "Inputs",
+          "message": "feat(DES-825): disable form inputs when alert toggle is off",
+          "author": "Carlos"
+        },
         {
           "hash": "c7f664e",
           "type": "fix",
