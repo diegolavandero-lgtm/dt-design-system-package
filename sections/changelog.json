@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T19:51:31.799Z",
+  "generated": "2026-06-03T19:55:29.068Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "ab2eb0a",
+          "type": "fix",
+          "section": "Buttons",
+          "message": "fix(DES-825): remove View order button — whole alert item is clickable",
+          "author": "Carlos"
+        },
         {
           "hash": "eed1a6d",
           "type": "feat",
