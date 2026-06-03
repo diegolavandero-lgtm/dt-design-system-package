@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:05:44.652Z",
+  "generated": "2026-06-03T15:08:13.473Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "8751ddc",
+          "type": "fix",
+          "section": "Icons",
+          "message": "fix(DES-824): remove icons from all header buttons",
+          "author": "Carlos"
+        },
         {
           "hash": "702ee6b",
           "type": "update",
