@@ -3025,17 +3025,27 @@ async function downloadAllPins() {
 
 
     // ── DS Sidebar items (Carbon icons, Órdenes selected) ─────────────
+    // Last Mile sidebar — from sidebar.json products[id=lastmile].items
+    // Active item driven by data.activeNav (defaults to 'document-multiple')
+    const activeNav = data.activeNav || 'document-multiple';
     const sbItems = [
+      { icon:'report-data',       label:'Resumen' },
       { icon:'dashboard',         label:'Actividad' },
       { icon:'network-3',         label:'Rutas' },
-      { icon:'document-multiple', label:'Órdenes', sel:true },
+      { icon:'document-multiple', label:'Órdenes' },
       { icon:'delivery',          label:'Flota' },
       { icon:'chart-column',      label:'Estadísticas' },
       { icon:'notification',      label:'Alertas' },
       { icon:'events',            label:'Clientes' },
+      { icon:'file-system',       label:'Documentos' },
+      { icon:'currency',          label:'Módulo de Costos' },
+      { icon:'return',            label:'Logística inversa' },
+      { icon:'white-paper',       label:'Rendición de Documentos' },
+      { icon:'store',             label:'Retiro en tienda' },
+      { icon:'document-import',   label:'Importar' },
       { divider:true },
       { icon:'settings',          label:'Ajustes' },
-    ];
+    ].map(it => ({ ...it, sel: !it.divider && it.icon === activeNav }));
 
     const sidebarHtml = sbItems.map(it => {
       if (it.divider) return `<div class="sbx-sep"></div>`;

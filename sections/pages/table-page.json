@@ -413,5 +413,7 @@
       }
     ]
   },
-  "_template": "Table page — use as basis for all list/table screens. See CLAUDE.md → Page templates for the full layout spec. Only change: pageTitle, buttons, filter labels, scrollDemo data."
+  "_template": "Table page — use as basis for all list/table screens. See CLAUDE.md → Page templates for the full layout spec. Only change: pageTitle, buttons, filter labels, scrollDemo data.",
+  "product": "lastmile",
+  "activeNav": "document-multiple"
 }

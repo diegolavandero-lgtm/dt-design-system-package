@@ -228,9 +228,19 @@ Never invent a new layout. The template lives in:
 └────┴────────────────────────────────────────────────────┘
 ```
 
+**Topbar ↔ Sidebar pairing rule (critical):**
+Topbar and sidebar must always be the **same product**. Never mix products.
+| Product | Topbar logo | Sidebar items source |
+|---|---|---|
+| Last Mile | `lastmile-desktop-white.svg` | `sidebar.json → products[id=lastmile].items` |
+| Planner Pro | `plannerpro-desktop-white.svg` | `sidebar.json → products[id=plannerpro].items` |
+| On Demand | `ondemand-desktop-white.svg` | `sidebar.json → products[id=ondemand].items` |
+
+Active nav item: set via `data.activeNav` (icon name, e.g. `"document-multiple"` for Órdenes).
+
 **Invariant rules (never change these):**
-- Topbar: always `.tbar` with LM logo + icons + company slot
-- Sidebar: always `.sbx` with `sbItems` array (hover-expand, 52px collapsed)
+- Topbar: always `.tbar` with matching product logo + icons + company slot
+- Sidebar: always `.sbx` with full product item list from `sidebar.json` (hover-expand, 52px collapsed)
 - Main content outer gap: `20px` between every block
 - Main content padding: `20px 24px 16px`
 - White container: always wraps filter bar + table together
