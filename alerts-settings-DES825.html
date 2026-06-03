@@ -391,34 +391,19 @@ input,select{font-family:inherit}
               </div>
               <div class="multi-select-wrap">
                 <div class="multi-select-box" id="ms-sub" onclick="openDropdown('dd-sub')">
-                  <!-- pre-filled chips from legacy -->
-                  <span class="chip">Cita Cerrada <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Pedido Asignado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Fuera de Ruta <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Modelo al Cliente <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Me Dejaron Botando <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Local Cerrado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Entrega Exitosa <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Me Dejaron Buscando <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Pedido Incendiado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Pedido Amontonado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Pedido Migrado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Pérdida de mercancía <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Entregado a cliente <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Dirección errónea <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Cliente ausente <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Producto rechazado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Producto dañado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
                   <span class="ms-placeholder" id="pl-sub" style="display:none">Selecciona subestados…</span>
                 </div>
                 <div class="ms-dropdown" id="dd-sub">
-                  <div class="ms-option selected"><input type="checkbox" checked> Cita Cerrada</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Asignado</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Fuera de Ruta</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Modelo al Cliente</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Me Dejaron Botando</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Local Cerrado</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Entrega Exitosa</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Me Dejaron Buscando</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Incendiado</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Amontonado</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Migrado</div>
-                  <div class="ms-option selected"><input type="checkbox" checked> Pérdida de mercancía</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Entregado a cliente','Entregado a cliente')"><input type="checkbox" checked> Entregado a cliente</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Dirección errónea','Dirección errónea')"><input type="checkbox" checked> Dirección errónea</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Cliente ausente','Cliente ausente')"><input type="checkbox" checked> Cliente ausente</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Producto rechazado','Producto rechazado')"><input type="checkbox" checked> Producto rechazado</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Producto dañado','Producto dañado')"><input type="checkbox" checked> Producto dañado</div>
                 </div>
               </div>
               <div class="form-helper">Opcional. Deja vacío para recibir alertas de todos los subestados.</div>
