@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:40:52.642Z",
+  "generated": "2026-06-03T20:44:15.325Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "82cdbc4",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): force redeploy — Last Mile shell + DS SVG pins",
+          "author": "Diego"
+        },
         {
           "hash": "83e098f",
           "type": "update",
