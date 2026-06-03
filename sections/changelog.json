@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T19:49:12.539Z",
+  "generated": "2026-06-03T19:51:31.799Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "eed1a6d",
+          "type": "feat",
+          "section": "General",
+          "message": "feat(DES-825): add notifications drawer to all three prototype pages",
+          "author": "Carlos"
+        },
         {
           "hash": "faa8dc5",
           "type": "feat",
