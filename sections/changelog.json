@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T21:09:36.941Z",
+  "generated": "2026-06-03T21:13:28.612Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "4b77048",
+          "type": "fix",
+          "section": "Buttons",
+          "message": "fix(DES-824): change Cancel and Send test header buttons from ghost to blue outline",
+          "author": "Carlos"
+        },
         {
           "hash": "44c7788",
           "type": "fix",
