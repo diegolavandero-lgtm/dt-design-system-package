@@ -504,6 +504,45 @@ input,select{font-family:inherit}
         </div>
       </div>
 
+      <!-- ── ROW 5: Excess dwell time ── -->
+      <div class="alert-row" id="row-dwell">
+        <div class="alert-row-head" onclick="toggleRow('row-dwell')">
+          <div class="alert-row-info">
+            <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="alert-row-text">
+              <div class="alert-row-name">Alert by excess dwell time</div>
+              <div class="alert-row-desc">Notifies when a driver spends more than the configured time within the radius of a customer location.</div>
+            </div>
+          </div>
+          <div class="status-chip on" id="chip-dwell">
+            <span class="dot"></span>Active
+          </div>
+          <div class="swt on" id="swt-dwell" onclick="toggleSwitch(event,'dwell')" title="Pause dwell time alert"></div>
+        </div>
+        <div class="alert-row-body">
+          <div class="alert-form">
+            <div class="form-row" style="max-width:200px">
+              <div class="form-label">
+                Radius (meters)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Geofence radius used to detect when the driver is at the customer location."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <input type="number" class="form-input" id="input-radio" min="1" max="9999" value="200" oninput="markDirty();validateNumeric(this,1,9999,'err-radio')" onblur="validateNumeric(this,1,9999,'err-radio')">
+              <div class="form-helper">Enter a value between 1 and 9,999 meters.</div>
+              <div class="form-error" id="err-radio">Enter a value between 1 and 9,999.</div>
+            </div>
+            <div class="form-row" style="max-width:200px">
+              <div class="form-label">
+                Dwell time (minutes)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the driver has been inside the radius for longer than this time."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <input type="number" class="form-input" id="input-dwell" min="1" max="999" value="15" oninput="markDirty();validateNumeric(this,1,999,'err-dwell')" onblur="validateNumeric(this,1,999,'err-dwell')">
+              <div class="form-helper">Enter a value between 1 and 999 minutes.</div>
+              <div class="form-error" id="err-dwell">Enter a value between 1 and 999.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /alert-list -->
 
   </div><!-- /content -->
@@ -518,7 +557,7 @@ input,select{font-family:inherit}
 
 <script>
 // ── State ──────────────────────────────────────────────
-const alertStates = { estados: true, feedback: true, rango: true, tiempo: true };
+const alertStates = { estados: true, feedback: true, rango: true, tiempo: true, dwell: true };
 
 // ── Dirty tracking (no-op — save bar is always visible in header) ──
 function markDirty() {}
