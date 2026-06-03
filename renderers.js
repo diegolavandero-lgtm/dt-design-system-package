@@ -2554,6 +2554,114 @@ async function downloadAllPins() {
 }
 <\/script>`;
 
+    // Build marker list for the live map: first unselected pin from each group
+    const mapMarkers = (data.groups || [])
+      .filter(g => g.pins && g.pins.length)
+      .map((g, i) => {
+        const pin = g.pins.find(p => p.label === 'Unselected') || g.pins[0];
+        return { file: `${base}/${pin.file}`, label: g.label, color: g.color };
+      });
+
+    // Santiago Centro + offsets per group
+    const COORDS = [
+      [-33.4372, -70.6506],
+      [-33.4512, -70.6741],
+      [-33.4438, -70.6598],
+      [-33.4560, -70.6630],
+      [-33.4620, -70.6580],
+    ];
+
+    const markersJson = JSON.stringify(
+      mapMarkers.map((m, i) => ({ ...m, latlng: COORDS[i] || [-33.4489 + i * 0.01, -70.6693] }))
+    );
+
+    const MAP_STYLE = `<style>
+      .me-map-section{margin-top:36px}
+      .me-map-hdr{font:700 15px var(--font-sans);color:var(--n7);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+      .me-map-desc{font:400 12px var(--font-sans);color:var(--n5);margin-bottom:14px}
+      .me-map-wrap{width:100%;border-radius:8px;overflow:hidden;border:1px solid var(--n3)}
+      .me-map{width:100%;height:380px}
+      .me-map-form-demo{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-top:24px}
+      .me-map-form-col{display:flex;flex-direction:column;gap:8px;width:240px;flex-shrink:0}
+      .me-map-form-lbl{font:600 11px var(--font-sans);color:var(--n6);text-transform:uppercase;letter-spacing:.05em}
+      .me-map-form-input{height:40px;background:#fff;border:1px solid var(--n4);border-radius:4px;padding:0 12px;display:flex;align-items:center;font:400 13px var(--font-sans);color:var(--n5)}
+      .me-map-in-form-wrap{border-radius:4px;overflow:hidden;border:1px solid var(--n4)}
+      .me-map-in-form{width:240px;min-height:144px;height:200px}
+      .leaflet-container{font-family:inherit!important}
+    </style>`;
+
+    const mapScript = `<script>
+(function(){
+  const MARKERS = ${markersJson};
+  const TILE = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  const ATTR = '© <a href="https://carto.com/">CARTO</a>';
+  const SCL  = [-33.4489, -70.6693];
+
+  function buildIcon(src, sz) {
+    sz = sz || 40;
+    return L.icon({ iconUrl: src, iconSize: [sz, sz], iconAnchor: [sz/2, sz], popupAnchor: [0, -sz] });
+  }
+
+  function buildMap(id, zoom) {
+    const map = L.map(id, { center: SCL, zoom, scrollWheelZoom: false, attributionControl: true });
+    L.tileLayer(TILE, { attribution: ATTR, subdomains: 'abcd', maxZoom: 19 }).addTo(map);
+    MARKERS.forEach(m => {
+      L.marker(m.latlng, { icon: buildIcon(m.file) })
+        .addTo(map)
+        .bindPopup('<span style="font:600 12px sans-serif">'+m.label+'</span>');
+    });
+    return map;
+  }
+
+  function init() {
+    if (typeof L === 'undefined') return;
+    if (document.getElementById('me-map-main')) buildMap('me-map-main', 13);
+    if (document.getElementById('me-map-form')) buildMap('me-map-form', 14);
+  }
+
+  if (typeof L !== 'undefined') {
+    init();
+  } else {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload = init;
+    document.head.appendChild(s);
+  }
+})();
+<\/script>`;
+
+    const mapSection = `
+      ${MAP_STYLE}
+      <div class="me-map-section">
+        <div class="me-map-hdr">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Map · Flexible component
+        </div>
+        <div class="me-map-desc">Fill-container width standalone. When inside a form: 240px wide (= 1 input column), min-height 144px (= 3 input rows). CartoDB Positron tiles — minimal palette. Center: Santiago.</div>
+
+        <div class="me-map-wrap"><div id="me-map-main" class="me-map"></div></div>
+
+        <div class="me-map-form-demo">
+          <div class="me-map-form-col">
+            <div class="me-map-form-lbl">Dirección</div>
+            <div class="me-map-form-input">Av. Libertador B. O'Higgins…</div>
+            <div class="me-map-form-lbl">Ciudad</div>
+            <div class="me-map-form-input">Santiago</div>
+            <div class="me-map-form-lbl">Referencia</div>
+            <div class="me-map-form-input">Frente al metro Baquedano</div>
+          </div>
+          <div>
+            <div class="me-map-form-lbl" style="margin-bottom:8px">Ubicación en mapa</div>
+            <div class="me-map-in-form-wrap"><div id="me-map-form" class="me-map-in-form"></div></div>
+          </div>
+        </div>
+      </div>
+      ${mapScript}`;
+
     return `${PIN_STYLE}
       ${sectionHeader(data)}
       ${zipBtn}
@@ -2563,6 +2671,7 @@ async function downloadAllPins() {
           Map pins
         </h2>
         ${groups}
+        ${mapSection}
       </div>
       ${zipScript}`;
   },
