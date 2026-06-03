@@ -393,6 +393,38 @@ button,input,select{font-family:inherit}
   .voice-grid{grid-template-columns:1fr}
   .dv-row{grid-template-columns:repeat(6,1fr)}
 }
+
+/* ── DRAFTS ── */
+.draft-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.draft-card{background:#fff;border:1.5px dashed var(--o5);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.draft-card-preview{background:var(--n2);padding:24px;display:flex;align-items:center;justify-content:center;min-height:120px}
+.draft-card-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.draft-card-meta{display:flex;align-items:center;gap:8px}
+.draft-badge{font:700 9px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:var(--o1);color:#7A4A00}
+.draft-card-name{font:700 14px var(--font-sans);color:var(--n7)}
+.draft-card-desc{font:400 12px var(--font-sans);color:var(--n5);line-height:1.5;flex:1}
+.draft-card-footer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--n3)}
+.draft-approve-btn{height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:var(--g6);color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box}
+.draft-approve-btn:hover{background:var(--g7)}
+.draft-reject-btn{height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:#fff;color:var(--r6);border:1px solid var(--r6);cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box}
+.draft-reject-btn:hover{background:var(--r1)}
+.draft-approved{border-color:var(--g5);background:var(--g1)}
+.draft-approved .draft-badge{background:var(--g1);color:var(--g7)}
+/* Approve modal */
+.draft-modal-bg{position:fixed;inset:0;background:rgba(19,32,69,.45);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.draft-modal{background:#fff;border-radius:12px;width:100%;max-width:480px;box-shadow:0 8px 40px rgba(19,32,69,.18);overflow:hidden}
+.draft-modal-head{padding:18px 20px 14px;border-bottom:1px solid var(--n3)}
+.draft-modal-head h4{font:700 15px var(--font-sans);color:var(--n7);margin-bottom:4px}
+.draft-modal-head p{font:400 13px var(--font-sans);color:var(--n5)}
+.draft-modal-opts{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.draft-modal-opt{border:1.5px solid var(--n3);border-radius:8px;padding:12px 14px;cursor:pointer;transition:border-color .15s,background .15s}
+.draft-modal-opt:hover{border-color:var(--b6);background:var(--b1)}
+.draft-modal-opt.sel{border-color:var(--b6);background:var(--b1)}
+.draft-modal-opt-title{font:700 13px var(--font-sans);color:var(--n7)}
+.draft-modal-opt-desc{font:400 12px var(--font-sans);color:var(--n5);margin-top:2px}
+.draft-modal-foot{padding:12px 20px;border-top:1px solid var(--n3);display:flex;justify-content:flex-end;gap:8px}
+.draft-empty{padding:40px;text-align:center;color:var(--n5);font:400 13px var(--font-sans)}
+.draft-empty strong{display:block;font:700 14px var(--font-sans);color:var(--n6);margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -573,6 +605,14 @@ button,input,select{font-family:inherit}
   <a href="#changelog" class="snav" data-sec="changelog" onclick="setActive(this)">
     <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     <span data-i18n="nav.changelog">Changelog</span>
+  </a>
+  <div class="grp-lbl" style="margin-top:8px;display:flex;align-items:center;gap:6px">
+    <span>Drafts</span>
+    <span id="draft-nav-count" style="display:none;background:#FFAB00;color:#fff;font:700 9px var(--font-sans);border-radius:99px;padding:1px 6px;line-height:16px"></span>
+  </div>
+  <a href="#drafts" class="snav" data-sec="drafts" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    <span>Draft components</span>
   </a>
 </aside>
 
@@ -1480,6 +1520,40 @@ button,input,select{font-family:inherit}
   </div>
 </section>
 
+<!-- ══ DRAFTS ══ -->
+<section class="sec" id="drafts" data-keywords="drafts new components proposals pending review approve">
+  <h2>Draft components <span class="anch">#drafts</span></h2>
+  <p class="desc">Componentes propuestos pendientes de aprobación. Ningún componente nuevo puede entrar al DS sin pasar por aquí primero. Aprobá para elegir dónde ubicarlo.</p>
+  <div id="draft-grid" class="draft-grid"></div>
+  <!-- Approve modal -->
+  <div id="draft-modal-bg" class="draft-modal-bg" style="display:none" onclick="if(event.target===this)closeDraftModal()">
+    <div class="draft-modal">
+      <div class="draft-modal-head">
+        <h4 id="draft-modal-title">Aprobar componente</h4>
+        <p id="draft-modal-sub">¿Dónde querés agregarlo al Design System?</p>
+      </div>
+      <div class="draft-modal-opts" id="draft-modal-opts">
+        <div class="draft-modal-opt" onclick="selectDraftOpt(this,'new')">
+          <div class="draft-modal-opt-title">➕ Nueva sección</div>
+          <div class="draft-modal-opt-desc">Crear una sección nueva en la nav para este componente.</div>
+        </div>
+        <div class="draft-modal-opt" onclick="selectDraftOpt(this,'existing')">
+          <div class="draft-modal-opt-title">📂 Sección existente</div>
+          <div class="draft-modal-opt-desc">Agregar dentro de una sección ya existente del DS.</div>
+        </div>
+        <div class="draft-modal-opt" onclick="selectDraftOpt(this,'replace')">
+          <div class="draft-modal-opt-title">🔄 Reemplazar componente existente</div>
+          <div class="draft-modal-opt-desc">Este draft reemplaza una versión anterior del mismo componente.</div>
+        </div>
+      </div>
+      <div class="draft-modal-foot">
+        <button onclick="closeDraftModal()" style="height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:#fff;color:var(--n6);border:1px solid var(--n3);cursor:pointer">Cancelar</button>
+        <button id="draft-confirm-btn" onclick="confirmDraftApproval()" disabled style="height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;opacity:.4">Confirmar aprobación</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ══ CHANGELOG ══ -->
 <section class="sec" id="changelog" data-keywords="changelog releases versions history breaking cambios">
   <h2><span data-i18n="changelog.title">Changelog</span> <span class="anch">#changelog</span></h2>
@@ -1976,6 +2050,124 @@ const observer = new IntersectionObserver(entries => {
   });
 }, {rootMargin:'-30% 0px -65% 0px'});
 sections.forEach(s => observer.observe(s));
+
+/* ────────────────────────────────
+   DRAFTS SYSTEM
+──────────────────────────────── */
+const DRAFTS_KEY = 'dt-ds-drafts-v1';
+
+function loadDrafts() {
+  try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function saveDrafts(d) {
+  localStorage.setItem(DRAFTS_KEY, JSON.stringify(d));
+}
+
+// Seeds — remove if drafts are empty so the section shows a proper empty state
+const SEED_DRAFTS = [];
+
+function renderDraftGrid() {
+  const drafts = loadDrafts().length ? loadDrafts() : SEED_DRAFTS;
+  const grid = document.getElementById('draft-grid');
+  const navCount = document.getElementById('draft-nav-count');
+  const pending = drafts.filter(d => d.status === 'pending');
+  if (navCount) {
+    navCount.textContent = pending.length;
+    navCount.style.display = pending.length ? 'inline' : 'none';
+  }
+  if (!drafts.length) {
+    grid.innerHTML = `<div class="draft-empty" style="grid-column:1/-1"><strong>Sin drafts pendientes</strong>Cuando se proponga un componente nuevo, aparecerá aquí para revisión antes de entrar al DS.</div>`;
+    return;
+  }
+  grid.innerHTML = drafts.map((d,i) => `
+    <div class="draft-card ${d.status==='approved'?'draft-approved':''}" id="draft-card-${i}">
+      <div class="draft-card-preview">${d.preview || '<span style="color:var(--n5);font:400 12px var(--font-sans)">Sin preview</span>'}</div>
+      <div class="draft-card-body">
+        <div class="draft-card-meta">
+          <span class="draft-badge">${d.status==='approved'?'✓ Aprobado':'Pendiente'}</span>
+          ${d.addedTo ? `<span style="font:400 11px var(--font-sans);color:var(--n5)">${d.addedTo}</span>` : ''}
+        </div>
+        <div class="draft-card-name">${d.name}</div>
+        <div class="draft-card-desc">${d.description || ''}</div>
+      </div>
+      ${d.status === 'pending' ? `
+      <div class="draft-card-footer">
+        <button class="draft-approve-btn" onclick="openDraftModal(${i})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Aprobar
+        </button>
+        <button class="draft-reject-btn" onclick="rejectDraft(${i})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Descartar
+        </button>
+      </div>` : ''}
+    </div>
+  `).join('');
+}
+
+let _activeDraftIdx = null;
+let _selectedOpt = null;
+
+function openDraftModal(idx) {
+  _activeDraftIdx = idx;
+  _selectedOpt = null;
+  const drafts = loadDrafts().length ? loadDrafts() : SEED_DRAFTS;
+  const d = drafts[idx];
+  document.getElementById('draft-modal-title').textContent = `Aprobar: ${d.name}`;
+  document.getElementById('draft-modal-sub').textContent = '¿Dónde querés agregarlo al Design System?';
+  document.querySelectorAll('.draft-modal-opt').forEach(o => o.classList.remove('sel'));
+  document.getElementById('draft-confirm-btn').disabled = true;
+  document.getElementById('draft-confirm-btn').style.opacity = '.4';
+  document.getElementById('draft-modal-bg').style.display = 'flex';
+}
+
+function closeDraftModal() {
+  document.getElementById('draft-modal-bg').style.display = 'none';
+  _activeDraftIdx = null;
+  _selectedOpt = null;
+}
+
+function selectDraftOpt(el, val) {
+  document.querySelectorAll('.draft-modal-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  _selectedOpt = val;
+  const btn = document.getElementById('draft-confirm-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+function confirmDraftApproval() {
+  if (_activeDraftIdx === null || !_selectedOpt) return;
+  const labels = {new:'Nueva sección', existing:'Sección existente', replace:'Reemplazando componente'};
+  let drafts = loadDrafts();
+  // If using seeds, persist them first
+  if (!drafts.length) drafts = JSON.parse(JSON.stringify(SEED_DRAFTS));
+  drafts[_activeDraftIdx].status = 'approved';
+  drafts[_activeDraftIdx].addedTo = labels[_selectedOpt];
+  saveDrafts(drafts);
+  closeDraftModal();
+  renderDraftGrid();
+}
+
+function rejectDraft(idx) {
+  if (!confirm('¿Descartás este draft? Se eliminará de la lista.')) return;
+  let drafts = loadDrafts();
+  if (!drafts.length) drafts = JSON.parse(JSON.stringify(SEED_DRAFTS));
+  drafts.splice(idx, 1);
+  saveDrafts(drafts);
+  renderDraftGrid();
+}
+
+// Public API — use this to add a draft from code
+window.addDraft = function(name, description, previewHtml) {
+  let drafts = loadDrafts();
+  drafts.push({ name, description, preview: previewHtml || '', status: 'pending' });
+  saveDrafts(drafts);
+  renderDraftGrid();
+};
+
+renderDraftGrid();
 
 /* ────────────────────────────────
    MAP COMPONENT
