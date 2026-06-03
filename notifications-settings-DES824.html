@@ -333,12 +333,35 @@ button{font-family:inherit;cursor:pointer}
 .info-banner svg{width:14px;height:14px;color:#0052CC;flex-shrink:0;margin-top:1px}
 .info-banner a{color:#0052CC;font-weight:600}
 
-/* outbound stats */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#E1E6ED;border:1px solid #E1E6ED;border-radius:6px;overflow:hidden}
-.stat-cell{background:#fff;padding:14px 12px;text-align:center}
-.stat-cell.full{grid-column:1/-1}
-.stat-num{font-size:22px;font-weight:700;color:#39414D}
-.stat-lbl{font-size:11px;color:#67768D;margin-top:2px}
+/* ── OUTBOUND WIDGET (redesigned) ── */
+.ob-channel{margin-bottom:13px}
+.ob-channel:last-of-type{margin-bottom:0}
+.ob-header{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.ob-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ob-dot.active{background:#00875A}
+.ob-dot.anomaly{background:#FFAB00}
+.ob-dot.inactive{background:#C5D2E7}
+.ob-name{font:600 12px 'DM Sans';color:#39414D;flex:1;text-transform:uppercase;letter-spacing:.04em;font-size:10px}
+.ob-name.inactive{color:#8FA0BA}
+.ob-count{font:700 15px 'DM Sans';color:#39414D}
+.ob-count.inactive{color:#C5D2E7}
+.ob-delta{font:700 10px 'DM Sans';padding:1px 6px;border-radius:3px;flex-shrink:0}
+.ob-delta.up{background:#E3FCEF;color:#00875A}
+.ob-delta.down{background:#FFEBE6;color:#DE350B}
+.ob-track{height:5px;background:#F0F2F5;border-radius:3px;overflow:hidden;margin-bottom:5px}
+.ob-fill{height:100%;border-radius:3px}
+.ob-fill.active{background:#00875A}
+.ob-fill.anomaly{background:#FFE380;width:0%}
+.ob-fill.inactive{width:0%}
+.ob-hint{font:400 10px 'DM Sans';display:flex;align-items:center;gap:4px;line-height:1.4}
+.ob-hint.warn{color:#FF8B00}
+.ob-hint.muted{color:#8FA0BA}
+.ob-hint svg{width:10px;height:10px;flex-shrink:0}
+.ob-spark{margin-top:4px;margin-bottom:2px}
+.ob-divider{height:1px;background:#F0F2F5;margin:12px 0}
+.ob-rate{display:flex;align-items:center;gap:8px}
+.ob-rate-pill{font:600 11px 'DM Sans';background:#E3FCEF;color:#00875A;padding:3px 9px;border-radius:999px}
+.ob-rate-detail{font:400 11px 'DM Sans';color:#8FA0BA}
 .side-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#0052CC;margin-top:12px}
 .side-link svg{width:13px;height:13px}
 
@@ -994,16 +1017,73 @@ button{font-family:inherit;cursor:pointer}
         </div>
       </div>
 
-      <!-- Outbound (with link — fixes dead-end) -->
+      <!-- Outbound widget — redesigned with channel health + sparkline -->
       <div class="side-card">
-        <div class="side-section-label">Outbound · this month</div>
+        <div class="side-section-label">Outbound · June 2026</div>
         <div class="side-body">
-          <p class="side-desc">Notifications sent from the first day of the month to date.</p>
-          <div class="stats-grid">
-            <div class="stat-cell"><div class="stat-num">142</div><div class="stat-lbl">Emails sent</div></div>
-            <div class="stat-cell"><div class="stat-num">0</div><div class="stat-lbl">SMS sent</div></div>
-            <div class="stat-cell"><div class="stat-num">0</div><div class="stat-lbl">WhatsApp sent</div></div>
+
+          <!-- EMAIL — active, healthy -->
+          <div class="ob-channel">
+            <div class="ob-header">
+              <div class="ob-dot active"></div>
+              <span class="ob-name">Email</span>
+              <span class="ob-count">142</span>
+              <span class="ob-delta up">+18% vs May</span>
+            </div>
+            <div class="ob-track"><div class="ob-fill active" style="width:100%"></div></div>
+            <!-- 7-day sparkline (Mon → Sun) -->
+            <div class="ob-spark">
+              <svg width="100%" height="28" viewBox="0 0 270 28" preserveAspectRatio="none" style="display:block">
+                <!-- Area fill -->
+                <defs>
+                  <linearGradient id="spark-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00875A" stop-opacity=".18"/>
+                    <stop offset="100%" stop-color="#00875A" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <polygon points="0,28 0,18 45,14 90,20 135,10 180,14 225,6 270,4 270,28" fill="url(#spark-grad)"/>
+                <polyline points="0,18 45,14 90,20 135,10 180,14 225,6 270,4" fill="none" stroke="#00875A" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <!-- Today dot -->
+                <circle cx="270" cy="4" r="2.5" fill="#00875A"/>
+              </svg>
+              <div style="display:flex;justify-content:space-between;font:400 9px 'DM Sans';color:#8FA0BA;margin-top:1px">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span>
+              </div>
+            </div>
           </div>
+
+          <!-- SMS — active but ANOMALY (0 sends) -->
+          <div class="ob-channel">
+            <div class="ob-header">
+              <div class="ob-dot anomaly"></div>
+              <span class="ob-name">SMS</span>
+              <span class="ob-count" style="color:#FFAB00">0</span>
+            </div>
+            <div class="ob-track"><div class="ob-fill anomaly"></div></div>
+            <div class="ob-hint warn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Active channel — no sends this month
+            </div>
+          </div>
+
+          <!-- WHATSAPP — not enabled -->
+          <div class="ob-channel">
+            <div class="ob-header">
+              <div class="ob-dot inactive"></div>
+              <span class="ob-name inactive">WhatsApp</span>
+              <span class="ob-count inactive">0</span>
+            </div>
+            <div class="ob-track"><div class="ob-fill inactive"></div></div>
+            <div class="ob-hint muted">Not enabled for this account</div>
+          </div>
+
+          <!-- Delivery rate -->
+          <div class="ob-divider"></div>
+          <div class="ob-rate">
+            <span class="ob-rate-pill">97.9% delivered</span>
+            <span class="ob-rate-detail">3 bounced</span>
+          </div>
+
           <a href="#" class="side-link">View delivery logs
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
