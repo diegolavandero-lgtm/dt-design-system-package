@@ -24,6 +24,17 @@ function codeBlock(code) {
   return `<div class="code" style="margin-bottom:14px"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(code)}</pre></div>`;
 }
 
+function usageCard(snippet) {
+  if (!snippet) return '';
+  return `<div class="card flush" style="margin-bottom:24px">
+    <div class="card-hdr" style="display:flex;align-items:center;gap:8px">
+      <svg width="14" height="14" viewBox="0 0 32 32" fill="var(--b6)"><path d="M10,6L8.59,7.41,13.17,12H4v2h9.17L8.59,18.59,10,20l7-7Zm12,8,7,7-1.41,1.41L22.83,18H32V16H22.83l4.76-4.59L26,10Z"/></svg>
+      <span class="ttl">How to call in pages</span>
+    </div>
+    <div class="code" style="border-radius:0;margin:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(snippet)}</pre></div>
+  </div>`;
+}
+
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
@@ -677,6 +688,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
     return `
       ${sectionHeader(data)}
+      ${usageCard(data.pageUsage)}
       ${tabCard([
         {label:'Preview', content: previewTab},
         {label:'Code',    content: codeTab},
@@ -960,6 +972,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
     return `
       ${sectionHeader(data)}
+      ${usageCard(data.pageUsage)}
       ${tabCard([
         {label:'Preview', content: previewTab},
         {label:'Code',    content: codeTab},
@@ -1453,6 +1466,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
     return `
       ${sectionHeader(data)}
+      ${usageCard(data.pageUsage)}
       <div class="card">
         <div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center">
           ${badges}${chips}
@@ -1869,6 +1883,7 @@ function tblDemoTable(def) {
 
     return `
       ${sectionHeader(data)}
+      ${usageCard(data.pageUsage)}
 
       <div style="margin-bottom:28px">
         <div class="tbl-stitle">Row types</div>
@@ -2124,6 +2139,7 @@ function tblDemoTable(def) {
 
     return `
       ${sectionHeader(data)}
+      ${usageCard(data.pageUsage)}
       ${SB_STYLE}
       ${mt.note ? `<div class="bn in" style="margin-bottom:14px">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -2232,6 +2248,7 @@ function tblDemoTable(def) {
 
     return `
       ${sectionHeader(data)}
+      ${usageCard(data.pageUsage)}
       <div class="card" style="background:var(--n2);display:flex;flex-direction:column;gap:20px">
         ${productBars || `<div class="tbar">
           <div class="acts">${icons}</div>
@@ -2771,6 +2788,7 @@ async function downloadAllPins() {
 
     return `
       ${sectionHeader(data)}
+      ${usageCard(data.pageUsage)}
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Filter bar</h3>
       ${filterBar}
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Icon buttons</h3>

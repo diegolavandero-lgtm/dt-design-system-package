@@ -2,7 +2,14 @@
   "title": "Sidebar",
   "titleKey": "nav.sidebar",
   "description": "Collapsed 52px icon-only / Expanded 240px icons + labels. White bg, shadow. Selected: 6px #0052CC left border + rgba(75,130,250,0.08) bg. Hover on collapsed sidebar → expands. Source: styles/packages/sidebar/src/",
-  "keywords": ["sidebar", "navigation", "left", "menu", "collapsed", "expanded"],
+  "keywords": [
+    "sidebar",
+    "navigation",
+    "left",
+    "menu",
+    "collapsed",
+    "expanded"
+  ],
   "tokens": {
     "widthCollapsed": "52px",
     "widthExpanded": "240px",
@@ -34,84 +41,247 @@
       "name": "Last Mile",
       "color": "#F27B42",
       "items": [
-        { "icon": "report-data",      "label": "Resumen",                  "state": "selected" },
-        { "icon": "dashboard",        "label": "Actividad",                "state": "default"  },
-        { "icon": "network-3",        "label": "Rutas",                    "state": "default"  },
-        { "icon": "document-multiple","label": "Órdenes",                  "state": "default"  },
-        { "icon": "delivery",         "label": "Flota",                    "state": "default"  },
-        { "icon": "chart-column",     "label": "Estadísticas",             "state": "default"  },
-        { "icon": "notification",     "label": "Alertas",                  "state": "default"  },
-        { "icon": "events",           "label": "Clientes",                 "state": "default"  },
-        { "icon": "file-system",      "label": "Documentos",               "state": "default"  },
-        { "icon": "currency",         "label": "Módulo de Costos",         "state": "default"  },
-        { "icon": "return",           "label": "Logística inversa",        "state": "default"  },
-        { "icon": "white-paper",      "label": "Rendición de Documentos",  "state": "default"  },
-        { "icon": "store",            "label": "Retiro en tienda",         "state": "default"  },
-        { "icon": "document-import",  "label": "Importar",                 "state": "default"  },
-        { "icon": "currency",         "label": "Módulo de Costos (nuevo)", "state": "default"  }
+        {
+          "icon": "report-data",
+          "label": "Resumen",
+          "state": "selected"
+        },
+        {
+          "icon": "dashboard",
+          "label": "Actividad",
+          "state": "default"
+        },
+        {
+          "icon": "network-3",
+          "label": "Rutas",
+          "state": "default"
+        },
+        {
+          "icon": "document-multiple",
+          "label": "Órdenes",
+          "state": "default"
+        },
+        {
+          "icon": "delivery",
+          "label": "Flota",
+          "state": "default"
+        },
+        {
+          "icon": "chart-column",
+          "label": "Estadísticas",
+          "state": "default"
+        },
+        {
+          "icon": "notification",
+          "label": "Alertas",
+          "state": "default"
+        },
+        {
+          "icon": "events",
+          "label": "Clientes",
+          "state": "default"
+        },
+        {
+          "icon": "file-system",
+          "label": "Documentos",
+          "state": "default"
+        },
+        {
+          "icon": "currency",
+          "label": "Módulo de Costos",
+          "state": "default"
+        },
+        {
+          "icon": "return",
+          "label": "Logística inversa",
+          "state": "default"
+        },
+        {
+          "icon": "white-paper",
+          "label": "Rendición de Documentos",
+          "state": "default"
+        },
+        {
+          "icon": "store",
+          "label": "Retiro en tienda",
+          "state": "default"
+        },
+        {
+          "icon": "document-import",
+          "label": "Importar",
+          "state": "default"
+        },
+        {
+          "icon": "currency",
+          "label": "Módulo de Costos (nuevo)",
+          "state": "default"
+        }
       ],
       "settingsItems": [
-        { "icon": "report-data",      "label": "Resumen",                  "state": "default"  },
-        { "icon": "dashboard",        "label": "Actividad",                "state": "default"  },
-        { "icon": "network-3",        "label": "Rutas",                    "state": "default"  },
-        { "icon": "document-multiple","label": "Órdenes",                  "state": "default"  },
-        { "icon": "delivery",         "label": "Flota",                    "state": "default"  },
-        { "icon": "chart-column",     "label": "Estadísticas",             "state": "default"  },
-        { "icon": "notification",     "label": "Alertas",                  "state": "default"  },
-        { "icon": "events",           "label": "Clientes",                 "state": "default"  },
-        { "icon": "file-system",      "label": "Documentos",               "state": "default"  },
-        { "icon": "currency",         "label": "Módulo de Costos",         "state": "default"  },
-        { "icon": "return",           "label": "Logística inversa",        "state": "default"  },
-        { "icon": "white-paper",      "label": "Rendición de Documentos",  "state": "default"  },
-        { "icon": "store",            "label": "Retiro en tienda",         "state": "default"  },
-        { "icon": "document-import",  "label": "Importar",                 "state": "default"  },
-        { "icon": "currency",         "label": "Módulo de Costos (nuevo)", "state": "default"  }
+        {
+          "icon": "report-data",
+          "label": "Resumen",
+          "state": "default"
+        },
+        {
+          "icon": "dashboard",
+          "label": "Actividad",
+          "state": "default"
+        },
+        {
+          "icon": "network-3",
+          "label": "Rutas",
+          "state": "default"
+        },
+        {
+          "icon": "document-multiple",
+          "label": "Órdenes",
+          "state": "default"
+        },
+        {
+          "icon": "delivery",
+          "label": "Flota",
+          "state": "default"
+        },
+        {
+          "icon": "chart-column",
+          "label": "Estadísticas",
+          "state": "default"
+        },
+        {
+          "icon": "notification",
+          "label": "Alertas",
+          "state": "default"
+        },
+        {
+          "icon": "events",
+          "label": "Clientes",
+          "state": "default"
+        },
+        {
+          "icon": "file-system",
+          "label": "Documentos",
+          "state": "default"
+        },
+        {
+          "icon": "currency",
+          "label": "Módulo de Costos",
+          "state": "default"
+        },
+        {
+          "icon": "return",
+          "label": "Logística inversa",
+          "state": "default"
+        },
+        {
+          "icon": "white-paper",
+          "label": "Rendición de Documentos",
+          "state": "default"
+        },
+        {
+          "icon": "store",
+          "label": "Retiro en tienda",
+          "state": "default"
+        },
+        {
+          "icon": "document-import",
+          "label": "Importar",
+          "state": "default"
+        },
+        {
+          "icon": "currency",
+          "label": "Módulo de Costos (nuevo)",
+          "state": "default"
+        }
       ],
       "settingsPanel": {
         "groups": [
           {
             "label": "Cuentas",
             "items": [
-              { "label": "Configuración de cuenta", "state": "selected" }
+              {
+                "label": "Configuración de cuenta",
+                "state": "selected"
+              }
             ]
           },
           {
             "label": "Usuarios",
             "items": [
-              { "label": "Usuarios web",    "count": 18 },
-              { "label": "Usuarios móviles","count": 59 }
+              {
+                "label": "Usuarios web",
+                "count": 18
+              },
+              {
+                "label": "Usuarios móviles",
+                "count": 59
+              }
             ]
           },
           {
             "label": "Gestionar",
             "items": [
-              { "label": "Vehículos" },
-              { "label": "Subestados" },
-              { "label": "Pruebas de entrega" },
-              { "label": "Formularios de ruta" },
-              { "label": "Centros de distribución" },
-              { "label": "Agrupaciones" },
-              { "label": "Alertas" },
-              { "label": "Notificaciones" },
-              { "label": "Configuración de Operación" }
+              {
+                "label": "Vehículos"
+              },
+              {
+                "label": "Subestados"
+              },
+              {
+                "label": "Pruebas de entrega"
+              },
+              {
+                "label": "Formularios de ruta"
+              },
+              {
+                "label": "Centros de distribución"
+              },
+              {
+                "label": "Agrupaciones"
+              },
+              {
+                "label": "Alertas"
+              },
+              {
+                "label": "Notificaciones"
+              },
+              {
+                "label": "Configuración de Operación"
+              }
             ]
           },
           {
             "label": "Configuración avanzada",
             "items": [
-              { "label": "Importar Órdenes" },
-              { "label": "Campos personalizados" },
-              { "label": "Llaves API" },
-              { "label": "Webhooks" },
-              { "label": "Etiquetas de órdenes" },
-              { "label": "Seguridad" },
-              { "label": "Módulo de costo" }
+              {
+                "label": "Importar Órdenes"
+              },
+              {
+                "label": "Campos personalizados"
+              },
+              {
+                "label": "Llaves API"
+              },
+              {
+                "label": "Webhooks"
+              },
+              {
+                "label": "Etiquetas de órdenes"
+              },
+              {
+                "label": "Seguridad"
+              },
+              {
+                "label": "Módulo de costo"
+              }
             ]
           },
           {
             "label": "Widget",
             "items": [
-              { "label": "Seguimiento de pedidos" }
+              {
+                "label": "Seguimiento de pedidos"
+              }
             ]
           }
         ],
@@ -123,44 +293,103 @@
       "name": "Planner Pro",
       "color": "#47D09A",
       "items": [
-        { "icon": "plan",            "label": "Planificador", "state": "selected" },
-        { "icon": "recently-viewed", "label": "Historial",    "state": "default"  },
-        { "icon": "document-import", "label": "Importador",   "state": "default"  },
-        { "icon": "data-base",       "label": "Bases",        "state": "default"  },
-        { "divider": true },
-        { "icon": "settings",        "label": "Ajustes",      "state": "default"  }
+        {
+          "icon": "plan",
+          "label": "Planificador",
+          "state": "selected"
+        },
+        {
+          "icon": "recently-viewed",
+          "label": "Historial",
+          "state": "default"
+        },
+        {
+          "icon": "document-import",
+          "label": "Importador",
+          "state": "default"
+        },
+        {
+          "icon": "data-base",
+          "label": "Bases",
+          "state": "default"
+        },
+        {
+          "divider": true
+        },
+        {
+          "icon": "settings",
+          "label": "Ajustes",
+          "state": "default"
+        }
       ],
       "settingsItems": [
-        { "icon": "plan",            "label": "Planificador", "state": "default" },
-        { "icon": "recently-viewed", "label": "Historial",    "state": "default" },
-        { "icon": "document-import", "label": "Importador",   "state": "default" },
-        { "icon": "data-base",       "label": "Bases",        "state": "default" }
+        {
+          "icon": "plan",
+          "label": "Planificador",
+          "state": "default"
+        },
+        {
+          "icon": "recently-viewed",
+          "label": "Historial",
+          "state": "default"
+        },
+        {
+          "icon": "document-import",
+          "label": "Importador",
+          "state": "default"
+        },
+        {
+          "icon": "data-base",
+          "label": "Bases",
+          "state": "default"
+        }
       ],
       "settingsPanel": {
         "groups": [
           {
             "label": "Cuenta",
             "items": [
-              { "label": "Configuración de cuenta", "state": "selected" },
-              { "label": "Vehículos utilizados" }
+              {
+                "label": "Configuración de cuenta",
+                "state": "selected"
+              },
+              {
+                "label": "Vehículos utilizados"
+              }
             ]
           },
           {
             "label": "Gestionar",
             "items": [
-              { "label": "Vehículos" },
-              { "label": "Centros de despacho" },
-              { "label": "Geocercas" },
-              { "label": "Parámetros planificador" }
+              {
+                "label": "Vehículos"
+              },
+              {
+                "label": "Centros de despacho"
+              },
+              {
+                "label": "Geocercas"
+              },
+              {
+                "label": "Parámetros planificador"
+              }
             ]
           },
           {
             "label": "Configuración avanzada",
             "items": [
-              { "label": "Grupos de tags" },
-              { "label": "API keys" },
-              { "label": "Webhooks" },
-              { "label": "Agrupaciones" }
+              {
+                "label": "Grupos de tags"
+              },
+              {
+                "label": "API keys"
+              },
+              {
+                "label": "Webhooks"
+              },
+              {
+                "label": "Agrupaciones"
+              }
             ]
           }
         ],
@@ -172,21 +401,70 @@
       "name": "On Demand",
       "color": "#6B9AFF",
       "items": [
-        { "icon": "grid",      "label": "Dashboard",   "state": "selected" },
-        { "icon": "package",   "label": "Pedidos",     "state": "default" },
-        { "icon": "route",     "label": "Rutas",       "state": "default" },
-        { "icon": "truck",     "label": "Flota",       "state": "default" },
-        { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
-        { "icon": "bell",      "label": "Alertas",     "state": "default" }
+        {
+          "icon": "grid",
+          "label": "Dashboard",
+          "state": "selected"
+        },
+        {
+          "icon": "package",
+          "label": "Pedidos",
+          "state": "default"
+        },
+        {
+          "icon": "route",
+          "label": "Rutas",
+          "state": "default"
+        },
+        {
+          "icon": "truck",
+          "label": "Flota",
+          "state": "default"
+        },
+        {
+          "icon": "chart-bar",
+          "label": "Analítica",
+          "state": "default"
+        },
+        {
+          "icon": "bell",
+          "label": "Alertas",
+          "state": "default"
+        }
       ],
       "settingsItems": [
-        { "icon": "grid",      "label": "Dashboard",   "state": "default" },
-        { "icon": "package",   "label": "Pedidos",     "state": "default" },
-        { "icon": "route",     "label": "Rutas",       "state": "default" },
-        { "icon": "truck",     "label": "Flota",       "state": "default" },
-        { "icon": "chart-bar", "label": "Analítica",   "state": "default" },
-        { "icon": "bell",      "label": "Alertas",     "state": "default" }
+        {
+          "icon": "grid",
+          "label": "Dashboard",
+          "state": "default"
+        },
+        {
+          "icon": "package",
+          "label": "Pedidos",
+          "state": "default"
+        },
+        {
+          "icon": "route",
+          "label": "Rutas",
+          "state": "default"
+        },
+        {
+          "icon": "truck",
+          "label": "Flota",
+          "state": "default"
+        },
+        {
+          "icon": "chart-bar",
+          "label": "Analítica",
+          "state": "default"
+        },
+        {
+          "icon": "bell",
+          "label": "Alertas",
+          "state": "default"
+        }
       ]
     }
-  ]
+  ],
+  "pageUsage": "// 1. Inject sbStyle CSS (copy from tablepage renderer in renderers.js)\n// 2. Build sbItems and render .sbx\n\nconst sbItems = [\n  { icon:'dashboard',         label:'Actividad' },\n  { icon:'network-3',         label:'Rutas' },\n  { icon:'document-multiple', label:'Órdenes', sel:true },\n  { icon:'delivery',          label:'Flota' },\n  { divider: true },\n  { icon:'settings',          label:'Ajustes' },\n];\n\nconst sidebarHtml = sbItems.map(it => {\n  if (it.divider) return '<div class=\"sbx-sep\"></div>';\n  const sel = it.sel ? ' sel' : '';\n  return `<div class=\"sbx-row\\${sel}\">\n    <div class=\"sbx-bar\"></div>\n    <div class=\"sbx-bg\">\n      <div class=\"sbx-ico\">\\${iconSvg(it.icon, 18)}</div>\n      <span class=\"sbx-lbl\">\\${it.label}</span>\n    </div>\n  </div>`;\n}).join('');\n\n// In page layout:\n<div class=\"sbx\">\\${sidebarHtml}</div>"
 }

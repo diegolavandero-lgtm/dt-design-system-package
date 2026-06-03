@@ -2,7 +2,22 @@
   "title": "Inputs & Dropdowns",
   "titleKey": "nav.inputs",
   "description": "32px height text inputs and dropdowns. Inputs: with-label group (forms) and without-label group (filters). Dropdowns: single-select and multiselect with border / borderless themes.",
-  "keywords": ["inputs", "forms", "text", "field", "filter", "search", "label", "placeholder", "validation", "dropdown", "select", "multiselect", "combobox", "chip"],
+  "keywords": [
+    "inputs",
+    "forms",
+    "text",
+    "field",
+    "filter",
+    "search",
+    "label",
+    "placeholder",
+    "validation",
+    "dropdown",
+    "select",
+    "multiselect",
+    "combobox",
+    "chip"
+  ],
   "tokens": {
     "height": "32px",
     "borderRadius": "6px",
@@ -26,13 +41,52 @@
       "label": "With label",
       "description": "Used in forms. A caption label sits above the input.",
       "variants": [
-        { "id": "default",  "label": "Default",      "state": "default",  "placeholder": "Placeholder" },
-        { "id": "filled",   "label": "Filled",        "state": "filled",   "value": "example" },
-        { "id": "focused",  "label": "Focused",       "state": "focused",  "placeholder": "Placeholder" },
-        { "id": "error",    "label": "Error",         "state": "error",    "value": "example", "trailingIcon": "error", "helperText": "Optional helper text" },
-        { "id": "valid",    "label": "Valid",         "state": "valid",    "value": "example", "trailingIcon": "success" },
-        { "id": "disabled", "label": "Disabled",      "state": "disabled", "value": "example" },
-        { "id": "tooltip",  "label": "With tooltip",  "state": "default",  "placeholder": "Placeholder", "labelTooltip": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor." }
+        {
+          "id": "default",
+          "label": "Default",
+          "state": "default",
+          "placeholder": "Placeholder"
+        },
+        {
+          "id": "filled",
+          "label": "Filled",
+          "state": "filled",
+          "value": "example"
+        },
+        {
+          "id": "focused",
+          "label": "Focused",
+          "state": "focused",
+          "placeholder": "Placeholder"
+        },
+        {
+          "id": "error",
+          "label": "Error",
+          "state": "error",
+          "value": "example",
+          "trailingIcon": "error",
+          "helperText": "Optional helper text"
+        },
+        {
+          "id": "valid",
+          "label": "Valid",
+          "state": "valid",
+          "value": "example",
+          "trailingIcon": "success"
+        },
+        {
+          "id": "disabled",
+          "label": "Disabled",
+          "state": "disabled",
+          "value": "example"
+        },
+        {
+          "id": "tooltip",
+          "label": "With tooltip",
+          "state": "default",
+          "placeholder": "Placeholder",
+          "labelTooltip": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+        }
       ]
     },
     {
@@ -40,17 +94,55 @@
       "label": "Without label",
       "description": "Used in filters and compact contexts. No label above the field.",
       "variants": [
-        { "id": "default",  "label": "Default",   "state": "default",  "placeholder": "Buscar..." },
-        { "id": "filled",   "label": "Filled",    "state": "filled",   "value": "Filtro activo" },
-        { "id": "focused",  "label": "Focused",   "state": "focused",  "placeholder": "Buscar..." },
-        { "id": "icon",     "label": "With icon", "state": "default",  "placeholder": "Buscar...", "trailingIcon": "search" },
-        { "id": "disabled", "label": "Disabled",  "state": "disabled", "value": "Valor bloqueado" }
+        {
+          "id": "default",
+          "label": "Default",
+          "state": "default",
+          "placeholder": "Buscar..."
+        },
+        {
+          "id": "filled",
+          "label": "Filled",
+          "state": "filled",
+          "value": "Filtro activo"
+        },
+        {
+          "id": "focused",
+          "label": "Focused",
+          "state": "focused",
+          "placeholder": "Buscar..."
+        },
+        {
+          "id": "icon",
+          "label": "With icon",
+          "state": "default",
+          "placeholder": "Buscar...",
+          "trailingIcon": "search"
+        },
+        {
+          "id": "disabled",
+          "label": "Disabled",
+          "state": "disabled",
+          "value": "Valor bloqueado"
+        }
       ]
     }
   ],
   "code": "/* ── With label (forms) ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <input\n    class=\"dt-input\"\n    type=\"text\"\n    placeholder=\"Placeholder\"\n    value={value}\n    onChange={e => setValue(e.target.value)}\n  />\n</div>\n\n/* ── Label with tooltip ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">\n    Label\n    <Tooltip content=\"Help text here\"><InfoIcon /></Tooltip>\n  </label>\n  <input class=\"dt-input\" type=\"text\" />\n</div>\n\n/* ── Error state ── */\n<div class=\"dt-input-group\">\n  <label class=\"dt-input-label\">Label</label>\n  <div class=\"dt-input-wrap\">\n    <input class=\"dt-input dt-input--error\" type=\"text\" value={value} />\n    <ErrorFilledIcon class=\"dt-input-icon dt-input-icon--error\" />\n  </div>\n  <span class=\"dt-input-helper dt-input-helper--error\">Optional helper text</span>\n</div>\n\n/* ── Valid state ── */\n<div class=\"dt-input-wrap\">\n  <input class=\"dt-input dt-input--valid\" type=\"text\" value={value} />\n  <CheckmarkFilledIcon class=\"dt-input-icon dt-input-icon--valid\" />\n</div>\n\n/* ── Without label (filters) ── */\n<input\n  class=\"dt-input\"\n  type=\"text\"\n  placeholder=\"Buscar...\"\n  value={value}\n  onChange={e => setValue(e.target.value)}\n/>\n\n/* ── Disabled ── */\n<input class=\"dt-input\" type=\"text\" value=\"Valor bloqueado\" disabled />\n\n/* ── CSS tokens ── */\n.dt-input {\n  height: 32px;\n  padding: 0 10px;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  background: #fff;\n  font: 400 14px/20px var(--font-sans);\n  color: var(--n7);\n  width: 100%;\n}\n.dt-input::placeholder { color: var(--n6); }\n.dt-input:focus {\n  outline: none;\n  border: 2px solid var(--b6);\n}\n.dt-input--error { border-color: var(--r6); }\n.dt-input--valid  { border-color: var(--g5); }\n.dt-input:disabled {\n  background: var(--n1);\n  cursor: not-allowed;\n  opacity: .6;\n}\n.dt-input-label {\n  font: 400 12px/16px var(--font-sans);\n  color: var(--n7);\n  margin-bottom: 4px;\n  display: flex;\n  align-items: center;\n  gap: 4px;\n}\n.dt-input-helper {\n  font: 400 12px/16px var(--font-sans);\n  color: var(--n5);\n  margin-top: 3px;\n}\n.dt-input-helper--error { color: var(--r6); }",
-  "dropdownOptions": ["Todos", "Esta semana", "Este mes", "Últimos 3 meses", "Rango personalizado"],
-  "dropdownMultiOptions": ["Todos", "Santiago", "Valparaíso", "Biobío", "Maule"],
+  "dropdownOptions": [
+    "Todos",
+    "Esta semana",
+    "Este mes",
+    "Últimos 3 meses",
+    "Rango personalizado"
+  ],
+  "dropdownMultiOptions": [
+    "Todos",
+    "Santiago",
+    "Valparaíso",
+    "Biobío",
+    "Maule"
+  ],
   "dropdownTokens": {
     "height": "32px",
     "borderRadius": "6px",
@@ -74,5 +166,6 @@
     "chipHeight": "20px",
     "chipRadius": "999px"
   },
-  "dropdownCode": "/* ── Single select ── */\n<Select\n  options={options}\n  value={value}\n  onChange={setValue}\n  placeholder='Select an option...'\n  theme='border'\n/>\n\n/* ── Borderless theme ── */\n<Select\n  theme='borderless'\n  options={options}\n  value={value}\n  onChange={setValue}\n/>\n\n/* ── With leading icon ── */\n<Select\n  leadingIcon={<ListIcon />}\n  options={options}\n  value={value}\n/>\n\n/* ── Multiselect ── */\n<MultiSelect\n  options={options}\n  value={selected}          // string[]\n  onChange={setSelected}\n  placeholder='Select options...'\n/>\n\n/* ── CSS tokens ── */\n.dt-select {\n  height: 32px;\n  padding: 0 10px;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  background: #fff;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  cursor: pointer;\n}\n.dt-select:hover { background: var(--n2); }\n.dt-select.open   { border: 2px solid var(--b6); }\n.dt-select.filled { border-color: var(--n5); }\n.dt-select:disabled { background: var(--n1); opacity: .55; }\n\n.dt-select--borderless {\n  border-color: transparent;\n  background: transparent;\n}\n.dt-select--borderless:hover { background: var(--n2); }\n\n.dt-select-chip {\n  height: 20px;\n  padding: 0 6px;\n  background: var(--b1);\n  border: 1px solid var(--b3);\n  border-radius: 999px;\n  font: 400 12px/1 var(--font-sans);\n  color: var(--b6);\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n\n.dt-select-menu {\n  position: absolute;\n  top: calc(100% + 4px);\n  left: 0;\n  right: 0;\n  background: #fff;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  box-shadow: 0 4px 16px rgba(0,0,0,.12);\n  z-index: 100;\n  padding: 4px 0;\n}\n.dt-select-option {\n  height: 36px;\n  padding: 0 12px;\n  display: flex;\n  align-items: center;\n  font: 400 14px/20px var(--font-sans);\n  color: var(--n7);\n  cursor: pointer;\n}\n.dt-select-option:hover { background: var(--b1); color: var(--b7); }"
+  "dropdownCode": "/* ── Single select ── */\n<Select\n  options={options}\n  value={value}\n  onChange={setValue}\n  placeholder='Select an option...'\n  theme='border'\n/>\n\n/* ── Borderless theme ── */\n<Select\n  theme='borderless'\n  options={options}\n  value={value}\n  onChange={setValue}\n/>\n\n/* ── With leading icon ── */\n<Select\n  leadingIcon={<ListIcon />}\n  options={options}\n  value={value}\n/>\n\n/* ── Multiselect ── */\n<MultiSelect\n  options={options}\n  value={selected}          // string[]\n  onChange={setSelected}\n  placeholder='Select options...'\n/>\n\n/* ── CSS tokens ── */\n.dt-select {\n  height: 32px;\n  padding: 0 10px;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  background: #fff;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  cursor: pointer;\n}\n.dt-select:hover { background: var(--n2); }\n.dt-select.open   { border: 2px solid var(--b6); }\n.dt-select.filled { border-color: var(--n5); }\n.dt-select:disabled { background: var(--n1); opacity: .55; }\n\n.dt-select--borderless {\n  border-color: transparent;\n  background: transparent;\n}\n.dt-select--borderless:hover { background: var(--n2); }\n\n.dt-select-chip {\n  height: 20px;\n  padding: 0 6px;\n  background: var(--b1);\n  border: 1px solid var(--b3);\n  border-radius: 999px;\n  font: 400 12px/1 var(--font-sans);\n  color: var(--b6);\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n\n.dt-select-menu {\n  position: absolute;\n  top: calc(100% + 4px);\n  left: 0;\n  right: 0;\n  background: #fff;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  box-shadow: 0 4px 16px rgba(0,0,0,.12);\n  z-index: 100;\n  padding: 4px 0;\n}\n.dt-select-option {\n  height: 36px;\n  padding: 0 12px;\n  display: flex;\n  align-items: center;\n  font: 400 14px/20px var(--font-sans);\n  color: var(--n7);\n  cursor: pointer;\n}\n.dt-select-option:hover { background: var(--b1); color: var(--b7); }",
+  "pageUsage": "// Text input\n<input type=\"text\" placeholder=\"Label\"\n  style=\"width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;\n    font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);\n    box-sizing:border-box;outline:none;padding:0 10px\"\n  onfocus=\"this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'\"\n  onblur=\"this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'\"\n  onmouseenter=\"if(document.activeElement!==this)this.style.background='var(--n2)'\"\n  onmouseleave=\"if(document.activeElement!==this)this.style.background='#fff'\">\n\n// Dropdown — ⚠️ never use <select>. Use dt-drop-wrap:\n<div class=\"dt-drop-wrap\" style=\"position:relative\">\n  <div class=\"dt-dtrigger\" data-theme=\"border\"\n    onclick=\"dtDrop(this.parentElement)\"\n    onmouseenter=\"if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'\"\n    onmouseleave=\"if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'\"\n    style=\"display:flex;align-items:center;height:32px;padding:0 10px;\n      border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box\">\n    <span class=\"dt-dlabel\" style=\"flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)\">\n      Placeholder\n    </span>\n    <span style=\"color:var(--n5);display:flex;flex-shrink:0\">[CHEVRON SVG]</span>\n  </div>\n  <div class=\"dt-dmenu\" style=\"display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;\n    background:#fff;border:1px solid var(--n3);border-radius:6px;\n    box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0\">\n    <div onclick=\"dtPickOpt(this)\" data-val=\"Option\"\n      onmouseenter=\"this.style.background='var(--b1)';this.style.color='var(--b7)'\"\n      onmouseleave=\"this.style.background='';this.style.color='var(--n7)'\"\n      style=\"height:36px;padding:0 12px;display:flex;align-items:center;\n        font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer\">\n      Option\n    </div>\n  </div>\n</div>"
 }

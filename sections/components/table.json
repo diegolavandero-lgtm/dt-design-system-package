@@ -2,20 +2,35 @@
   "title": "Tables",
   "titleKey": "nav.table",
   "description": "Data tables for structured content. Cell height 44px. Header on N3. White row bg. Hover → N2. Selected → B1 with G5 left stripe. Actions column is sticky at the right edge.",
-  "keywords": ["table", "rows", "hover", "selected", "columns", "cells", "badge", "avatar", "link", "actions", "switch", "rating", "chip", "skeleton"],
+  "keywords": [
+    "table",
+    "rows",
+    "hover",
+    "selected",
+    "columns",
+    "cells",
+    "badge",
+    "avatar",
+    "link",
+    "actions",
+    "switch",
+    "rating",
+    "chip",
+    "skeleton"
+  ],
   "tokens": {
-    "cellHeight":      "44px",
-    "headerHeight":    "40px",
-    "headerBg":        "#E1E6ED  (N3)",
-    "rowBg":           "#FFFFFF",
-    "rowHoverBg":      "#F0F2F5  (N2)",
-    "rowSelectedBg":   "#EDF5FF  (B1)",
-    "selectedStripe":  "#36B37E  (G5)  ·  3px inset-left",
-    "divider":         "#E1E6ED  (N3)",
-    "borderRadius":    "8px",
-    "fontSize":        "13px",
-    "fontWeightRow":   "400",
-    "fontWeightHeader":"700"
+    "cellHeight": "44px",
+    "headerHeight": "40px",
+    "headerBg": "#E1E6ED  (N3)",
+    "rowBg": "#FFFFFF",
+    "rowHoverBg": "#F0F2F5  (N2)",
+    "rowSelectedBg": "#EDF5FF  (B1)",
+    "selectedStripe": "#36B37E  (G5)  ·  3px inset-left",
+    "divider": "#E1E6ED  (N3)",
+    "borderRadius": "8px",
+    "fontSize": "13px",
+    "fontWeightRow": "400",
+    "fontWeightHeader": "700"
   },
   "rowTypes": [
     {
@@ -52,247 +67,908 @@
     }
   ],
   "cellTypes": [
-    { "id": "checkbox",        "label": "Checkbox",              "description": "Row selection. 14px, accent-color B5." },
-    { "id": "header",          "label": "Header cell",           "description": "Column label. Bold, bg N3. Sortable variant adds sort caret." },
-    { "id": "header-sub",      "label": "Header + subtext",      "description": "Header with small gray category text above the column name." },
-    { "id": "text",            "label": "Text",                  "description": "Plain text. Color N7. Font 400 13px." },
-    { "id": "text-secondary",  "label": "Text secondary",        "description": "Muted text. Color N5. Used for — placeholders." },
-    { "id": "icon-text",       "label": "Icon left + text",      "description": "14px icon on the left + label. Used for locations, categories." },
-    { "id": "text-icon-right", "label": "Text + icon right",     "description": "Label + 14px icon on the right. Used for external links, expand actions." },
-    { "id": "sub-header",      "label": "Sub header + text",     "description": "Small gray label on top, primary content below. Useful for categorized cells." },
-    { "id": "text-sub",        "label": "Text + sub",            "description": "Primary text + smaller gray subtext below. Two-line cell." },
-    { "id": "text-error",      "label": "Text + error",          "description": "Primary text + red error subtext below." },
-    { "id": "text-icon-error", "label": "Icon + text + error",   "description": "Red error icon + primary text + red error subtext below." },
-    { "id": "link",            "label": "Link",                  "description": "Clickable text. Color B7, font-weight 600." },
-    { "id": "badge",           "label": "Badge / Pill",          "description": "Status badge. Variants: success, warning, danger, info, neutral.",
+    {
+      "id": "checkbox",
+      "label": "Checkbox",
+      "description": "Row selection. 14px, accent-color B5."
+    },
+    {
+      "id": "header",
+      "label": "Header cell",
+      "description": "Column label. Bold, bg N3. Sortable variant adds sort caret."
+    },
+    {
+      "id": "header-sub",
+      "label": "Header + subtext",
+      "description": "Header with small gray category text above the column name."
+    },
+    {
+      "id": "text",
+      "label": "Text",
+      "description": "Plain text. Color N7. Font 400 13px."
+    },
+    {
+      "id": "text-secondary",
+      "label": "Text secondary",
+      "description": "Muted text. Color N5. Used for — placeholders."
+    },
+    {
+      "id": "icon-text",
+      "label": "Icon left + text",
+      "description": "14px icon on the left + label. Used for locations, categories."
+    },
+    {
+      "id": "text-icon-right",
+      "label": "Text + icon right",
+      "description": "Label + 14px icon on the right. Used for external links, expand actions."
+    },
+    {
+      "id": "sub-header",
+      "label": "Sub header + text",
+      "description": "Small gray label on top, primary content below. Useful for categorized cells."
+    },
+    {
+      "id": "text-sub",
+      "label": "Text + sub",
+      "description": "Primary text + smaller gray subtext below. Two-line cell."
+    },
+    {
+      "id": "text-error",
+      "label": "Text + error",
+      "description": "Primary text + red error subtext below."
+    },
+    {
+      "id": "text-icon-error",
+      "label": "Icon + text + error",
+      "description": "Red error icon + primary text + red error subtext below."
+    },
+    {
+      "id": "link",
+      "label": "Link",
+      "description": "Clickable text. Color B7, font-weight 600."
+    },
+    {
+      "id": "badge",
+      "label": "Badge / Pill",
+      "description": "Status badge. Variants: success, warning, danger, info, neutral.",
       "badgeVariants": [
-        { "label": "Activo",      "variant": "success" },
-        { "label": "Advertencia", "variant": "warning" },
-        { "label": "Bloqueado",   "variant": "danger"  },
-        { "label": "Info",        "variant": "info"    },
-        { "label": "Inactivo",    "variant": "neutral" }
+        {
+          "label": "Activo",
+          "variant": "success"
+        },
+        {
+          "label": "Advertencia",
+          "variant": "warning"
+        },
+        {
+          "label": "Bloqueado",
+          "variant": "danger"
+        },
+        {
+          "label": "Info",
+          "variant": "info"
+        },
+        {
+          "label": "Inactivo",
+          "variant": "neutral"
+        }
       ]
     },
-    { "id": "avatar-text",     "label": "Avatar + text",         "description": "28px filled circle with initials + name." },
-    { "id": "date",            "label": "Date",                  "description": "Formatted date string. Format: DD-MM-YY HH:MM hrs." },
-    { "id": "number",          "label": "Number",                "description": "Right-aligned numeric. Font tabular-nums." },
-    { "id": "rating",          "label": "Rating stars",          "description": "1–5 interactive star rating. Click to set." },
-    { "id": "switch",          "label": "Switch",                "description": "Toggle switch. Click to toggle on/off." },
-    { "id": "switch-text",     "label": "Switch + text",         "description": "Toggle switch with inline text label." },
-    { "id": "chip-lg",         "label": "Chip large",            "description": "Generic large chip tag. Background N2, border N3." },
-    { "id": "chip-sm",         "label": "Chip small",            "description": "Generic small chip tag. Compact padding, 11px font." },
-    { "id": "pill-new",        "label": "Pill · New",            "description": "Blue NEW pill indicator. Uppercase 9px, B1 bg." },
-    { "id": "loading-bar",     "label": "Loading bar",           "description": "Horizontal progress bar with percentage label. Value 0–100." },
-    { "id": "lazy",            "label": "Lazy load",             "description": "Skeleton shimmer for both header and data cells while loading." },
-    { "id": "actions",         "label": "Actions",               "description": "Max 2 icon-only action buttons. Sticky at the right edge of the table." }
+    {
+      "id": "avatar-text",
+      "label": "Avatar + text",
+      "description": "28px filled circle with initials + name."
+    },
+    {
+      "id": "date",
+      "label": "Date",
+      "description": "Formatted date string. Format: DD-MM-YY HH:MM hrs."
+    },
+    {
+      "id": "number",
+      "label": "Number",
+      "description": "Right-aligned numeric. Font tabular-nums."
+    },
+    {
+      "id": "rating",
+      "label": "Rating stars",
+      "description": "1–5 interactive star rating. Click to set."
+    },
+    {
+      "id": "switch",
+      "label": "Switch",
+      "description": "Toggle switch. Click to toggle on/off."
+    },
+    {
+      "id": "switch-text",
+      "label": "Switch + text",
+      "description": "Toggle switch with inline text label."
+    },
+    {
+      "id": "chip-lg",
+      "label": "Chip large",
+      "description": "Generic large chip tag. Background N2, border N3."
+    },
+    {
+      "id": "chip-sm",
+      "label": "Chip small",
+      "description": "Generic small chip tag. Compact padding, 11px font."
+    },
+    {
+      "id": "pill-new",
+      "label": "Pill · New",
+      "description": "Blue NEW pill indicator. Uppercase 9px, B1 bg."
+    },
+    {
+      "id": "loading-bar",
+      "label": "Loading bar",
+      "description": "Horizontal progress bar with percentage label. Value 0–100."
+    },
+    {
+      "id": "lazy",
+      "label": "Lazy load",
+      "description": "Skeleton shimmer for both header and data cells while loading."
+    },
+    {
+      "id": "actions",
+      "label": "Actions",
+      "description": "Max 2 icon-only action buttons. Sticky at the right edge of the table."
+    }
   ],
   "columnTypeMap": {
-    "checkbox":        ["", "☐", "select", "check", "seleccionar"],
-    "avatar-text":     ["nombre", "name", "driver", "conductor", "operador", "user", "usuario", "cliente", "customer"],
-    "icon-text":       ["dirección", "address", "origen", "destino", "origin", "destination", "ubicación", "location"],
-    "link":            ["#", "id", "orden", "order", "pedido", "ruta", "route", "folio", "código", "code"],
-    "badge":           ["estado", "status", "state", "prioridad", "priority", "tipo", "type"],
-    "date":            ["fecha", "date", "created_at", "updated_at", "última", "last", "hora", "time", "conexión", "entrega"],
-    "number":          ["cantidad", "qty", "count", "total", "km", "stops", "paradas", "distance", "distancia", "bultos"],
-    "switch":          ["activo", "active", "enabled", "habilitado", "toggle"],
-    "rating":          ["rating", "calificación", "score", "puntuación", "stars"],
-    "loading-bar":     ["progreso", "progress", "completion", "completado", "%"],
-    "actions":         ["acciones", "actions", "opciones", "options", "…", "more"]
+    "checkbox": [
+      "",
+      "☐",
+      "select",
+      "check",
+      "seleccionar"
+    ],
+    "avatar-text": [
+      "nombre",
+      "name",
+      "driver",
+      "conductor",
+      "operador",
+      "user",
+      "usuario",
+      "cliente",
+      "customer"
+    ],
+    "icon-text": [
+      "dirección",
+      "address",
+      "origen",
+      "destino",
+      "origin",
+      "destination",
+      "ubicación",
+      "location"
+    ],
+    "link": [
+      "#",
+      "id",
+      "orden",
+      "order",
+      "pedido",
+      "ruta",
+      "route",
+      "folio",
+      "código",
+      "code"
+    ],
+    "badge": [
+      "estado",
+      "status",
+      "state",
+      "prioridad",
+      "priority",
+      "tipo",
+      "type"
+    ],
+    "date": [
+      "fecha",
+      "date",
+      "created_at",
+      "updated_at",
+      "última",
+      "last",
+      "hora",
+      "time",
+      "conexión",
+      "entrega"
+    ],
+    "number": [
+      "cantidad",
+      "qty",
+      "count",
+      "total",
+      "km",
+      "stops",
+      "paradas",
+      "distance",
+      "distancia",
+      "bultos"
+    ],
+    "switch": [
+      "activo",
+      "active",
+      "enabled",
+      "habilitado",
+      "toggle"
+    ],
+    "rating": [
+      "rating",
+      "calificación",
+      "score",
+      "puntuación",
+      "stars"
+    ],
+    "loading-bar": [
+      "progreso",
+      "progress",
+      "completion",
+      "completado",
+      "%"
+    ],
+    "actions": [
+      "acciones",
+      "actions",
+      "opciones",
+      "options",
+      "…",
+      "more"
+    ]
   },
   "rowTypeDemo": {
     "columns": [
-      { "label": "",               "type": "checkbox"     },
-      { "label": "Nombre",         "type": "avatar-text", "sortable": true, "sort": "asc" },
-      { "label": "Estado",         "type": "badge"        },
-      { "label": "Rol",            "type": "text",        "sortable": true  },
-      { "label": "Última conexión","type": "date",        "sortable": true  },
-      { "label": "Acciones",       "type": "actions"      }
+      {
+        "label": "",
+        "type": "checkbox"
+      },
+      {
+        "label": "Nombre",
+        "type": "avatar-text",
+        "sortable": true,
+        "sort": "asc"
+      },
+      {
+        "label": "Estado",
+        "type": "badge"
+      },
+      {
+        "label": "Rol",
+        "type": "text",
+        "sortable": true
+      },
+      {
+        "label": "Última conexión",
+        "type": "date",
+        "sortable": true
+      },
+      {
+        "label": "Acciones",
+        "type": "actions"
+      }
     ],
     "rows": [
       {
         "state": "default",
         "cells": [
-          { "type": "checkbox",    "value": false },
-          { "type": "avatar-text", "value": "Maya Johnson",   "initials": "MJ", "color": "#1F60ED" },
-          { "type": "badge",       "value": "Activo",          "variant": "success" },
-          { "type": "text",        "value": "Admin Master" },
-          { "type": "date",        "value": "10-10-25 10:35 hrs" },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "avatar-text",
+            "value": "Maya Johnson",
+            "initials": "MJ",
+            "color": "#1F60ED"
+          },
+          {
+            "type": "badge",
+            "value": "Activo",
+            "variant": "success"
+          },
+          {
+            "type": "text",
+            "value": "Admin Master"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 10:35 hrs"
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       },
       {
         "state": "hover",
         "cells": [
-          { "type": "checkbox",       "value": false },
-          { "type": "avatar-text",    "value": "Lucas Martínez", "initials": "LM", "color": "#8777D9" },
-          { "type": "badge",          "value": "Bloqueado",       "variant": "danger" },
-          { "type": "text",           "value": "Personalizado" },
-          { "type": "text-secondary", "value": "—" },
-          { "type": "actions",        "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "avatar-text",
+            "value": "Lucas Martínez",
+            "initials": "LM",
+            "color": "#8777D9"
+          },
+          {
+            "type": "badge",
+            "value": "Bloqueado",
+            "variant": "danger"
+          },
+          {
+            "type": "text",
+            "value": "Personalizado"
+          },
+          {
+            "type": "text-secondary",
+            "value": "—"
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       },
       {
         "state": "selected",
         "cells": [
-          { "type": "checkbox",    "value": true },
-          { "type": "avatar-text", "value": "Liam Smith",   "initials": "LS", "color": "#36B37E" },
-          { "type": "badge",       "value": "Activo",        "variant": "success" },
-          { "type": "text",        "value": "Admin 2" },
-          { "type": "date",        "value": "10-10-25 11:30 hrs" },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": true
+          },
+          {
+            "type": "avatar-text",
+            "value": "Liam Smith",
+            "initials": "LS",
+            "color": "#36B37E"
+          },
+          {
+            "type": "badge",
+            "value": "Activo",
+            "variant": "success"
+          },
+          {
+            "type": "text",
+            "value": "Admin 2"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 11:30 hrs"
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       },
       {
         "state": "default",
         "cells": [
-          { "type": "checkbox",    "value": false },
-          { "type": "avatar-text", "value": "Aisha Patel",  "initials": "AP", "color": "#00B8D9" },
-          { "type": "badge",       "value": "Activo",        "variant": "success" },
-          { "type": "text",        "value": "QC" },
-          { "type": "date",        "value": "10-10-25 09:11 hrs" },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "avatar-text",
+            "value": "Aisha Patel",
+            "initials": "AP",
+            "color": "#00B8D9"
+          },
+          {
+            "type": "badge",
+            "value": "Activo",
+            "variant": "success"
+          },
+          {
+            "type": "text",
+            "value": "QC"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 09:11 hrs"
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       },
       {
         "state": "disabled",
         "cells": [
-          { "type": "checkbox",    "value": false },
-          { "type": "avatar-text", "value": "Carlos Rivera", "initials": "CR", "color": "#67768D" },
-          { "type": "badge",       "value": "Inactivo",       "variant": "neutral" },
-          { "type": "text",        "value": "Viewer" },
-          { "type": "date",        "value": "08-10-25 08:00 hrs" },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "avatar-text",
+            "value": "Carlos Rivera",
+            "initials": "CR",
+            "color": "#67768D"
+          },
+          {
+            "type": "badge",
+            "value": "Inactivo",
+            "variant": "neutral"
+          },
+          {
+            "type": "text",
+            "value": "Viewer"
+          },
+          {
+            "type": "date",
+            "value": "08-10-25 08:00 hrs"
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       }
     ]
   },
   "cellTypeDemo": {
     "columns": [
-      { "label": "",              "type": "checkbox"    },
-      { "label": "Avatar + text", "type": "avatar-text" },
-      { "label": "Icon + text",   "type": "icon-text"   },
-      { "label": "Link",          "type": "link"        },
-      { "label": "Badge",         "type": "badge"       },
-      { "label": "Date",          "type": "date"        },
-      { "label": "Number",        "type": "number"      },
-      { "label": "Acciones",      "type": "actions"     }
+      {
+        "label": "",
+        "type": "checkbox"
+      },
+      {
+        "label": "Avatar + text",
+        "type": "avatar-text"
+      },
+      {
+        "label": "Icon + text",
+        "type": "icon-text"
+      },
+      {
+        "label": "Link",
+        "type": "link"
+      },
+      {
+        "label": "Badge",
+        "type": "badge"
+      },
+      {
+        "label": "Date",
+        "type": "date"
+      },
+      {
+        "label": "Number",
+        "type": "number"
+      },
+      {
+        "label": "Acciones",
+        "type": "actions"
+      }
     ],
     "rows": [
       {
         "state": "default",
         "cells": [
-          { "type": "checkbox",    "value": false },
-          { "type": "avatar-text", "value": "Maya Johnson",      "initials": "MJ", "color": "#1F60ED" },
-          { "type": "icon-text",   "icon": "location",            "value": "Av. Principal 123" },
-          { "type": "link",        "value": "#ORD-4821" },
-          { "type": "badge",       "value": "Activo",             "variant": "success" },
-          { "type": "date",        "value": "10-10-25 10:35 hrs" },
-          { "type": "number",      "value": "1,240" },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "avatar-text",
+            "value": "Maya Johnson",
+            "initials": "MJ",
+            "color": "#1F60ED"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Av. Principal 123"
+          },
+          {
+            "type": "link",
+            "value": "#ORD-4821"
+          },
+          {
+            "type": "badge",
+            "value": "Activo",
+            "variant": "success"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 10:35 hrs"
+          },
+          {
+            "type": "number",
+            "value": "1,240"
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       },
       {
         "state": "default",
         "cells": [
-          { "type": "checkbox",       "value": false },
-          { "type": "avatar-text",    "value": "Lucas Martínez",  "initials": "LM", "color": "#8777D9" },
-          { "type": "icon-text",      "icon": "location",          "value": "Calle Secundaria 45" },
-          { "type": "link",           "value": "#ORD-3917" },
-          { "type": "badge",          "value": "Advertencia",      "variant": "warning" },
-          { "type": "text-secondary", "value": "—" },
-          { "type": "number",         "value": "872" },
-          { "type": "actions",        "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "avatar-text",
+            "value": "Lucas Martínez",
+            "initials": "LM",
+            "color": "#8777D9"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Calle Secundaria 45"
+          },
+          {
+            "type": "link",
+            "value": "#ORD-3917"
+          },
+          {
+            "type": "badge",
+            "value": "Advertencia",
+            "variant": "warning"
+          },
+          {
+            "type": "text-secondary",
+            "value": "—"
+          },
+          {
+            "type": "number",
+            "value": "872"
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       }
     ]
   },
   "scrollDemo": {
     "columns": [
-      { "label": "",               "type": "checkbox"    },
-      { "label": "# Orden",        "type": "link"        },
-      { "label": "Cliente",        "type": "avatar-text", "sortable": true },
-      { "label": "Estado",         "type": "badge"       },
-      { "label": "Zona",           "type": "chip-sm"     },
-      { "label": "Dirección",      "type": "icon-text"   },
-      { "label": "Conductor",      "type": "text"        },
-      { "label": "F. Creación",    "type": "date",       "sortable": true },
-      { "label": "F. Entrega",     "type": "date"        },
-      { "label": "Progreso",       "type": "loading-bar" },
-      { "label": "Calificación",   "type": "rating"      },
-      { "label": "Activo",         "type": "switch"      },
-      { "label": "Acciones",       "type": "actions"     }
+      {
+        "label": "",
+        "type": "checkbox"
+      },
+      {
+        "label": "# Orden",
+        "type": "link"
+      },
+      {
+        "label": "Cliente",
+        "type": "avatar-text",
+        "sortable": true
+      },
+      {
+        "label": "Estado",
+        "type": "badge"
+      },
+      {
+        "label": "Zona",
+        "type": "chip-sm"
+      },
+      {
+        "label": "Dirección",
+        "type": "icon-text"
+      },
+      {
+        "label": "Conductor",
+        "type": "text"
+      },
+      {
+        "label": "F. Creación",
+        "type": "date",
+        "sortable": true
+      },
+      {
+        "label": "F. Entrega",
+        "type": "date"
+      },
+      {
+        "label": "Progreso",
+        "type": "loading-bar"
+      },
+      {
+        "label": "Calificación",
+        "type": "rating"
+      },
+      {
+        "label": "Activo",
+        "type": "switch"
+      },
+      {
+        "label": "Acciones",
+        "type": "actions"
+      }
     ],
     "rows": [
       {
         "state": "default",
         "cells": [
-          { "type": "checkbox",    "value": false },
-          { "type": "link",        "value": "#ORD-4821" },
-          { "type": "avatar-text", "value": "Maya Johnson",   "initials": "MJ", "color": "#1F60ED" },
-          { "type": "badge",       "value": "Entregado",       "variant": "success" },
-          { "type": "chip-sm",     "value": "Zona Norte" },
-          { "type": "icon-text",   "icon": "location",         "value": "Av. Principal 123" },
-          { "type": "text",        "value": "Carlos Ríos" },
-          { "type": "date",        "value": "10-10-25 08:00" },
-          { "type": "date",        "value": "10-10-25 14:00" },
-          { "type": "loading-bar", "value": 100 },
-          { "type": "rating",      "value": 4 },
-          { "type": "switch",      "value": true  },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-4821"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Maya Johnson",
+            "initials": "MJ",
+            "color": "#1F60ED"
+          },
+          {
+            "type": "badge",
+            "value": "Entregado",
+            "variant": "success"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Norte"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Av. Principal 123"
+          },
+          {
+            "type": "text",
+            "value": "Carlos Ríos"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 08:00"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 14:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 100
+          },
+          {
+            "type": "rating",
+            "value": 4
+          },
+          {
+            "type": "switch",
+            "value": true
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       },
       {
         "state": "hover",
         "cells": [
-          { "type": "checkbox",       "value": false },
-          { "type": "link",           "value": "#ORD-3917" },
-          { "type": "avatar-text",    "value": "Lucas Martínez", "initials": "LM", "color": "#8777D9" },
-          { "type": "badge",          "value": "En tránsito",     "variant": "info" },
-          { "type": "chip-sm",        "value": "Zona Sur" },
-          { "type": "icon-text",      "icon": "location",         "value": "Calle Secundaria 45" },
-          { "type": "text",           "value": "Ana López" },
-          { "type": "date",           "value": "09-10-25 10:30" },
-          { "type": "text-secondary", "value": "—" },
-          { "type": "loading-bar",    "value": 52 },
-          { "type": "rating",         "value": 3 },
-          { "type": "switch",         "value": true  },
-          { "type": "actions",        "value": ["edit", "delete", "document", "message"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-3917"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Lucas Martínez",
+            "initials": "LM",
+            "color": "#8777D9"
+          },
+          {
+            "type": "badge",
+            "value": "En tránsito",
+            "variant": "info"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Sur"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Calle Secundaria 45"
+          },
+          {
+            "type": "text",
+            "value": "Ana López"
+          },
+          {
+            "type": "date",
+            "value": "09-10-25 10:30"
+          },
+          {
+            "type": "text-secondary",
+            "value": "—"
+          },
+          {
+            "type": "loading-bar",
+            "value": 52
+          },
+          {
+            "type": "rating",
+            "value": 3
+          },
+          {
+            "type": "switch",
+            "value": true
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete",
+              "document",
+              "message"
+            ]
+          }
         ]
       },
       {
         "state": "selected",
         "cells": [
-          { "type": "checkbox",    "value": true },
-          { "type": "link",        "value": "#ORD-5102" },
-          { "type": "avatar-text", "value": "Aisha Patel",   "initials": "AP", "color": "#00B8D9" },
-          { "type": "badge",       "value": "Pendiente",      "variant": "warning" },
-          { "type": "chip-sm",     "value": "Zona Este" },
-          { "type": "icon-text",   "icon": "location",        "value": "Pasaje Los Álamos 7" },
-          { "type": "text",        "value": "Diego Torres" },
-          { "type": "date",        "value": "10-10-25 09:15" },
-          { "type": "date",        "value": "10-10-25 16:00" },
-          { "type": "loading-bar", "value": 20 },
-          { "type": "rating",      "value": 0 },
-          { "type": "switch",      "value": false },
-          { "type": "actions",     "value": ["edit", "delete"] }
+          {
+            "type": "checkbox",
+            "value": true
+          },
+          {
+            "type": "link",
+            "value": "#ORD-5102"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Aisha Patel",
+            "initials": "AP",
+            "color": "#00B8D9"
+          },
+          {
+            "type": "badge",
+            "value": "Pendiente",
+            "variant": "warning"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Este"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Pasaje Los Álamos 7"
+          },
+          {
+            "type": "text",
+            "value": "Diego Torres"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 09:15"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 16:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 20
+          },
+          {
+            "type": "rating",
+            "value": 0
+          },
+          {
+            "type": "switch",
+            "value": false
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
         ]
       },
       {
         "state": "default",
         "cells": [
-          { "type": "checkbox",    "value": false },
-          { "type": "link",        "value": "#ORD-2856" },
-          { "type": "avatar-text", "value": "Liam Smith",    "initials": "LS", "color": "#36B37E" },
-          { "type": "badge",       "value": "Cancelado",      "variant": "danger" },
-          { "type": "chip-sm",     "value": "Zona Centro" },
-          { "type": "icon-text",   "icon": "location",        "value": "Blvd. Industrial 220" },
-          { "type": "text",        "value": "María García" },
-          { "type": "date",        "value": "08-10-25 07:00" },
-          { "type": "date",        "value": "08-10-25 11:00" },
-          { "type": "loading-bar", "value": 0 },
-          { "type": "rating",      "value": 1 },
-          { "type": "switch",      "value": false },
-          { "type": "actions",     "value": ["edit", "delete", "document"] }
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-2856"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Liam Smith",
+            "initials": "LS",
+            "color": "#36B37E"
+          },
+          {
+            "type": "badge",
+            "value": "Cancelado",
+            "variant": "danger"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Centro"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Blvd. Industrial 220"
+          },
+          {
+            "type": "text",
+            "value": "María García"
+          },
+          {
+            "type": "date",
+            "value": "08-10-25 07:00"
+          },
+          {
+            "type": "date",
+            "value": "08-10-25 11:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 0
+          },
+          {
+            "type": "rating",
+            "value": 1
+          },
+          {
+            "type": "switch",
+            "value": false
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete",
+              "document"
+            ]
+          }
         ]
       }
     ]
@@ -301,34 +977,108 @@
     {
       "label": "Text & stacked variants",
       "columns": [
-        { "label": "Sub header + text",   "type": "text",    "sub": "New" },
-        { "label": "Text + sub",          "type": "text",    "sub": "Two-line" },
-        { "label": "Text + error",        "type": "text",    "sub": "Error state" },
-        { "label": "Icon + text + error", "type": "text",    "sub": "With icon" },
-        { "label": "Text + icon →",       "type": "text" },
-        { "label": "Acciones",            "type": "actions" }
+        {
+          "label": "Sub header + text",
+          "type": "text",
+          "sub": "New"
+        },
+        {
+          "label": "Text + sub",
+          "type": "text",
+          "sub": "Two-line"
+        },
+        {
+          "label": "Text + error",
+          "type": "text",
+          "sub": "Error state"
+        },
+        {
+          "label": "Icon + text + error",
+          "type": "text",
+          "sub": "With icon"
+        },
+        {
+          "label": "Text + icon →",
+          "type": "text"
+        },
+        {
+          "label": "Acciones",
+          "type": "actions"
+        }
       ],
       "rows": [
         {
           "state": "default",
           "cells": [
-            { "type": "sub-header",      "sub": "Tipo de ruta",  "value": "Entrega express" },
-            { "type": "text-sub",        "value": "Maya Johnson", "sub": "mayaj@dispatchtrack.com" },
-            { "type": "text-error",      "value": "lucas@company", "error": "Email no verificado" },
-            { "type": "text-icon-error", "value": "Aisha Patel",  "error": "Sin permisos asignados" },
-            { "type": "text-icon-right", "icon": "document", "value": "Ver informe" },
-            { "type": "actions",         "value": ["edit", "delete"] }
+            {
+              "type": "sub-header",
+              "sub": "Tipo de ruta",
+              "value": "Entrega express"
+            },
+            {
+              "type": "text-sub",
+              "value": "Maya Johnson",
+              "sub": "mayaj@dispatchtrack.com"
+            },
+            {
+              "type": "text-error",
+              "value": "lucas@company",
+              "error": "Email no verificado"
+            },
+            {
+              "type": "text-icon-error",
+              "value": "Aisha Patel",
+              "error": "Sin permisos asignados"
+            },
+            {
+              "type": "text-icon-right",
+              "icon": "document",
+              "value": "Ver informe"
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         },
         {
           "state": "default",
           "cells": [
-            { "type": "sub-header",      "sub": "Conductor",     "value": "Carlos Rivera" },
-            { "type": "text-sub",        "value": "Liam Smith",  "sub": "Admin · Zona Norte" },
-            { "type": "text-error",      "value": "Formulario #82", "error": "3 campos requeridos" },
-            { "type": "text-icon-error", "value": "Ruta RT-204", "error": "Fuera de zona" },
-            { "type": "text-icon-right", "icon": "message", "value": "Comentarios (3)" },
-            { "type": "actions",         "value": ["edit", "delete"] }
+            {
+              "type": "sub-header",
+              "sub": "Conductor",
+              "value": "Carlos Rivera"
+            },
+            {
+              "type": "text-sub",
+              "value": "Liam Smith",
+              "sub": "Admin · Zona Norte"
+            },
+            {
+              "type": "text-error",
+              "value": "Formulario #82",
+              "error": "3 campos requeridos"
+            },
+            {
+              "type": "text-icon-error",
+              "value": "Ruta RT-204",
+              "error": "Fuera de zona"
+            },
+            {
+              "type": "text-icon-right",
+              "icon": "message",
+              "value": "Comentarios (3)"
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         }
       ]
@@ -336,28 +1086,72 @@
     {
       "label": "Interactive cells",
       "columns": [
-        { "label": "Switch",        "type": "switch"      },
-        { "label": "Switch + text", "type": "switch-text" },
-        { "label": "Rating",        "type": "rating"      },
-        { "label": "Acciones",      "type": "actions"     }
+        {
+          "label": "Switch",
+          "type": "switch"
+        },
+        {
+          "label": "Switch + text",
+          "type": "switch-text"
+        },
+        {
+          "label": "Rating",
+          "type": "rating"
+        },
+        {
+          "label": "Acciones",
+          "type": "actions"
+        }
       ],
       "rows": [
         {
           "state": "default",
           "cells": [
-            { "type": "switch",       "value": true  },
-            { "type": "switch-text",  "value": true,  "label": "Habilitado" },
-            { "type": "rating",       "value": 4 },
-            { "type": "actions",      "value": ["edit", "delete"] }
+            {
+              "type": "switch",
+              "value": true
+            },
+            {
+              "type": "switch-text",
+              "value": true,
+              "label": "Habilitado"
+            },
+            {
+              "type": "rating",
+              "value": 4
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         },
         {
           "state": "default",
           "cells": [
-            { "type": "switch",       "value": false },
-            { "type": "switch-text",  "value": false, "label": "Deshabilitado" },
-            { "type": "rating",       "value": 2 },
-            { "type": "actions",      "value": ["edit", "delete"] }
+            {
+              "type": "switch",
+              "value": false
+            },
+            {
+              "type": "switch-text",
+              "value": false,
+              "label": "Deshabilitado"
+            },
+            {
+              "type": "rating",
+              "value": 2
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         }
       ]
@@ -365,28 +1159,70 @@
     {
       "label": "Chips & pills",
       "columns": [
-        { "label": "Chip large",  "type": "chip-lg"   },
-        { "label": "Chip small",  "type": "chip-sm"   },
-        { "label": "Pill · New",  "type": "pill-new"  },
-        { "label": "Acciones",    "type": "actions"   }
+        {
+          "label": "Chip large",
+          "type": "chip-lg"
+        },
+        {
+          "label": "Chip small",
+          "type": "chip-sm"
+        },
+        {
+          "label": "Pill · New",
+          "type": "pill-new"
+        },
+        {
+          "label": "Acciones",
+          "type": "actions"
+        }
       ],
       "rows": [
         {
           "state": "default",
           "cells": [
-            { "type": "chip-lg",  "value": "Zona Norte" },
-            { "type": "chip-sm",  "value": "Admin" },
-            { "type": "pill-new", "value": "New" },
-            { "type": "actions",  "value": ["edit", "delete"] }
+            {
+              "type": "chip-lg",
+              "value": "Zona Norte"
+            },
+            {
+              "type": "chip-sm",
+              "value": "Admin"
+            },
+            {
+              "type": "pill-new",
+              "value": "New"
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         },
         {
           "state": "default",
           "cells": [
-            { "type": "chip-lg",  "value": "Ruta Express" },
-            { "type": "chip-sm",  "value": "QC" },
-            { "type": "pill-new", "value": "New" },
-            { "type": "actions",  "value": ["edit", "delete"] }
+            {
+              "type": "chip-lg",
+              "value": "Ruta Express"
+            },
+            {
+              "type": "chip-sm",
+              "value": "QC"
+            },
+            {
+              "type": "pill-new",
+              "value": "New"
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         }
       ]
@@ -394,34 +1230,80 @@
     {
       "label": "Loading & skeleton",
       "columns": [
-        { "label": "lazy", "type": "lazy" },
-        { "label": "lazy", "type": "lazy" },
-        { "label": "lazy", "type": "lazy" },
-        { "label": "Loading bar",   "type": "loading-bar" },
-        { "label": "Acciones",      "type": "actions"     }
+        {
+          "label": "lazy",
+          "type": "lazy"
+        },
+        {
+          "label": "lazy",
+          "type": "lazy"
+        },
+        {
+          "label": "lazy",
+          "type": "lazy"
+        },
+        {
+          "label": "Loading bar",
+          "type": "loading-bar"
+        },
+        {
+          "label": "Acciones",
+          "type": "actions"
+        }
       ],
       "rows": [
         {
           "state": "default",
           "cells": [
-            { "type": "lazy" },
-            { "type": "lazy" },
-            { "type": "lazy" },
-            { "type": "loading-bar", "value": 68 },
-            { "type": "actions", "value": ["edit", "delete"] }
+            {
+              "type": "lazy"
+            },
+            {
+              "type": "lazy"
+            },
+            {
+              "type": "lazy"
+            },
+            {
+              "type": "loading-bar",
+              "value": 68
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         },
         {
           "state": "default",
           "cells": [
-            { "type": "lazy" },
-            { "type": "lazy" },
-            { "type": "lazy" },
-            { "type": "loading-bar", "value": 32 },
-            { "type": "actions", "value": ["edit", "delete"] }
+            {
+              "type": "lazy"
+            },
+            {
+              "type": "lazy"
+            },
+            {
+              "type": "lazy"
+            },
+            {
+              "type": "loading-bar",
+              "value": 32
+            },
+            {
+              "type": "actions",
+              "value": [
+                "edit",
+                "delete"
+              ]
+            }
           ]
         }
       ]
     }
-  ]
+  ],
+  "pageUsage": "// tblDemoTable() is module-level in renderers.js — no import needed.\n\n// 1. Add a table definition to your page JSON:\n//    Copy or reference the \"scrollDemo\" structure from table.json.\n//    Format: { columns: [...], rows: [{ state, cells: [...] }] }\n\n// 2. Call it in the renderer — one line:\n\\${tblDemoTable(data.scrollDemo || {})}\n\n// Table definition shape:\n{\n  \"columns\": [\n    { \"type\": \"checkbox\" },\n    { \"label\": \"# Orden\", \"type\": \"link\" },\n    { \"label\": \"Estado\",  \"type\": \"badge\" },\n    { \"label\": \"Acciones\",\"type\": \"actions\" }\n  ],\n  \"rows\": [\n    {\n      \"state\": \"selected\",\n      \"cells\": [\n        { \"type\": \"checkbox\", \"value\": true },\n        { \"type\": \"link\",   \"value\": \"#ORD-4821\" },\n        { \"type\": \"badge\",  \"value\": \"Entregado\", \"variant\": \"success\" },\n        { \"type\": \"actions\",\"value\": [\"edit\",\"trash\"] }\n      ]\n    }\n  ]\n}"
 }

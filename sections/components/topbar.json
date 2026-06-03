@@ -2,7 +2,13 @@
   "title": "Topbar",
   "titleKey": "nav.topbar",
   "description": "Height 52px ($hp-top-bar-height), bg $hp-dt-indigo (#132045). Customer slot 100px, border-radius 25px 0 0 0. Icon order invariable. Source: styles/packages/top-bar/src/",
-  "keywords": ["topbar", "header", "navigation", "top", "bar"],
+  "keywords": [
+    "topbar",
+    "header",
+    "navigation",
+    "top",
+    "bar"
+  ],
   "tokens": {
     "height": "52px",
     "bg": "#132045",
@@ -16,11 +22,17 @@
       "ondemand": "#6B9AFF"
     }
   },
-  "iconOrder": ["apps", "help", "messages", "alerts", "user"],
+  "iconOrder": [
+    "apps",
+    "help",
+    "messages",
+    "alerts",
+    "user"
+  ],
   "breakpoints": {
     "desktop": "≥1024px — full logo + all 5 icons + customer slot",
-    "tablet":  "768–1023px — full logo + 3 icons (alerts, messages, user) + customer slot abbreviated",
-    "mobile":  "<768px — mobile logo (icon only) + 2 icons (alerts, user) + no customer slot"
+    "tablet": "768–1023px — full logo + 3 icons (alerts, messages, user) + customer slot abbreviated",
+    "mobile": "<768px — mobile logo (icon only) + 2 icons (alerts, user) + no customer slot"
   },
   "products": [
     {
@@ -35,24 +47,45 @@
           "label": "Desktop",
           "width": "100%",
           "logo": "sections/assets/logos/lastmile-desktop-white.svg",
-          "icons": ["apps", "help", "messages", "alerts", "user"],
-          "customerSlot": { "text": "ACME CO", "show": true }
+          "icons": [
+            "apps",
+            "help",
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "ACME CO",
+            "show": true
+          }
         },
         {
           "breakpoint": "tablet",
           "label": "Tablet",
           "width": "768px",
           "logo": "sections/assets/logos/lastmile-desktop-white.svg",
-          "icons": ["messages", "alerts", "user"],
-          "customerSlot": { "text": "AC", "show": true }
+          "icons": [
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "AC",
+            "show": true
+          }
         },
         {
           "breakpoint": "mobile",
           "label": "Mobile",
           "width": "375px",
           "logo": "sections/assets/logos/lastmile-mobile-white.svg",
-          "icons": ["alerts", "user"],
-          "customerSlot": { "show": false }
+          "icons": [
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "show": false
+          }
         }
       ]
     },
@@ -68,24 +101,45 @@
           "label": "Desktop",
           "width": "100%",
           "logo": "sections/assets/logos/plannerpro-desktop-white.svg",
-          "icons": ["apps", "help", "messages", "alerts", "user"],
-          "customerSlot": { "text": "ACME CO", "show": true }
+          "icons": [
+            "apps",
+            "help",
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "ACME CO",
+            "show": true
+          }
         },
         {
           "breakpoint": "tablet",
           "label": "Tablet",
           "width": "768px",
           "logo": "sections/assets/logos/plannerpro-desktop-white.svg",
-          "icons": ["messages", "alerts", "user"],
-          "customerSlot": { "text": "AC", "show": true }
+          "icons": [
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "AC",
+            "show": true
+          }
         },
         {
           "breakpoint": "mobile",
           "label": "Mobile",
           "width": "375px",
           "logo": "sections/assets/logos/plannerpro-mobile-white.svg",
-          "icons": ["alerts", "user"],
-          "customerSlot": { "show": false }
+          "icons": [
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "show": false
+          }
         }
       ]
     },
@@ -101,24 +155,45 @@
           "label": "Desktop",
           "width": "100%",
           "logo": "sections/assets/logos/ondemand-desktop-white.svg",
-          "icons": ["apps", "help", "messages", "alerts", "user"],
-          "customerSlot": { "text": "ACME CO", "show": true }
+          "icons": [
+            "apps",
+            "help",
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "ACME CO",
+            "show": true
+          }
         },
         {
           "breakpoint": "tablet",
           "label": "Tablet",
           "width": "768px",
           "logo": "sections/assets/logos/ondemand-desktop-white.svg",
-          "icons": ["messages", "alerts", "user"],
-          "customerSlot": { "text": "AC", "show": true }
+          "icons": [
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "AC",
+            "show": true
+          }
         },
         {
           "breakpoint": "mobile",
           "label": "Mobile",
           "width": "375px",
           "logo": "sections/assets/logos/ondemand-mobile-white.svg",
-          "icons": ["alerts", "user"],
-          "customerSlot": { "show": false }
+          "icons": [
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "show": false
+          }
         }
       ]
     },
@@ -134,24 +209,45 @@
           "label": "Desktop",
           "width": "100%",
           "logo": "sections/assets/logos/customer-portal-desktop-white.svg",
-          "icons": ["apps", "help", "messages", "alerts", "user"],
-          "customerSlot": { "text": "ACME CO", "show": true }
+          "icons": [
+            "apps",
+            "help",
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "ACME CO",
+            "show": true
+          }
         },
         {
           "breakpoint": "tablet",
           "label": "Tablet",
           "width": "768px",
           "logo": "sections/assets/logos/customer-portal-desktop-white.svg",
-          "icons": ["messages", "alerts", "user"],
-          "customerSlot": { "text": "AC", "show": true }
+          "icons": [
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "AC",
+            "show": true
+          }
         },
         {
           "breakpoint": "mobile",
           "label": "Mobile",
           "width": "375px",
           "logo": "sections/assets/logos/customer-portal-desktop-white.svg",
-          "icons": ["alerts", "user"],
-          "customerSlot": { "show": false }
+          "icons": [
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "show": false
+          }
         }
       ]
     },
@@ -167,24 +263,45 @@
           "label": "Desktop",
           "width": "100%",
           "logo": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
-          "icons": ["apps", "help", "messages", "alerts", "user"],
-          "customerSlot": { "text": "ACME CO", "show": true }
+          "icons": [
+            "apps",
+            "help",
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "ACME CO",
+            "show": true
+          }
         },
         {
           "breakpoint": "tablet",
           "label": "Tablet",
           "width": "768px",
           "logo": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
-          "icons": ["messages", "alerts", "user"],
-          "customerSlot": { "text": "AC", "show": true }
+          "icons": [
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "AC",
+            "show": true
+          }
         },
         {
           "breakpoint": "mobile",
           "label": "Mobile",
           "width": "375px",
           "logo": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
-          "icons": ["alerts", "user"],
-          "customerSlot": { "show": false }
+          "icons": [
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "show": false
+          }
         }
       ]
     },
@@ -200,26 +317,48 @@
           "label": "Desktop",
           "width": "100%",
           "logo": "sections/assets/logos/soporte-desktop-white.svg",
-          "icons": ["apps", "help", "messages", "alerts", "user"],
-          "customerSlot": { "text": "ACME CO", "show": true }
+          "icons": [
+            "apps",
+            "help",
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "ACME CO",
+            "show": true
+          }
         },
         {
           "breakpoint": "tablet",
           "label": "Tablet",
           "width": "768px",
           "logo": "sections/assets/logos/soporte-desktop-white.svg",
-          "icons": ["messages", "alerts", "user"],
-          "customerSlot": { "text": "AC", "show": true }
+          "icons": [
+            "messages",
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "text": "AC",
+            "show": true
+          }
         },
         {
           "breakpoint": "mobile",
           "label": "Mobile",
           "width": "375px",
           "logo": "sections/assets/logos/soporte-desktop-white.svg",
-          "icons": ["alerts", "user"],
-          "customerSlot": { "show": false }
+          "icons": [
+            "alerts",
+            "user"
+          ],
+          "customerSlot": {
+            "show": false
+          }
         }
       ]
     }
-  ]
+  ],
+  "pageUsage": "// Exact HTML — use .tbar CSS class (defined in index.html)\n\n<div class=\"tbar\" style=\"border-radius:0;padding:0 0 0 22px\">\n  <img src=\"sections/assets/logos/lastmile-desktop-white.svg\" height=\"18\" class=\"logo\" alt=\"LastMile\">\n  <div class=\"acts\">\n    \\${iconSvg('apps',18,'#fff')}\n    \\${iconSvg('help',18,'#fff')}\n    \\${iconSvg('messages',18,'#fff')}\n    <div class=\"bell\">\\${iconSvg('alerts',18,'#fff')}</div>\n    \\${iconSvg('user',18,'#fff')}\n  </div>\n  <div class=\"slot\">ACME CO</div>\n</div>"
 }

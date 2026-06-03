@@ -2,25 +2,86 @@
   "title": "Badges & tags",
   "titleKey": "nav.badges",
   "description": "Pill-shaped, 11px semibold. Status badges llevan un dot cuando el estado es live. Chips con avatares referencian usuarios o productos.",
-  "keywords": ["badges", "tags", "pills", "chips", "status", "activo", "bloqueado"],
+  "keywords": [
+    "badges",
+    "tags",
+    "pills",
+    "chips",
+    "status",
+    "activo",
+    "bloqueado"
+  ],
   "badges": [
-    { "label": "Activo", "type": "success", "dot": true },
-    { "label": "Bloqueado", "type": "danger", "dot": true },
-    { "label": "Aproximado", "type": "warning", "dot": true },
-    { "label": "En ruta", "type": "info" },
-    { "label": "Borrador", "type": "neutral" },
-    { "label": "Pendiente", "type": "outline" }
+    {
+      "label": "Activo",
+      "type": "success",
+      "dot": true
+    },
+    {
+      "label": "Bloqueado",
+      "type": "danger",
+      "dot": true
+    },
+    {
+      "label": "Aproximado",
+      "type": "warning",
+      "dot": true
+    },
+    {
+      "label": "En ruta",
+      "type": "info"
+    },
+    {
+      "label": "Borrador",
+      "type": "neutral"
+    },
+    {
+      "label": "Pendiente",
+      "type": "outline"
+    }
   ],
   "chips": [
-    { "label": "Maya Jonson", "initials": "MJ", "avatarBg": "#1F60ED", "avatarColor": "#fff" },
-    { "label": "Planner", "initials": "PL", "avatarBg": "#47D09A", "avatarColor": "#fff", "chipBg": "#EDF5FF", "chipColor": "#0052CC" }
+    {
+      "label": "Maya Jonson",
+      "initials": "MJ",
+      "avatarBg": "#1F60ED",
+      "avatarColor": "#fff"
+    },
+    {
+      "label": "Planner",
+      "initials": "PL",
+      "avatarBg": "#47D09A",
+      "avatarColor": "#fff",
+      "chipBg": "#EDF5FF",
+      "chipColor": "#0052CC"
+    }
   ],
   "tokenMap": {
-    "success": { "bg": "#E3FCEF", "color": "#00875A" },
-    "danger": { "bg": "#FFEBE6", "color": "#DE350B" },
-    "warning": { "bg": "#FFFAE6", "color": "#FF8B00" },
-    "info": { "bg": "#EDF5FF", "color": "#0052CC" },
-    "neutral": { "bg": "#F0F2F5", "color": "#39414D" },
-    "outline": { "bg": "#fff", "color": "#39414D", "border": "#C5D2E7" }
-  }
+    "success": {
+      "bg": "#E3FCEF",
+      "color": "#00875A"
+    },
+    "danger": {
+      "bg": "#FFEBE6",
+      "color": "#DE350B"
+    },
+    "warning": {
+      "bg": "#FFFAE6",
+      "color": "#FF8B00"
+    },
+    "info": {
+      "bg": "#EDF5FF",
+      "color": "#0052CC"
+    },
+    "neutral": {
+      "bg": "#F0F2F5",
+      "color": "#39414D"
+    },
+    "outline": {
+      "bg": "#fff",
+      "color": "#39414D",
+      "border": "#C5D2E7"
+    }
+  },
+  "pageUsage": "// badgeHtml() is module-level in renderers.js — no import needed.\n\nbadgeHtml('Entregado',    'success')  // green  — var(--g1) bg, var(--g7) text\nbadgeHtml('No entregado', 'danger')   // red    — var(--r1) bg, var(--r6) text\nbadgeHtml('En tránsito',  'warning')  // amber  — var(--o1) bg, var(--o7) text\nbadgeHtml('Asignada',     'info')     // blue   — var(--b1) bg, var(--b6) text\nbadgeHtml('Ingresada',    'neutral')  // gray   — var(--n2) bg, var(--n6) text\nbadgeHtml('Label',        'outline')  // border — #fff bg, var(--n4) border, var(--n6) text"
 }
