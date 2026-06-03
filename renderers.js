@@ -2893,12 +2893,12 @@ async function downloadAllPins() {
           <div style="flex:1;padding:20px 24px 16px;min-width:0;display:flex;flex-direction:column;gap:20px;overflow:hidden;background:var(--n2)">
 
             <!-- Page header -->
-            <div style="display:flex;align-items:center;gap:12px;height:32px">
-              <span style="font:700 22px/32px var(--font-sans);color:var(--n7);flex:1">${escHtml(data.pageTitle)}</span>
-              <div style="display:flex;gap:12px;align-items:center">
-                <button class="btn sec" style="height:32px;padding:0 12px;gap:5px">${iconSvg('plan',13,'var(--b7)')}${escHtml(data.buttons?.log||'Bitácora')}</button>
-                <button class="btn sec" style="height:32px;padding:0 12px;gap:5px">${iconSvg('download',13,'var(--b7)')}${escHtml(data.buttons?.export||'Exportar a excel')}</button>
-                <button class="btn pri" style="height:32px;padding:0 14px;gap:5px"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <span style="font:700 22px/1 var(--font-sans);color:var(--n7)">${escHtml(data.pageTitle)}</span>
+              <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+                <button style="height:32px;padding:0 12px;border-radius:50px;font:700 14px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box">${iconSvg('plan',13,'#4B82FA')}${escHtml(data.buttons?.log||'Bitácora')}</button>
+                <button style="height:32px;padding:0 12px;border-radius:50px;font:700 14px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box">${iconSvg('download',13,'#4B82FA')}${escHtml(data.buttons?.export||'Exportar a excel')}</button>
+                <button style="height:32px;padding:0 14px;border-radius:50px;font:700 14px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
               </div>
             </div>
 
