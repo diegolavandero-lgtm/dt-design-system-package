@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:54:35.599Z",
+  "generated": "2026-06-03T14:55:17.338Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "51830ba",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-824): unify notification groups into single list container",
+          "author": "Carlos"
+        },
         {
           "hash": "fa0c4be",
           "type": "update",
