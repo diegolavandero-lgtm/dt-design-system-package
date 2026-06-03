@@ -178,7 +178,9 @@ button{font-family:inherit;cursor:pointer}
 /* ════════════════════════
    STATUS × CHANNEL MATRIX  (Directions A + D)
 ════════════════════════ */
-.matrix-group{background:#fff;border:1px solid #E1E6ED;border-radius:6px;overflow:hidden}
+.matrix-wrapper{border:1px solid #E1E6ED;border-radius:8px;overflow:hidden;background:#fff}
+.matrix-group{background:#fff;border-bottom:1px solid #E1E6ED;}
+.matrix-group:last-child{border-bottom:0}
 .group-hdr{
   display:flex;align-items:center;gap:10px;
   padding:12px 18px;background:#FAFBFD;border-bottom:1px solid #E1E6ED;cursor:pointer;user-select:none;
@@ -503,6 +505,7 @@ button{font-family:inherit;cursor:pointer}
       </div>
 
 
+      <div class="matrix-wrapper">
       <div class="matrix-group">
         <div class="group-hdr" onclick="toggleGroup(this)">
           <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -736,6 +739,7 @@ button{font-family:inherit;cursor:pointer}
           </div>
         </div>
       </div>
+      </div><!-- /matrix-wrapper -->
 
     </div><!-- /content-main -->
 
