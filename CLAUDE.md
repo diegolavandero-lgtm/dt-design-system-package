@@ -187,3 +187,59 @@ At the end of every ticket:
 - ❌ Don't treat "disabling a channel" as "disabling the notification" — they're different
 - ❌ Don't use generic modal copy ("Are you sure?") — always name the specific item
 - ❌ Don't use amber warning banner for neutral system information — use blue info banner
+
+# Design System Rules
+
+## CRITICAL: Never recreate components
+When I ask for a TopBar, Sidebar, Button, Input, Table, Modal, 
+or any UI component — ALWAYS import it from the design system. 
+NEVER recreate or copy-paste component code.
+
+## Component imports
+```jsx
+// TopBar
+import { TopBar } from '@/components/ds/TopBar'
+
+// Sidebar  
+import { Sidebar } from '@/components/ds/Sidebar'
+
+// Button
+import { Button } from '@/components/ds/Button'
+
+// TextField
+import { TextField } from '@/components/ds/TextField'
+
+// Table
+import { Table } from '@/components/ds/Table'
+
+// Modal
+import { Modal } from '@/components/ds/Modal'
+
+// Badge
+import { Badge } from '@/components/ds/Badge'
+
+// Banner
+import { Banner } from '@/components/ds/Banner'
+```
+
+## Usage examples
+```jsx
+// CORRECT — import the component
+import { TopBar } from '@/components/ds/TopBar'
+const MyPage = () => <TopBar product="lastmile" company="ACME CO" />
+
+// WRONG — never do this
+const MyPage = () => (
+  <div style={{height:52, background:'#132045'}}>...</div>
+)
+```
+
+## Tokens
+Always use CSS variables from colors_and_type.css. 
+Never hardcode colors — use var(--primary-background), 
+var(--neutral-text), etc.
+
+## File locations
+- Tokens: /src/styles/colors_and_type.css
+- Components: /src/components/ds/
+- Layouts: /src/layouts/
