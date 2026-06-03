@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Strategy Planner — DispatchTrack Planner Pro</title>
+<title>Strategy Planner — DispatchTrack Last Mile</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <!--
   DT Strategy Planner · Planner Pro — Strategic Planner (Plans tab), screens 01–09
   Built 1:1 with the DispatchTrack Design System (GitHub repo) — no invented tokens.
@@ -54,21 +56,18 @@ button{font-family:inherit;cursor:pointer;}
 
 .body{display:flex;flex:1;min-height:0;position:relative;}
 
-/* SIDEBAR (sidebar.json — Last Mile) */
-.sb{width:240px;background:#fff;box-shadow:0 6px 12px rgba(0,0,0,.10);flex-shrink:0;padding:10px 0;display:flex;flex-direction:column;z-index:30;transition:width .16s;overflow-y:auto;overflow-x:hidden;}
+/* SIDEBAR (sidebar.json — Last Mile) — always collapsed 56px, hover-expands */
+.sb{width:56px;background:#fff;box-shadow:0 6px 12px rgba(0,0,0,.10);flex-shrink:0;padding:10px 0;display:flex;flex-direction:column;z-index:30;transition:width .16s;overflow-y:auto;overflow-x:hidden;}
+.sb:hover{width:240px;position:absolute;top:52px;bottom:0;box-shadow:var(--shadow-lg);}
 .sb .it{height:40px;display:flex;align-items:center;gap:14px;padding:0 16px 0 18px;font:500 13px var(--font-sans);color:var(--n7);cursor:pointer;position:relative;white-space:nowrap;flex-shrink:0;}
 .sb .it svg{width:18px;height:18px;fill:var(--b5);flex-shrink:0;}
 .sb .it:hover{background:rgba(75,130,250,.04);}
 .sb .it.sel{background:rgba(75,130,250,.08);font-weight:700;}
 .sb .it.sel svg{fill:var(--b7);}
 .sb .it.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--b7);}
-.sb .it .lbl{transition:opacity .12s;}
+.sb .it .lbl{opacity:0;transition:opacity .12s;}
+.sb:hover .it .lbl{opacity:1;}
 .sb .sep{height:1px;background:var(--sep);margin:8px 16px;}
-/* collapsed (canvas view) — hover expands as overlay so map doesn't reflow */
-.app[data-view="canvas"] .sb{width:56px;}
-.app[data-view="canvas"] .sb .lbl{opacity:0;}
-.app[data-view="canvas"] .sb:hover{width:240px;position:absolute;top:0;bottom:0;box-shadow:var(--shadow-lg);}
-.app[data-view="canvas"] .sb:hover .lbl{opacity:1;}
 
 .main{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--n2);min-height:0;}
 
@@ -261,22 +260,22 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .tools{display:flex;gap:6px;flex-wrap:wrap;}
 .tools .btn{height:32px;}
 
-/* MAP */
-.map{flex:1;position:relative;background:linear-gradient(135deg,#dfeaf3,#e9f0f6);overflow:hidden;}
-.map .gmark{position:absolute;bottom:6px;left:8px;font:700 13px var(--font-sans);color:#5b5b5b;opacity:.6;}
-.band{position:absolute;top:0;left:0;right:0;display:flex;gap:9px;padding:10px 16px;background:var(--b1);border-bottom:1px solid var(--b3);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:6;}
+/* MAP — Leaflet container */
+.map{flex:1;position:relative;overflow:hidden;}
+#leaflet-map{position:absolute;inset:0;z-index:0;}
+/* UI overlays sit above Leaflet (which uses up to z-index ~700) */
+.band{position:absolute;top:0;left:0;right:0;display:flex;gap:9px;padding:10px 16px;background:var(--b1);border-bottom:1px solid var(--b3);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:1000;}
 .band svg{flex-shrink:0;}.band .lnk{color:var(--b7);font-weight:700;cursor:pointer;}
-.stale{position:absolute;top:41px;left:0;right:0;display:flex;gap:9px;padding:9px 16px;background:var(--o1);border-bottom:1px solid var(--o5);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:6;}
+.stale{position:absolute;top:41px;left:0;right:0;display:flex;gap:9px;padding:9px 16px;background:var(--o1);border-bottom:1px solid var(--o5);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:1000;}
 .stale .reopt{margin-left:auto;}
-.daybar{position:absolute;left:16px;right:16px;background:#fff;border:1px solid var(--n3);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:16px;z-index:5;box-shadow:var(--shadow-sm);flex-wrap:wrap;}
+.daybar{position:absolute;left:16px;right:16px;background:#fff;border:1px solid var(--n3);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:16px;z-index:1000;box-shadow:var(--shadow-sm);flex-wrap:wrap;}
 .daybar .dtag{font:700 12px var(--font-sans);color:var(--n7);background:var(--n2);padding:3px 10px;border-radius:4px;}
 .daybar .m{font:400 11px var(--font-sans);color:var(--n5);}.daybar .m b{color:var(--n7);font-weight:700;}
-/* SVG map pins (DS pinSVG geometry) — wrapper anchors the SVG tip to the coordinate */
-.mpin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;z-index:3;filter:drop-shadow(0 2px 3px rgba(19,32,69,.35));line-height:0;}
-.mpin.depot{z-index:4;}
-.mpin.unr{z-index:3;filter:drop-shadow(0 1px 2px rgba(19,32,69,.28));}
-.mpin svg{display:block;}
-.route-line{position:absolute;height:2px;transform-origin:left center;opacity:.55;z-index:2;}
+/* DS SVG pin divIcons — Leaflet sets position; we just style the wrapper */
+.lpin{cursor:pointer;filter:drop-shadow(0 2px 3px rgba(19,32,69,.35));line-height:0;}
+.lpin svg{display:block;}
+/* Leaflet attribution tweak */
+.leaflet-control-attribution{font-size:10px!important;}
 
 /* loading overlay */
 .loading{position:absolute;inset:0;background:rgba(255,255,255,.55);display:none;align-items:center;justify-content:center;z-index:20;}
@@ -573,15 +572,13 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
             <span class="m">Costo <b>$11.333</b></span><span class="m">Tiempo <b>70%</b></span><span class="m">Carga <b>45%</b></span>
           </div>
 
-          <!-- pins -->
-          <div id="mapPins"></div>
+          <!-- Leaflet map tile layer -->
+          <div id="leaflet-map"></div>
 
           <div class="loading" id="mapLoading"><div class="loadcard"><div class="spin"></div><div class="lt">Optimizando semana…</div></div></div>
 
           <!-- ERROR STATES (screen 9) -->
           <div class="errpanel" id="errPanel"><div class="errbox" id="errBox"></div></div>
-
-          <div class="gmark">Google</div>
         </div>
 
         <!-- HALLAZGOS PANEL (screen 5) -->
@@ -841,6 +838,7 @@ function goList(){app.dataset.view='list';document.getElementById('view-list').s
 function openCanvas(optimized){
   app.dataset.view='canvas';document.getElementById('view-list').style.display='none';document.getElementById('view-canvas').style.display='flex';
   hideErr();setOptimized(!!optimized);setProto('canvas');
+  setTimeout(function(){lmap&&lmap.invalidateSize();},150);
 }
 function toggleAcc(id){var el=document.getElementById(id);if(el.classList.contains('disabled'))return;el.classList.toggle('closed');}
 
@@ -866,35 +864,98 @@ function setOptimized(on){
   renderPins(on);
   if(!on)toggleFindings(false);
 }
-/* DS map pins (sections/assets/pins) — teardrop body geometry from pin-no-order /
-   pin-distribution-center, recolored per route + live number. viewBox 0 0 33 49. */
+/* ── DS SVG pin builders (pin-no-order / pin-distribution-center geometry) ── */
 var PIN_BODY='M16.5 1.5C24.7843 1.5 31.5 8.21573 31.5 16.5C31.5 21.4365 29.1148 25.8153 25.4346 28.5488C22.6082 30.6736 18.5785 34.039 17.6572 39.4795C17.5603 40.0516 17.0802 40.4951 16.5 40.4951C15.9198 40.4951 15.4397 40.0516 15.3428 39.4795C14.4214 34.0386 10.3909 30.6735 7.56445 28.5488C3.88459 25.8153 1.5 21.4362 1.5 16.5C1.5 8.21573 8.21573 1.5 16.5 1.5Z';
-var SU=['#36B37E','#1F60ED','#FFAB00','#8777D9','#00B8D9','#FE4EC4','#FF5630']; // su2,su4,su7,su5,su3,su1,su6
-function pinTag(size){var h=Math.round(size*49/33);return ['<svg width="'+size+'" height="'+h+'" viewBox="0 0 33 49" xmlns="http://www.w3.org/2000/svg">','</svg>'];}
-function routePin(num,color,size){size=size||30;var s=pinTag(size);
-  return s[0]+'<path d="'+PIN_BODY+'" fill="'+color+'" stroke="#fff" stroke-width="2"/>'+
-    '<text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#fff">'+num+'</text>'+s[1];}
-function unrPin(size){size=size||18;var s=pinTag(size);
-  return s[0]+'<path d="'+PIN_BODY+'" fill="#8FA0BA" stroke="#fff" stroke-width="2"/>'+
-    '<circle cx="16.5" cy="16.5" r="5" fill="#fff"/>'+s[1];}
-function depotPin(size){size=size||32;var s=pinTag(size);
-  return s[0]+'<path d="'+PIN_BODY+'" fill="#132045" stroke="#fff" stroke-width="2"/>'+
-    '<path d="M24 18.1667V16.5001L22.75 10.6667H9.83333L9 16.5001V18.1667H9.83333V23.1667H18.1667V18.1667H21.5V23.1667H23.1667V18.1667H24ZM16.5 21.5001H11.5V18.1667H16.5V21.5001Z" fill="#fff"/>'+s[1];}
+var SU=['#36B37E','#1F60ED','#FFAB00','#8777D9','#00B8D9','#FE4EC4','#FF5630'];
+function pinSvg(inner,fill,size){
+  var h=Math.round(size*49/33);
+  return '<div class="lpin"><svg width="'+size+'" height="'+h+'" viewBox="0 0 33 49" xmlns="http://www.w3.org/2000/svg">'+
+    '<path d="'+PIN_BODY+'" fill="'+fill+'" stroke="#fff" stroke-width="2"/>'+inner+'</svg></div>';
+}
+function routePinHtml(num,color,size){size=size||32;
+  return pinSvg('<text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#fff">'+num+'</text>',color,size);}
+function unrPinHtml(size){size=size||20;
+  return pinSvg('<circle cx="16.5" cy="16.5" r="5" fill="#fff"/>','#8FA0BA',size);}
+function depotPinHtml(size){size=size||34;
+  return pinSvg('<path d="M24 18.1667V16.5001L22.75 10.6667H9.83333L9 16.5001V18.1667H9.83333V23.1667H18.1667V18.1667H21.5V23.1667H23.1667V18.1667H24ZM16.5 21.5001H11.5V18.1667H16.5V21.5001Z" fill="#fff"/>','#132045',size);}
+
+/* ── Leaflet map ── */
+var lmap=null, lmarkers=[], llines=[];
+// Central California — Stockton / Sacramento / Bay Area zone
+var DEPOT=[37.956,-121.291]; // Stockton depot
+var UNROUTED_PTS=[
+  [38.58,-121.49],[38.44,-121.37],[38.32,-121.42],[38.19,-121.75],[37.98,-121.56],
+  [37.87,-121.72],[37.77,-122.19],[37.68,-122.08],[37.54,-121.99],[37.43,-121.90],
+  [37.34,-121.88],[37.25,-121.78],[37.78,-121.44],[38.01,-121.12],[37.85,-120.99],
+  [37.65,-120.84],[38.11,-120.75],[38.35,-121.05],[38.52,-121.22],[37.48,-121.05],
+  [37.62,-121.32],[37.99,-122.02]
+];
+// [lat, lng, stopCount, routeColorIdx]
+var ROUTED_PINS=[
+  [38.44,-121.37, 17, 0], // Green — Sacramento North
+  [37.77,-122.19, 12, 1], // Blue — East Bay
+  [37.34,-121.88,  5, 4], // Teal — San Jose South
+  [38.58,-121.49, 11, 2], // Amber — Sacramento area
+  [37.68,-122.08,  4, 4], // Teal — Fremont
+  [37.25,-121.78,  2, 5], // Pink — Gilroy
+  [37.62,-121.32,  1, 6], // Red — Tracy
+  [38.01,-121.12,  8, 3], // Purple — Lodi
+  [38.32,-121.42,  7, 3], // Purple — Elk Grove
+  [37.87,-121.72,  9, 1]  // Blue — Livermore
+];
+
+function initMap(){
+  if(lmap)return;
+  lmap=L.map('leaflet-map',{zoomControl:true,attributionControl:true}).setView(DEPOT,9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom:18
+  }).addTo(lmap);
+}
+function clearMapLayers(){
+  lmarkers.forEach(function(m){lmap.removeLayer(m);});lmarkers=[];
+  llines.forEach(function(l){lmap.removeLayer(l);});llines=[];
+}
+function makeIcon(html,w,h){
+  return L.divIcon({html:html,className:'',iconSize:[w,h],iconAnchor:[w/2,h]});
+}
 function renderPins(on){
-  var box=document.getElementById('mapPins');
+  initMap();
+  clearMapLayers();
+  var pinH=function(size){return Math.round(size*49/33);};
   if(!on){
-    var html='<div class="mpin depot" style="left:50%;top:48%">'+depotPin(32)+'</div>';
-    var pts=[[30,30],[36,33],[42,28],[28,42],[34,46],[40,44],[46,38],[52,30],[58,34],[62,42],[26,56],[33,58],[44,56],[55,52],[64,55],[70,40],[48,62],[38,66],[58,64],[68,62],[30,68],[50,70]];
-    pts.forEach(function(p){html+='<div class="mpin unr" style="left:'+p[0]+'%;top:'+p[1]+'%">'+unrPin(17)+'</div>';});
-    box.innerHTML=html;return;
+    // Depot
+    var ds=34,dh=pinH(ds);
+    lmarkers.push(L.marker(DEPOT,{icon:makeIcon(depotPinHtml(ds),ds,dh),zIndexOffset:100}).addTo(lmap));
+    // Unrouted stops
+    UNROUTED_PTS.forEach(function(pt){
+      var s=20,h=pinH(s);
+      lmarkers.push(L.marker([pt[0],pt[1]],{icon:makeIcon(unrPinHtml(s),s,h)}).addTo(lmap));
+    });
+    lmap.setView(DEPOT,9);
+    return;
   }
-  var lines=[[120,200],[140,150],[160,20],[130,240],[150,75],[110,310]];
-  var h='<div class="mpin depot" style="left:52%;top:46%">'+depotPin(32)+'</div>';
-  lines.forEach(function(l,i){h+='<div class="route-line" style="left:52%;top:46%;width:'+l[0]+'px;background:'+SU[i%SU.length]+';transform:rotate('+l[1]+'deg)"></div>';});
-  // [xPct, yPct, stop count, route color index]
-  var pins=[[30,38,17,0],[28,52,12,1],[34,60,5,4],[62,30,11,2],[70,55,4,4],[40,44,2,5],[46,66,1,6],[58,40,8,3],[66,46,7,3],[24,46,9,1]];
-  pins.forEach(function(p){h+='<div class="mpin" style="left:'+p[0]+'%;top:'+p[1]+'%" onclick="openCustomer()">'+routePin(p[2],SU[p[3]],p===pins[0]?34:30)+'</div>';});
-  box.innerHTML=h;
+  // Depot
+  var ds=34,dh=pinH(ds);
+  lmarkers.push(L.marker(DEPOT,{icon:makeIcon(depotPinHtml(ds),ds,dh),zIndexOffset:200}).addTo(lmap));
+  // Route lines from depot to each pin
+  ROUTED_PINS.forEach(function(p,i){
+    var color=SU[p[3]%SU.length];
+    var line=L.polyline([DEPOT,[p[0],p[1]]],{color:color,weight:2,opacity:0.55}).addTo(lmap);
+    llines.push(line);
+  });
+  // Route pins
+  ROUTED_PINS.forEach(function(p,i){
+    var isFirst=(i===0);
+    var sz=isFirst?36:30, h=pinH(sz);
+    var color=SU[p[3]%SU.length];
+    var mk=L.marker([p[0],p[1]],{icon:makeIcon(routePinHtml(p[2],color,sz),sz,h),zIndexOffset:isFirst?150:50})
+      .on('click',openCustomer).addTo(lmap);
+    lmarkers.push(mk);
+  });
+  lmap.setView(DEPOT,9);
+  // Invalidate size in case container resized during transition
+  setTimeout(function(){lmap&&lmap.invalidateSize();},120);
 }
 function optimize(){
   hideErr();
