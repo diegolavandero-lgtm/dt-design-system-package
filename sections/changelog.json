@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:19:41.375Z",
+  "generated": "2026-06-03T20:22:51.768Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "d375885",
+          "type": "feat",
+          "section": "General",
+          "message": "feat(planner): add Strategy Planner (Plans tab) screens 01–09 navigable prototype",
+          "author": "Diego"
+        },
         {
           "hash": "bb55240",
           "type": "fix",
