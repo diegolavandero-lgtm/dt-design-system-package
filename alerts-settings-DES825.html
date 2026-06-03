@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alertas — DispatchTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;color:#39414D;background:#F0F2F5}
+a{color:#0052CC;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+
+/* ════════════════════════
+   TOPBAR
+════════════════════════ */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  height:52px;background:#132045;
+  display:flex;align-items:center;
+  padding:0 0 0 16px;flex-shrink:0;
+}
+.topbar-logo{display:flex;align-items:center;height:20px;text-decoration:none}
+.topbar-logo img{height:20px;width:auto;display:block}
+.topbar-icons{margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px}
+.topbar-icons svg{width:18px;height:18px;color:rgba(255,255,255,.85);display:block;cursor:pointer;transition:color .12s;flex-shrink:0}
+.topbar-icons svg:hover{color:#fff}
+.bell-wrap{position:relative}
+.bell-wrap::after{content:'';position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045}
+.topbar-slot{height:52px;width:88px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:#132045;font-size:13px;font-weight:700;flex-shrink:0;margin-left:8px}
+
+/* ════════════════════════
+   LAYOUT SHELL
+════════════════════════ */
+.shell{display:flex;min-height:calc(100vh - 52px)}
+
+/* ════════════════════════
+   SIDEBAR
+════════════════════════ */
+.sidebar{display:flex;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden}
+.sb-icons{width:44px;flex-shrink:0;background:#132045;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px;overflow-y:auto}
+.sb-icon-btn{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .12s;flex-shrink:0}
+.sb-icon-btn svg{width:18px;height:18px;color:rgba(255,255,255,.55);display:block;flex-shrink:0}
+.sb-icon-btn:hover svg{color:rgba(255,255,255,.9)}
+.sb-icon-btn.active{background:rgba(255,255,255,.12)}
+.sb-icon-btn.active svg{color:#fff}
+.sb-nav{width:212px;flex-shrink:0;background:#fff;border-right:1px solid #E1E6ED;overflow-y:auto;padding-bottom:24px}
+.sb-nav::-webkit-scrollbar{width:4px}
+.sb-nav::-webkit-scrollbar-thumb{background:#E1E6ED;border-radius:2px}
+.sb-group{padding:16px 0 4px 16px;font-size:13px;font-weight:700;color:#39414D}
+.sb-item{display:flex;align-items:center;justify-content:space-between;padding:7px 12px 7px 24px;font-size:13px;color:#4B5564;cursor:pointer;border-left:2px solid transparent;transition:color .1s,background .1s;line-height:1.3}
+.sb-item:hover{color:#0052CC;background:#F5F6FA}
+.sb-item.active{color:#0052CC;font-weight:700;background:#EDF5FF;border-left-color:#0052CC}
+.sb-badge{font-size:11px;font-weight:600;background:#EDF5FF;color:#0052CC;padding:1px 7px;border-radius:999px;margin-left:4px;flex-shrink:0}
+
+/* ════════════════════════
+   MAIN CONTENT
+════════════════════════ */
+.main{flex:1;padding:0;min-width:0;overflow:auto;display:flex;flex-direction:column}
+
+/* page header */
+.page-header{background:#fff;border-bottom:1px solid #E1E6ED;padding:16px 24px;display:flex;align-items:flex-start;gap:12px}
+.page-header-text{flex:1}
+.page-header h1{font-size:20px;font-weight:700;color:#39414D;margin-bottom:3px}
+.page-header p{font-size:13px;color:#67768D;line-height:1.5}
+.page-header-actions{display:flex;align-items:center;gap:8px;padding-top:2px}
+
+/* buttons */
+.btn{font-size:13px;font-weight:700;font-family:inherit;padding:6px 14px;border-radius:100px;height:32px;border:1px solid #C5D2E7;background:#fff;color:#39414D;cursor:pointer;transition:background .12s,color .12s,border-color .12s;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;line-height:1}
+.btn:hover{background:#F5F6FA}
+.btn.primary{background:#1F60ED;color:#fff;border-color:#1F60ED}
+.btn.primary:hover{background:#0052CC;border-color:#0052CC}
+.btn.primary:disabled{background:#C5D2E7;border-color:#C5D2E7;color:#8FA0BA;cursor:not-allowed}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+.btn.ghost{border-color:transparent;background:transparent;color:#0052CC}
+.btn.ghost:hover{background:#EDF5FF;border-color:transparent}
+
+/* content */
+.content{flex:1;padding:20px 24px 100px}
+
+/* ════════════════════════
+   ALERT LIST
+════════════════════════ */
+.alert-section-label{
+  font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:#67768D;margin-bottom:10px;
+}
+
+.alert-list{
+  background:#fff;border:1px solid #E1E6ED;border-radius:8px;overflow:hidden;
+}
+
+/* list header */
+.alert-list-head{
+  display:grid;
+  grid-template-columns:1fr 180px 110px;
+  padding:8px 20px;
+  background:#FAFBFD;
+  border-bottom:1px solid #E1E6ED;
+}
+.alert-list-head .lh{
+  font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:#8FA0BA;
+}
+.alert-list-head .lh:not(:first-child){text-align:center}
+
+/* alert row */
+.alert-row{border-bottom:1px solid #F0F2F5;transition:background .1s}
+.alert-row:last-child{border-bottom:0}
+
+.alert-row-head{
+  display:grid;
+  grid-template-columns:1fr 180px 110px;
+  align-items:center;
+  padding:14px 20px;
+  cursor:pointer;
+  user-select:none;
+  transition:background .1s;
+}
+.alert-row-head:hover{background:#F9FBFF}
+.alert-row.open .alert-row-head{background:#F5F8FF}
+
+.alert-row-info{display:flex;align-items:center;gap:10px;min-width:0}
+.alert-chevron{width:16px;height:16px;color:#8FA0BA;flex-shrink:0;transition:transform .15s}
+.alert-row.open .alert-chevron{transform:rotate(90deg)}
+
+.alert-row-text{min-width:0}
+.alert-row-name{font-size:14px;font-weight:700;color:#39414D;margin-bottom:2px}
+.alert-row-desc{font-size:12px;color:#67768D;line-height:1.4}
+
+/* status chip */
+.status-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;
+  letter-spacing:.02em;justify-self:center;
+}
+.status-chip.on{background:#E3FCEF;color:#006844}
+.status-chip.off{background:#F0F2F5;color:#67768D}
+.status-chip .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.status-chip.on .dot{background:#00875A}
+.status-chip.off .dot{background:#8FA0BA}
+
+/* toggle */
+.swt{width:34px;height:20px;border-radius:999px;background:#C5D2E7;position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;justify-self:center}
+.swt.on{background:#0052CC}
+.swt::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.swt.on::after{left:16px}
+
+/* expanded body */
+.alert-row-body{
+  display:none;
+  padding:0 20px 20px 46px;
+  border-top:1px solid #F0F2F5;
+}
+.alert-row.open .alert-row-body{display:block}
+
+/* form inside body */
+.alert-form{max-width:520px;padding-top:16px}
+.form-row{margin-bottom:16px}
+.form-label{font-size:12px;font-weight:700;color:#39414D;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.form-label .help-icon{width:13px;height:13px;color:#8FA0BA;cursor:help;flex-shrink:0}
+.form-helper{font-size:11px;color:#8FA0BA;margin-top:4px;line-height:1.4}
+.form-input{
+  width:100%;height:36px;border:1px solid #C5D2E7;border-radius:6px;
+  padding:0 10px;font:400 13px 'DM Sans';color:#39414D;background:#fff;outline:0;
+  transition:border-color .12s,box-shadow .12s;
+}
+.form-input:focus{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.form-input.error{border-color:#DE350B;box-shadow:0 0 0 3px rgba(222,53,11,.12)}
+.form-error{font-size:11px;color:#DE350B;margin-top:4px;display:none}
+.form-input.error + .form-helper + .form-error,
+.form-input.error + .form-error{display:block}
+
+/* multi-select chips */
+.multi-select-wrap{position:relative}
+.multi-select-box{
+  min-height:36px;border:1px solid #C5D2E7;border-radius:6px;
+  padding:5px 8px;display:flex;flex-wrap:wrap;gap:4px;cursor:text;
+  background:#fff;transition:border-color .12s,box-shadow .12s;
+  align-items:flex-start;
+}
+.multi-select-box:focus-within{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.multi-select-box.error{border-color:#DE350B;box-shadow:0 0 0 3px rgba(222,53,11,.12)}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#EDF5FF;color:#0052CC;border:1px solid #ADC7FF;
+  font-size:11px;font-weight:600;padding:2px 7px 2px 8px;border-radius:999px;
+  white-space:nowrap;
+}
+.chip button{background:transparent;border:0;cursor:pointer;padding:0;display:flex;align-items:center;color:#4B82FA;line-height:1}
+.chip button:hover{color:#0052CC}
+.chip button svg{width:11px;height:11px}
+.ms-placeholder{font-size:12px;color:#8FA0BA;padding:3px 2px;flex:1;min-width:80px}
+.ms-dropdown{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;
+  background:#fff;border:1px solid #C5D2E7;border-radius:6px;
+  box-shadow:0 8px 24px rgba(19,32,69,.12);max-height:200px;overflow-y:auto;
+  display:none;
+}
+.ms-dropdown.open{display:block}
+.ms-option{padding:8px 12px;font-size:13px;color:#39414D;cursor:pointer;display:flex;align-items:center;gap:8px}
+.ms-option:hover{background:#F5F8FF}
+.ms-option input[type=checkbox]{accent-color:#1F60ED;width:13px;height:13px;flex-shrink:0;cursor:pointer}
+.ms-option.selected{background:#F0F5FF}
+
+/* checkbox row */
+.check-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.check-row input[type=checkbox]{accent-color:#1F60ED;width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.check-row label{font-size:13px;color:#39414D;cursor:pointer;line-height:1.4}
+
+/* validation notice */
+.validation-notice{
+  display:none;
+  align-items:center;gap:6px;
+  background:#FFFAE6;border:1px solid #FFE380;border-radius:6px;
+  padding:8px 12px;font-size:12px;color:#39414D;margin-top:12px;
+}
+.validation-notice.show{display:flex}
+.validation-notice svg{width:14px;height:14px;color:#FFAB00;flex-shrink:0}
+
+/* ════════════════════════
+   STICKY SAVE BAR
+════════════════════════ */
+.save-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:#fff;border-top:1px solid #E1E6ED;
+  padding:12px 24px;
+  display:flex;align-items:center;justify-content:flex-end;gap:10px;
+  box-shadow:0 -4px 16px rgba(19,32,69,.07);
+  transform:translateY(100%);transition:transform .2s;
+}
+.save-bar.visible{transform:translateY(0)}
+.save-bar .dirty-hint{flex:1;font-size:12px;color:#67768D;display:flex;align-items:center;gap:6px}
+.save-bar .dirty-hint svg{width:13px;height:13px;color:#FFAB00;flex-shrink:0}
+
+/* ════════════════════════
+   TOAST
+════════════════════════ */
+.toast{
+  position:fixed;bottom:76px;right:24px;
+  background:#00875A;color:#fff;font-size:13px;font-weight:500;
+  padding:10px 18px;border-radius:6px;display:flex;align-items:center;gap:8px;
+  box-shadow:0 8px 24px rgba(19,32,69,.18);z-index:999;
+  transform:translateY(60px);opacity:0;transition:.22s;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast svg{width:16px;height:16px;stroke:#fff;stroke-width:3;fill:none;flex-shrink:0}
+
+/* ════════════════════════
+   UNSAVED LEAVE BANNER
+════════════════════════ */
+.nav-warning{
+  display:none;
+  align-items:center;gap:8px;
+  background:#FFFAE6;border:1px solid #FFE380;border-radius:6px;
+  padding:10px 14px;font-size:12px;color:#39414D;
+  margin:12px 24px 0;
+}
+.nav-warning.show{display:flex}
+.nav-warning svg{width:14px;height:14px;color:#FFAB00;flex-shrink:0}
+.nav-warning strong{font-weight:700}
+.nav-warning .nw-actions{margin-left:auto;display:flex;gap:8px}
+.nav-warning .nw-actions button{font-size:11px;font-weight:700;font-family:inherit;padding:4px 10px;border-radius:999px;cursor:pointer;border:1px solid transparent}
+.nav-warning .nw-actions .nw-save{background:#1F60ED;color:#fff;border-color:#1F60ED}
+.nav-warning .nw-actions .nw-save:hover{background:#0052CC}
+.nav-warning .nw-actions .nw-discard{background:#fff;color:#67768D;border-color:#C5D2E7}
+.nav-warning .nw-actions .nw-discard:hover{background:#F5F6FA}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ TOPBAR ═══════════════ -->
+<header class="topbar">
+  <a class="topbar-logo" href="#" aria-label="DispatchTrack Last Mile">
+    <img src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="4" height="4" rx=".5"/><rect x="10" y="3" width="4" height="4" rx=".5"/><rect x="17" y="3" width="4" height="4" rx=".5"/><rect x="3" y="10" width="4" height="4" rx=".5"/><rect x="10" y="10" width="4" height="4" rx=".5"/><rect x="17" y="10" width="4" height="4" rx=".5"/><rect x="3" y="17" width="4" height="4" rx=".5"/><rect x="10" y="17" width="4" height="4" rx=".5"/><rect x="17" y="17" width="4" height="4" rx=".5"/></svg>
+    <div class="bell-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<div class="shell">
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <div class="sb-icons">
+    <div class="sb-icon-btn" title="Actividad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="sb-icon-btn" title="Rutas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h4"/></svg></div>
+    <div class="sb-icon-btn" title="Pedidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+    <div class="sb-icon-btn" title="Flota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+    <div class="sb-icon-btn" title="Estadísticas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    <div class="sb-icon-btn" title="Alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+    <div class="sb-icon-btn" title="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <div class="sb-icon-btn" title="Reportes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+    <div class="sb-icon-btn" title="Mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+    <div class="sb-icon-btn active" title="Configuración"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+    <div class="sb-icon-btn" title="Importar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+    <div class="sb-icon-btn" title="Integraciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-group">Cuenta</div>
+    <div class="sb-item">Configuración de cuenta</div>
+    <div class="sb-group">Usuarios</div>
+    <div class="sb-item">Usuarios web <span class="sb-badge">24</span></div>
+    <div class="sb-item">Usuarios móviles <span class="sb-badge">57</span></div>
+    <div class="sb-group">Gestionar</div>
+    <div class="sb-item">Vehículos</div>
+    <div class="sb-item">Subestados</div>
+    <div class="sb-item">Pruebas de entrega</div>
+    <div class="sb-item">Formularios de ruta</div>
+    <div class="sb-item">Centros de distribución</div>
+    <div class="sb-item">Agrupaciones</div>
+    <div class="sb-item active">Alertas</div>
+    <div class="sb-item">Notificaciones</div>
+    <div class="sb-item">Configuración de operación</div>
+    <div class="sb-group">Configuración avanzada</div>
+    <div class="sb-item">Importar órdenes</div>
+    <div class="sb-item">Campos personalizados</div>
+    <div class="sb-item">Llaves API</div>
+    <div class="sb-item">Webhooks</div>
+    <div class="sb-item">Etiquetas de órdenes</div>
+    <div class="sb-item">Seguridad</div>
+    <div class="sb-group">Widget</div>
+    <div class="sb-item">Seguimiento de pedidos</div>
+  </nav>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+
+  <!-- unsaved leave banner -->
+  <div class="nav-warning" id="nav-warning">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span><strong>Tienes cambios sin guardar.</strong> ¿Guardar antes de salir?</span>
+    <div class="nw-actions">
+      <button class="nw-discard" onclick="discardChanges()">Descartar</button>
+      <button class="nw-save" onclick="saveChanges()">Guardar</button>
+    </div>
+  </div>
+
+  <!-- page header -->
+  <div class="page-header">
+    <div class="page-header-text">
+      <h1>Alertas</h1>
+      <p>Configura qué eventos operacionales disparan alertas en tu cuenta. Los cambios aplican a todos los usuarios.</p>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn ghost" onclick="exportExcel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar a Excel
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="alert-section-label">Tipos de alerta</div>
+
+    <!-- ══════════ ALERT LIST ══════════ -->
+    <div class="alert-list">
+
+      <!-- list header -->
+      <div class="alert-list-head">
+        <div class="lh">Tipo de alerta</div>
+        <div class="lh">Estado</div>
+        <div class="lh">Activar / pausar</div>
+      </div>
+
+      <!-- ── ROW 1: Por estados ── -->
+      <div class="alert-row open" id="row-estados">
+        <div class="alert-row-head" onclick="toggleRow('row-estados')">
+          <div class="alert-row-info">
+            <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="alert-row-text">
+              <div class="alert-row-name">Alerta por estado</div>
+              <div class="alert-row-desc">Notifica cuando una entrega cambia a uno de los estados o subestados seleccionados.</div>
+            </div>
+          </div>
+          <div class="status-chip on" id="chip-estados">
+            <span class="dot"></span>Activa
+          </div>
+          <div class="swt on" id="swt-estados" onclick="toggleSwitch(event,'estados')" title="Pausar alerta por estado"></div>
+        </div>
+        <div class="alert-row-body">
+          <div class="alert-form" id="form-estados">
+            <div class="form-row">
+              <div class="form-label">
+                Estados
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Selecciona los estados de entrega que disparan esta alerta."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <!-- multi-select: Estados (single selection for parent state) -->
+              <div class="multi-select-wrap">
+                <div class="multi-select-box" id="ms-estados" onclick="openDropdown('dd-estados')">
+                  <span class="ms-placeholder" id="pl-estados">Selecciona un estado…</span>
+                </div>
+                <div class="ms-dropdown" id="dd-estados">
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Entregado','Entregado')">
+                    <input type="checkbox" id="opt-entregado"> Entregado
+                  </div>
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Fallido','Fallido')">
+                    <input type="checkbox" id="opt-fallido"> Fallido
+                  </div>
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','En ruta','En ruta')">
+                    <input type="checkbox" id="opt-enruta"> En ruta
+                  </div>
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Pendiente','Pendiente')">
+                    <input type="checkbox" id="opt-pendiente"> Pendiente
+                  </div>
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Cancelado','Cancelado')">
+                    <input type="checkbox" id="opt-cancelado"> Cancelado
+                  </div>
+                </div>
+              </div>
+              <div class="form-helper">Selecciona al menos un estado para activar esta alerta.</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">
+                Subestados
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Filtra por subestados específicos dentro de los estados seleccionados."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <div class="multi-select-wrap">
+                <div class="multi-select-box" id="ms-sub" onclick="openDropdown('dd-sub')">
+                  <!-- pre-filled chips from legacy -->
+                  <span class="chip">Cita Cerrada <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Pedido Asignado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Fuera de Ruta <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Modelo al Cliente <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Me Dejaron Botando <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Local Cerrado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Entrega Exitosa <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Me Dejaron Buscando <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Pedido Incendiado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Pedido Amontonado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Pedido Migrado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Pérdida de mercancía <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="ms-placeholder" id="pl-sub" style="display:none">Selecciona subestados…</span>
+                </div>
+                <div class="ms-dropdown" id="dd-sub">
+                  <div class="ms-option selected"><input type="checkbox" checked> Cita Cerrada</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Asignado</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Fuera de Ruta</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Modelo al Cliente</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Me Dejaron Botando</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Local Cerrado</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Entrega Exitosa</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Me Dejaron Buscando</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Incendiado</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Amontonado</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Pedido Migrado</div>
+                  <div class="ms-option selected"><input type="checkbox" checked> Pérdida de mercancía</div>
+                </div>
+              </div>
+              <div class="form-helper">Opcional. Deja vacío para recibir alertas de todos los subestados.</div>
+            </div>
+
+            <div class="validation-notice" id="vn-estados">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Selecciona al menos un estado para activar esta alerta.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROW 2: Por feedback ── -->
+      <div class="alert-row open" id="row-feedback">
+        <div class="alert-row-head" onclick="toggleRow('row-feedback')">
+          <div class="alert-row-info">
+            <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="alert-row-text">
+              <div class="alert-row-name">Alerta por feedback</div>
+              <div class="alert-row-desc">Notifica cuando la calificación de entrega del cliente es igual o menor al umbral configurado.</div>
+            </div>
+          </div>
+          <div class="status-chip on" id="chip-feedback">
+            <span class="dot"></span>Activa
+          </div>
+          <div class="swt on" id="swt-feedback" onclick="toggleSwitch(event,'feedback')" title="Pausar alerta por feedback"></div>
+        </div>
+        <div class="alert-row-body">
+          <div class="alert-form">
+            <div class="form-row" style="max-width:200px">
+              <div class="form-label">
+                Calificación mínima (1–5)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="La alerta se activa cuando el cliente da una calificación igual o menor a este valor."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <input type="number" class="form-input" id="input-nota" min="1" max="5" value="3" oninput="markDirty();validateNumeric(this,1,5,'err-nota')" onblur="validateNumeric(this,1,5,'err-nota')">
+              <div class="form-helper">Valor entre 1 (muy malo) y 5 (excelente).</div>
+              <div class="form-error" id="err-nota">Ingresa un valor entre 1 y 5.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROW 3: Fuera de rango ── -->
+      <div class="alert-row" id="row-rango">
+        <div class="alert-row-head" onclick="toggleRow('row-rango')">
+          <div class="alert-row-info">
+            <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="alert-row-text">
+              <div class="alert-row-name">Alerta por entrega fuera de rango</div>
+              <div class="alert-row-desc">Notifica cuando el conductor está a más de la distancia configurada del punto de entrega.</div>
+            </div>
+          </div>
+          <div class="status-chip on" id="chip-rango">
+            <span class="dot"></span>Activa
+          </div>
+          <div class="swt on" id="swt-rango" onclick="toggleSwitch(event,'rango')" title="Pausar alerta por rango"></div>
+        </div>
+        <div class="alert-row-body">
+          <div class="alert-form">
+            <div class="form-row" style="max-width:240px">
+              <div class="form-label">
+                Distancia máxima (metros)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="La alerta se activa cuando el conductor supera esta distancia al punto de entrega."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <input type="number" class="form-input" id="input-distancia" min="1" max="9999" value="200" oninput="markDirty();validateNumeric(this,1,9999,'err-distancia')" onblur="validateNumeric(this,1,9999,'err-distancia')">
+              <div class="form-helper">Ingresa un valor entre 1 y 9.999 metros.</div>
+              <div class="form-error" id="err-distancia">Ingresa un valor entre 1 y 9.999.</div>
+            </div>
+            <div class="check-row">
+              <input type="checkbox" id="chk-movil" onchange="markDirty()">
+              <label for="chk-movil">Notificar también al usuario móvil (conductor)</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROW 4: Fuera de tiempo ── -->
+      <div class="alert-row" id="row-tiempo">
+        <div class="alert-row-head" onclick="toggleRow('row-tiempo')">
+          <div class="alert-row-info">
+            <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <div class="alert-row-text">
+              <div class="alert-row-name">Alerta por entrega fuera de tiempo</div>
+              <div class="alert-row-desc">Notifica cuando una entrega supera el tiempo máximo estimado configurado.</div>
+            </div>
+          </div>
+          <div class="status-chip on" id="chip-tiempo">
+            <span class="dot"></span>Activa
+          </div>
+          <div class="swt on" id="swt-tiempo" onclick="toggleSwitch(event,'tiempo')" title="Pausar alerta por tiempo"></div>
+        </div>
+        <div class="alert-row-body">
+          <div class="alert-form">
+            <div class="form-row" style="max-width:200px">
+              <div class="form-label">
+                Tiempo máximo (minutos)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="La alerta se activa cuando la entrega supera este número de minutos desde la llegada al punto."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+              </div>
+              <input type="number" class="form-input" id="input-minutos" min="1" max="999" value="20" oninput="markDirty();validateNumeric(this,1,999,'err-minutos')" onblur="validateNumeric(this,1,999,'err-minutos')">
+              <div class="form-helper">Ingresa un valor entre 1 y 999 minutos.</div>
+              <div class="form-error" id="err-minutos">Ingresa un valor entre 1 y 999.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /alert-list -->
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ═══════════════ STICKY SAVE BAR ═══════════════ -->
+<div class="save-bar" id="save-bar">
+  <div class="dirty-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Tienes cambios sin guardar
+  </div>
+  <button class="btn" onclick="cancelChanges()">Cancelar</button>
+  <button class="btn primary" id="btn-save" onclick="saveChanges()">Guardar cambios</button>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  Configuración de alertas guardada
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────
+let dirty = false;
+const alertStates = { estados: true, feedback: true, rango: true, tiempo: true };
+
+// ── Dirty tracking ──────────────────────────────────────
+function markDirty() {
+  if (!dirty) {
+    dirty = true;
+    document.getElementById('save-bar').classList.add('visible');
+  }
+}
+
+// ── Row accordion ──────────────────────────────────────
+function toggleRow(id) {
+  const row = document.getElementById(id);
+  row.classList.toggle('open');
+}
+
+// ── Toggle switch ──────────────────────────────────────
+function toggleSwitch(e, key) {
+  e.stopPropagation();
+  const swt = document.getElementById('swt-' + key);
+  const chip = document.getElementById('chip-' + key);
+  alertStates[key] = !alertStates[key];
+
+  swt.classList.toggle('on', alertStates[key]);
+  chip.classList.toggle('on', alertStates[key]);
+  chip.classList.toggle('off', !alertStates[key]);
+  chip.innerHTML = alertStates[key]
+    ? '<span class="dot"></span>Activa'
+    : '<span class="dot"></span>Pausada';
+
+  markDirty();
+}
+
+// ── Multi-select dropdown ──────────────────────────────
+function openDropdown(ddId) {
+  document.querySelectorAll('.ms-dropdown').forEach(d => {
+    if (d.id !== ddId) d.classList.remove('open');
+  });
+  document.getElementById(ddId).classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.multi-select-wrap')) {
+    document.querySelectorAll('.ms-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+function toggleOption(ddId, boxId, plId, label, value) {
+  const box = document.getElementById(boxId);
+  const pl = document.getElementById(plId);
+
+  // Check if already selected
+  const existing = Array.from(box.querySelectorAll('.chip')).find(c => c.textContent.trim().startsWith(label));
+  if (existing) {
+    existing.remove();
+  } else {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.innerHTML = `${label} <button onclick="removeChip(event,this,'${boxId}','${plId}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+    box.insertBefore(chip, pl);
+  }
+
+  const chips = box.querySelectorAll('.chip');
+  pl.style.display = chips.length === 0 ? '' : 'none';
+
+  // Update checkbox visual
+  const option = Array.from(document.querySelectorAll(`#${ddId} .ms-option`))
+    .find(o => o.textContent.trim() === label);
+  if (option) {
+    const cb = option.querySelector('input');
+    cb.checked = !cb.checked;
+    option.classList.toggle('selected', cb.checked);
+  }
+
+  markDirty();
+}
+
+function removeChip(e, btn, boxId, plId) {
+  e.stopPropagation();
+  const chip = btn.closest('.chip');
+  const label = chip.firstChild.textContent.trim();
+  chip.remove();
+
+  const box = document.getElementById(boxId);
+  const pl = document.getElementById(plId);
+  const chips = box.querySelectorAll('.chip');
+  pl.style.display = chips.length === 0 ? '' : 'none';
+
+  // Uncheck in dropdown
+  const ddId = boxId === 'ms-estados' ? 'dd-estados' : 'dd-sub';
+  const option = Array.from(document.querySelectorAll(`#${ddId} .ms-option`))
+    .find(o => o.textContent.trim() === label);
+  if (option) {
+    const cb = option.querySelector('input');
+    cb.checked = false;
+    option.classList.remove('selected');
+  }
+
+  markDirty();
+}
+
+// ── Numeric validation ──────────────────────────────────
+function validateNumeric(input, min, max, errId) {
+  const val = parseFloat(input.value);
+  const err = document.getElementById(errId);
+  const invalid = isNaN(val) || val < min || val > max;
+  input.classList.toggle('error', invalid);
+  if (err) err.style.display = invalid ? 'block' : 'none';
+  return !invalid;
+}
+
+// ── Save ───────────────────────────────────────────────
+function saveChanges() {
+  // Validate estados if ON and no states selected
+  const estadosOn = alertStates.estados;
+  // (simplified validation: just show the save toast in prototype)
+  const nota = document.getElementById('input-nota');
+  const dist = document.getElementById('input-distancia');
+  const min  = document.getElementById('input-minutos');
+
+  const valid =
+    (!nota || validateNumeric(nota, 1, 5, 'err-nota')) &&
+    (!dist || validateNumeric(dist, 1, 9999, 'err-distancia')) &&
+    (!min  || validateNumeric(min, 1, 999, 'err-minutos'));
+
+  if (!valid) return;
+
+  dirty = false;
+  document.getElementById('save-bar').classList.remove('visible');
+  document.getElementById('nav-warning').classList.remove('show');
+  showToast();
+}
+
+function cancelChanges() {
+  dirty = false;
+  document.getElementById('save-bar').classList.remove('visible');
+}
+
+function discardChanges() {
+  dirty = false;
+  document.getElementById('save-bar').classList.remove('visible');
+  document.getElementById('nav-warning').classList.remove('show');
+}
+
+// ── Toast ───────────────────────────────────────────────
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── Export (stub) ──────────────────────────────────────
+function exportExcel() {
+  showToastMsg('Exportando configuración…', '#0052CC');
+}
+
+function showToastMsg(msg, bg) {
+  const t = document.getElementById('toast');
+  t.style.background = bg || '#00875A';
+  t.querySelector('svg + span') // avoid if no span
+  // just reuse the toast element
+  const orig = t.innerHTML;
+  t.innerHTML = `<svg viewBox="0 0 24 24" stroke="white" stroke-width="2.5" fill="none" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> ${msg}`;
+  t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => { t.innerHTML = orig; t.style.background = ''; }, 300); }, 2800);
+}
+
+// ── Nav item click: show dirty warning ────────────────
+document.querySelectorAll('.sb-item').forEach(item => {
+  if (!item.classList.contains('active')) {
+    item.addEventListener('click', () => {
+      if (dirty) {
+        document.getElementById('nav-warning').classList.add('show');
+        document.getElementById('nav-warning').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>

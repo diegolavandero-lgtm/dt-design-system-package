@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New DS Components — DES825 · DispatchTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#F0F2F5;font-family:'DM Sans',system-ui,sans-serif;color:#39414D;font-size:14px;line-height:1.5}
+a{color:#0052CC;text-decoration:none}a:hover{text-decoration:underline}
+button,input,textarea{font-family:inherit}
+
+:root{
+  --indigo:#132045;
+  --n1:#F5F6FA;--n2:#F0F2F5;--n3:#E1E6ED;--n4:#C5D2E7;--n45:#8FA0BA;--n5:#67768D;--n6:#4B5564;--n7:#39414D;
+  --b1:#EDF5FF;--b2:#D1E0FF;--b3:#ADC7FF;--b5:#4B82FA;--b6:#1F60ED;--b7:#0052CC;
+  --g1:#E3FCEF;--g5:#36B37E;--g6:#00875A;
+  --r1:#FFEBE6;--r5:#FF5630;--r6:#DE350B;
+  --o1:#FFFAE6;--o3:#FFE380;--o5:#FFAB00;
+  --font-sans:'DM Sans',system-ui,sans-serif;
+  --font-mono:'Roboto Mono',monospace;
+}
+
+/* ── TOPBAR ── */
+.gh-top{position:sticky;top:0;z-index:200;height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 22px;gap:16px}
+.gh-top .logo img{height:18px;display:block}
+.gh-top .slot{width:88px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:var(--indigo);font:700 11px var(--font-sans);margin-left:auto;flex-shrink:0}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:240px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);padding:14px 0;position:sticky;top:52px;align-self:start;max-height:calc(100vh - 52px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--n3);border-radius:2px}
+.grp-lbl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);padding:10px 20px 5px}
+.snav{display:flex;align-items:center;gap:8px;padding:7px 20px;font:500 13px var(--font-sans);color:var(--n7);border-left:3px solid transparent;text-decoration:none;cursor:pointer}
+.snav:hover{background:var(--n1)}
+.snav.active{background:var(--b1);border-left-color:var(--b5);font-weight:700;color:var(--b7)}
+.snav .tag{font:600 9px var(--font-sans);background:var(--o1);color:var(--o5);padding:1px 6px;border-radius:999px;margin-left:auto;letter-spacing:.03em;border:1px solid var(--o3)}
+.snav .new{background:var(--g1);color:var(--g6);border-color:#ABF5D1}
+.main{flex:1;padding:32px 40px 80px;min-width:0}
+
+/* ── PAGE HEADER ── */
+.main h1{font:700 28px/1.2 var(--font-sans);letter-spacing:-.01em;margin:0 0 6px;color:var(--n7)}
+.main .sub{font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 10px;max-width:660px}
+.ticket-chip{display:inline-flex;align-items:center;gap:6px;font:700 11px var(--font-mono);background:var(--b1);color:var(--b7);border:1px solid var(--b3);padding:3px 10px;border-radius:4px;margin-bottom:28px}
+.proto-link{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--font-sans);color:var(--b7);background:var(--b1);border:1px solid var(--b3);border-radius:4px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+.proto-link svg{width:11px;height:11px}
+
+/* ── PROGRESS RING / SUMMARY BAR ── */
+.summary-bar{
+  background:#fff;border:1px solid var(--n3);border-radius:8px;
+  padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  margin-bottom:32px;
+}
+.s-ring{position:relative;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-ring::after{content:'';position:absolute;width:38px;height:38px;border-radius:50%;background:#fff}
+.s-ring span{position:relative;z-index:1;font:700 12px var(--font-sans);color:var(--n7)}
+.s-counts{display:flex;gap:16px;flex:1;align-items:center;flex-wrap:wrap}
+.s-count{display:flex;flex-direction:column;align-items:center;gap:2px}
+.s-count .num{font:700 20px var(--font-sans);color:var(--n7)}
+.s-count .lbl{font:400 11px var(--font-sans);color:var(--n5)}
+.s-count.added .num{color:var(--g6)}
+.s-count.skipped .num{color:var(--r6)}
+.s-count.pending .num{color:var(--n45)}
+.s-actions{display:flex;gap:8px}
+.btn-copy{font:700 12px var(--font-sans);padding:6px 14px;border-radius:100px;border:1px solid var(--n3);background:#fff;color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.btn-copy:hover{background:var(--n1)}
+.btn-copy svg{width:13px;height:13px}
+
+/* ── SECTION ── */
+.sec{margin:0 0 56px;scroll-margin-top:80px}
+.sec h2{font:700 20px/1.3 var(--font-sans);margin:0 0 4px;color:var(--n7);display:flex;align-items:center;gap:10px}
+.sec h2 .anch{font:500 11px var(--font-mono);color:var(--n5);background:var(--n2);padding:2px 7px;border-radius:4px}
+.sec h2 .status{font:700 9px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.status-new{background:var(--g1);color:var(--g6)}
+.status-ext{background:var(--o1);color:var(--o5)}
+.status-rule{background:var(--b1);color:var(--b7)}
+.sec .desc{font:400 13px/1.6 var(--font-sans);color:var(--n5);margin:0 0 16px;max-width:680px}
+
+/* ── REVIEW CARD ── */
+.rc{background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;margin:0 0 12px}
+.rc-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#FAFBFD;border-bottom:1px solid var(--n3);cursor:pointer;user-select:none;gap:10px}
+.rc-hdr .rc-title{font:700 12px var(--font-sans);color:var(--n7);flex:1}
+.rc-hdr .rc-meta{font:400 11px var(--font-mono);color:var(--n5);flex-shrink:0}
+.rc-hdr .rc-chev{width:14px;height:14px;color:var(--n45);transition:transform .15s;flex-shrink:0}
+.rc.collapsed .rc-hdr .rc-chev{transform:rotate(-90deg)}
+.rc-body{display:block}
+.rc.collapsed .rc-body{display:none}
+.rc-preview{padding:20px;border-bottom:1px solid var(--n3);background:#fff}
+.rc-review{padding:16px;border-top:1px solid var(--n3);background:#FAFBFD;display:flex;flex-direction:column;gap:12px}
+.rc-decision{display:flex;align-items:center;gap:8px}
+.rc-decision span{font:600 12px var(--font-sans);color:var(--n5);margin-right:4px}
+.btn-add,.btn-skip{font:700 12px var(--font-sans);padding:5px 14px;border-radius:100px;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.btn-add{background:var(--g1);color:var(--g6);border:1px solid #ABF5D1}
+.btn-add:hover{background:#C6F6DC}
+.btn-skip{background:var(--r1);color:var(--r6);border:1px solid #FFBDAD}
+.btn-skip:hover{background:#FFD0C4}
+.btn-add.chosen{background:var(--g6);color:#fff;border-color:var(--g6)}
+.btn-skip.chosen{background:var(--r6);color:#fff;border-color:var(--r6)}
+.rc-notes textarea{
+  width:100%;border:1px solid var(--n4);border-radius:6px;padding:8px 10px;
+  font:400 12px var(--font-sans);color:var(--n7);background:#fff;resize:vertical;min-height:60px;outline:none;
+}
+.rc-notes textarea:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.rc-notes label{display:block;font:700 11px var(--font-sans);color:var(--n5);margin-bottom:5px}
+
+/* ── DS TOKEN TAGS ── */
+.tkn{font:500 11px var(--font-mono);background:var(--n2);color:var(--n6);padding:1px 6px;border-radius:3px;border:1px solid var(--n3)}
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.do-box{border-radius:6px;padding:14px;border:1px solid var(--n3);background:#fff}
+.do-box.do{border-left:3px solid var(--g6)}
+.do-box.dont{border-left:3px solid var(--r6)}
+.do-box .lbl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.do-box.do .lbl{color:var(--g6)}
+.do-box.dont .lbl{color:var(--r6)}
+.do-box p{font:400 12px var(--font-sans);color:var(--n6);line-height:1.5}
+
+/* ════════════════════════════════
+   COMPONENT PREVIEWS
+════════════════════════════════ */
+
+/* 1 · ALERT SETTINGS ROW */
+.alert-list-demo{background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden}
+.list-head{display:grid;grid-template-columns:1fr 180px 110px;padding:8px 20px;background:#FAFBFD;border-bottom:1px solid var(--n3)}
+.list-head .lh{font:700 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:#8FA0BA}
+.list-head .lh:not(:first-child){text-align:center}
+.ar{border-bottom:1px solid #F0F2F5}
+.ar:last-child{border-bottom:0}
+.ar-head{display:grid;grid-template-columns:1fr 180px 110px;align-items:center;padding:14px 20px;cursor:pointer;user-select:none}
+.ar-head:hover{background:#F9FBFF}
+.ar.open .ar-head{background:#F5F8FF}
+.ar-info{display:flex;align-items:center;gap:10px;min-width:0}
+.ar-chev{width:16px;height:16px;color:#8FA0BA;flex-shrink:0;transition:transform .15s}
+.ar.open .ar-chev{transform:rotate(90deg)}
+.ar-name{font:700 14px var(--font-sans);color:var(--n7);margin-bottom:2px}
+.ar-desc{font:400 12px var(--font-sans);color:var(--n5);line-height:1.4}
+.sc{display:inline-flex;align-items:center;gap:5px;font:700 11px var(--font-sans);padding:3px 9px;border-radius:999px;justify-self:center}
+.sc.on{background:var(--g1);color:var(--g6)}
+.sc.off{background:var(--n2);color:var(--n5)}
+.sc .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sc.on .dot{background:var(--g6)}
+.sc.off .dot{background:var(--n45)}
+.swt{width:34px;height:20px;border-radius:999px;background:var(--n4);position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;justify-self:center}
+.swt.on{background:var(--b7)}
+.swt::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.swt.on::after{left:16px}
+.ar-body{display:none;padding:0 20px 20px 46px;border-top:1px solid #F0F2F5}
+.ar.open .ar-body{display:block}
+.form-demo{max-width:420px;padding-top:14px}
+.fl{font:700 12px var(--font-sans);color:var(--n7);margin-bottom:4px}
+.fh{font:400 11px var(--font-sans);color:var(--n45);margin-top:3px}
+.fi{width:100%;height:36px;border:1px solid var(--n4);border-radius:6px;padding:0 10px;font:400 13px var(--font-sans);color:var(--n7);background:#fff;outline:none;margin-bottom:2px}
+.fi:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+
+/* 2 · CHIP INPUT */
+.ci-wrap{border:1px solid var(--n4);border-radius:6px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:4px;background:#fff;min-height:40px}
+.ci-wrap:focus-within{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--b1);color:var(--b7);border:1px solid var(--b3);font:600 11px var(--font-sans);padding:2px 7px 2px 8px;border-radius:999px;white-space:nowrap}
+.chip button{background:transparent;border:0;cursor:pointer;padding:0;display:flex;align-items:center;color:var(--b5);line-height:1}
+.chip button:hover{color:var(--b7)}
+.chip button svg{width:11px;height:11px}
+
+/* 3 · STICKY SAVE BAR */
+.save-bar-demo{
+  background:#fff;border:1px solid var(--n3);border-radius:8px;
+  padding:12px 20px;display:flex;align-items:center;justify-content:flex-end;gap:10px;
+  box-shadow:0 -4px 16px rgba(19,32,69,.07);
+}
+.save-bar-demo .hint{flex:1;font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:6px}
+.save-bar-demo .hint svg{width:13px;height:13px;color:var(--o5);flex-shrink:0}
+.btn{font:700 13px var(--font-sans);padding:6px 14px;border-radius:100px;height:32px;border:1px solid var(--n4);background:#fff;color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;line-height:1}
+.btn:hover{background:var(--n1)}
+.btn.primary{background:var(--b6);color:#fff;border-color:var(--b6)}
+.btn.primary:hover{background:var(--b7);border-color:var(--b7)}
+
+/* 4 · STATUS CHIP VARIANTS */
+.chip-grid{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:20px;background:var(--n2);border-radius:6px}
+.chip-item{display:flex;flex-direction:column;align-items:center;gap:8px}
+.chip-item .lbl{font:400 10px var(--font-sans);color:var(--n5);text-align:center}
+
+/* usage table */
+.utbl{width:100%;border-collapse:collapse;font:400 12px var(--font-sans);margin-top:12px}
+.utbl th{background:var(--n2);font:700 11px var(--font-sans);text-align:left;padding:8px 12px;border-bottom:1px solid var(--n4);color:var(--n7)}
+.utbl td{padding:8px 12px;border-bottom:1px solid var(--n3);vertical-align:top}
+.utbl tr:last-child td{border:0}
+.utbl code{font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="gh-top">
+  <div class="logo">
+    <img src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </div>
+  <div class="slot">DT DS</div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="grp-lbl">DES-825</div>
+  <a class="snav active" href="#alert-row">Alert Settings Row <span class="tag new">NEW</span></a>
+  <a class="snav" href="#chip-input">Chip Tag Input <span class="tag">EXT</span></a>
+  <a class="snav" href="#save-bar">Sticky Save Bar <span class="tag new">NEW</span></a>
+  <a class="snav" href="#status-chip">Alert Status Chip <span class="tag">EXT</span></a>
+  <div class="grp-lbl">Reference</div>
+  <a class="snav" href="alerts-settings-DES825.html" target="_blank">→ Ver prototipo</a>
+  <a class="snav" href="notifications-settings-DES824.html" target="_blank">→ DES-824</a>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <h1>New DS Components</h1>
+  <p class="sub">Componentes nuevos y extendidos introducidos en DES-825 — Alerts Settings. Revisa cada uno y decide si se incorpora al Design System oficial.</p>
+  <div>
+    <span class="ticket-chip">DES-825</span>
+    <a class="proto-link" href="alerts-settings-DES825.html" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Ver prototipo
+    </a>
+  </div>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary-bar" id="summary-bar">
+    <div class="s-ring" id="progress-ring">
+      <span id="progress-text">0/4</span>
+    </div>
+    <div class="s-counts">
+      <div class="s-count added"><div class="num" id="count-add">0</div><div class="lbl">Agregar</div></div>
+      <div class="s-count skipped"><div class="num" id="count-skip">0</div><div class="lbl">Omitir</div></div>
+      <div class="s-count pending"><div class="num" id="count-pend">4</div><div class="lbl">Pendiente</div></div>
+    </div>
+    <div class="s-actions">
+      <button class="btn-copy" onclick="copyDecisions()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copiar decisiones
+      </button>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════
+       1 · ALERT SETTINGS ROW
+  ════════════════════════════════ -->
+  <div class="sec" id="alert-row">
+    <h2>
+      Alert Settings Row
+      <span class="anch">alert-row</span>
+      <span class="status status-new">NEW</span>
+    </h2>
+    <p class="desc">Patrón de fila accordion para páginas de configuración de cuenta. Combina nombre + descripción, chip de estado, toggle de activación y cuerpo expandible con formulario inline. Diseñado para Settings screens con múltiples configuraciones independientes de baja frecuencia de edición.</p>
+
+    <div class="rc" id="rc-1">
+      <div class="rc-hdr" onclick="toggleCard('rc-1')">
+        <div class="rc-title">Alert Settings Row — accordion expandible</div>
+        <div class="rc-meta">alert-row · alert-row-head · alert-row-body</div>
+        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="rc-body">
+        <div class="rc-preview">
+          <div class="alert-list-demo">
+            <div class="list-head">
+              <div class="lh">Tipo de alerta</div>
+              <div class="lh">Estado</div>
+              <div class="lh">Activar / pausar</div>
+            </div>
+
+            <!-- row open -->
+            <div class="ar open">
+              <div class="ar-head" onclick="this.closest('.ar').classList.toggle('open')">
+                <div class="ar-info">
+                  <svg class="ar-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  <div>
+                    <div class="ar-name">Alerta por estado</div>
+                    <div class="ar-desc">Notifica cuando una entrega cambia a uno de los estados seleccionados.</div>
+                  </div>
+                </div>
+                <div class="sc on"><span class="dot"></span>Activa</div>
+                <div class="swt on"></div>
+              </div>
+              <div class="ar-body">
+                <div class="form-demo">
+                  <div class="fl">Subestados</div>
+                  <div style="border:1px solid var(--n4);border-radius:6px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:4px;background:#fff;margin-bottom:4px">
+                    <span class="chip">Entrega Exitosa <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                    <span class="chip">Local Cerrado <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                    <span class="chip">Fuera de Ruta <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  </div>
+                  <div class="fh">Opcional. Deja vacío para recibir alertas de todos los subestados.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- row collapsed -->
+            <div class="ar">
+              <div class="ar-head" onclick="this.closest('.ar').classList.toggle('open')">
+                <div class="ar-info">
+                  <svg class="ar-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  <div>
+                    <div class="ar-name">Alerta por entrega fuera de tiempo</div>
+                    <div class="ar-desc">Notifica cuando una entrega supera el tiempo máximo estimado.</div>
+                  </div>
+                </div>
+                <div class="sc off"><span class="dot"></span>Pausada</div>
+                <div class="swt"></div>
+              </div>
+              <div class="ar-body">
+                <div class="form-demo">
+                  <div class="fl">Tiempo máximo (minutos)</div>
+                  <input class="fi" type="number" value="20">
+                  <div class="fh">Ingresa un valor entre 1 y 999 minutos.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="do-dont">
+            <div class="do-box do">
+              <div class="lbl">✓ Hacer</div>
+              <p>Un toggle por tipo de alerta, con estado chip visible en la fila colapsada. El formulario solo aparece al expandir.</p>
+            </div>
+            <div class="do-box dont">
+              <div class="lbl">✗ No hacer</div>
+              <p>No poner formularios visibles en todas las filas a la vez. Crea sobrecarga cognitiva y dificulta escanear el estado general.</p>
+            </div>
+          </div>
+
+          <table class="utbl">
+            <tr><th>Elemento</th><th>Clase</th><th>Token</th></tr>
+            <tr><td>Fila (contenedor)</td><td><code>ar</code> / <code>ar.open</code></td><td>border-bottom: <span class="tkn">--n3</span></td></tr>
+            <tr><td>Chevron</td><td><code>ar-chev</code></td><td>color <span class="tkn">--n45</span>, rotates 90° on .open</td></tr>
+            <tr><td>Nombre alerta</td><td><code>ar-name</code></td><td><span class="tkn">700 14px</span> <span class="tkn">--n7</span></td></tr>
+            <tr><td>Descripción</td><td><code>ar-desc</code></td><td><span class="tkn">400 12px</span> <span class="tkn">--n5</span></td></tr>
+            <tr><td>Cuerpo expandido</td><td><code>ar-body</code></td><td>padding-left 46px (alineado al texto)</td></tr>
+            <tr><td>Toggle activo</td><td><code>swt.on</code></td><td>background: <span class="tkn">--b7 #0052CC</span></td></tr>
+          </table>
+        </div>
+        <div class="rc-review">
+          <div class="rc-decision">
+            <span>Decisión:</span>
+            <button class="btn-add" id="add-1" onclick="decide('1','add')">✓ Agregar al DS</button>
+            <button class="btn-skip" id="skip-1" onclick="decide('1','skip')">✗ Omitir</button>
+          </div>
+          <div class="rc-notes">
+            <label>Notas y justificación</label>
+            <textarea id="notes-1" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('1')"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════
+       2 · CHIP TAG INPUT
+  ════════════════════════════════ -->
+  <div class="sec" id="chip-input">
+    <h2>
+      Chip Tag Input
+      <span class="anch">chip-input</span>
+      <span class="status status-ext">EXTENDED</span>
+    </h2>
+    <p class="desc">Extensión del patrón de chips existente para inputs de selección múltiple. Los chips son removibles con ×, se generan desde un dropdown con checkboxes y muestran el label completo (sin truncado). Aplica a selects de estados, subestados, etiquetas y cualquier entidad multi-seleccionable.</p>
+
+    <div class="rc" id="rc-2">
+      <div class="rc-hdr" onclick="toggleCard('rc-2')">
+        <div class="rc-title">Chip Tag Input — inline removable con dropdown</div>
+        <div class="rc-meta">chip · multi-select-box · ms-dropdown</div>
+        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="rc-body">
+        <div class="rc-preview">
+          <p style="font:700 11px var(--font-sans);color:var(--n5);margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em">Subestados seleccionados</p>
+          <div class="ci-wrap" style="max-width:560px">
+            <span class="chip">Cita Cerrada <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+            <span class="chip">Pedido Asignado <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+            <span class="chip">Fuera de Ruta <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+            <span class="chip">Entrega Exitosa <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+            <span class="chip">Local Cerrado <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+            <span style="font:400 12px var(--font-sans);color:var(--n45);padding:4px 2px">+ 7 más…</span>
+          </div>
+
+          <div class="do-dont">
+            <div class="do-box do">
+              <div class="lbl">✓ Hacer</div>
+              <p>Labels completos en los chips. Si hay más de 8, agrupa con "+ N más" que expande.</p>
+            </div>
+            <div class="do-box dont">
+              <div class="lbl">✗ No hacer</div>
+              <p>No truncar labels con "…" dentro del chip. El usuario no puede leer qué está seleccionado.</p>
+            </div>
+          </div>
+
+          <table class="utbl">
+            <tr><th>Elemento</th><th>Clase</th><th>Token</th></tr>
+            <tr><td>Chip activo</td><td><code>.chip</code></td><td>bg <span class="tkn">--b1</span>, color <span class="tkn">--b7</span>, border <span class="tkn">--b3</span></td></tr>
+            <tr><td>Botón × del chip</td><td><code>.chip button</code></td><td>color <span class="tkn">--b5</span>, hover <span class="tkn">--b7</span></td></tr>
+            <tr><td>Container input</td><td><code>.ci-wrap</code></td><td>border <span class="tkn">--n4</span>, focus ring <span class="tkn">--b5</span> 3px</td></tr>
+            <tr><td>Dropdown opción sel.</td><td><code>.ms-option.selected</code></td><td>bg <span class="tkn">--b1</span></td></tr>
+          </table>
+        </div>
+        <div class="rc-review">
+          <div class="rc-decision">
+            <span>Decisión:</span>
+            <button class="btn-add" id="add-2" onclick="decide('2','add')">✓ Agregar al DS</button>
+            <button class="btn-skip" id="skip-2" onclick="decide('2','skip')">✗ Omitir</button>
+          </div>
+          <div class="rc-notes">
+            <label>Notas y justificación</label>
+            <textarea id="notes-2" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('2')"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════
+       3 · STICKY SAVE BAR
+  ════════════════════════════════ -->
+  <div class="sec" id="save-bar">
+    <h2>
+      Sticky Save Bar
+      <span class="anch">save-bar</span>
+      <span class="status status-new">NEW</span>
+    </h2>
+    <p class="desc">Barra de acción pegada al fondo de páginas de configuración que requieren guardado explícito (no auto-save). Aparece al detectar cambios no guardados (dirty state) y desaparece al guardar o cancelar. Incluye mensaje de "cambios sin guardar" + botones Cancelar y Guardar.</p>
+
+    <div class="rc" id="rc-3">
+      <div class="rc-hdr" onclick="toggleCard('rc-3')">
+        <div class="rc-title">Sticky Save Bar — dirty state + acciones</div>
+        <div class="rc-meta">save-bar · save-bar.visible</div>
+        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="rc-body">
+        <div class="rc-preview">
+          <p style="font:700 11px var(--font-sans);color:var(--n5);margin-bottom:12px;text-transform:uppercase;letter-spacing:.07em">Vista del save bar (simulado)</p>
+          <div class="save-bar-demo">
+            <div class="hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Tienes cambios sin guardar
+            </div>
+            <button class="btn">Cancelar</button>
+            <button class="btn primary">Guardar cambios</button>
+          </div>
+
+          <div class="do-dont">
+            <div class="do-box do">
+              <div class="lbl">✓ Hacer</div>
+              <p>Usar el save bar en todas las páginas de configuración que modifican settings de cuenta. Mostrar solo cuando hay cambios (dirty state).</p>
+            </div>
+            <div class="do-box dont">
+              <div class="lbl">✗ No hacer</div>
+              <p>No usar en páginas con auto-save (toggles de feature flags, preferencias de usuario). No reemplazar por botón flotante o toast.</p>
+            </div>
+          </div>
+
+          <table class="utbl">
+            <tr><th>Propiedad</th><th>Valor</th></tr>
+            <tr><td>Posición</td><td><code>fixed bottom:0</code>, <code>z-index:100</code></td></tr>
+            <tr><td>Background</td><td><span class="tkn">#fff</span> + border-top <span class="tkn">--n3</span></td></tr>
+            <tr><td>Shadow</td><td><code>0 -4px 16px rgba(19,32,69,.07)</code></td></tr>
+            <tr><td>Aparición</td><td><code>transform: translateY(100%)</code> → <code>translateY(0)</code> en <code>.visible</code></td></tr>
+            <tr><td>Hint text</td><td><span class="tkn">12px --n5</span> + icono <span class="tkn">--o5</span> info</td></tr>
+            <tr><td>Botón Guardar</td><td>pill primary <span class="tkn">--b6</span> height 32px</td></tr>
+          </table>
+        </div>
+        <div class="rc-review">
+          <div class="rc-decision">
+            <span>Decisión:</span>
+            <button class="btn-add" id="add-3" onclick="decide('3','add')">✓ Agregar al DS</button>
+            <button class="btn-skip" id="skip-3" onclick="decide('3','skip')">✗ Omitir</button>
+          </div>
+          <div class="rc-notes">
+            <label>Notas y justificación</label>
+            <textarea id="notes-3" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('3')"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════════════════════
+       4 · ALERT STATUS CHIP
+  ════════════════════════════════ -->
+  <div class="sec" id="status-chip">
+    <h2>
+      Alert Status Chip
+      <span class="anch">status-chip</span>
+      <span class="status status-ext">EXTENDED</span>
+    </h2>
+    <p class="desc">Extensión del patrón de status pill existente para representar el estado de alertas operacionales. Tiene dos variantes: <strong>Activa</strong> (verde) y <strong>Pausada</strong> (gris). Se usa siempre junto al toggle para dar redundancia semántica (color + texto).</p>
+
+    <div class="rc" id="rc-4">
+      <div class="rc-hdr" onclick="toggleCard('rc-4')">
+        <div class="rc-title">Alert Status Chip — Activa / Pausada</div>
+        <div class="rc-meta">status-chip.on · status-chip.off</div>
+        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="rc-body">
+        <div class="rc-preview">
+          <div class="chip-grid">
+            <div class="chip-item">
+              <div class="sc on"><span class="dot"></span>Activa</div>
+              <div class="lbl">Toggle ON</div>
+            </div>
+            <div class="chip-item">
+              <div class="sc off"><span class="dot"></span>Pausada</div>
+              <div class="lbl">Toggle OFF</div>
+            </div>
+          </div>
+
+          <div class="do-dont">
+            <div class="do-box do">
+              <div class="lbl">✓ Hacer</div>
+              <p>Sincronizar chip y toggle. Cuando el toggle cambia, el chip debe actualizarse inmediatamente. Siempre incluir label de texto además del dot.</p>
+            </div>
+            <div class="do-box dont">
+              <div class="lbl">✗ No hacer</div>
+              <p>No usar rojo para "Pausada" — rojo implica error. El gris comunica "inactivo/deshabilitado" sin alarmar.</p>
+            </div>
+          </div>
+
+          <table class="utbl">
+            <tr><th>Variante</th><th>Clase</th><th>Bg</th><th>Color</th><th>Dot</th></tr>
+            <tr><td>Activa</td><td><code>.sc.on</code></td><td><span class="tkn">--g1</span></td><td><span class="tkn">--g6</span></td><td><span class="tkn">--g6 #00875A</span></td></tr>
+            <tr><td>Pausada</td><td><code>.sc.off</code></td><td><span class="tkn">--n2</span></td><td><span class="tkn">--n5</span></td><td><span class="tkn">--n45</span></td></tr>
+          </table>
+        </div>
+        <div class="rc-review">
+          <div class="rc-decision">
+            <span>Decisión:</span>
+            <button class="btn-add" id="add-4" onclick="decide('4','add')">✓ Agregar al DS</button>
+            <button class="btn-skip" id="skip-4" onclick="decide('4','skip')">✗ Omitir</button>
+          </div>
+          <div class="rc-notes">
+            <label>Notas y justificación</label>
+            <textarea id="notes-4" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('4')"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+const TOTAL = 4;
+
+function toggleCard(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+function decide(num, action) {
+  const addBtn = document.getElementById('add-' + num);
+  const skipBtn = document.getElementById('skip-' + num);
+  const key = 'des825_decision_' + num;
+  const prev = localStorage.getItem(key);
+
+  if (prev === action) {
+    // toggle off
+    localStorage.removeItem(key);
+    addBtn.classList.remove('chosen');
+    skipBtn.classList.remove('chosen');
+  } else {
+    localStorage.setItem(key, action);
+    addBtn.classList.toggle('chosen', action === 'add');
+    skipBtn.classList.toggle('chosen', action === 'skip');
+  }
+  updateSummary();
+}
+
+function saveNote(num) {
+  const val = document.getElementById('notes-' + num).value;
+  localStorage.setItem('des825_note_' + num, val);
+}
+
+function updateSummary() {
+  let added = 0, skipped = 0;
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = localStorage.getItem('des825_decision_' + i);
+    if (d === 'add') added++;
+    else if (d === 'skip') skipped++;
+  }
+  const done = added + skipped;
+  const pend = TOTAL - done;
+  document.getElementById('count-add').textContent = added;
+  document.getElementById('count-skip').textContent = skipped;
+  document.getElementById('count-pend').textContent = pend;
+  document.getElementById('progress-text').textContent = done + '/' + TOTAL;
+
+  const deg = done / TOTAL * 360;
+  document.getElementById('progress-ring').style.background =
+    `conic-gradient(#0052CC 0deg ${deg}deg, #E1E6ED ${deg}deg 360deg)`;
+}
+
+function copyDecisions() {
+  const lines = ['DES-825 — DS Component Decisions', ''];
+  const names = ['Alert Settings Row', 'Chip Tag Input', 'Sticky Save Bar', 'Alert Status Chip'];
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = localStorage.getItem('des825_decision_' + i) || 'pending';
+    const n = localStorage.getItem('des825_note_' + i) || '';
+    const icon = d === 'add' ? '✓' : d === 'skip' ? '✗' : '—';
+    lines.push(`${icon} ${names[i-1]} [${d.toUpperCase()}]`);
+    if (n) lines.push('   Notes: ' + n);
+  }
+  navigator.clipboard.writeText(lines.join('\n')).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copiado';
+    setTimeout(() => btn.innerHTML = orig, 2000);
+  });
+}
+
+// Restore from localStorage on load
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = localStorage.getItem('des825_decision_' + i);
+    if (d) {
+      document.getElementById('add-' + i).classList.toggle('chosen', d === 'add');
+      document.getElementById('skip-' + i).classList.toggle('chosen', d === 'skip');
+    }
+    const n = localStorage.getItem('des825_note_' + i);
+    if (n) document.getElementById('notes-' + i).value = n;
+  }
+  updateSummary();
+});
+</script>
+</body>
+</html>
