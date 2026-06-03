@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T16:25:30.880Z",
+  "generated": "2026-06-03T16:27:57.968Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "5033f6a",
+          "type": "update",
+          "section": "Tables",
+          "message": "Table page: wrap table in 1px var(--n4) stroke, border-radius 4px",
+          "author": "Diego"
+        },
         {
           "hash": "511e9d7",
           "type": "update",
