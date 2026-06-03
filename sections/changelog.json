@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T21:21:24.003Z",
+  "generated": "2026-06-03T21:28:04.769Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "75abc06",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-824): remove gap from status-name and clean up stale sub-row/status-header CSS",
+          "author": "Carlos"
+        },
         {
           "hash": "5955fd1",
           "type": "fix",
