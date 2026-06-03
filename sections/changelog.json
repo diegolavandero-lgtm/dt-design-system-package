@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:16:07.612Z",
+  "generated": "2026-06-03T15:16:31.534Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "db12f75",
+          "type": "update",
+          "section": "Buttons",
+          "message": "Table page: full inline styles on header buttons — remove .btn class dependency",
+          "author": "Diego"
+        },
         {
           "hash": "bc42b6e",
           "type": "fix",
