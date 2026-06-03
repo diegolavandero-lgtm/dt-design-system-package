@@ -2890,7 +2890,7 @@ async function downloadAllPins() {
           <div class="sbx">${sidebarHtml}</div>
 
           <!-- Main content -->
-          <div style="flex:1;padding:20px 24px 16px;min-width:0;display:flex;flex-direction:column;gap:12px;overflow:hidden;background:var(--n2)">
+          <div style="flex:1;padding:20px 24px 16px;min-width:0;display:flex;flex-direction:column;gap:20px;overflow:hidden;background:var(--n2)">
 
             <!-- Page header -->
             <div style="display:flex;align-items:center;gap:12px">
@@ -2939,7 +2939,7 @@ async function downloadAllPins() {
               </div>
 
               <!-- Table (exact DS table component) -->
-              <div style="border-radius:0;overflow:auto">
+              <div style="border-radius:4px;border:1px solid var(--n4);overflow:auto">
               <table class="tbl">
                 <thead><tr>
                   <th style="width:40px;padding:9px 8px 9px 16px"><div class="chk"></div></th>
