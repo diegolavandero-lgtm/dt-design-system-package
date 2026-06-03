@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:27:18.668Z",
+  "generated": "2026-06-03T14:38:10.363Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "b05addd",
+          "type": "feat",
+          "section": "Icons",
+          "message": "Filters: 24px icons in 32px buttons with 4px padding, use filter--reset",
+          "author": "Diego"
+        },
         {
           "hash": "ba4135b",
           "type": "update",
