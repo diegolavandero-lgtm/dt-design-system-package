@@ -2,11 +2,25 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:26:47.747Z",
+  "generated": "2026-06-03T15:32:40.641Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "e24ce1e",
+          "type": "update",
+          "section": "General",
+          "message": "feat(DES-825): update DS review doc with final component set",
+          "author": "Carlos"
+        },
+        {
+          "hash": "61a1dac",
+          "type": "update",
+          "section": "Tables",
+          "message": "Table page: call tblDemoTable(data.scrollDemo) — zero custom table code",
+          "author": "Diego"
+        },
         {
           "hash": "2b46a1c",
           "type": "update",
