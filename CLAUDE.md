@@ -177,6 +177,75 @@ At the end of every ticket:
 
 ---
 
+## Page templates
+
+When the user says **"use the table page as basis"** or **"use this as a template"**,
+reproduce the **exact layout, structure, paddings, and gaps** — only swap the content.
+Never invent a new layout. The template lives in:
+
+- Renderer : `tablepage(data)` in `renderers.js`
+- Data file : `sections/pages/table-page.json`
+
+---
+
+### Table page template — full layout spec
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ TOPBAR  .tbar  height:52px  background:#132045          │
+├────┬────────────────────────────────────────────────────┤
+│    │  background:var(--n2)                              │
+│ S  │  padding: 20px 24px 16px                           │
+│ I  │  display:flex  flex-direction:column  gap:20px     │
+│ D  │                                                    │
+│ E  │  ① PAGE HEADER  height:32px                        │
+│ B  │     justify-content:space-between                  │
+│ A  │     · Title   font:700 22px/1 var(--font-sans)     │
+│ R  │     · Button bar  gap:12px  (secondary + primary)  │
+│    │                                                    │
+│.sbx│  ② WHITE CONTAINER  ← gap:20px below header       │
+│52px│     border-radius:8px                              │
+│    │     border:1px solid var(--n4)                     │
+│    │     background:#fff                                │
+│    │     padding:20px                                   │
+│    │     display:flex  flex-direction:column  gap:20px  │
+│    │                                                    │
+│    │     ② a  FILTER BAR  display:flex  gap:8px         │
+│    │          · inputs (flex:1, height:32px)            │
+│    │          · dt-drop-wrap dropdowns (flex:1)         │
+│    │          · Filtrar secondary btn                   │
+│    │          · filter--add  32×32px  B6                │
+│    │          · filter--reset  32×32px  R6              │
+│    │                                                    │
+│    │     ② b  TABLE  ← gap:20px below filter            │
+│    │          border:1px solid var(--n4)                │
+│    │          border-radius:4px  overflow:hidden        │
+│    │          tblDemoTable(data.scrollDemo || {})       │
+│    │                                                    │
+│    │  ③ PAGINATION  ← gap:20px below container          │
+│    │     justify-content:flex-end  gap:4px              │
+│    │     28×28px buttons  border-radius:4px             │
+└────┴────────────────────────────────────────────────────┘
+```
+
+**Invariant rules (never change these):**
+- Topbar: always `.tbar` with LM logo + icons + company slot
+- Sidebar: always `.sbx` with `sbItems` array (hover-expand, 52px collapsed)
+- Main content outer gap: `20px` between every block
+- Main content padding: `20px 24px 16px`
+- White container: always wraps filter bar + table together
+- Filter bar: always first inside the white container, `gap:8px`
+- Table: always `tblDemoTable(data.scrollDemo || {})` — never custom `<table>`
+- Pagination: always below the white container, right-aligned
+
+**What changes between screens:**
+- `data.pageTitle` — page title text
+- `data.buttons` — button labels (log, export, create)
+- Filter bar labels and dropdown options
+- `data.scrollDemo` — the table definition (columns + rows from table.json structure)
+
+---
+
 ## What NOT to do
 
 - ❌ Don't use orange/amber for primary buttons
