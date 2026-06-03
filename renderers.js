@@ -2747,7 +2747,7 @@ async function downloadAllPins() {
     // ── icon buttons ────────────────────────────────────────────────────
     const iconBtn = (icon, borderColor, fillColor, title) =>
       `<button title="${escHtml(title)}" style="width:32px;height:32px;border:1px solid ${borderColor};border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
-        ${iconSvg(icon, 16, fillColor)}
+        ${iconSvg(icon, 24, fillColor)}
       </button>`;
 
     // ── filter bar: fills the card content width ───────────────────────

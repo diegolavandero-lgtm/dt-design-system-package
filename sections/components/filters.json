@@ -1,20 +1,37 @@
 {
   "title": "Filters",
   "titleKey": "nav.filters",
-  "description": "Standard filter bar pattern. DS inputs without labels (no label variant from inputs.json), secondary Filtrar button, and two Carbon icon buttons: filter--add (orange) and filter--remove (red).",
+  "description": "Standard filter bar pattern. DS inputs without labels, secondary Filtrar button, and two icon buttons: filter--add (blue) and filter--reset (red).",
   "fields": [
-    { "type": "text",   "placeholder": "Nombre" },
-    { "type": "select", "placeholder": "Estado", "options": ["Activo", "Inactivo", "Pendiente", "Bloqueado"] },
-    { "type": "date",   "placeholder": "Fecha de creación" },
-    { "type": "text",   "placeholder": "Label" }
+    {
+      "type": "text",
+      "placeholder": "Nombre"
+    },
+    {
+      "type": "select",
+      "placeholder": "Estado",
+      "options": [
+        "Activo",
+        "Inactivo",
+        "Pendiente",
+        "Bloqueado"
+      ]
+    },
+    {
+      "type": "date",
+      "placeholder": "Fecha de creación"
+    },
+    {
+      "type": "text",
+      "placeholder": "Label"
+    }
   ],
   "filterBtnLabel": "Filtrar",
   "rules": [
-    "Inputs: DS .inp class — no label, placeholder only. All inputs flex:1 so they share available width equally.",
-    "Filtrar: .btn.sec — secondary pill button. Default, Hover (bg N1), Active (border+text B6) states from DS CSS.",
-    "filter--add: 40×40px, border-radius:6px, border 1px var(--o5), icon fill var(--o5). Carbon filter--add icon.",
-    "filter--remove: 40×40px, border-radius:6px, border 1px var(--r6), icon fill var(--r6). Carbon filter--remove icon.",
-    "The filter bar fills the full card content width (card padding is 20px).",
-    "Inputs gain focus state (.foc class: blue border, B1 bg, focus ring) on click/tab — handled with onfocusin/onfocusout."
+    "Inputs: exact DS input tokens from inputs.json — no label, placeholder only, all flex:1.",
+    "Filtrar: secondary pill button — 32px height, body-small-bold font, 1px stroke, 0 16px padding.",
+    "filter--add: 32×32px button, border-radius:4px, 1px border + fill var(--b6). Icon 24px (4px padding).",
+    "filter--reset: 32×32px button, border-radius:4px, 1px border + fill var(--r6). Icon 24px (4px padding).",
+    "Filter bar spans full card width. Inputs share width equally with flex:1. Icon buttons flex-shrink:0."
   ]
 }
