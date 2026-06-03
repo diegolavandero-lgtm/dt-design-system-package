@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alerts Drawer — DES825 · DispatchTrack</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;font-size:14px;color:#39414D;background:#F0F2F5}
+a{color:#0052CC;text-decoration:none;cursor:pointer}
+button{font-family:inherit;cursor:pointer}
+
+/* ════════ TOPBAR ════════ */
+.topbar{
+  position:sticky;top:0;z-index:200;
+  height:52px;background:#132045;
+  display:flex;align-items:center;padding:0 0 0 16px;flex-shrink:0;
+}
+.topbar-logo{display:flex;align-items:center;height:20px}
+.topbar-logo img{height:20px;width:auto;display:block}
+.topbar-icons{margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px}
+.topbar-icons svg{width:18px;height:18px;color:rgba(255,255,255,.85);display:block;cursor:pointer;transition:color .12s;flex-shrink:0}
+.topbar-icons svg:hover{color:#fff}
+.bell-wrap{position:relative}
+.bell-badge{
+  position:absolute;top:-4px;right:-4px;
+  min-width:16px;height:16px;border-radius:999px;
+  background:#DE350B;border:1.5px solid #132045;
+  display:flex;align-items:center;justify-content:center;
+  font:700 9px 'DM Sans';color:#fff;padding:0 3px;
+}
+.topbar-slot{height:52px;width:88px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:#132045;font:700 13px 'DM Sans';flex-shrink:0;margin-left:8px}
+
+/* ════════ PAGE SHELL ════════ */
+.shell{display:flex;min-height:calc(100vh - 52px);position:relative}
+
+/* ════════ SIDEBAR (slim) ════════ */
+.sb-icons{width:44px;flex-shrink:0;background:#132045;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px}
+.sb-icon-btn{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .12s}
+.sb-icon-btn svg{width:18px;height:18px;color:rgba(255,255,255,.55)}
+.sb-icon-btn:hover svg{color:rgba(255,255,255,.9)}
+.sb-icon-btn.active{background:rgba(255,255,255,.12)}
+.sb-icon-btn.active svg{color:#fff}
+
+/* ════════ MAIN ════════ */
+.main{flex:1;padding:24px;min-width:0;transition:margin-right .25s}
+.main.shifted{margin-right:460px}
+.placeholder-card{background:#fff;border:1px solid #E1E6ED;border-radius:8px;padding:20px;margin-bottom:12px}
+.placeholder-bar{height:14px;background:#F0F2F5;border-radius:4px;margin-bottom:8px}
+
+/* ════════ DRAWER SCRIM ════════ */
+.drawer-scrim{
+  position:fixed;inset:0;z-index:298;
+  background:rgba(19,32,69,.25);
+  display:none;
+}
+.drawer-scrim.open{display:block}
+
+/* ════════ NOTIFICATION DRAWER ════════
+   Matches production hp-modal--aside exactly:
+   460px wide, slides in from right, white bg, 16px padding
+════════════════════════════════════════ */
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;z-index:299;
+  width:460px;background:#fff;
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .25s ease;
+  box-shadow:-4px 0 24px rgba(19,32,69,.12);
+}
+.drawer.open{transform:translateX(0)}
+
+/* Header — matches hp-modal__header */
+.drawer-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 16px 20px;
+  border-bottom:1px solid #A3B5D1;
+  flex-shrink:0;
+}
+.drawer-title{font:700 18px 'DM Sans';color:#39414D}
+.drawer-close{
+  width:30px;height:30px;border-radius:4px;border:0;background:transparent;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:#67768D;
+}
+.drawer-close:hover{background:#F0F2F5}
+.drawer-close svg{width:18px;height:18px}
+
+/* Tabs — matches last-mile-notifications-tabs */
+.drawer-tabs{
+  display:flex;align-items:center;
+  padding:0 16px;gap:0;
+  border-bottom:1px solid #E1E6ED;
+  flex-shrink:0;
+}
+.drawer-tab{
+  padding:10px 14px;
+  font:400 14px 'DM Sans';color:#67768D;
+  border-bottom:2px solid transparent;
+  cursor:pointer;white-space:nowrap;
+  transition:color .12s,border-color .12s;
+  position:relative;
+}
+.drawer-tab:hover{color:#39414D}
+.drawer-tab.active{color:#39414D;font-weight:700;border-bottom-color:#2470EB}
+.drawer-tab .tab-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:17px;height:17px;border-radius:999px;
+  background:#DE350B;color:#fff;
+  font:700 9px 'DM Sans';padding:0 4px;
+  margin-left:5px;vertical-align:middle;
+}
+
+/* Content area */
+.drawer-content{flex:1;overflow-y:auto;padding:0}
+.drawer-content::-webkit-scrollbar{width:4px}
+.drawer-content::-webkit-scrollbar-thumb{background:#E1E6ED;border-radius:2px}
+
+/* Tab panels */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ════════════════════════
+   NOTIFICATION ITEMS (All / Documents / Reports)
+   Matches production notification-item
+════════════════════════════════════════ */
+.notif-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  border-bottom:1px solid #F0F2F5;
+  transition:background .1s;cursor:pointer;
+}
+.notif-item:hover{background:#F9FBFF}
+.notif-item:last-child{border-bottom:0}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#E1E6ED}
+.notif-dot.unread{background:#2470EB}
+.notif-body{flex:1;min-width:0}
+.notif-title{font:400 14px 'DM Sans';color:#3E3B39;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notif-meta{font:400 12px 'DM Sans';color:#67768D}
+.notif-action{flex-shrink:0}
+.notif-action button{
+  width:32px;height:32px;border-radius:4px;border:0;background:transparent;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:#67768D;
+}
+.notif-action button:hover{background:#F0F2F5}
+.notif-action button svg{width:16px;height:16px;fill:#67768D}
+
+/* ════════════════════════
+   ALERT ITEMS (new Alerts tab)
+   Shows triggered operational alerts
+════════════════════════════════════════ */
+.alert-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid #F0F2F5;
+  transition:background .1s;
+}
+.alert-item:hover{background:#F9FBFF}
+.alert-item:last-child{border-bottom:0}
+
+/* Severity dot */
+.alert-dot{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;
+}
+.alert-dot.status  {background:#1F60ED}
+.alert-dot.feedback{background:#FFAB00}
+.alert-dot.range   {background:#DE350B}
+.alert-dot.time    {background:#FF8B00}
+.alert-dot.dwell   {background:#8777D9}
+
+.alert-body{flex:1;min-width:0}
+.alert-type{
+  font:700 11px 'DM Sans';letter-spacing:.04em;text-transform:uppercase;
+  margin-bottom:3px;
+}
+.alert-type.status  {color:#0052CC}
+.alert-type.feedback{color:#FF8B00}
+.alert-type.range   {color:#DE350B}
+.alert-type.time    {color:#FF8B00}
+.alert-type.dwell   {color:#8777D9}
+
+.alert-desc{font:400 13px 'DM Sans';color:#39414D;margin-bottom:4px;line-height:1.4}
+.alert-desc strong{font-weight:700}
+.alert-footer{display:flex;align-items:center;gap:8px}
+.alert-time{font:400 11px 'DM Sans';color:#8FA0BA}
+.alert-link{font:600 11px 'DM Sans';color:#0052CC}
+.alert-link:hover{text-decoration:underline}
+
+/* unread state */
+.alert-item.unread{background:#FAFCFF}
+.alert-unread-dot{
+  width:7px;height:7px;border-radius:50%;background:#2470EB;
+  flex-shrink:0;margin-top:6px;
+}
+
+/* ════════ EMPTY STATE ════════ */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 24px;gap:12px;text-align:center;
+}
+.empty-state svg{width:40px;height:40px;color:#C5D2E7}
+.empty-state h3{font:700 15px 'DM Sans';color:#39414D}
+.empty-state p{font:400 13px 'DM Sans';color:#67768D;max-width:240px;line-height:1.5}
+
+/* ════════ SECTION LABEL ════════ */
+.section-label{
+  font:700 10px 'DM Sans';letter-spacing:.09em;text-transform:uppercase;
+  color:#8FA0BA;padding:12px 16px 6px;
+}
+
+/* ════════ COMPARISON CALLOUT ════════ */
+.callout{
+  background:#EDF5FF;border:1px solid #ADC7FF;border-radius:6px;
+  padding:12px 16px;margin:16px;font:400 12px 'DM Sans';color:#39414D;
+  display:flex;gap:8px;align-items:flex-start;line-height:1.5;
+}
+.callout svg{width:14px;height:14px;color:#1F60ED;flex-shrink:0;margin-top:1px}
+.callout strong{font-weight:700}
+
+/* ════════ ANNOTATION BADGE ════════ */
+.annotation{
+  position:absolute;background:#F27B42;color:#fff;
+  font:700 10px 'DM Sans';padding:2px 8px;border-radius:999px;
+  letter-spacing:.04em;text-transform:uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="topbar-logo" href="#">
+    <img src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="4" height="4" rx=".5"/><rect x="10" y="3" width="4" height="4" rx=".5"/><rect x="17" y="3" width="4" height="4" rx=".5"/><rect x="3" y="10" width="4" height="4" rx=".5"/><rect x="10" y="10" width="4" height="4" rx=".5"/><rect x="17" y="10" width="4" height="4" rx=".5"/><rect x="3" y="17" width="4" height="4" rx=".5"/><rect x="10" y="17" width="4" height="4" rx=".5"/><rect x="17" y="17" width="4" height="4" rx=".5"/></svg>
+    <!-- BELL — click to open drawer -->
+    <div class="bell-wrap" onclick="openDrawer('alerts')" style="cursor:pointer" title="Open notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      <div class="bell-badge">5</div>
+    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<div class="shell">
+
+  <!-- Slim sidebar -->
+  <div class="sb-icons">
+    <div class="sb-icon-btn active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="sb-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h4"/></svg></div>
+    <div class="sb-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+    <div class="sb-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+    <div class="sb-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+  </div>
+
+  <!-- Page content placeholder -->
+  <div class="main" id="main-content">
+    <p style="font:700 18px 'DM Sans';color:#39414D;margin-bottom:16px">Activity</p>
+    <div class="callout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="1.5" fill="currentColor" stroke="none"/></svg>
+      <span>Click the <strong>bell icon</strong> in the topbar to open the Notifications drawer. The drawer opens by default on the new <strong>Alerts tab</strong>. Switch between All · Documents · Reports · Alerts to compare the structure.</span>
+    </div>
+    <div class="placeholder-card">
+      <div class="placeholder-bar" style="width:40%"></div>
+      <div class="placeholder-bar" style="width:70%"></div>
+      <div class="placeholder-bar" style="width:55%"></div>
+    </div>
+    <div class="placeholder-card">
+      <div class="placeholder-bar" style="width:60%"></div>
+      <div class="placeholder-bar" style="width:80%"></div>
+    </div>
+    <div class="placeholder-card">
+      <div class="placeholder-bar" style="width:35%"></div>
+      <div class="placeholder-bar" style="width:65%"></div>
+      <div class="placeholder-bar" style="width:50%"></div>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<!-- SCRIM -->
+<div class="drawer-scrim" id="scrim" onclick="closeDrawer()"></div>
+
+<!-- ═══════ NOTIFICATION DRAWER ═══════ -->
+<div class="drawer" id="drawer">
+
+  <!-- Header -->
+  <div class="drawer-header">
+    <h2 class="drawer-title">Notifications</h2>
+    <button class="drawer-close" onclick="closeDrawer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- Tabs — production: All · Documents · Reports + new: Alerts -->
+  <div class="drawer-tabs">
+    <div class="drawer-tab" id="tab-all" onclick="switchTab('all')">All</div>
+    <div class="drawer-tab" id="tab-documents" onclick="switchTab('documents')">Documents</div>
+    <div class="drawer-tab" id="tab-reports" onclick="switchTab('reports')">Reports</div>
+    <div class="drawer-tab" id="tab-alerts" onclick="switchTab('alerts')">
+      Alerts <span class="tab-badge">3</span>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="drawer-content">
+
+    <!-- ── ALL TAB ── -->
+    <div class="tab-panel" id="panel-all">
+      <div class="section-label">Recent</div>
+      <!-- Alert items in "All" -->
+      <div class="alert-item unread">
+        <div class="alert-unread-dot"></div>
+        <div class="alert-dot status"></div>
+        <div class="alert-body">
+          <div class="alert-type status">Alert by status</div>
+          <div class="alert-desc"><strong>Order #48291</strong> — Status changed to: Failed delivery</div>
+          <div class="alert-footer"><span class="alert-time">2 min ago</span><a class="alert-link">View order →</a></div>
+        </div>
+      </div>
+      <div class="alert-item unread">
+        <div class="alert-unread-dot"></div>
+        <div class="alert-dot feedback"></div>
+        <div class="alert-body">
+          <div class="alert-type feedback">Alert by feedback</div>
+          <div class="alert-desc"><strong>Order #48187</strong> — Customer rating: <strong>2/5</strong></div>
+          <div class="alert-footer"><span class="alert-time">14 min ago</span><a class="alert-link">View order →</a></div>
+        </div>
+      </div>
+      <div class="section-label" style="margin-top:4px">Earlier</div>
+      <div class="notif-item">
+        <div class="notif-dot"></div>
+        <div class="notif-body">
+          <div class="notif-title">Orders Excel Report</div>
+          <div class="notif-meta">03 dec. · 10:20:54</div>
+        </div>
+        <div class="notif-action"><button><svg viewBox="0 0 24 24"><path d="M19 10H15V4H9V10H5L12 17L19 10ZM5 19V21H19V19H5Z"/></svg></button></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot"></div>
+        <div class="notif-body">
+          <div class="notif-title">Activity Excel Report</div>
+          <div class="notif-meta">27 sep. · 14:02:40</div>
+        </div>
+        <div class="notif-action"><button><svg viewBox="0 0 24 24"><path d="M19 10H15V4H9V10H5L12 17L19 10ZM5 19V21H19V19H5Z"/></svg></button></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot"></div>
+        <div class="notif-body">
+          <div class="notif-title">Activity Excel Report</div>
+          <div class="notif-meta">19 jun. · 11:13:09</div>
+        </div>
+        <div class="notif-action"><button><svg viewBox="0 0 24 24"><path d="M19 10H15V4H9V10H5L12 17L19 10ZM5 19V21H19V19H5Z"/></svg></button></div>
+      </div>
+    </div>
+
+    <!-- ── DOCUMENTS TAB ── -->
+    <div class="tab-panel" id="panel-documents">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <h3>No documents</h3>
+        <p>Generated documents will appear here when ready.</p>
+      </div>
+    </div>
+
+    <!-- ── REPORTS TAB ── -->
+    <div class="tab-panel" id="panel-reports">
+      <div class="notif-item">
+        <div class="notif-dot"></div>
+        <div class="notif-body">
+          <div class="notif-title">Orders Excel Report</div>
+          <div class="notif-meta">03 dec. · 10:20:54</div>
+        </div>
+        <div class="notif-action"><button><svg viewBox="0 0 24 24"><path d="M19 10H15V4H9V10H5L12 17L19 10ZM5 19V21H19V19H5Z"/></svg></button></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot"></div>
+        <div class="notif-body">
+          <div class="notif-title">Activity Excel Report</div>
+          <div class="notif-meta">27 sep. · 14:02:40</div>
+        </div>
+        <div class="notif-action"><button><svg viewBox="0 0 24 24"><path d="M19 10H15V4H9V10H5L12 17L19 10ZM5 19V21H19V19H5Z"/></svg></button></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot"></div>
+        <div class="notif-body">
+          <div class="notif-title">Activity Excel Report</div>
+          <div class="notif-meta">19 jun. · 11:13:09</div>
+        </div>
+        <div class="notif-action"><button><svg viewBox="0 0 24 24"><path d="M19 10H15V4H9V10H5L12 17L19 10ZM5 19V21H19V19H5Z"/></svg></button></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-dot"></div>
+        <div class="notif-body">
+          <div class="notif-title">Orders Excel Report</div>
+          <div class="notif-meta">21 feb. · 13:44:32</div>
+        </div>
+        <div class="notif-action"><button><svg viewBox="0 0 24 24"><path d="M19 10H15V4H9V10H5L12 17L19 10ZM5 19V21H19V19H5Z"/></svg></button></div>
+      </div>
+    </div>
+
+    <!-- ── ALERTS TAB (new) ── -->
+    <div class="tab-panel" id="panel-alerts">
+
+      <!-- Unread section -->
+      <div class="section-label">Unread · 3</div>
+
+      <div class="alert-item unread">
+        <div class="alert-unread-dot"></div>
+        <div class="alert-dot status"></div>
+        <div class="alert-body">
+          <div class="alert-type status">Alert by status</div>
+          <div class="alert-desc"><strong>Order #48291</strong> — Status changed to: Failed delivery</div>
+          <div class="alert-footer">
+            <span class="alert-time">2 min ago · Route 14 · Carlos M.</span>
+            <a class="alert-link">View order →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item unread">
+        <div class="alert-unread-dot"></div>
+        <div class="alert-dot feedback"></div>
+        <div class="alert-body">
+          <div class="alert-type feedback">Alert by feedback</div>
+          <div class="alert-desc"><strong>Order #48187</strong> — Customer rating: <strong>2 / 5</strong></div>
+          <div class="alert-footer">
+            <span class="alert-time">14 min ago · Route 9 · Ana P.</span>
+            <a class="alert-link">View order →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item unread">
+        <div class="alert-unread-dot"></div>
+        <div class="alert-dot dwell"></div>
+        <div class="alert-body">
+          <div class="alert-type dwell">Alert by excess dwell time</div>
+          <div class="alert-desc"><strong>Order #48102</strong> — Driver at location for <strong>32 min</strong> (limit: 15 min)</div>
+          <div class="alert-footer">
+            <span class="alert-time">31 min ago · Route 7 · Luis R.</span>
+            <a class="alert-link">View order →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Earlier section -->
+      <div class="section-label" style="margin-top:4px">Earlier today</div>
+
+      <div class="alert-item">
+        <div style="width:7px;flex-shrink:0"></div>
+        <div class="alert-dot range"></div>
+        <div class="alert-body">
+          <div class="alert-type range">Alert by out-of-range delivery</div>
+          <div class="alert-desc"><strong>Order #47980</strong> — Delivered <strong>340 m</strong> from destination (limit: 200 m)</div>
+          <div class="alert-footer">
+            <span class="alert-time">2 h ago · Route 3 · Pedro S.</span>
+            <a class="alert-link">View order →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item">
+        <div style="width:7px;flex-shrink:0"></div>
+        <div class="alert-dot time"></div>
+        <div class="alert-body">
+          <div class="alert-type time">Alert by out-of-time delivery</div>
+          <div class="alert-desc"><strong>Order #47901</strong> — Delivery took <strong>47 min</strong> (limit: 20 min)</div>
+          <div class="alert-footer">
+            <span class="alert-time">3 h ago · Route 11 · Carlos M.</span>
+            <a class="alert-link">View order →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-item">
+        <div style="width:7px;flex-shrink:0"></div>
+        <div class="alert-dot status"></div>
+        <div class="alert-body">
+          <div class="alert-type status">Alert by status</div>
+          <div class="alert-desc"><strong>Order #47845</strong> — Status changed to: Customer absent</div>
+          <div class="alert-footer">
+            <span class="alert-time">4 h ago · Route 6 · Ana P.</span>
+            <a class="alert-link">View order →</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-alerts -->
+
+  </div><!-- /drawer-content -->
+</div><!-- /drawer -->
+
+<script>
+let currentTab = 'alerts';
+
+function openDrawer(tab) {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('scrim').classList.add('open');
+  document.getElementById('main-content').classList.add('shifted');
+  switchTab(tab || currentTab);
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('scrim').classList.remove('open');
+  document.getElementById('main-content').classList.remove('shifted');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  // Update tab active state
+  document.querySelectorAll('.drawer-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  // Show correct panel
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// Open drawer on load showing Alerts tab
+window.addEventListener('DOMContentLoaded', () => openDrawer('alerts'));
+</script>
+</body>
+</html>
