@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:45:44.609Z",
+  "generated": "2026-06-03T20:49:30.890Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "6304b8b",
+          "type": "update",
+          "section": "Buttons",
+          "message": "feat(DES-824): improve SMS/WhatsApp upsell banner with CTA button",
+          "author": "Carlos"
+        },
         {
           "hash": "82cdbc4",
           "type": "fix",
