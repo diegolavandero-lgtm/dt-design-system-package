@@ -334,6 +334,8 @@ button{font-family:inherit;cursor:pointer}
 .info-banner a{color:#0052CC;font-weight:600}
 
 /* ── OUTBOUND WIDGET (redesigned) ── */
+.ob-card{background:#F8FAFC;border:1px solid #E1E6ED;border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.ob-card:last-of-type{margin-bottom:0}
 .ob-channel{margin-bottom:13px}
 .ob-channel:last-of-type{margin-bottom:0}
 .ob-header{display:flex;align-items:center;gap:6px;margin-bottom:5px}
@@ -1022,66 +1024,95 @@ button{font-family:inherit;cursor:pointer}
         <div class="side-section-label">Outbound · June 2026</div>
         <div class="side-body">
 
-          <!-- EMAIL — active, healthy -->
-          <div class="ob-channel">
+          <!-- ── EMAIL CARD ── -->
+          <div class="ob-card">
             <div class="ob-header">
               <div class="ob-dot active"></div>
               <span class="ob-name">Email</span>
               <span class="ob-count">142</span>
               <span class="ob-delta up">+18% vs May</span>
             </div>
-            <div class="ob-track"><div class="ob-fill active" style="width:100%"></div></div>
-            <!-- 7-day sparkline (Mon → Sun) -->
+            <div class="ob-track"><div class="ob-fill active" style="width:54%"></div></div>
             <div class="ob-spark">
               <svg width="100%" height="28" viewBox="0 0 270 28" preserveAspectRatio="none" style="display:block">
-                <!-- Area fill -->
                 <defs>
-                  <linearGradient id="spark-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#00875A" stop-opacity=".18"/>
+                  <linearGradient id="sg-email" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00875A" stop-opacity=".15"/>
                     <stop offset="100%" stop-color="#00875A" stop-opacity="0"/>
                   </linearGradient>
                 </defs>
-                <polygon points="0,28 0,18 45,14 90,20 135,10 180,14 225,6 270,4 270,28" fill="url(#spark-grad)"/>
-                <polyline points="0,18 45,14 90,20 135,10 180,14 225,6 270,4" fill="none" stroke="#00875A" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-                <!-- Today dot -->
+                <polygon points="0,28 0,11 45,9 90,14 135,8 180,11 225,7 270,4 270,28" fill="url(#sg-email)"/>
+                <polyline points="0,11 45,9 90,14 135,8 180,11 225,7 270,4" fill="none" stroke="#00875A" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
                 <circle cx="270" cy="4" r="2.5" fill="#00875A"/>
               </svg>
               <div style="display:flex;justify-content:space-between;font:400 9px 'DM Sans';color:#8FA0BA;margin-top:1px">
                 <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span>
               </div>
             </div>
+            <div class="ob-hint muted" style="margin-top:5px">97.9% delivered · 3 bounced</div>
           </div>
 
-          <!-- SMS — active but ANOMALY (0 sends) -->
-          <div class="ob-channel">
+          <!-- ── SMS CARD ── -->
+          <div class="ob-card">
             <div class="ob-header">
-              <div class="ob-dot anomaly"></div>
+              <div class="ob-dot active" style="background:#2470EB"></div>
               <span class="ob-name">SMS</span>
-              <span class="ob-count" style="color:#FFAB00">0</span>
+              <span class="ob-count">87</span>
+              <span class="ob-delta up">+5% vs May</span>
             </div>
-            <div class="ob-track"><div class="ob-fill anomaly"></div></div>
-            <div class="ob-hint warn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              Active channel — no sends this month
+            <div class="ob-track"><div class="ob-fill" style="width:33%;background:#2470EB"></div></div>
+            <div class="ob-spark">
+              <svg width="100%" height="28" viewBox="0 0 270 28" preserveAspectRatio="none" style="display:block">
+                <defs>
+                  <linearGradient id="sg-sms" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2470EB" stop-opacity=".15"/>
+                    <stop offset="100%" stop-color="#2470EB" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <polygon points="0,28 0,11 45,8 90,9 135,5 180,7 225,8 270,4 270,28" fill="url(#sg-sms)"/>
+                <polyline points="0,11 45,8 90,9 135,5 180,7 225,8 270,4" fill="none" stroke="#2470EB" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <circle cx="270" cy="4" r="2.5" fill="#2470EB"/>
+              </svg>
+              <div style="display:flex;justify-content:space-between;font:400 9px 'DM Sans';color:#8FA0BA;margin-top:1px">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span>
+              </div>
             </div>
+            <div class="ob-hint muted" style="margin-top:5px">99.1% delivered · 1 bounced</div>
           </div>
 
-          <!-- WHATSAPP — not enabled -->
-          <div class="ob-channel">
+          <!-- ── WHATSAPP CARD ── -->
+          <div class="ob-card">
             <div class="ob-header">
-              <div class="ob-dot inactive"></div>
-              <span class="ob-name inactive">WhatsApp</span>
-              <span class="ob-count inactive">0</span>
+              <div class="ob-dot active" style="background:#25D366"></div>
+              <span class="ob-name">WhatsApp</span>
+              <span class="ob-count">34</span>
+              <span class="ob-delta up" style="background:#E3FCEF;color:#00875A">New</span>
             </div>
-            <div class="ob-track"><div class="ob-fill inactive"></div></div>
-            <div class="ob-hint muted">Not enabled for this account</div>
+            <div class="ob-track"><div class="ob-fill" style="width:13%;background:#25D366"></div></div>
+            <div class="ob-spark">
+              <svg width="100%" height="28" viewBox="0 0 270 28" preserveAspectRatio="none" style="display:block">
+                <defs>
+                  <linearGradient id="sg-wa" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#25D366" stop-opacity=".15"/>
+                    <stop offset="100%" stop-color="#25D366" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <polygon points="0,28 0,17 45,12 90,14 135,9 180,12 225,7 270,4 270,28" fill="url(#sg-wa)"/>
+                <polyline points="0,17 45,12 90,14 135,9 180,12 225,7 270,4" fill="none" stroke="#25D366" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <circle cx="270" cy="4" r="2.5" fill="#25D366"/>
+              </svg>
+              <div style="display:flex;justify-content:space-between;font:400 9px 'DM Sans';color:#8FA0BA;margin-top:1px">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span>
+              </div>
+            </div>
+            <div class="ob-hint muted" style="margin-top:5px">100% delivered · 0 bounced</div>
           </div>
 
-          <!-- Delivery rate -->
+          <!-- Total delivery rate -->
           <div class="ob-divider"></div>
           <div class="ob-rate">
-            <span class="ob-rate-pill">97.9% delivered</span>
-            <span class="ob-rate-detail">3 bounced</span>
+            <span class="ob-rate-pill">98.5% total delivered</span>
+            <span class="ob-rate-detail">263 sent</span>
           </div>
 
           <a href="#" class="side-link">View delivery logs
