@@ -178,6 +178,187 @@ function pinSVG({fill, selected, inner, badge, size}) {
 /* ================================================================
    RENDERERS OBJECT
 ================================================================ */
+/* ── TABLE HELPERS — module-level so tablepage() can call tblDemoTable() ── */
+const _tblSortBoth = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg>`;
+const _tblSortAsc  = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 20h20L16 8z"/></svg>`;
+
+function tblRc(cell, extraCls) {
+  const cls = extraCls ? ` class="${extraCls}"` : '';
+  if (cell === null || cell === undefined) return `<td${cls}></td>`;
+  if (typeof cell !== 'object') return `<td${cls}>${escHtml(String(cell))}</td>`;
+
+  switch (cell.type) {
+    case 'checkbox':
+      return `<td class="tbl-cb-td${extraCls?' '+extraCls:''}"><div class="tbl-cb"><input type="checkbox"${cell.value?' checked':''} onclick="tblRowSel(this)"></div></td>`;
+
+    case 'avatar-text': {
+      const ini = cell.initials || (cell.value||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      return `<td${cls}><div class="tbl-av"><div class="tbl-av-dot" style="background:${cell.color||'#1F60ED'}">${escHtml(ini)}</div><span>${escHtml(cell.value||'')}</span></div></td>`;
+    }
+
+    case 'text-icon':
+    case 'icon-text': {
+      const ico = iconSvg(cell.icon||'location', 14, 'var(--n5)');
+      return `<td${cls}><div class="tbl-ti">${ico}<span>${escHtml(cell.value||'')}</span></div></td>`;
+    }
+
+    case 'text-icon-right': {
+      const ico = iconSvg(cell.icon||'document', 14, 'var(--n5)');
+      return `<td${cls}><div class="tbl-ti">${escHtml(cell.value||'')} ${ico}</div></td>`;
+    }
+
+    case 'text-sub':
+      return `<td${cls}><span style="display:block;font:400 13px var(--font-sans);color:var(--n7);line-height:1.3">${escHtml(cell.value||'')}</span><span style="display:block;font:400 11px var(--font-sans);color:var(--n5);line-height:1.3;margin-top:2px">${escHtml(cell.sub||'')}</span></td>`;
+
+    case 'text-error':
+      return `<td${cls}><span style="display:block;font:400 13px var(--font-sans);color:var(--n7);line-height:1.3">${escHtml(cell.value||'')}</span><span style="display:block;font:400 11px var(--font-sans);color:var(--r6);line-height:1.3;margin-top:2px">${escHtml(cell.error||'')}</span></td>`;
+
+    case 'text-icon-error': {
+      const ico = iconSvg('close-filled', 14, 'var(--r6)');
+      return `<td${cls}><div style="display:flex;align-items:center;gap:6px">${ico}<span style="font:400 13px var(--font-sans);color:var(--n7);line-height:1.3">${escHtml(cell.value||'')}</span></div><span style="display:block;font:400 11px var(--font-sans);color:var(--r6);line-height:1.3;margin-top:2px">${escHtml(cell.error||'')}</span></td>`;
+    }
+
+    case 'sub-header':
+      return `<td${cls}><span style="display:block;font:400 11px var(--font-sans);color:var(--n5);line-height:1.3">${escHtml(cell.sub||cell.label||'')}</span><span style="display:block;font:400 13px var(--font-sans);color:var(--n7);line-height:1.3;margin-top:2px">${escHtml(cell.value||'')}</span></td>`;
+
+    case 'link':
+      return `<td class="cell-lnk${extraCls?' '+extraCls:''}">${escHtml(cell.value||'')}</td>`;
+
+    case 'badge':
+      return `<td${cls}>${badgeHtml(cell.value||'', cell.variant||'neutral')}</td>`;
+
+    case 'date':
+      return `<td${cls}>${escHtml(cell.value||'')}</td>`;
+
+    case 'number':
+      return `<td class="cell-num${extraCls?' '+extraCls:''}">${escHtml(String(cell.value||''))}</td>`;
+
+    case 'text-secondary':
+      return `<td class="cell-muted${extraCls?' '+extraCls:''}">${escHtml(cell.value||'')}</td>`;
+
+    case 'rating': {
+      const n = Math.round(cell.value||0);
+      const uid = 'sr'+Math.random().toString(36).slice(2,7);
+      const stars = [1,2,3,4,5].map(i =>
+        `<span class="star${i<=n?' on':''}" onclick="starSet(this)" onmouseenter="starHov(this,true)" onmouseleave="starHov(this,false)">★</span>`
+      ).join('');
+      return `<td${cls}><div class="tbl-stars" id="${uid}">${stars}</div></td>`;
+    }
+
+    case 'switch': {
+      const on = cell.value ? ' on' : '';
+      return `<td${cls}><div class="tbl-sw-track${on}" onclick="this.classList.toggle('on')"><div class="tbl-sw-thumb"></div></div></td>`;
+    }
+
+    case 'switch-text': {
+      const on = cell.value ? ' on' : '';
+      const lbl = escHtml(cell.label || (cell.value ? 'On' : 'Off'));
+      return `<td${cls}><div class="tbl-sw-wrap"><div class="tbl-sw-track${on}" onclick="this.classList.toggle('on')"><div class="tbl-sw-thumb"></div></div><span>${lbl}</span></div></td>`;
+    }
+
+    case 'chip-lg':
+      return `<td${cls}><span class="tbl-chip lg">${escHtml(cell.value||'')}</span></td>`;
+
+    case 'chip-sm':
+      return `<td${cls}><span style="display:inline-flex;align-items:center;height:22px;padding:2px 6px;border-radius:4px;border:1px solid var(--n4);background:var(--n2);color:var(--n6);font:600 11px/1 var(--font-sans);white-space:nowrap">${escHtml(cell.value||'')}</span></td>`;
+
+    case 'pill-new':
+      return `<td${cls}><span style="display:inline-flex;align-items:center;height:22px;padding:2px 6px;border-radius:4px;border:1px solid var(--b3);background:var(--b1);color:var(--b6);font:600 11px/1 var(--font-sans);white-space:nowrap">${escHtml(cell.value||'New')}</span></td>`;
+
+    case 'loading-bar': {
+      const pct = Math.min(100, Math.max(0, cell.value||0));
+      return `<td${cls}><div class="tbl-bar-wrap"><div class="tbl-bar"><div class="tbl-bar-fill" style="width:${pct}%"></div></div><span class="tbl-bar-pct">${pct}%</span></div></td>`;
+    }
+
+    case 'lazy':
+      return `<td${cls}><div class="tbl-skel cell"></div></td>`;
+
+    case 'actions': {
+      const acts = cell.value || [];
+      let btns;
+      if (acts.length <= 2) {
+        btns = acts.map(act =>
+          `<button class="tbl-act-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14)}</button>`
+        ).join('');
+      } else {
+        const overflow = acts.slice(1);
+        const dataActs = JSON.stringify(overflow).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+        btns = `<button class="tbl-act-btn" onclick="return false" title="${escHtml(acts[0])}">${iconSvg(acts[0],14)}</button>` +
+          `<button class="tbl-act-btn" data-acts="${dataActs}" onclick="tblMenu(this)" title="More options">${iconSvg('overflow-menu-vertical',14)}</button>`;
+      }
+      return `<td class="tbl-acts-col${extraCls?' '+extraCls:''}"><div class="tbl-acts">${btns}</div></td>`;
+    }
+
+    default:
+      return `<td${cls}>${escHtml(String(cell.value!==undefined?cell.value:''))}</td>`;
+  }
+}
+
+function tblRh(col, actsCls) {
+  const extra = actsCls ? ` class="${actsCls}"` : '';
+  if (col.type === 'lazy') {
+    return `<th${extra}><div class="tbl-skel hd"></div></th>`;
+  }
+  const w = col.type === 'checkbox' ? ' style="width:40px"' : '';
+  const sv = col.sort==='asc' ? _tblSortAsc : col.sort==='desc' ? _tblSortDesc : col.sortable ? _tblSortBoth : '';
+  if (col.sub) {
+    return `<th${w}${extra}><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(col.sub)}</span><span>${escHtml(col.label||'')}${sv}</span></div></th>`;
+  }
+  if (col.type === 'actions') {
+    return `<th class="tbl-acts-col" style="text-align:center"${w}>${escHtml(col.label||'')}</th>`;
+  }
+  return `<th${w}${extra}>${escHtml(col.label||'')}${sv}</th>`;
+}
+
+function tblRr(row, cols) {
+  const cls = row.state==='hover'?'hov':row.state==='selected'?'sel':row.state==='disabled'?'dis':'';
+  const cells = (row.cells||[]).map((c,i) => {
+    const colType = cols && cols[i] ? cols[i].type : null;
+    return tblRc(c);
+  }).join('');
+  return `<tr${cls?' class="'+cls+'"':''  }>${cells}</tr>`;
+}
+
+function tblDemoTable(def) {
+  const cols = def.columns || [];
+  const hasCb = cols.some(c => c.type === 'checkbox');
+  const hasActs = cols.some(c => c.type === 'actions');
+  const isBulk = hasCb && hasActs;
+
+  let bulkBarHtml = '';
+  if (isBulk) {
+    const actsSet = new Set();
+    (def.rows||[]).forEach(row => {
+      (row.cells||[]).forEach(cell => {
+        if (cell && cell.type === 'actions') {
+          (cell.value||[]).filter(a => a !== 'edit').forEach(a => actsSet.add(a));
+        }
+      });
+    });
+    const bulkBtns = [...actsSet].map(act =>
+      `<button class="tbl-bulk-btn" onclick="return false" title="${escHtml(act)}">${iconSvg(act,14,'currentColor')}<span>${escHtml(act.charAt(0).toUpperCase()+act.slice(1))}</span></button>`
+    ).join('');
+    bulkBarHtml = `<div class="tbl-bulk-bar"><span class="tbl-bulk-cnt"></span><div class="tbl-bulk-actions">${bulkBtns}</div></div>`;
+  }
+
+  let head;
+  if (isBulk) {
+    const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
+    head = cols.map(c => {
+      if (c.type === 'checkbox') return `<th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>`;
+      if (c.type === 'actions') return `<th class="tbl-acts-col" style="text-align:center">${escHtml(c.label||'')}</th>`;
+      const sv = c.sort==='asc' ? _tblSortAsc : c.sort==='desc' ? _tblSortDesc : c.sortable ? _tblSortBoth : '';
+      if (c.sub) return `<th><div class="th-inner"><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(c.sub)}</span><span>${escHtml(c.label||'')}${sv}</span></div></div></th>`;
+      return `<th><div class="th-inner">${escHtml(c.label||'')}${sv}</div></th>`;
+    }).join('');
+  } else {
+    head = cols.map(c => tblRh(c)).join('');
+  }
+
+  const body = (def.rows||[]).map(r => tblRr(r, cols)).join('');
+  return `<div class="tbl-outer">${bulkBarHtml}<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+}
+
 const renderers = {
 
   /* ── OVERVIEW ── */
@@ -1647,12 +1828,14 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
   },
 
-/* ── TABLE HELPERS — module-level so tablepage can call demoTable() ── */
-const _tblSortBoth = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg>`;
-const _tblSortAsc  = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 20h20L16 8z"/></svg>`;
-const _tblSortDesc = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 12h20l-10 12z"/></svg>`;
+  /* ── TABLE ── */
+  table(data) {
+    const sortBothSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg>`;
+    const sortAscSvg  = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 20h20L16 8z"/></svg>`;
+    const sortDescSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 12h20l-10 12z"/></svg>`;
 
-function tblRc(cell, extraCls) {
+    /* ── cell renderer ── */
+    function rc(cell, extraCls) {
       const cls = extraCls ? ` class="${extraCls}"` : '';
       if (cell === null || cell === undefined) return `<td${cls}></td>`;
       if (typeof cell !== 'object') return `<td${cls}>${escHtml(String(cell))}</td>`;
@@ -1764,13 +1947,14 @@ function tblRc(cell, extraCls) {
       }
     }
 
-function tblRh(col, actsCls) {
+    /* ── header renderer (supports sub-label and lazy) ── */
+    function rh(col, actsCls) {
       const extra = actsCls ? ` class="${actsCls}"` : '';
       if (col.type === 'lazy') {
         return `<th${extra}><div class="tbl-skel hd"></div></th>`;
       }
       const w = col.type === 'checkbox' ? ' style="width:40px"' : '';
-      const sv = col.sort==='asc' ? _tblSortAsc : col.sort==='desc' ? _tblSortDesc : col.sortable ? _tblSortBoth : '';
+      const sv = col.sort==='asc' ? sortAscSvg : col.sort==='desc' ? sortDescSvg : col.sortable ? sortBothSvg : '';
       if (col.sub) {
         return `<th${w}${extra}><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(col.sub)}</span><span>${escHtml(col.label||'')}${sv}</span></div></th>`;
       }
@@ -1780,16 +1964,18 @@ function tblRh(col, actsCls) {
       return `<th${w}${extra}>${escHtml(col.label||'')}${sv}</th>`;
     }
 
-function tblRr(row, cols) {
+    /* ── row renderer ── */
+    function rr(row, cols) {
       const cls = row.state==='hover'?'hov':row.state==='selected'?'sel':row.state==='disabled'?'dis':'';
       const cells = (row.cells||[]).map((c,i) => {
         const colType = cols && cols[i] ? cols[i].type : null;
-        return tblRc(c);
+        return rc(c);
       }).join('');
       return `<tr${cls?' class="'+cls+'"':''  }>${cells}</tr>`;
     }
 
-function tblDemoTable(def) {
+    /* ── build one scrollable demo table ── */
+    function demoTable(def) {
       const cols = def.columns || [];
       const hasCb = cols.some(c => c.type === 'checkbox');
       const hasActs = cols.some(c => c.type === 'actions');
@@ -1817,31 +2003,31 @@ function tblDemoTable(def) {
         head = cols.map(c => {
           if (c.type === 'checkbox') return `<th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>`;
           if (c.type === 'actions') return `<th class="tbl-acts-col" style="text-align:center">${escHtml(c.label||'')}</th>`;
-          const sv = c.sort==='asc' ? _tblSortAsc : c.sort==='desc' ? _tblSortDesc : c.sortable ? _tblSortBoth : '';
+          const sv = c.sort==='asc' ? sortAscSvg : c.sort==='desc' ? sortDescSvg : c.sortable ? sortBothSvg : '';
           if (c.sub) return `<th><div class="th-inner"><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(c.sub)}</span><span>${escHtml(c.label||'')}${sv}</span></div></div></th>`;
           return `<th><div class="th-inner">${escHtml(c.label||'')}${sv}</div></th>`;
         }).join('');
       } else {
-        head = cols.map(c => tblRh(c)).join('');
+        head = cols.map(c => rh(c)).join('');
       }
 
-      const body = (def.rows||[]).map(r => tblRr(r, cols)).join('');
+      const body = (def.rows||[]).map(r => rr(r, cols)).join('');
       return `<div class="tbl-outer">${bulkBarHtml}<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
     }
 
     /* ── row types demo ── */
     const rd = data.rowTypeDemo || {};
-    const rdTable = tblDemoTable(rd);
+    const rdTable = demoTable(rd);
 
     /* ── cell types demo ── */
     const cd = data.cellTypeDemo || {};
-    const cdTable = tblDemoTable(cd);
+    const cdTable = demoTable(cd);
 
     /* ── extended demo groups ── */
     const groupSections = (data.cellTypeDemoGroups||[]).map(g =>
       `<div style="margin-bottom:20px">
         <div style="font:600 13px var(--font-sans);color:var(--n5);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;font-size:11px">${escHtml(g.label)}</div>
-        <div class="card flush">${tblDemoTable(g)}</div>
+        <div class="card flush">${demoTable(g)}</div>
       </div>`
     ).join('');
 
@@ -2838,6 +3024,37 @@ async function downloadAllPins() {
     </style>`;
 
     // ── status → DS badge variant ─────────────────────────────────────
+    const statusVariant = s => {
+      switch ((s||'').toLowerCase()) {
+        case 'entregado':    return 'success';
+        case 'no entregado': return 'danger';
+        case 'asignada':     return 'info';
+        default:             return 'neutral';
+      }
+    };
+
+    // ── table rows using exact DS table component structure ───────────
+    const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
+
+    const thead = `<tr>
+      <th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>
+      ${(data.columns||[]).map(c=>`<th>${escHtml(c)}</th>`).join('')}
+      <th class="tbl-acts-col"></th>
+    </tr>`;
+
+    const tbody = (data.rows||[]).map(r => {
+      const cls = r.selected ? ' class="sel"' : r.hover ? ' class="hov"' : '';
+      return `<tr${cls}>
+        <td class="tbl-cb-td"><div class="tbl-cb"><input type="checkbox"${r.selected?' checked':''} onclick="tblRowSel(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div></td>
+        <td class="cell-lnk">${escHtml(r.order)}</td>
+        <td>${badgeHtml(r.status, statusVariant(r.status))}</td>
+        <td class="cell-muted">—</td>
+        <td>${escHtml(r.vehicle||'—')}</td>
+        <td>${escHtml(r.client)}</td>
+        <td>${r.date&&r.date!=='—'?escHtml(r.date):'<span style="color:var(--n45)">—</span>'}${r.dateNote?`<span style="color:var(--n45);margin-left:4px">${escHtml(r.dateNote)}</span>`:''}</td>
+        <td class="tbl-acts-col"><div class="tbl-acts"><button class="tbl-act-btn">${iconSvg('overflow-menu-vertical',14)}</button></div></td>
+      </tr>`;
+    }).join('');
 
     // ── DS Sidebar items (Carbon icons, Órdenes selected) ─────────────
     const sbItems = [
@@ -2946,8 +3163,17 @@ async function downloadAllPins() {
                 </button>
               </div>
 
-              <!-- DS table: scrollDemo from table.json via tblDemoTable() -->
-              ${tblDemoTable(data.scrollDemo || {})}
+              <!-- Table: exact DS tbl-outer > tbl-wrap > table.tbl structure -->
+              <div style="border-radius:4px;border:1px solid var(--n4);overflow:hidden">
+                <div class="tbl-outer">
+                  <div class="tbl-wrap">
+                    <table class="tbl">
+                      <thead>${thead}</thead>
+                      <tbody>${tbody}</tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
 
             </div><!-- end container (filter bar + table) -->
 
