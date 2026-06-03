@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -9,7 +9,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#F0F2F5;font-family:'DM Sans',system-ui,sans-serif;color:#39414D;font-size:14px;line-height:1.5}
 a{color:#0052CC;text-decoration:none}a:hover{text-decoration:underline}
-button,input,textarea{font-family:inherit}
+button{font-family:inherit;cursor:pointer}
 
 :root{
   --indigo:#132045;
@@ -17,7 +17,7 @@ button,input,textarea{font-family:inherit}
   --b1:#EDF5FF;--b2:#D1E0FF;--b3:#ADC7FF;--b5:#4B82FA;--b6:#1F60ED;--b7:#0052CC;
   --g1:#E3FCEF;--g5:#36B37E;--g6:#00875A;
   --r1:#FFEBE6;--r5:#FF5630;--r6:#DE350B;
-  --o1:#FFFAE6;--o3:#FFE380;--o5:#FFAB00;
+  --o1:#FFFAE6;--o3:#FFE380;--o5:#FFAB00;--o7:#FF8B00;
   --font-sans:'DM Sans',system-ui,sans-serif;
   --font-mono:'Roboto Mono',monospace;
 }
@@ -25,6 +25,7 @@ button,input,textarea{font-family:inherit}
 /* ── TOPBAR ── */
 .gh-top{position:sticky;top:0;z-index:200;height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 22px;gap:16px}
 .gh-top .logo img{height:18px;display:block}
+.gh-top .badge-new{font:700 10px var(--font-sans);background:var(--o5);color:#fff;padding:2px 8px;border-radius:999px;letter-spacing:.04em}
 .gh-top .slot{width:88px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:var(--indigo);font:700 11px var(--font-sans);margin-left:auto;flex-shrink:0}
 
 /* ── LAYOUT ── */
@@ -36,78 +37,41 @@ button,input,textarea{font-family:inherit}
 .snav{display:flex;align-items:center;gap:8px;padding:7px 20px;font:500 13px var(--font-sans);color:var(--n7);border-left:3px solid transparent;text-decoration:none;cursor:pointer}
 .snav:hover{background:var(--n1)}
 .snav.active{background:var(--b1);border-left-color:var(--b5);font-weight:700;color:var(--b7)}
-.snav .tag{font:600 9px var(--font-sans);background:var(--o1);color:var(--o5);padding:1px 6px;border-radius:999px;margin-left:auto;letter-spacing:.03em;border:1px solid var(--o3)}
-.snav .new{background:var(--g1);color:var(--g6);border-color:#ABF5D1}
+.snav .tag{font:600 9px var(--font-sans);background:var(--o1);color:var(--o7);padding:1px 6px;border-radius:999px;margin-left:auto;letter-spacing:.03em}
+.snav .new{background:var(--g1);color:var(--g6)}
 .main{flex:1;padding:32px 40px 80px;min-width:0}
 
 /* ── PAGE HEADER ── */
 .main h1{font:700 28px/1.2 var(--font-sans);letter-spacing:-.01em;margin:0 0 6px;color:var(--n7)}
 .main .sub{font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 10px;max-width:660px}
 .ticket-chip{display:inline-flex;align-items:center;gap:6px;font:700 11px var(--font-mono);background:var(--b1);color:var(--b7);border:1px solid var(--b3);padding:3px 10px;border-radius:4px;margin-bottom:28px}
-.proto-link{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--font-sans);color:var(--b7);background:var(--b1);border:1px solid var(--b3);border-radius:4px;padding:3px 10px;margin-left:8px;vertical-align:middle}
-.proto-link svg{width:11px;height:11px}
 
-/* ── PROGRESS RING / SUMMARY BAR ── */
-.summary-bar{
-  background:#fff;border:1px solid var(--n3);border-radius:8px;
-  padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-  margin-bottom:32px;
-}
-.s-ring{position:relative;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.s-ring::after{content:'';position:absolute;width:38px;height:38px;border-radius:50%;background:#fff}
-.s-ring span{position:relative;z-index:1;font:700 12px var(--font-sans);color:var(--n7)}
-.s-counts{display:flex;gap:16px;flex:1;align-items:center;flex-wrap:wrap}
-.s-count{display:flex;flex-direction:column;align-items:center;gap:2px}
-.s-count .num{font:700 20px var(--font-sans);color:var(--n7)}
-.s-count .lbl{font:400 11px var(--font-sans);color:var(--n5)}
-.s-count.added .num{color:var(--g6)}
-.s-count.skipped .num{color:var(--r6)}
-.s-count.pending .num{color:var(--n45)}
-.s-actions{display:flex;gap:8px}
-.btn-copy{font:700 12px var(--font-sans);padding:6px 14px;border-radius:100px;border:1px solid var(--n3);background:#fff;color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.btn-copy:hover{background:var(--n1)}
-.btn-copy svg{width:13px;height:13px}
-
-/* ── SECTION ── */
-.sec{margin:0 0 56px;scroll-margin-top:80px}
+/* ── SECTION HEADER (inside rc-body) ── */
 .sec h2{font:700 20px/1.3 var(--font-sans);margin:0 0 4px;color:var(--n7);display:flex;align-items:center;gap:10px}
 .sec h2 .anch{font:500 11px var(--font-mono);color:var(--n5);background:var(--n2);padding:2px 7px;border-radius:4px}
 .sec h2 .status{font:700 9px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
 .status-new{background:var(--g1);color:var(--g6)}
-.status-ext{background:var(--o1);color:var(--o5)}
+.status-ext{background:var(--o1);color:var(--o7)}
 .status-rule{background:var(--b1);color:var(--b7)}
 .sec .desc{font:400 13px/1.6 var(--font-sans);color:var(--n5);margin:0 0 16px;max-width:680px}
 
-/* ── REVIEW CARD ── */
-.rc{background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;margin:0 0 12px}
-.rc-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#FAFBFD;border-bottom:1px solid var(--n3);cursor:pointer;user-select:none;gap:10px}
-.rc-hdr .rc-title{font:700 12px var(--font-sans);color:var(--n7);flex:1}
-.rc-hdr .rc-meta{font:400 11px var(--font-mono);color:var(--n5);flex-shrink:0}
-.rc-hdr .rc-chev{width:14px;height:14px;color:var(--n45);transition:transform .15s;flex-shrink:0}
-.rc.collapsed .rc-hdr .rc-chev{transform:rotate(-90deg)}
-.rc-body{display:block}
-.rc.collapsed .rc-body{display:none}
-.rc-preview{padding:20px;border-bottom:1px solid var(--n3);background:#fff}
-.rc-review{padding:16px;border-top:1px solid var(--n3);background:#FAFBFD;display:flex;flex-direction:column;gap:12px}
-.rc-decision{display:flex;align-items:center;gap:8px}
-.rc-decision span{font:600 12px var(--font-sans);color:var(--n5);margin-right:4px}
-.btn-add,.btn-skip{font:700 12px var(--font-sans);padding:5px 14px;border-radius:100px;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.btn-add{background:var(--g1);color:var(--g6);border:1px solid #ABF5D1}
-.btn-add:hover{background:#C6F6DC}
-.btn-skip{background:var(--r1);color:var(--r6);border:1px solid #FFBDAD}
-.btn-skip:hover{background:#FFD0C4}
-.btn-add.chosen{background:var(--g6);color:#fff;border-color:var(--g6)}
-.btn-skip.chosen{background:var(--r6);color:#fff;border-color:var(--r6)}
-.rc-notes textarea{
-  width:100%;border:1px solid var(--n4);border-radius:6px;padding:8px 10px;
-  font:400 12px var(--font-sans);color:var(--n7);background:#fff;resize:vertical;min-height:60px;outline:none;
-}
-.rc-notes textarea:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.18)}
-.rc-notes label{display:block;font:700 11px var(--font-sans);color:var(--n5);margin-bottom:5px}
+/* ── CARD ── */
+.card{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;margin:0 0 12px}
+.card.flush{padding:0;overflow:hidden}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--n3);background:#FAFBFD}
+.card-hdr .ttl{font:700 12px var(--font-sans);color:var(--n7)}
+.card-hdr .meta{font:400 11px var(--font-mono);color:var(--n5)}
 
-/* ── DS TOKEN TAGS ── */
-.tkn{font:500 11px var(--font-mono);background:var(--n2);color:var(--n6);padding:1px 6px;border-radius:3px;border:1px solid var(--n3)}
-.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+/* ── USAGE TABLE ── */
+.utbl{width:100%;border-collapse:collapse;font:400 12px var(--font-sans)}
+.utbl th{background:var(--n2);font:700 11px var(--font-sans);text-align:left;padding:8px 12px;border-bottom:1px solid var(--n4);color:var(--n7)}
+.utbl td{padding:8px 12px;border-bottom:1px solid var(--n3);vertical-align:top}
+.utbl tr:last-child td{border:0}
+.utbl code{font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px}
+.tkn{font:500 11px var(--font-mono);background:var(--n2);color:var(--n6);padding:1px 5px;border-radius:3px;border:1px solid var(--n3)}
+
+/* ── DO / DON'T ── */
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
 .do-box{border-radius:6px;padding:14px;border:1px solid var(--n3);background:#fff}
 .do-box.do{border-left:3px solid var(--g6)}
 .do-box.dont{border-left:3px solid var(--r6)}
@@ -116,14 +80,59 @@ button,input,textarea{font-family:inherit}
 .do-box.dont .lbl{color:var(--r6)}
 .do-box p{font:400 12px var(--font-sans);color:var(--n6);line-height:1.5}
 
-/* ════════════════════════════════
-   COMPONENT PREVIEWS
-════════════════════════════════ */
+/* ── SUMMARY BAR ── */
+.summary-bar{background:#fff;border:1px solid var(--n3);border-radius:10px;padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.sum-ring{position:relative;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sum-ring::after{content:'';position:absolute;width:38px;height:38px;border-radius:50%;background:#fff}
+.sum-ring span{position:relative;z-index:1;font:700 12px var(--font-sans);color:var(--n7)}
+.sum-stats{display:flex;gap:20px;flex-wrap:wrap}
+.sum-stat{display:flex;align-items:center;gap:7px;font:500 13px var(--font-sans);color:var(--n7)}
+.sum-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.sum-export{display:inline-flex;align-items:center;gap:6px;font:700 12px var(--font-sans);padding:6px 14px;border-radius:100px;border:1px solid var(--n3);background:#fff;color:var(--n7);margin-left:auto}
+.sum-export:hover{background:var(--n1)}
+.sum-export svg{width:13px;height:13px}
 
-/* 1 · ALERT SETTINGS ROW */
-.alert-list-demo{background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden}
+/* ── REVIEW CARD ── */
+.rc{background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;margin-bottom:10px}
+.rc-head{display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .1s}
+.rc-head:hover{background:var(--n1)}
+.rc.open .rc-head{background:#F5F8FF}
+.rc-chev{width:14px;height:14px;color:var(--n45);flex-shrink:0;transition:transform .15s}
+.rc.open .rc-chev{transform:rotate(90deg)}
+.rc-meta{flex:1;min-width:0;display:flex;align-items:center;gap:8px;overflow:hidden}
+.rc-title{font:700 14px var(--font-sans);color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-tag{font:700 9px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;flex-shrink:0}
+.rc-tag.new{background:var(--g1);color:var(--g6)}
+.rc-tag.ext{background:var(--o1);color:var(--o7)}
+.rc-tag.rule{background:var(--b1);color:var(--b7)}
+.rc-decision{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.rc-btn{font:700 12px var(--font-sans);padding:5px 14px;border-radius:100px;cursor:pointer;transition:.12s;border:1.5px solid transparent;line-height:1}
+.rc-btn.approve{border-color:var(--g5);color:var(--g6);background:#fff}
+.rc-btn.approve:hover{background:var(--g1)}
+.rc-btn.approve.active{background:var(--g6);color:#fff;border-color:var(--g6)}
+.rc-btn.skip{border-color:var(--n4);color:var(--n5);background:#fff}
+.rc-btn.skip:hover{background:var(--r1);border-color:var(--r5);color:var(--r6)}
+.rc-btn.skip.active{background:var(--r6);color:#fff;border-color:var(--r6)}
+.rc-badge{font:700 10px var(--font-sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;flex-shrink:0;background:var(--n2);color:var(--n5);min-width:72px;text-align:center}
+.rc-badge.approved{background:var(--g1);color:var(--g6)}
+.rc-badge.skipped{background:var(--r1);color:var(--r6)}
+.rc-body{display:none;padding:24px;border-top:1px solid var(--n3)}
+.rc.open .rc-body{display:block}
+.rc-notes{margin-top:24px;padding-top:20px;border-top:1px solid var(--n3)}
+.rc-notes label{display:block;font:700 13px var(--font-sans);color:var(--n7);margin-bottom:8px}
+.rc-notes textarea{width:100%;border:1px solid var(--n3);border-radius:6px;font:400 13px var(--font-sans);color:var(--n7);padding:10px 12px;resize:vertical;min-height:80px;outline:none;transition:border-color .12s;line-height:1.5}
+.rc-notes textarea:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.2)}
+.rc-notes textarea::placeholder{color:var(--n45)}
+.rc-notes-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-bottom:4px}
+.rc-toast{position:fixed;bottom:24px;right:24px;background:var(--n7);color:#fff;font:500 13px var(--font-sans);padding:10px 18px;border-radius:8px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(19,32,69,.2);z-index:999;transform:translateY(60px);opacity:0;transition:.22s}
+.rc-toast.show{transform:translateY(0);opacity:1}
+
+/* ── COMPONENT PREVIEWS ── */
+
+/* Alert row */
+.alert-list-demo{background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;margin-bottom:16px}
 .list-head{display:grid;grid-template-columns:1fr 180px 110px;padding:8px 20px;background:#FAFBFD;border-bottom:1px solid var(--n3)}
-.list-head .lh{font:700 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:#8FA0BA}
+.list-head .lh{font:700 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n45)}
 .list-head .lh:not(:first-child){text-align:center}
 .ar{border-bottom:1px solid #F0F2F5}
 .ar:last-child{border-bottom:0}
@@ -131,7 +140,7 @@ button,input,textarea{font-family:inherit}
 .ar-head:hover{background:#F9FBFF}
 .ar.open .ar-head{background:#F5F8FF}
 .ar-info{display:flex;align-items:center;gap:10px;min-width:0}
-.ar-chev{width:16px;height:16px;color:#8FA0BA;flex-shrink:0;transition:transform .15s}
+.ar-chev{width:16px;height:16px;color:var(--n45);flex-shrink:0;transition:transform .15s}
 .ar.open .ar-chev{transform:rotate(90deg)}
 .ar-name{font:700 14px var(--font-sans);color:var(--n7);margin-bottom:2px}
 .ar-desc{font:400 12px var(--font-sans);color:var(--n5);line-height:1.4}
@@ -147,360 +156,311 @@ button,input,textarea{font-family:inherit}
 .swt.on::after{left:16px}
 .ar-body{display:none;padding:0 20px 20px 46px;border-top:1px solid #F0F2F5}
 .ar.open .ar-body{display:block}
-.form-demo{max-width:420px;padding-top:14px}
-.fl{font:700 12px var(--font-sans);color:var(--n7);margin-bottom:4px}
-.fh{font:400 11px var(--font-sans);color:var(--n45);margin-top:3px}
-.fi{width:100%;height:36px;border:1px solid var(--n4);border-radius:6px;padding:0 10px;font:400 13px var(--font-sans);color:var(--n7);background:#fff;outline:none;margin-bottom:2px}
-.fi:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.form-demo-lbl{font:700 12px var(--font-sans);color:var(--n7);margin:14px 0 5px}
+.form-demo-helper{font:400 11px var(--font-sans);color:var(--n45);margin-top:3px}
+.fi{width:100%;max-width:400px;height:36px;border:1px solid var(--n4);border-radius:6px;padding:0 10px;font:400 13px var(--font-sans);color:var(--n7);background:#fff;outline:none}
 
-/* 2 · CHIP INPUT */
-.ci-wrap{border:1px solid var(--n4);border-radius:6px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:4px;background:#fff;min-height:40px}
-.ci-wrap:focus-within{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+/* Chip */
+.ci-wrap{border:1px solid var(--n4);border-radius:6px;padding:6px 28px 6px 8px;display:flex;flex-wrap:wrap;gap:4px;background:#fff;min-height:40px;position:relative}
 .chip{display:inline-flex;align-items:center;gap:4px;background:var(--b1);color:var(--b7);border:1px solid var(--b3);font:400 11px var(--font-sans);padding:2px 7px 2px 8px;border-radius:999px;white-space:nowrap}
 .chip button{background:transparent;border:0;cursor:pointer;padding:0;display:flex;align-items:center;color:var(--b5);line-height:1}
-.chip button:hover{color:var(--b7)}
 .chip button svg{width:11px;height:11px}
+.chevron-indicator{position:absolute;right:10px;top:11px;width:12px;height:12px;pointer-events:none}
 
-/* 3 · STICKY SAVE BAR */
-.save-bar-demo{
-  background:#fff;border:1px solid var(--n3);border-radius:8px;
-  padding:12px 20px;display:flex;align-items:center;justify-content:flex-end;gap:10px;
-  box-shadow:0 -4px 16px rgba(19,32,69,.07);
-}
-.save-bar-demo .hint{flex:1;font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:6px}
-.save-bar-demo .hint svg{width:13px;height:13px;color:var(--o5);flex-shrink:0}
-.btn{font:700 13px var(--font-sans);padding:6px 14px;border-radius:100px;height:32px;border:1px solid var(--n4);background:#fff;color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;line-height:1}
-.btn:hover{background:var(--n1)}
-.btn.primary{background:var(--b6);color:#fff;border-color:var(--b6)}
-.btn.primary:hover{background:var(--b7);border-color:var(--b7)}
-
-/* 4 · STATUS CHIP VARIANTS */
-.chip-grid{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:20px;background:var(--n2);border-radius:6px}
+/* Status chip */
+.chip-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:20px;background:var(--n2);border-radius:6px}
 .chip-item{display:flex;flex-direction:column;align-items:center;gap:8px}
 .chip-item .lbl{font:400 10px var(--font-sans);color:var(--n5);text-align:center}
 
-/* usage table */
-.utbl{width:100%;border-collapse:collapse;font:400 12px var(--font-sans);margin-top:12px}
-.utbl th{background:var(--n2);font:700 11px var(--font-sans);text-align:left;padding:8px 12px;border-bottom:1px solid var(--n4);color:var(--n7)}
-.utbl td{padding:8px 12px;border-bottom:1px solid var(--n3);vertical-align:top}
-.utbl tr:last-child td{border:0}
-.utbl code{font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px}
+/* Header action bar */
+.hdr-demo{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:14px 24px;display:flex;align-items:center;gap:12px}
+.hdr-demo h3{font:700 20px var(--font-sans);color:var(--n7);flex:1}
+.btn{font:700 13px var(--font-sans);padding:6px 14px;border-radius:100px;height:32px;border:1px solid var(--b6);background:#fff;color:var(--b6);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;line-height:1}
+.btn:hover{background:var(--b1)}
+.btn.primary{background:var(--b6);color:#fff}
+.btn.primary:hover{background:var(--b7);border-color:var(--b7)}
+
+/* Info tooltip */
+.tip-demo{display:flex;gap:32px;align-items:flex-end;padding:20px;background:var(--n2);border-radius:6px;flex-wrap:wrap}
+.tip-demo-item{display:flex;flex-direction:column;align-items:center;gap:8px}
+.tip-demo-item .lbl{font:400 10px var(--font-sans);color:var(--n5)}
+.tip-box-demo{background:#39414D;color:#fff;font:400 12px/1.5 var(--font-sans);padding:7px 11px;border-radius:6px;max-width:240px;box-shadow:0 4px 14px rgba(19,32,69,.18)}
+
+@media(max-width:900px){.layout{flex-direction:column}.sidebar{width:100%;position:static;max-height:none;border-right:0;border-bottom:1px solid var(--n3)}.main{padding:20px 18px 60px}.do-dont{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <header class="gh-top">
-  <div class="logo">
-    <img src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
-  </div>
-  <div class="slot">DT DS</div>
+  <a href="alerts-settings-DES825.html" style="display:flex;align-items:center;height:20px">
+    <img src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile" style="height:20px">
+  </a>
+  <span class="badge-new">DES-825 · New components</span>
+  <div class="slot">DT</div>
 </header>
 
 <div class="layout">
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="grp-lbl">DES-825</div>
+  <div class="grp-lbl">Layout patterns</div>
   <a class="snav active" href="#alert-row">Alert Settings Row <span class="tag new">NEW</span></a>
+  <a class="snav" href="#header-actions">Header Action Bar <span class="tag" style="background:var(--b1);color:var(--b7)">RULE</span></a>
+
+  <div class="grp-lbl" style="margin-top:8px">Controls & data</div>
   <a class="snav" href="#chip-input">Chip Tag Input <span class="tag">EXT</span></a>
-  <a class="snav" href="#header-actions">Header Action Bar <span class="tag">RULE</span></a>
   <a class="snav" href="#status-chip">Alert Status Chip <span class="tag">EXT</span></a>
+
+  <div class="grp-lbl" style="margin-top:8px">Feedback</div>
   <a class="snav" href="#info-tooltip">Info Tooltip (ⓘ) <span class="tag new">NEW</span></a>
-  <div class="grp-lbl">Reference</div>
-  <a class="snav" href="alerts-settings-DES825.html" target="_blank">→ Ver prototipo</a>
-  <a class="snav" href="notifications-settings-DES824.html" target="_blank">→ DES-824</a>
 </aside>
 
 <!-- MAIN -->
-<div class="main">
-  <h1>New DS Components</h1>
-  <p class="sub">Componentes nuevos y extendidos introducidos en DES-825 — Alerts Settings. Revisa cada uno y decide si se incorpora al Design System oficial.</p>
-  <div>
-    <span class="ticket-chip">DES-825</span>
-    <a class="proto-link" href="alerts-settings-DES825.html" target="_blank">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Ver prototipo
-    </a>
+<main class="main">
+
+  <h1>New DS components</h1>
+  <p class="sub">Components and patterns built for DES-825 (Alerts Settings) that aren't yet in the design system. Reviewed and ready for documentation.</p>
+  <span class="ticket-chip">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    DES-825 · Alerts Settings redesign
+  </span>
+
+  <div class="summary-bar">
+    <div class="sum-ring" id="sum-ring" style="background:conic-gradient(var(--n4) 0deg,var(--n3) 0deg 360deg)"><span>0/5</span></div>
+    <div class="sum-stats">
+      <div class="sum-stat"><span class="sum-dot" style="background:var(--g5)"></span><span class="sum-count" id="sum-approved">0</span><span class="sum-label"> approved</span></div>
+      <div class="sum-stat"><span class="sum-dot" style="background:var(--r5)"></span><span class="sum-count" id="sum-skipped">0</span><span class="sum-label"> skipped</span></div>
+      <div class="sum-stat"><span class="sum-dot" style="background:var(--n4)"></span><span class="sum-count" id="sum-pending">5</span><span class="sum-label"> pending</span></div>
+    </div>
+    <button class="sum-export" onclick="exportDecisions()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy decisions
+    </button>
   </div>
 
-  <!-- SUMMARY BAR -->
-  <div class="summary-bar" id="summary-bar">
-    <div class="s-ring" id="progress-ring">
-      <span id="progress-text">0/5</span>
-    </div>
-    <div class="s-counts">
-      <div class="s-count added"><div class="num" id="count-add">0</div><div class="lbl">Agregar</div></div>
-      <div class="s-count skipped"><div class="num" id="count-skip">0</div><div class="lbl">Omitir</div></div>
-      <div class="s-count pending"><div class="num" id="count-pend">5</div><div class="lbl">Pendiente</div></div>
-    </div>
-    <div class="s-actions">
-      <button class="btn-copy" onclick="copyDecisions()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copiar decisiones
-      </button>
-    </div>
-  </div>
-
-  <!-- ═════════════════════════════
-       1 · ALERT SETTINGS ROW
-  ════════════════════════════════ -->
-  <div class="sec" id="alert-row">
-    <h2>
-      Alert Settings Row
-      <span class="anch">alert-row</span>
-      <span class="status status-new">NEW</span>
-    </h2>
-    <p class="desc">Patrón de fila accordion para páginas de configuración de cuenta. Combina nombre + descripción, chip de estado, toggle de activación y cuerpo expandible con formulario inline. Diseñado para Settings screens con múltiples configuraciones independientes de baja frecuencia de edición.</p>
-
-    <div class="rc" id="rc-1">
-      <div class="rc-hdr" onclick="toggleCard('rc-1')">
-        <div class="rc-title">Alert Settings Row — accordion expandible</div>
-        <div class="rc-meta">alert-row · alert-row-head · alert-row-body</div>
-        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  <!-- ═══ 1 · ALERT SETTINGS ROW ═══ -->
+  <div class="rc" id="rc-alert-row" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-alert-row', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Alert Settings Row — accordion expandible</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-alert-row','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-alert-row','skipped')">&#10007; Skip</button>
       </div>
-      <div class="rc-body">
-        <div class="rc-preview">
-          <div class="alert-list-demo">
-            <div class="list-head">
-              <div class="lh">Tipo de alerta</div>
-              <div class="lh">Estado</div>
-              <div class="lh">Activar / pausar</div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="alert-row">
+        <h2>Alert Settings Row <span class="anch">#alert-row</span> <span class="status status-new">NEW</span></h2>
+        <p class="desc">Accordion row pattern for account configuration pages. Combines name + description, status chip, enable toggle, and an expandable body with an inline form. Designed for settings screens with multiple independent, low-edit-frequency configurations.</p>
+        <div class="alert-list-demo">
+          <div class="list-head">
+            <div class="lh">Alert type</div>
+            <div class="lh">Status</div>
+            <div class="lh">Enable / pause</div>
+          </div>
+          <div class="ar open">
+            <div class="ar-head" onclick="this.closest('.ar').classList.toggle('open')">
+              <div class="ar-info">
+                <svg class="ar-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                <div>
+                  <div class="ar-name">Alert by status</div>
+                  <div class="ar-desc">Notifies when a delivery changes to one of the selected statuses or substatuses.</div>
+                </div>
+              </div>
+              <div class="sc on"><span class="dot"></span>Active</div>
+              <div class="swt on"></div>
             </div>
-
-            <!-- row open -->
-            <div class="ar open">
-              <div class="ar-head" onclick="this.closest('.ar').classList.toggle('open')">
-                <div class="ar-info">
-                  <svg class="ar-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                  <div>
-                    <div class="ar-name">Alerta por estado</div>
-                    <div class="ar-desc">Notifica cuando una entrega cambia a uno de los estados seleccionados.</div>
-                  </div>
-                </div>
-                <div class="sc on"><span class="dot"></span>Activa</div>
-                <div class="swt on"></div>
+            <div class="ar-body">
+              <div class="form-demo-lbl">Substatuses</div>
+              <div class="ci-wrap" style="max-width:400px">
+                <span class="chip">Delivered to customer <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                <span class="chip">Wrong address <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                <span class="chip">Customer absent <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                <svg class="chevron-indicator" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
-              <div class="ar-body">
-                <div class="form-demo">
-                  <div class="fl">Subestados</div>
-                  <div style="border:1px solid var(--n4);border-radius:6px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:4px;background:#fff;margin-bottom:4px">
-                    <span class="chip">Entrega Exitosa <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                    <span class="chip">Local Cerrado <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                    <span class="chip">Fuera de Ruta <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  </div>
-                  <div class="fh">Opcional. Deja vacío para recibir alertas de todos los subestados.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- row collapsed -->
-            <div class="ar">
-              <div class="ar-head" onclick="this.closest('.ar').classList.toggle('open')">
-                <div class="ar-info">
-                  <svg class="ar-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                  <div>
-                    <div class="ar-name">Alerta por entrega fuera de tiempo</div>
-                    <div class="ar-desc">Notifica cuando una entrega supera el tiempo máximo estimado.</div>
-                  </div>
-                </div>
-                <div class="sc off"><span class="dot"></span>Pausada</div>
-                <div class="swt"></div>
-              </div>
-              <div class="ar-body">
-                <div class="form-demo">
-                  <div class="fl">Tiempo máximo (minutos)</div>
-                  <input class="fi" type="number" value="20">
-                  <div class="fh">Ingresa un valor entre 1 y 999 minutos.</div>
-                </div>
-              </div>
+              <div class="form-demo-helper">Optional. Leave empty to receive alerts for all substatuses.</div>
             </div>
           </div>
-
-          <div class="do-dont">
-            <div class="do-box do">
-              <div class="lbl">✓ Hacer</div>
-              <p>Un toggle por tipo de alerta, con estado chip visible en la fila colapsada. El formulario solo aparece al expandir.</p>
+          <div class="ar">
+            <div class="ar-head" onclick="this.closest('.ar').classList.toggle('open')">
+              <div class="ar-info">
+                <svg class="ar-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                <div>
+                  <div class="ar-name">Alert by out-of-time delivery</div>
+                  <div class="ar-desc">Notifies when a delivery exceeds the configured maximum estimated time.</div>
+                </div>
+              </div>
+              <div class="sc off"><span class="dot"></span>Paused</div>
+              <div class="swt"></div>
             </div>
-            <div class="do-box dont">
-              <div class="lbl">✗ No hacer</div>
-              <p>No poner formularios visibles en todas las filas a la vez. Crea sobrecarga cognitiva y dificulta escanear el estado general.</p>
+            <div class="ar-body">
+              <div class="form-demo-lbl">Maximum time (minutes)</div>
+              <input class="fi" type="number" value="20" disabled style="background:#F0F2F5;color:#8FA0BA;border-color:#E1E6ED;cursor:not-allowed">
+              <div class="form-demo-helper">Inputs are disabled when the alert is paused.</div>
             </div>
           </div>
-
-          <table class="utbl">
-            <tr><th>Elemento</th><th>Clase</th><th>Token</th></tr>
-            <tr><td>Fila (contenedor)</td><td><code>ar</code> / <code>ar.open</code></td><td>border-bottom: <span class="tkn">--n3</span></td></tr>
-            <tr><td>Chevron</td><td><code>ar-chev</code></td><td>color <span class="tkn">--n45</span>, rotates 90° on .open</td></tr>
-            <tr><td>Nombre alerta</td><td><code>ar-name</code></td><td><span class="tkn">700 14px</span> <span class="tkn">--n7</span></td></tr>
-            <tr><td>Descripción</td><td><code>ar-desc</code></td><td><span class="tkn">400 12px</span> <span class="tkn">--n5</span></td></tr>
-            <tr><td>Cuerpo expandido</td><td><code>ar-body</code></td><td>padding-left 46px (alineado al texto)</td></tr>
-            <tr><td>Toggle activo</td><td><code>swt.on</code></td><td>background: <span class="tkn">--b7 #0052CC</span></td></tr>
-          </table>
         </div>
-        <div class="rc-review">
-          <div class="rc-decision">
-            <span>Decisión:</span>
-            <button class="btn-add" id="add-1" onclick="decide('1','add')">✓ Agregar al DS</button>
-            <button class="btn-skip" id="skip-1" onclick="decide('1','skip')">✗ Omitir</button>
+        <div class="do-dont">
+          <div class="do-box do">
+            <div class="lbl">✓ Do</div>
+            <p>One toggle per alert type. Show status chip (Active / Paused) in the collapsed row. Form appears only on expand. Disable all inputs when toggle is off.</p>
           </div>
-          <div class="rc-notes">
-            <label>Notas y justificación</label>
-            <textarea id="notes-1" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('1')"></textarea>
+          <div class="do-box dont">
+            <div class="lbl">✗ Don't</div>
+            <p>Don't show all forms open at once — creates cognitive overload and prevents scanning overall alert status at a glance.</p>
           </div>
+        </div>
+        <table class="utbl">
+          <tr><th>Element</th><th>Class</th><th>Token</th></tr>
+          <tr><td>Row container</td><td><code>.ar</code> / <code>.ar.open</code></td><td>border-bottom <span class="tkn">--n3</span></td></tr>
+          <tr><td>Chevron</td><td><code>.ar-chev</code></td><td>color <span class="tkn">--n45</span>, rotates 90° on .open</td></tr>
+          <tr><td>Alert name</td><td><code>.ar-name</code></td><td><span class="tkn">700 14px --n7</span></td></tr>
+          <tr><td>Description</td><td><code>.ar-desc</code></td><td><span class="tkn">400 12px --n5</span></td></tr>
+          <tr><td>Expanded body</td><td><code>.ar-body</code></td><td>padding-left 46px (aligned to text)</td></tr>
+          <tr><td>Toggle active</td><td><code>.swt.on</code></td><td>background <span class="tkn">--b7 #0052CC</span></td></tr>
+          <tr><td>Disabled input</td><td><code>input:disabled</code></td><td>bg <span class="tkn">--n2</span>, color <span class="tkn">--n45</span>, border <span class="tkn">--n3</span></td></tr>
+        </table>
+      </section>
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-alert-row',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-alert-row','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-alert-row','approved')">&#10003; Add to DS</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ═════════════════════════════
-       2 · CHIP TAG INPUT
-  ════════════════════════════════ -->
-  <div class="sec" id="chip-input">
-    <h2>
-      Chip Tag Input
-      <span class="anch">chip-input</span>
-      <span class="status status-ext">EXTENDED</span>
-    </h2>
-    <p class="desc">Extensión del patrón de chips existente para inputs de selección múltiple. Los chips son removibles con ×, se generan desde un dropdown con checkboxes y muestran el label completo (sin truncado). Aplica a selects de estados, subestados, etiquetas y cualquier entidad multi-seleccionable.</p>
-
-    <div class="rc" id="rc-2">
-      <div class="rc-hdr" onclick="toggleCard('rc-2')">
-        <div class="rc-title">Chip Tag Input — inline removable con dropdown</div>
-        <div class="rc-meta">chip · multi-select-box · ms-dropdown</div>
-        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  <!-- ═══ 2 · HEADER ACTION BAR ═══ -->
+  <div class="rc" id="rc-header-actions" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-header-actions', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Header Action Bar — Save / Cancel in page header</span><span class="rc-tag rule">RULE</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-header-actions','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-header-actions','skipped')">&#10007; Skip</button>
       </div>
-      <div class="rc-body">
-        <div class="rc-preview">
-          <p style="font:700 11px var(--font-sans);color:var(--n5);margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em">Substatuses — production values</p>
-          <div style="position:relative;max-width:560px">
-            <div class="ci-wrap" style="padding-right:28px">
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="header-actions">
+        <h2>Header Action Bar <span class="anch">#header-actions</span> <span class="status status-rule">RULE</span></h2>
+        <p class="desc">Rule for account configuration pages: primary actions (Save changes, Cancel) always live in the page header, right-aligned alongside secondary actions. All buttons use the blue outline style by default; only the primary action uses the filled style. No icons on any header button.</p>
+        <div class="hdr-demo">
+          <h3>Alerts</h3>
+          <button class="btn">Export to Excel</button>
+          <button class="btn">Cancel</button>
+          <button class="btn primary">Save changes</button>
+        </div>
+        <div class="do-dont" style="margin-top:16px">
+          <div class="do-box do">
+            <div class="lbl">✓ Do</div>
+            <p>Actions always at header level, same line as title. Order: secondary (outline) → primary (filled), left to right.</p>
+          </div>
+          <div class="do-box dont">
+            <div class="lbl">✗ Don't</div>
+            <p>No icons on header buttons. No sticky save bar at the bottom — it falls out of viewport on long pages and is inconsistent with the global pattern.</p>
+          </div>
+        </div>
+        <table class="utbl">
+          <tr><th>Element</th><th>Class</th><th>Token</th></tr>
+          <tr><td>Header container</td><td><code>.page-header</code></td><td>bg <span class="tkn">#fff</span>, border-bottom <span class="tkn">--n3</span>, height 52px, padding 14px 24px</td></tr>
+          <tr><td>Title</td><td><code>h1</code></td><td><span class="tkn">700 20px --n7</span>, flex:1</td></tr>
+          <tr><td>Outline button</td><td><code>.btn</code></td><td>border <span class="tkn">--b6</span>, color <span class="tkn">--b6</span>, bg white, pill, h 32px</td></tr>
+          <tr><td>Primary button</td><td><code>.btn.primary</code></td><td>bg <span class="tkn">--b6</span>, color white, hover <span class="tkn">--b7</span></td></tr>
+          <tr><td>Icons on buttons</td><td>—</td><td>❌ Never — DS buttons carry no icon</td></tr>
+        </table>
+      </section>
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-header-actions',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-header-actions','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-header-actions','approved')">&#10003; Add to DS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 3 · CHIP TAG INPUT ═══ -->
+  <div class="rc" id="rc-chip-input" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-chip-input', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Chip Tag Input — inline removable with dropdown</span><span class="rc-tag ext">EXTENDED</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-chip-input','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-chip-input','skipped')">&#10007; Skip</button>
+      </div>
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="chip-input">
+        <h2>Chip Tag Input <span class="anch">#chip-input</span> <span class="status status-ext">EXTENDED</span></h2>
+        <p class="desc">Extension of the existing chip pattern for multi-select inputs. Chips are removable with ×, generated from a checkbox dropdown, and display full labels (no truncation). A chevron indicator signals the dropdown affordance. Applies to statuses, substatuses, labels, and any multi-selectable entity.</p>
+        <div class="card flush">
+          <div class="card-hdr"><span class="ttl">Substatuses — production values</span><span class="meta">.chip · .ci-wrap</span></div>
+          <div style="padding:20px">
+            <div class="ci-wrap" style="max-width:500px">
               <span class="chip">Delivered to customer <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
               <span class="chip">Wrong address <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
               <span class="chip">Customer absent <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
               <span class="chip">Product rejected <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
               <span class="chip">Damaged product <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-            </div>
-            <svg style="position:absolute;right:10px;top:13px;width:12px;height:12px;pointer-events:none" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-
-          <div class="do-dont">
-            <div class="do-box do">
-              <div class="lbl">✓ Hacer</div>
-              <p>Labels completos en los chips. Si hay más de 8, agrupa con "+ N más" que expande.</p>
-            </div>
-            <div class="do-box dont">
-              <div class="lbl">✗ No hacer</div>
-              <p>No truncar labels con "…" dentro del chip. El usuario no puede leer qué está seleccionado.</p>
+              <svg class="chevron-indicator" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
           </div>
-
-          <table class="utbl">
-            <tr><th>Elemento</th><th>Clase</th><th>Token</th></tr>
-            <tr><td>Chip activo</td><td><code>.chip</code></td><td>bg <span class="tkn">--b1</span>, color <span class="tkn">--b7</span>, border <span class="tkn">--b3</span>, <strong>font-weight: 400</strong></td></tr>
-            <tr><td>Botón × del chip</td><td><code>.chip button</code></td><td>color <span class="tkn">--b5</span>, hover <span class="tkn">--b7</span></td></tr>
-            <tr><td>Container input</td><td><code>.ci-wrap</code></td><td>border <span class="tkn">--n4</span>, focus ring <span class="tkn">--b5</span> 3px, padding-right 28px</td></tr>
-            <tr><td>Chevron indicator</td><td><code>.multi-select-wrap::after</code></td><td>SVG chevron absoluto, right 10px, pointer-events none</td></tr>
-            <tr><td>Dropdown opción sel.</td><td><code>.ms-option.selected</code></td><td>bg <span class="tkn">--b1</span></td></tr>
-          </table>
         </div>
-        <div class="rc-review">
-          <div class="rc-decision">
-            <span>Decisión:</span>
-            <button class="btn-add" id="add-2" onclick="decide('2','add')">✓ Agregar al DS</button>
-            <button class="btn-skip" id="skip-2" onclick="decide('2','skip')">✗ Omitir</button>
+        <div class="do-dont">
+          <div class="do-box do">
+            <div class="lbl">✓ Do</div>
+            <p>Full labels in chips — never truncate. Chevron always visible to signal the dropdown. font-weight: 400 (regular) for chip text.</p>
           </div>
-          <div class="rc-notes">
-            <label>Notas y justificación</label>
-            <textarea id="notes-2" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('2')"></textarea>
+          <div class="do-box dont">
+            <div class="lbl">✗ Don't</div>
+            <p>Don't truncate chip labels with "…" — the user can't read what's selected. Don't use bold text in chips — it competes with section labels.</p>
           </div>
+        </div>
+        <table class="utbl">
+          <tr><th>Element</th><th>Class</th><th>Token</th></tr>
+          <tr><td>Chip</td><td><code>.chip</code></td><td>bg <span class="tkn">--b1</span>, color <span class="tkn">--b7</span>, border <span class="tkn">--b3</span>, <strong>font-weight: 400</strong></td></tr>
+          <tr><td>× button</td><td><code>.chip button</code></td><td>color <span class="tkn">--b5</span>, hover <span class="tkn">--b7</span></td></tr>
+          <tr><td>Container</td><td><code>.ci-wrap</code></td><td>border <span class="tkn">--n4</span>, focus ring <span class="tkn">--b5</span> 3px, padding-right 28px</td></tr>
+          <tr><td>Chevron</td><td><code>.multi-select-wrap::after</code></td><td>absolute, right 10px, pointer-events none, SVG stroke <span class="tkn">--n5</span></td></tr>
+          <tr><td>Selected option</td><td><code>.ms-option.selected</code></td><td>bg <span class="tkn">--b1</span></td></tr>
+        </table>
+      </section>
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-chip-input',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-chip-input','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-chip-input','approved')">&#10003; Add to DS</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ═════════════════════════════
-       3 · HEADER ACTION BAR
-  ════════════════════════════════ -->
-  <div class="sec" id="header-actions">
-    <h2>
-      Header Action Bar
-      <span class="anch">page-header-actions</span>
-      <span class="status status-rule">RULE</span>
-    </h2>
-    <p class="desc">Regla de layout para páginas de configuración de cuenta: las acciones principales (Save changes, Cancel) van siempre en el page header, alineadas a la derecha junto a las acciones secundarias. Todos los botones usan el estilo outline azul por defecto; solo la acción primaria usa el estilo filled. Sin íconos en ningún botón del header.</p>
-
-    <div class="rc" id="rc-3">
-      <div class="rc-hdr" onclick="toggleCard('rc-3')">
-        <div class="rc-title">Header Action Bar — Save / Cancel en page header</div>
-        <div class="rc-meta">page-header · page-header-actions · .btn · .btn.primary</div>
-        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  <!-- ═══ 4 · ALERT STATUS CHIP ═══ -->
+  <div class="rc" id="rc-status-chip" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-status-chip', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Alert Status Chip — Active / Paused</span><span class="rc-tag ext">EXTENDED</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-status-chip','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-status-chip','skipped')">&#10007; Skip</button>
       </div>
-      <div class="rc-body">
-        <div class="rc-preview">
-          <p style="font:700 11px var(--font-sans);color:var(--n5);margin-bottom:12px;text-transform:uppercase;letter-spacing:.07em">Page header — layout real</p>
-          <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:14px 24px;display:flex;align-items:center;gap:12px">
-            <span style="font:700 20px var(--font-sans);color:var(--n7);flex:1">Alerts</span>
-            <button class="btn">Export to Excel</button>
-            <button class="btn">Cancel</button>
-            <button class="btn primary">Save changes</button>
-          </div>
-
-          <div class="do-dont">
-            <div class="do-box do">
-              <div class="lbl">✓ Hacer</div>
-              <p>Botones de acción siempre en el header, al mismo nivel del título. Orden: acciones secundarias (ghost/outline) → acciones primarias (filled) de izquierda a derecha.</p>
-            </div>
-            <div class="do-box dont">
-              <div class="lbl">✗ No hacer</div>
-              <p>No poner íconos en los botones del header. No usar sticky save bar al fondo — queda fuera del viewport en páginas largas y es inconsistente con el patrón global.</p>
-            </div>
-          </div>
-
-          <table class="utbl">
-            <tr><th>Elemento</th><th>Clase</th><th>Token</th></tr>
-            <tr><td>Header container</td><td><code>.page-header</code></td><td>bg <span class="tkn">#fff</span>, border-bottom <span class="tkn">--n3</span>, height 52px, padding 14px 24px</td></tr>
-            <tr><td>Título</td><td><code>h1</code></td><td><span class="tkn">700 20px --n7</span>, flex:1</td></tr>
-            <tr><td>Botón outline</td><td><code>.btn</code></td><td>border <span class="tkn">--b6</span>, color <span class="tkn">--b6</span>, bg white, pill, h 32px</td></tr>
-            <tr><td>Botón primary</td><td><code>.btn.primary</code></td><td>bg <span class="tkn">--b6</span>, color white, hover <span class="tkn">--b7</span></td></tr>
-            <tr><td>Íconos en botones</td><td>—</td><td>❌ Nunca — los botones del DS no llevan icono</td></tr>
-          </table>
-        </div>
-        <div class="rc-review">
-          <div class="rc-decision">
-            <span>Decisión:</span>
-            <button class="btn-add" id="add-3" onclick="decide('3','add')">✓ Agregar al DS</button>
-            <button class="btn-skip" id="skip-3" onclick="decide('3','skip')">✗ Omitir</button>
-          </div>
-          <div class="rc-notes">
-            <label>Notas y justificación</label>
-            <textarea id="notes-3" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('3')"></textarea>
-          </div>
-        </div>
-      </div>
+      <span class="rc-badge">Pending</span>
     </div>
-  </div>
-
-  <!-- ═════════════════════════════
-       4 · ALERT STATUS CHIP
-  ════════════════════════════════ -->
-  <div class="sec" id="status-chip">
-    <h2>
-      Alert Status Chip
-      <span class="anch">status-chip</span>
-      <span class="status status-ext">EXTENDED</span>
-    </h2>
-    <p class="desc">Extensión del patrón de status pill existente para representar el estado de alertas operacionales. Tiene dos variantes: <strong>Activa</strong> (verde) y <strong>Pausada</strong> (gris). Se usa siempre junto al toggle para dar redundancia semántica (color + texto).</p>
-
-    <div class="rc" id="rc-4">
-      <div class="rc-hdr" onclick="toggleCard('rc-4')">
-        <div class="rc-title">Alert Status Chip — Active / Paused</div>
-        <div class="rc-meta">status-chip.on · status-chip.off</div>
-        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-      </div>
-      <div class="rc-body">
-        <div class="rc-preview">
-          <div class="chip-grid">
+    <div class="rc-body">
+      <section class="sec" id="status-chip">
+        <h2>Alert Status Chip <span class="anch">#status-chip</span> <span class="status status-ext">EXTENDED</span></h2>
+        <p class="desc">Extension of the existing status pill pattern for operational alert states. Two variants: <strong>Active</strong> (green) and <strong>Paused</strong> (grey). Always used alongside the toggle for semantic redundancy (color + text label).</p>
+        <div class="card flush">
+          <div class="card-hdr"><span class="ttl">Both states</span><span class="meta">.sc.on · .sc.off</span></div>
+          <div class="chip-row">
             <div class="chip-item">
               <div class="sc on"><span class="dot"></span>Active</div>
               <div class="lbl">Toggle ON</div>
@@ -510,192 +470,207 @@ button,input,textarea{font-family:inherit}
               <div class="lbl">Toggle OFF</div>
             </div>
           </div>
-
-          <div class="do-dont">
-            <div class="do-box do">
-              <div class="lbl">✓ Hacer</div>
-              <p>Sincronizar chip y toggle. Cuando el toggle cambia, el chip debe actualizarse inmediatamente. Siempre incluir label de texto además del dot.</p>
-            </div>
-            <div class="do-box dont">
-              <div class="lbl">✗ No hacer</div>
-              <p>No usar rojo para "Pausada" — rojo implica error. El gris comunica "inactivo/deshabilitado" sin alarmar.</p>
-            </div>
-          </div>
-
-          <table class="utbl">
-            <tr><th>Variante</th><th>Clase</th><th>Bg</th><th>Color</th><th>Dot</th></tr>
-            <tr><td>Activa</td><td><code>.sc.on</code></td><td><span class="tkn">--g1</span></td><td><span class="tkn">--g6</span></td><td><span class="tkn">--g6 #00875A</span></td></tr>
-            <tr><td>Pausada</td><td><code>.sc.off</code></td><td><span class="tkn">--n2</span></td><td><span class="tkn">--n5</span></td><td><span class="tkn">--n45</span></td></tr>
-          </table>
         </div>
-        <div class="rc-review">
-          <div class="rc-decision">
-            <span>Decisión:</span>
-            <button class="btn-add" id="add-4" onclick="decide('4','add')">✓ Agregar al DS</button>
-            <button class="btn-skip" id="skip-4" onclick="decide('4','skip')">✗ Omitir</button>
+        <div class="do-dont">
+          <div class="do-box do">
+            <div class="lbl">✓ Do</div>
+            <p>Keep chip and toggle in sync. When toggle changes, chip updates immediately. Always include a text label alongside the color dot.</p>
           </div>
-          <div class="rc-notes">
-            <label>Notas y justificación</label>
-            <textarea id="notes-4" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('4')"></textarea>
+          <div class="do-box dont">
+            <div class="lbl">✗ Don't</div>
+            <p>Don't use red for "Paused" — red implies error. Grey communicates "inactive" without alarming. Don't show chip without toggle, or toggle without chip.</p>
           </div>
+        </div>
+        <table class="utbl">
+          <tr><th>Variant</th><th>Class</th><th>Bg</th><th>Color</th><th>Dot</th></tr>
+          <tr><td>Active</td><td><code>.sc.on</code></td><td><span class="tkn">--g1</span></td><td><span class="tkn">--g6</span></td><td><span class="tkn">--g6 #00875A</span></td></tr>
+          <tr><td>Paused</td><td><code>.sc.off</code></td><td><span class="tkn">--n2</span></td><td><span class="tkn">--n5</span></td><td><span class="tkn">--n45</span></td></tr>
+        </table>
+      </section>
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-status-chip',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-status-chip','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-status-chip','approved')">&#10003; Add to DS</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ═════════════════════════════
-       5 · INFO TOOLTIP (ⓘ)
-  ════════════════════════════════ -->
-  <div class="sec" id="info-tooltip">
-    <h2>
-      Info Tooltip (ⓘ)
-      <span class="anch">help-icon · tip-box</span>
-      <span class="status status-new">NEW</span>
-    </h2>
-    <p class="desc">Ícono de información inline que muestra un tooltip custom al hover con contexto adicional sobre un campo. El ícono es una "i" en círculo (no signo de interrogación). El tooltip aparece inmediatamente al hover, se posiciona sobre el cursor y desaparece al salir. Sin delay nativo del browser.</p>
-
-    <div class="rc" id="rc-5">
-      <div class="rc-hdr" onclick="toggleCard('rc-5')">
-        <div class="rc-title">Info Tooltip — ⓘ inline con tooltip custom JS</div>
-        <div class="rc-meta">help-icon · tip-box · data-tip</div>
-        <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+  <!-- ═══ 5 · INFO TOOLTIP ═══ -->
+  <div class="rc" id="rc-info-tooltip" data-status="pending">
+    <div class="rc-head" onclick="toggleRC('rc-info-tooltip', event)">
+      <svg class="rc-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      <div class="rc-meta"><span class="rc-title">Info Tooltip (ⓘ) — custom hover tooltip</span><span class="rc-tag new">NEW</span></div>
+      <div class="rc-decision" onclick="event.stopPropagation()">
+        <button class="rc-btn approve" onclick="setDecision('rc-info-tooltip','approved')">&#10003; Add to DS</button>
+        <button class="rc-btn skip" onclick="setDecision('rc-info-tooltip','skipped')">&#10007; Skip</button>
       </div>
-      <div class="rc-body">
-        <div class="rc-preview">
-          <p style="font:700 11px var(--font-sans);color:var(--n5);margin-bottom:12px;text-transform:uppercase;letter-spacing:.07em">Ícono ⓘ — estados</p>
-          <div style="display:flex;gap:32px;align-items:flex-end;padding:20px;background:var(--n2);border-radius:6px;flex-wrap:wrap">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+      <span class="rc-badge">Pending</span>
+    </div>
+    <div class="rc-body">
+      <section class="sec" id="info-tooltip">
+        <h2>Info Tooltip (ⓘ) <span class="anch">#info-tooltip</span> <span class="status status-new">NEW</span></h2>
+        <p class="desc">Inline information icon that shows a custom tooltip on hover with additional context about a field. Uses the "i" in circle icon (not a question mark). Tooltip appears instantly on hover, follows the cursor, and disappears on mouse-out — bypassing the native browser delay.</p>
+        <div class="card flush">
+          <div class="card-hdr"><span class="ttl">Icon states + tooltip</span><span class="meta">.help-icon · .tip-box</span></div>
+          <div class="tip-demo">
+            <div class="tip-demo-item">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8FA0BA" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="1.5" fill="#8FA0BA" stroke="none"/></svg>
-              <span style="font:400 10px var(--font-sans);color:var(--n5)">Default</span>
+              <div class="lbl">Default</div>
             </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div class="tip-demo-item">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0052CC" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="1.5" fill="#0052CC" stroke="none"/></svg>
-              <span style="font:400 10px var(--font-sans);color:var(--n5)">Hover</span>
+              <div class="lbl">Hover</div>
             </div>
-            <div style="background:#39414D;color:#fff;font:400 12px/1.5 var(--font-sans);padding:7px 11px;border-radius:6px;max-width:240px;box-shadow:0 4px 14px rgba(19,32,69,.18)">
-              Alert fires when the post-delivery customer rating is at or below this score.
-            </div>
+            <div class="tip-box-demo">Alert fires when the post-delivery customer rating is at or below this score. Useful for flagging poor delivery experiences.</div>
           </div>
-
-          <div class="do-dont">
-            <div class="do-box do">
-              <div class="lbl">✓ Hacer</div>
-              <p>Usar el ícono ⓘ para campos con lógica no obvia. El texto del tooltip debe explicar el comportamiento del sistema, no repetir el label.</p>
-            </div>
-            <div class="do-box dont">
-              <div class="lbl">✗ No hacer</div>
-              <p>No usar el signo ? (question mark) — en el DS la interrogación implica "ayuda externa". La ⓘ es para contexto inline. No bloquear el tooltip con pointer-events en el ícono.</p>
-            </div>
-          </div>
-
-          <table class="utbl">
-            <tr><th>Elemento</th><th>Clase</th><th>Token</th></tr>
-            <tr><td>Ícono SVG</td><td><code>.help-icon</code></td><td>15×15px, stroke <span class="tkn">--n45</span>, cursor: help</td></tr>
-            <tr><td>Path "i"</td><td>—</td><td>circle r=10 (borde) + line y1=11→16 (cuerpo) + circle r=1.5 filled (punto)</td></tr>
-            <tr><td>Tooltip box</td><td><code>.tip-box</code></td><td>bg <span class="tkn">#39414D</span>, white, 12px, radius 6px, fixed, z-index 9999</td></tr>
-            <tr><td>Posición</td><td>JS <code>mousemove</code></td><td>Se centra sobre el cursor, sube 10px — no usa CSS puro</td></tr>
-            <tr><td>Max width</td><td>—</td><td>260px — permite 2–3 líneas de texto</td></tr>
-          </table>
         </div>
-        <div class="rc-review">
-          <div class="rc-decision">
-            <span>Decisión:</span>
-            <button class="btn-add" id="add-5" onclick="decide('5','add')">✓ Agregar al DS</button>
-            <button class="btn-skip" id="skip-5" onclick="decide('5','skip')">✗ Omitir</button>
+        <div class="do-dont">
+          <div class="do-box do">
+            <div class="lbl">✓ Do</div>
+            <p>Use ⓘ for fields with non-obvious logic. Tooltip text should explain system behavior, not repeat the field label. Keep under 40 words.</p>
           </div>
-          <div class="rc-notes">
-            <label>Notas y justificación</label>
-            <textarea id="notes-5" placeholder="Añade contexto, condiciones de uso, o razones para omitir…" oninput="saveNote('5')"></textarea>
+          <div class="do-box dont">
+            <div class="lbl">✗ Don't</div>
+            <p>Don't use ? (question mark) — in the DS the question mark implies external help. ⓘ is for inline context. Don't rely on native title attribute — it has an unpredictable delay and can't be styled.</p>
           </div>
+        </div>
+        <table class="utbl">
+          <tr><th>Element</th><th>Class</th><th>Token</th></tr>
+          <tr><td>Icon SVG</td><td><code>.help-icon</code></td><td>15×15px, stroke <span class="tkn">--n45</span>, cursor: help</td></tr>
+          <tr><td>"i" path</td><td>—</td><td>circle r=10 (border) + line y1=11→16 (stem) + circle r=1.5 filled (dot)</td></tr>
+          <tr><td>Tooltip box</td><td><code>.tip-box</code></td><td>bg <span class="tkn">#39414D</span>, white, 12px, radius 6px, fixed, z-index 9999</td></tr>
+          <tr><td>Position</td><td>JS mousemove</td><td>Centers over cursor, offset −10px up — not pure CSS</td></tr>
+          <tr><td>Max width</td><td>—</td><td>260px — allows 2–3 lines of text</td></tr>
+        </table>
+      </section>
+      <div class="rc-notes">
+        <label>Notes &amp; justification</label>
+        <textarea placeholder="Add context, conditions, or reasons for your decision…" oninput="saveNote('rc-info-tooltip',this.value)"></textarea>
+        <div class="rc-notes-foot">
+          <button class="rc-btn skip" onclick="setDecision('rc-info-tooltip','skipped')">&#10007; Skip</button>
+          <button class="rc-btn approve" onclick="setDecision('rc-info-tooltip','approved')">&#10003; Add to DS</button>
         </div>
       </div>
     </div>
   </div>
 
-</div><!-- /main -->
+</main>
 </div><!-- /layout -->
 
 <script>
-const TOTAL = 5;
+const STORAGE_KEY='ds-review-des825';
+let state={};
+try{state=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch(e){}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));updateSummary();updateSidebarBadges();}
 
-function toggleCard(id) {
-  document.getElementById(id).classList.toggle('collapsed');
+function toggleRC(id,e){
+  if(e&&e.target.closest('.rc-decision,.rc-notes'))return;
+  document.getElementById(id).classList.toggle('open');
 }
 
-function decide(num, action) {
-  const addBtn = document.getElementById('add-' + num);
-  const skipBtn = document.getElementById('skip-' + num);
-  const key = 'des825_decision_' + num;
-  const prev = localStorage.getItem(key);
+function setDecision(id,decision){
+  const el=document.getElementById(id);
+  el.dataset.status=decision;
+  el.querySelectorAll('.rc-btn').forEach(b=>b.classList.remove('active'));
+  el.querySelector('.rc-btn.'+decision)?.classList.add('active');
+  const badge=el.querySelector('.rc-badge');
+  badge.textContent=decision==='approved'?'✓ Approved':'✗ Skipped';
+  badge.className='rc-badge '+decision;
+  if(!el.classList.contains('open'))el.classList.add('open');
+  if(!state[id])state[id]={};
+  state[id].decision=decision;
+  save();
+}
 
-  if (prev === action) {
-    // toggle off
-    localStorage.removeItem(key);
-    addBtn.classList.remove('chosen');
-    skipBtn.classList.remove('chosen');
-  } else {
-    localStorage.setItem(key, action);
-    addBtn.classList.toggle('chosen', action === 'add');
-    skipBtn.classList.toggle('chosen', action === 'skip');
+function saveNote(id,val){
+  if(!state[id])state[id]={};
+  state[id].notes=val;
+  save();
+}
+
+function updateSummary(){
+  const all=document.querySelectorAll('.rc');
+  let approved=0,skipped=0,pending=0;
+  all.forEach(el=>{
+    const s=el.dataset.status;
+    if(s==='approved')approved++;
+    else if(s==='skipped')skipped++;
+    else pending++;
+  });
+  const total=all.length,reviewed=approved+skipped;
+  const deg=total?Math.round((reviewed/total)*360):0;
+  const ring=document.getElementById('sum-ring');
+  if(ring){
+    ring.style.background=reviewed===0
+      ?'conic-gradient(var(--n4) 0deg,var(--n3) 0deg 360deg)'
+      :'conic-gradient(var(--b6) 0deg '+deg+'deg,var(--n3) '+deg+'deg 360deg)';
+    ring.querySelector('span').textContent=reviewed+'/'+total;
   }
-  updateSummary();
+  const eid=id=>document.getElementById(id);
+  if(eid('sum-approved'))eid('sum-approved').textContent=approved;
+  if(eid('sum-skipped'))eid('sum-skipped').textContent=skipped;
+  if(eid('sum-pending'))eid('sum-pending').textContent=pending;
 }
 
-function saveNote(num) {
-  const val = document.getElementById('notes-' + num).value;
-  localStorage.setItem('des825_note_' + num, val);
-}
-
-function updateSummary() {
-  let added = 0, skipped = 0;
-  for (let i = 1; i <= TOTAL; i++) {
-    const d = localStorage.getItem('des825_decision_' + i);
-    if (d === 'add') added++;
-    else if (d === 'skip') skipped++;
-  }
-  const done = added + skipped;
-  const pend = TOTAL - done;
-  document.getElementById('count-add').textContent = added;
-  document.getElementById('count-skip').textContent = skipped;
-  document.getElementById('count-pend').textContent = pend;
-  document.getElementById('progress-text').textContent = done + '/' + TOTAL;
-
-  const deg = done / TOTAL * 360;
-  document.getElementById('progress-ring').style.background =
-    `conic-gradient(#0052CC 0deg ${deg}deg, #E1E6ED ${deg}deg 360deg)`;
-}
-
-function copyDecisions() {
-  const lines = ['DES-825 — DS Component Decisions', ''];
-  const names = ['Alert Settings Row', 'Chip Tag Input', 'Header Action Bar', 'Alert Status Chip', 'Info Tooltip (ⓘ)'];
-  for (let i = 1; i <= TOTAL; i++) {
-    const d = localStorage.getItem('des825_decision_' + i) || 'pending';
-    const n = localStorage.getItem('des825_note_' + i) || '';
-    const icon = d === 'add' ? '✓' : d === 'skip' ? '✗' : '—';
-    lines.push(`${icon} ${names[i-1]} [${d.toUpperCase()}]`);
-    if (n) lines.push('   Notes: ' + n);
-  }
-  navigator.clipboard.writeText(lines.join('\n')).then(() => {
-    const btn = document.querySelector('.btn-copy');
-    const orig = btn.innerHTML;
-    btn.innerHTML = '✓ Copiado';
-    setTimeout(() => btn.innerHTML = orig, 2000);
+function updateSidebarBadges(){
+  document.querySelectorAll('.rc').forEach(el=>{
+    const secId=el.id.replace('rc-','');
+    const nav=document.querySelector('.snav[href="#'+secId+'"]');
+    if(!nav)return;
+    let badge=nav.querySelector('.dec-badge');
+    const status=el.dataset.status;
+    if(status==='pending'){if(badge)badge.remove();return;}
+    if(!badge){badge=document.createElement('span');badge.className='dec-badge';nav.appendChild(badge);}
+    badge.textContent=status==='approved'?'✓':'✗';
+    badge.style.cssText='font:700 10px var(--font-sans);margin-left:auto;padding:1px 6px;border-radius:999px;'
+      +(status==='approved'?'background:var(--g1);color:var(--g6)':'background:var(--r1);color:var(--r6)');
   });
 }
 
-// Restore from localStorage on load
-window.addEventListener('DOMContentLoaded', () => {
-  for (let i = 1; i <= TOTAL; i++) {
-    const d = localStorage.getItem('des825_decision_' + i);
-    if (d) {
-      document.getElementById('add-' + i).classList.toggle('chosen', d === 'add');
-      document.getElementById('skip-' + i).classList.toggle('chosen', d === 'skip');
-    }
-    const n = localStorage.getItem('des825_note_' + i);
-    if (n) document.getElementById('notes-' + i).value = n;
-  }
-  updateSummary();
+function exportDecisions(){
+  const lines=['# DS Review — DES-825\n'];
+  document.querySelectorAll('.rc').forEach(el=>{
+    const title=el.querySelector('.rc-title').textContent;
+    const status=el.dataset.status;
+    const notes=el.querySelector('textarea')?.value||'';
+    const icon=status==='approved'?'✅':status==='skipped'?'❌':'⏳';
+    lines.push(icon+' **'+title+'**'+(status==='pending'?' — Pending':''));
+    if(notes)lines.push('   → '+notes);
+    lines.push('');
+  });
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+    const t=document.getElementById('rc-toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+  });
+}
+
+// restore
+document.querySelectorAll('.rc').forEach(el=>{
+  const s=state[el.id];
+  if(!s)return;
+  if(s.decision)setDecision(el.id,s.decision);
+  if(s.notes){const ta=el.querySelector('textarea');if(ta)ta.value=s.notes;}
 });
+updateSummary();
+updateSidebarBadges();
+
+// scroll-spy
+const navs2=[...document.querySelectorAll('.snav')];
+const obs2=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    navs2.forEach(n=>n.classList.remove('active'));
+    const secId=e.target.id.replace('rc-','');
+    const m=navs2.find(n=>n.getAttribute('href')==='#'+secId);
+    if(m)m.classList.add('active');
+  });
+},{rootMargin:'-20% 0px -60% 0px'});
+document.querySelectorAll('.rc').forEach(s=>obs2.observe(s));
 </script>
+<div class="rc-toast" id="rc-toast">&#10003; Decisions copied to clipboard</div>
 </body>
 </html>
