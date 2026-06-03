@@ -54,13 +54,13 @@ button{font-family:inherit;cursor:pointer;}
 
 .body{display:flex;flex:1;min-height:0;position:relative;}
 
-/* SIDEBAR (sidebar.json — Planner Pro) */
-.sb{width:240px;background:#fff;box-shadow:0 6px 12px rgba(0,0,0,.10);flex-shrink:0;padding:10px 0;display:flex;flex-direction:column;z-index:30;transition:width .16s;overflow:hidden;}
-.sb .it{height:40px;display:flex;align-items:center;gap:14px;padding:0 16px 0 18px;font:500 13px var(--font-sans);color:var(--n7);cursor:pointer;position:relative;white-space:nowrap;}
-.sb .it svg{width:18px;height:18px;stroke:var(--b5);fill:none;stroke-width:1.8;flex-shrink:0;}
+/* SIDEBAR (sidebar.json — Last Mile) */
+.sb{width:240px;background:#fff;box-shadow:0 6px 12px rgba(0,0,0,.10);flex-shrink:0;padding:10px 0;display:flex;flex-direction:column;z-index:30;transition:width .16s;overflow-y:auto;overflow-x:hidden;}
+.sb .it{height:40px;display:flex;align-items:center;gap:14px;padding:0 16px 0 18px;font:500 13px var(--font-sans);color:var(--n7);cursor:pointer;position:relative;white-space:nowrap;flex-shrink:0;}
+.sb .it svg{width:18px;height:18px;fill:var(--b5);flex-shrink:0;}
 .sb .it:hover{background:rgba(75,130,250,.04);}
 .sb .it.sel{background:rgba(75,130,250,.08);font-weight:700;}
-.sb .it.sel svg{stroke:var(--b7);}
+.sb .it.sel svg{fill:var(--b7);}
 .sb .it.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--b7);}
 .sb .it .lbl{transition:opacity .12s;}
 .sb .sep{height:1px;background:var(--sep);margin:8px 16px;}
@@ -271,12 +271,12 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .daybar{position:absolute;left:16px;right:16px;background:#fff;border:1px solid var(--n3);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:16px;z-index:5;box-shadow:var(--shadow-sm);flex-wrap:wrap;}
 .daybar .dtag{font:700 12px var(--font-sans);color:var(--n7);background:var(--n2);padding:3px 10px;border-radius:4px;}
 .daybar .m{font:400 11px var(--font-sans);color:var(--n5);}.daybar .m b{color:var(--n7);font-weight:700;}
-.pin{position:absolute;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 4px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;}
-.pin span{transform:rotate(45deg);color:#fff;font:700 10px var(--font-sans);}
-.pin.big{width:30px;height:30px;}
-.depot{position:absolute;width:24px;height:24px;background:var(--indigo);border:2px solid #fff;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font:700 10px var(--font-sans);box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:4;}
+/* SVG map pins (DS pinSVG geometry) — wrapper anchors the SVG tip to the coordinate */
+.mpin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;z-index:3;filter:drop-shadow(0 2px 3px rgba(19,32,69,.35));line-height:0;}
+.mpin.depot{z-index:4;}
+.mpin.unr{z-index:3;filter:drop-shadow(0 1px 2px rgba(19,32,69,.28));}
+.mpin svg{display:block;}
 .route-line{position:absolute;height:2px;transform-origin:left center;opacity:.55;z-index:2;}
-.unrouted{width:14px;height:14px;border-radius:50% 50% 50% 0;background:var(--su1);transform:rotate(-45deg);position:absolute;opacity:.85;box-shadow:0 1px 2px rgba(0,0,0,.25);z-index:3;}
 
 /* loading overlay */
 .loading{position:absolute;inset:0;background:rgba(255,255,255,.55);display:none;align-items:center;justify-content:center;z-index:20;}
@@ -357,7 +357,7 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 <div class="app" id="app" data-view="list">
   <!-- ===== TOPBAR ===== -->
   <div class="tb">
-    <img class="logo" src="sections/assets/logos/plannerpro-desktop-white.svg" alt="DispatchTrack Planner Pro">
+    <img class="logo" src="sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
     <div class="acts">
       <span class="ti" title="Apps"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
       <span class="ti" title="Ayuda"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17"/></svg></span>
@@ -369,14 +369,24 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
   </div>
 
   <div class="body">
-    <!-- ===== SIDEBAR (Planner Pro) ===== -->
+    <!-- ===== SIDEBAR (sidebar.json — Last Mile · Carbon icons) ===== -->
     <div class="sb">
-      <div class="it sel"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 12h6M9 16h6"/></svg><span class="lbl">Planificador</span></div>
-      <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="lbl">Historial</span></div>
-      <div class="it"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 8l5-5 5 5M12 3v12"/></svg><span class="lbl">Importador</span></div>
-      <div class="it"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span class="lbl">Bases</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><rect x="15" y="20" width="2" height="4"/><rect x="20" y="18" width="2" height="6"/><rect x="10" y="14" width="2" height="10"/><path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"/></svg><span class="lbl">Resumen</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg><span class="lbl">Actividad</span></div>
+      <div class="it sel"><svg viewBox="0 0 32 32"><path d="M30,30H22V22h8Zm-6-2h4V24H24Z"/><path d="M20,27H8A6,6,0,0,1,8,15h2v2H8a4,4,0,0,0,0,8H20Z"/><path d="M20,20H12V12h8Zm-6-2h4V14H14Z"/><path d="M24,17H22V15h2a4,4,0,0,0,0-8H12V5H24a6,6,0,0,1,0,12Z"/><path d="M10,10H2V2h8ZM4,8H8V4H4Z"/></svg><span class="lbl">Rutas</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M22,6H20V4H6A2,2,0,0,0,4,6V22H6V6H20V8h2V6ZM26,10H10A2,2,0,0,0,8,12V28A2,2,0,0,0,10,30H26A2,2,0,0,0,28,28V12A2,2,0,0,0,26,10Zm0,18H10V12H26Z"/></svg><span class="lbl">Órdenes</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M4 16H16V18H4z"/><path d="M2 11H12V13H2z"/><path d="M29.9189,16.6064l-3-7A.9985.9985,0,0,0,26,9H23V7a1,1,0,0,0-1-1H6V8H21V20.5562A3.9924,3.9924,0,0,0,19.1421,23H12.8579a4,4,0,1,0,0,2h6.2842a3.9806,3.9806,0,0,0,7.7158,0H29a1,1,0,0,0,1-1V17A.9965.9965,0,0,0,29.9189,16.6064ZM9,26a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,9,26ZM23,11h2.3408l2.1431,5H23Zm0,15a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,23,26Zm5-3H26.8579A3.9954,3.9954,0,0,0,23,20V18h5Z"/></svg><span class="lbl">Flota</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg><span class="lbl">Estadísticas</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/></svg><span class="lbl">Alertas</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg><span class="lbl">Clientes</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg><span class="lbl">Documentos</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg><span class="lbl">Módulo de Costos</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M22,8v2c2.2061,0,4,1.7944,4,4s-1.7939,4-4,4H10v-5l-6,6,6,6v-5H22c3.3086,0,6-2.6914,6-6S25.3086,8,22,8Z"/></svg><span class="lbl">Logística inversa</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg><span class="lbl">Rendición de Documentos</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M28,4H4A2,2,0,0,0,2,6V12a2,2,0,0,0,1,1.72V28a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V13.72A2,2,0,0,0,30,12V6A2,2,0,0,0,28,4ZM4,6H28v6H4ZM18,28H14V22h4Zm9,0H20V22a2,2,0,0,0-2-2H14a2,2,0,0,0-2,2v6H5V14H27Z"/></svg><span class="lbl">Retiro en tienda</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><polygon points="28 19 14.83 19 17.41 16.41 16 15 11 20 16 25 17.41 23.59 14.83 21 28 21 28 19"/><path d="M24,14V10a1,1,0,0,0-.29-.71l-7-7A1,1,0,0,0,16,2H6A2,2,0,0,0,4,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V26H22v2H6V4h8v6a2,2,0,0,0,2,2h6v2Zm-8-4V4.41L21.59,10Z"/></svg><span class="lbl">Importar</span></div>
       <div class="sep"></div>
-      <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 0 1 0-4h.1A1.6 1.6 0 0 0 2.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H7a1.6 1.6 0 0 0 1-1.5V1a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V7a1.6 1.6 0 0 0 1.5 1H23a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg><span class="lbl">Ajustes</span></div>
+      <div class="it"><svg viewBox="0 0 32 32"><path d="M27,16.76c0-.25,0-.5,0-.76s0-.51,0-.76l1.92-1.68A2,2,0,0,0,29.3,11.14l-2.36-4a2,2,0,0,0-2.37-.9L22.43,7a9.56,9.56,0,0,0-1.31-.75l-.51-2.14A2,2,0,0,0,18.64,2.5H13.92A2,2,0,0,0,12,4.11L11.44,6.26A9.56,9.56,0,0,0,10.13,7L7.83,6.24a2,2,0,0,0-2.37.9L3.1,11.14a2,2,0,0,0,.48,2.46L5.5,15.24c0,.25,0,.5,0,.76s0,.51,0,.76L3.58,18.44a2,2,0,0,0-.48,2.46l2.36,4a2,2,0,0,0,2.37.9l2.29-.77A9.56,9.56,0,0,0,11.44,25.74l.51,2.14A2,2,0,0,0,13.92,29.5h4.72a2,2,0,0,0,1.93-1.61l.51-2.14A9.56,9.56,0,0,0,22.23,25l2.29.77a2,2,0,0,0,2.37-.9l2.36-4a2,2,0,0,0-.48-2.46ZM26,19.14l1.28,1.12L25,24l-1.69-.57A7.64,7.64,0,0,1,21,24.77L20.41,27H17.59L17,24.77a7.64,7.64,0,0,1-2.32-1.34L13,24l-2.29-3.74,1.28-1.12a7.65,7.65,0,0,1,0-2.28L10.71,15.74,13,12l1.69.57A7.64,7.64,0,0,1,17,11.23L17.59,9h2.82L21,11.23a7.64,7.64,0,0,1,2.32,1.34L25,12l2.29,3.74-1.28,1.12A7.65,7.65,0,0,1,26,19.14Z"/><path d="M16,12a4,4,0,1,0,4,4A4,4,0,0,0,16,12Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,16,18Z"/></svg><span class="lbl">Ajustes</span></div>
     </div>
 
     <!-- ===== MAIN — LISTA (screen 1) ===== -->
@@ -856,20 +866,34 @@ function setOptimized(on){
   renderPins(on);
   if(!on)toggleFindings(false);
 }
+/* DS map pins (sections/assets/pins) — teardrop body geometry from pin-no-order /
+   pin-distribution-center, recolored per route + live number. viewBox 0 0 33 49. */
+var PIN_BODY='M16.5 1.5C24.7843 1.5 31.5 8.21573 31.5 16.5C31.5 21.4365 29.1148 25.8153 25.4346 28.5488C22.6082 30.6736 18.5785 34.039 17.6572 39.4795C17.5603 40.0516 17.0802 40.4951 16.5 40.4951C15.9198 40.4951 15.4397 40.0516 15.3428 39.4795C14.4214 34.0386 10.3909 30.6735 7.56445 28.5488C3.88459 25.8153 1.5 21.4362 1.5 16.5C1.5 8.21573 8.21573 1.5 16.5 1.5Z';
+var SU=['#36B37E','#1F60ED','#FFAB00','#8777D9','#00B8D9','#FE4EC4','#FF5630']; // su2,su4,su7,su5,su3,su1,su6
+function pinTag(size){var h=Math.round(size*49/33);return ['<svg width="'+size+'" height="'+h+'" viewBox="0 0 33 49" xmlns="http://www.w3.org/2000/svg">','</svg>'];}
+function routePin(num,color,size){size=size||30;var s=pinTag(size);
+  return s[0]+'<path d="'+PIN_BODY+'" fill="'+color+'" stroke="#fff" stroke-width="2"/>'+
+    '<text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#fff">'+num+'</text>'+s[1];}
+function unrPin(size){size=size||18;var s=pinTag(size);
+  return s[0]+'<path d="'+PIN_BODY+'" fill="#8FA0BA" stroke="#fff" stroke-width="2"/>'+
+    '<circle cx="16.5" cy="16.5" r="5" fill="#fff"/>'+s[1];}
+function depotPin(size){size=size||32;var s=pinTag(size);
+  return s[0]+'<path d="'+PIN_BODY+'" fill="#132045" stroke="#fff" stroke-width="2"/>'+
+    '<path d="M24 18.1667V16.5001L22.75 10.6667H9.83333L9 16.5001V18.1667H9.83333V23.1667H18.1667V18.1667H21.5V23.1667H23.1667V18.1667H24ZM16.5 21.5001H11.5V18.1667H16.5V21.5001Z" fill="#fff"/>'+s[1];}
 function renderPins(on){
   var box=document.getElementById('mapPins');
   if(!on){
-    var html='<div class="depot" style="left:50%;top:48%">D</div>';
+    var html='<div class="mpin depot" style="left:50%;top:48%">'+depotPin(32)+'</div>';
     var pts=[[30,30],[36,33],[42,28],[28,42],[34,46],[40,44],[46,38],[52,30],[58,34],[62,42],[26,56],[33,58],[44,56],[55,52],[64,55],[70,40],[48,62],[38,66],[58,64],[68,62],[30,68],[50,70]];
-    pts.forEach(function(p){html+='<div class="unrouted" style="left:'+p[0]+'%;top:'+p[1]+'%"></div>';});
+    pts.forEach(function(p){html+='<div class="mpin unr" style="left:'+p[0]+'%;top:'+p[1]+'%">'+unrPin(17)+'</div>';});
     box.innerHTML=html;return;
   }
-  var su=['var(--su2)','var(--su4)','var(--su7)','var(--su5)','var(--su3)','var(--su1)','var(--su6)'];
   var lines=[[120,200],[140,150],[160,20],[130,240],[150,75],[110,310]];
-  var h='<div class="depot" style="left:52%;top:46%">D</div>';
-  lines.forEach(function(l,i){h+='<div class="route-line" style="left:52%;top:47%;width:'+l[0]+'px;background:'+su[i%su.length]+';transform:rotate('+l[1]+'deg)"></div>';});
+  var h='<div class="mpin depot" style="left:52%;top:46%">'+depotPin(32)+'</div>';
+  lines.forEach(function(l,i){h+='<div class="route-line" style="left:52%;top:46%;width:'+l[0]+'px;background:'+SU[i%SU.length]+';transform:rotate('+l[1]+'deg)"></div>';});
+  // [xPct, yPct, stop count, route color index]
   var pins=[[30,38,17,0],[28,52,12,1],[34,60,5,4],[62,30,11,2],[70,55,4,4],[40,44,2,5],[46,66,1,6],[58,40,8,3],[66,46,7,3],[24,46,9,1]];
-  pins.forEach(function(p){h+='<div class="pin'+(p===pins[0]?' big':'')+'" style="left:'+p[0]+'%;top:'+p[1]+'%;background:'+su[p[3]]+'" onclick="openCustomer()"><span>'+p[2]+'</span></div>';});
+  pins.forEach(function(p){h+='<div class="mpin" style="left:'+p[0]+'%;top:'+p[1]+'%" onclick="openCustomer()">'+routePin(p[2],SU[p[3]],p===pins[0]?34:30)+'</div>';});
   box.innerHTML=h;
 }
 function optimize(){
