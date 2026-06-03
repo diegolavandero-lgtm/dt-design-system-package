@@ -256,7 +256,7 @@ input,select{font-family:inherit}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
     </div>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
   </div>
@@ -355,7 +355,7 @@ input,select{font-family:inherit}
             <div class="form-row">
               <div class="form-label">
                 Statuses
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Select the delivery statuses that trigger this alert."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert fires when a delivery transitions into any of these statuses."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </div>
               <!-- multi-select: Estados (single selection for parent state) -->
               <div class="multi-select-wrap">
@@ -386,7 +386,7 @@ input,select{font-family:inherit}
             <div class="form-row">
               <div class="form-label">
                 Substatuses
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Filter by specific substatuses within the selected statuses."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Narrows the alert to specific substatuses. Leave empty to trigger on all substatuses of the selected statuses."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </div>
               <div class="multi-select-wrap">
                 <div class="multi-select-box" id="ms-sub" onclick="openDropdown('dd-sub')">
@@ -436,7 +436,7 @@ input,select{font-family:inherit}
             <div class="form-row">
               <div class="form-label">
                 Minimum rating (1–5)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the customer gives a rating equal to or lower than this value."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Alert fires when the post-delivery customer rating is at or below this score. Useful for flagging poor delivery experiences."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </div>
               <input type="number" class="form-input" id="input-nota" min="1" max="5" value="3" oninput="markDirty();validateNumeric(this,1,5,'err-nota')" onblur="validateNumeric(this,1,5,'err-nota')">
               <div class="form-helper">Value between 1 (very bad) and 5 (excellent).</div>
@@ -466,7 +466,7 @@ input,select{font-family:inherit}
             <div class="form-row">
               <div class="form-label">
                 Maximum distance (meters)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the driver exceeds this distance from the delivery point."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Alert fires when the driver marks a delivery while more than this distance away from the destination coordinates."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </div>
               <input type="number" class="form-input" id="input-distancia" min="1" max="9999" value="200" oninput="markDirty();validateNumeric(this,1,9999,'err-distancia')" onblur="validateNumeric(this,1,9999,'err-distancia')">
               <div class="form-helper">Enter a value between 1 and 9,999 meters.</div>
@@ -500,7 +500,7 @@ input,select{font-family:inherit}
             <div class="form-row">
               <div class="form-label">
                 Maximum time (minutes)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the delivery exceeds this number of minutes from arrival at the stop."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Alert fires when elapsed time since the driver arrived at the stop exceeds this limit."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </div>
               <input type="number" class="form-input" id="input-minutos" min="1" max="999" value="20" oninput="markDirty();validateNumeric(this,1,999,'err-minutos')" onblur="validateNumeric(this,1,999,'err-minutos')">
               <div class="form-helper">Enter a value between 1 and 999 minutes.</div>
@@ -530,7 +530,7 @@ input,select{font-family:inherit}
             <div class="form-row">
               <div class="form-label">
                 Radius (meters)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Geofence radius used to detect when the driver is at the customer location."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Defines the geofence around the delivery point. The timer starts when the driver enters this radius."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </div>
               <input type="number" class="form-input" id="input-radio" min="1" max="9999" value="200" oninput="markDirty();validateNumeric(this,1,9999,'err-radio')" onblur="validateNumeric(this,1,9999,'err-radio')">
               <div class="form-helper">Enter a value between 1 and 9,999 meters.</div>
@@ -539,7 +539,7 @@ input,select{font-family:inherit}
             <div class="form-row">
               <div class="form-label">
                 Dwell time (minutes)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the driver has been inside the radius for longer than this time."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Alert fires when the driver has been inside the geofence longer than this limit without completing the delivery."><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </div>
               <input type="number" class="form-input" id="input-dwell" min="1" max="999" value="15" oninput="markDirty();validateNumeric(this,1,999,'err-dwell')" onblur="validateNumeric(this,1,999,'err-dwell')">
               <div class="form-helper">Enter a value between 1 and 999 minutes.</div>
