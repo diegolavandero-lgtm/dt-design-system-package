@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:21:33.220Z",
+  "generated": "2026-06-03T15:23:14.722Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "5237787",
+          "type": "fix",
+          "section": "Icons",
+          "message": "fix(DES-825): fix info icon dot visibility — increase size to 15px and dot radius to 1.5",
+          "author": "Carlos"
+        },
         {
           "hash": "e6b9988",
           "type": "update",
