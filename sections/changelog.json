@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:44:34.084Z",
+  "generated": "2026-06-03T14:47:01.288Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "d8eca98",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-825): remove redundant section label above alert list",
+          "author": "Carlos"
+        },
         {
           "hash": "0c958e3",
           "type": "update",
