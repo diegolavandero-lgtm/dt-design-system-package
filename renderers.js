@@ -2895,9 +2895,11 @@ async function downloadAllPins() {
             <!-- Page header -->
             <div style="display:flex;align-items:center;gap:12px;height:32px">
               <span style="font:700 22px/32px var(--font-sans);color:var(--n7);flex:1">${escHtml(data.pageTitle)}</span>
-              <button class="btn sec" style="height:32px;padding:0 12px;gap:5px;align-items:center">${iconSvg('plan',13,'var(--b7)')}${escHtml(data.buttons?.log||'Bitácora')}</button>
-              <button class="btn sec" style="height:32px;padding:0 12px;gap:5px;align-items:center">${iconSvg('download',13,'var(--b7)')}${escHtml(data.buttons?.export||'Exportar a excel')}</button>
-              <button class="btn pri" style="height:32px;padding:0 14px;gap:5px;align-items:center"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
+              <div style="display:flex;gap:12px;align-items:center">
+                <button class="btn sec" style="height:32px;padding:0 12px;gap:5px">${iconSvg('plan',13,'var(--b7)')}${escHtml(data.buttons?.log||'Bitácora')}</button>
+                <button class="btn sec" style="height:32px;padding:0 12px;gap:5px">${iconSvg('download',13,'var(--b7)')}${escHtml(data.buttons?.export||'Exportar a excel')}</button>
+                <button class="btn pri" style="height:32px;padding:0 14px;gap:5px"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
+              </div>
             </div>
 
             <!-- Container: filter bar + table -->
