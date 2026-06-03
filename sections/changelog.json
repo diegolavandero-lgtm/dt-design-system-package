@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:20:51.652Z",
+  "generated": "2026-06-03T15:21:33.220Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "e6b9988",
+          "type": "update",
+          "section": "Tables",
+          "message": "Filters + table page: replace <select> with exact dt-drop-wrap component",
+          "author": "Diego"
+        },
         {
           "hash": "fff9663",
           "type": "fix",
