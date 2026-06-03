@@ -3023,38 +3023,6 @@ async function downloadAllPins() {
       .sbx-sep{height:1px;background:#E9ECF2;margin:4px 14px}
     </style>`;
 
-    // ── status → DS badge variant ─────────────────────────────────────
-    const statusVariant = s => {
-      switch ((s||'').toLowerCase()) {
-        case 'entregado':    return 'success';
-        case 'no entregado': return 'danger';
-        case 'asignada':     return 'info';
-        default:             return 'neutral';
-      }
-    };
-
-    // ── table rows using exact DS table component structure ───────────
-    const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
-
-    const thead = `<tr>
-      <th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>
-      ${(data.columns||[]).map(c=>`<th>${escHtml(c)}</th>`).join('')}
-      <th class="tbl-acts-col"></th>
-    </tr>`;
-
-    const tbody = (data.rows||[]).map(r => {
-      const cls = r.selected ? ' class="sel"' : r.hover ? ' class="hov"' : '';
-      return `<tr${cls}>
-        <td class="tbl-cb-td"><div class="tbl-cb"><input type="checkbox"${r.selected?' checked':''} onclick="tblRowSel(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div></td>
-        <td class="cell-lnk">${escHtml(r.order)}</td>
-        <td>${badgeHtml(r.status, statusVariant(r.status))}</td>
-        <td class="cell-muted">—</td>
-        <td>${escHtml(r.vehicle||'—')}</td>
-        <td>${escHtml(r.client)}</td>
-        <td>${r.date&&r.date!=='—'?escHtml(r.date):'<span style="color:var(--n45)">—</span>'}${r.dateNote?`<span style="color:var(--n45);margin-left:4px">${escHtml(r.dateNote)}</span>`:''}</td>
-        <td class="tbl-acts-col"><div class="tbl-acts"><button class="tbl-act-btn">${iconSvg('overflow-menu-vertical',14)}</button></div></td>
-      </tr>`;
-    }).join('');
 
     // ── DS Sidebar items (Carbon icons, Órdenes selected) ─────────────
     const sbItems = [
@@ -3163,17 +3131,8 @@ async function downloadAllPins() {
                 </button>
               </div>
 
-              <!-- Table: exact DS tbl-outer > tbl-wrap > table.tbl structure -->
-              <div style="border-radius:4px;border:1px solid var(--n4);overflow:hidden">
-                <div class="tbl-outer">
-                  <div class="tbl-wrap">
-                    <table class="tbl">
-                      <thead>${thead}</thead>
-                      <tbody>${tbody}</tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <!-- Table: tblDemoTable(data.scrollDemo) from table.json -->
+              ${tblDemoTable(data.scrollDemo || {})}
 
             </div><!-- end container (filter bar + table) -->
 
