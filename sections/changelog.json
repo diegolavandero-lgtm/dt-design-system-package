@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:36:00.660Z",
+  "generated": "2026-06-03T20:37:51.385Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "032eea8",
+          "type": "update",
+          "section": "Map pins",
+          "message": "feat(planner): switch shell to Last Mile + use DS SVG map pins",
+          "author": "Diego"
+        },
         {
           "hash": "cd0b259",
           "type": "update",
