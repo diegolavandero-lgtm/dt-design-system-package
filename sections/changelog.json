@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:03:54.910Z",
+  "generated": "2026-06-03T14:08:38.175Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "554d2ba",
+          "type": "fix",
+          "section": "Typography",
+          "message": "fix(DES-825): change chip font-weight from 600 to 400",
+          "author": "Carlos"
+        },
         {
           "hash": "93ca6a6",
           "type": "fix",
