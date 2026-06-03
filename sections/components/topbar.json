@@ -360,5 +360,5 @@
       ]
     }
   ],
-  "pageUsage": "// Exact HTML — use .tbar CSS class (defined in index.html)\n\n<div class=\"tbar\" style=\"border-radius:0;padding:0 0 0 22px\">\n  <img src=\"sections/assets/logos/lastmile-desktop-white.svg\" height=\"18\" class=\"logo\" alt=\"LastMile\">\n  <div class=\"acts\">\n    \\${iconSvg('apps',18,'#fff')}\n    \\${iconSvg('help',18,'#fff')}\n    \\${iconSvg('messages',18,'#fff')}\n    <div class=\"bell\">\\${iconSvg('alerts',18,'#fff')}</div>\n    \\${iconSvg('user',18,'#fff')}\n  </div>\n  <div class=\"slot\">ACME CO</div>\n</div>"
+  "pageUsage": "Renderer : renderers.topbar(data)\nSource   : sections/components/topbar.json\nCSS class: .tbar  (defined in index.html)\n\nIn page templates — copy this block from tablepage renderer:\n  <div class=\"tbar\" style=\"border-radius:0;padding:0 0 0 22px\">\n    [logo] [.acts icons] [.slot]\n  </div>"
 }

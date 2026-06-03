@@ -83,5 +83,5 @@
       "border": "#C5D2E7"
     }
   },
-  "pageUsage": "// badgeHtml() is module-level in renderers.js — no import needed.\n\nbadgeHtml('Entregado',    'success')  // green  — var(--g1) bg, var(--g7) text\nbadgeHtml('No entregado', 'danger')   // red    — var(--r1) bg, var(--r6) text\nbadgeHtml('En tránsito',  'warning')  // amber  — var(--o1) bg, var(--o7) text\nbadgeHtml('Asignada',     'info')     // blue   — var(--b1) bg, var(--b6) text\nbadgeHtml('Ingresada',    'neutral')  // gray   — var(--n2) bg, var(--n6) text\nbadgeHtml('Label',        'outline')  // border — #fff bg, var(--n4) border, var(--n6) text"
+  "pageUsage": "Function : badgeHtml(label, variant)   ← module-level in renderers.js\nSource   : sections/components/badges.json\n\nVariants:\n  success  → green   (Entregado, Exitoso)\n  danger   → red     (No entregado, Cancelado)\n  warning  → amber   (En tránsito, Pendiente)\n  info     → blue    (Asignada, Nuevo)\n  neutral  → gray    (Ingresada, Sin estado)\n  outline  → border  (Label, Tag)\n\nExample: badgeHtml('Entregado', 'success')"
 }

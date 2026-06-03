@@ -466,5 +466,5 @@
       ]
     }
   ],
-  "pageUsage": "// 1. Inject sbStyle CSS (copy from tablepage renderer in renderers.js)\n// 2. Build sbItems and render .sbx\n\nconst sbItems = [\n  { icon:'dashboard',         label:'Actividad' },\n  { icon:'network-3',         label:'Rutas' },\n  { icon:'document-multiple', label:'Órdenes', sel:true },\n  { icon:'delivery',          label:'Flota' },\n  { divider: true },\n  { icon:'settings',          label:'Ajustes' },\n];\n\nconst sidebarHtml = sbItems.map(it => {\n  if (it.divider) return '<div class=\"sbx-sep\"></div>';\n  const sel = it.sel ? ' sel' : '';\n  return `<div class=\"sbx-row\\${sel}\">\n    <div class=\"sbx-bar\"></div>\n    <div class=\"sbx-bg\">\n      <div class=\"sbx-ico\">\\${iconSvg(it.icon, 18)}</div>\n      <span class=\"sbx-lbl\">\\${it.label}</span>\n    </div>\n  </div>`;\n}).join('');\n\n// In page layout:\n<div class=\"sbx\">\\${sidebarHtml}</div>"
+  "pageUsage": "Renderer : renderers.sidebar(data)\nSource   : sections/components/sidebar.json\nCSS class: .sbx  (inject sbStyle block from tablepage renderer in renderers.js)\n\nIn page templates — copy sbItems array + sidebarHtml pattern from tablepage renderer:\n  <div class=\"sbx\">\\${sidebarHtml}</div>"
 }
