@@ -2824,29 +2824,36 @@ async function downloadAllPins() {
       .sbx-sep{height:1px;background:#E9ECF2;margin:4px 14px}
     </style>`;
 
-    const statusStyle = {
-      'entregado':    { bg:'var(--g1)',  fg:'var(--g6)' },
-      'no entregado': { bg:'var(--r1)',  fg:'var(--r6)' },
-      'asignada':     { bg:'var(--b1)',  fg:'var(--b7)' },
-      'por entregar': { bg:'var(--n2)',  fg:'var(--n6)' },
-      'ingresada':    { bg:'var(--n2)',  fg:'var(--n6)' },
+    // ── status → DS badge variant ─────────────────────────────────────
+    const statusVariant = s => {
+      switch ((s||'').toLowerCase()) {
+        case 'entregado':    return 'success';
+        case 'no entregado': return 'danger';
+        case 'asignada':     return 'info';
+        default:             return 'neutral';
+      }
     };
 
-    const rows = (data.rows || []).map(r => {
-      const sc = statusStyle[r.status?.toLowerCase()] || statusStyle['ingresada'];
-      const chk = r.selected
-        ? `<div class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`
-        : `<div class="chk"></div>`;
-      const trClass = r.selected ? ' class="sel"' : r.hover ? ' class="hov"' : '';
-      return `<tr${trClass}>
-        <td style="padding:9px 8px 9px 16px">${chk}</td>
-        <td><a class="lnk" style="cursor:pointer">${escHtml(r.order)}</a></td>
-        <td><span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font:600 11px var(--font-sans);background:${sc.bg};color:${sc.fg}">${escHtml(r.status)}</span></td>
-        <td style="color:var(--n45)">—</td>
+    // ── table rows using exact DS table component structure ───────────
+    const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
+
+    const thead = `<tr>
+      <th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>
+      ${(data.columns||[]).map(c=>`<th>${escHtml(c)}</th>`).join('')}
+      <th class="tbl-acts-col"></th>
+    </tr>`;
+
+    const tbody = (data.rows||[]).map(r => {
+      const cls = r.selected ? ' class="sel"' : r.hover ? ' class="hov"' : '';
+      return `<tr${cls}>
+        <td class="tbl-cb-td"><div class="tbl-cb"><input type="checkbox"${r.selected?' checked':''} onclick="tblRowSel(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div></td>
+        <td class="cell-lnk">${escHtml(r.order)}</td>
+        <td>${badgeHtml(r.status, statusVariant(r.status))}</td>
+        <td class="cell-muted">—</td>
         <td>${escHtml(r.vehicle||'—')}</td>
         <td>${escHtml(r.client)}</td>
-        <td>${r.date!=='—'?escHtml(r.date):'<span style="color:var(--n45)">—</span>'}${r.dateNote?`<span style="color:var(--n45);margin-left:4px">${escHtml(r.dateNote)}</span>`:''}</td>
-        <td style="text-align:right">${iconSvg('overflow-menu-vertical',16,'var(--n45)')}</td>
+        <td>${r.date&&r.date!=='—'?escHtml(r.date):'<span style="color:var(--n45)">—</span>'}${r.dateNote?`<span style="color:var(--n45);margin-left:4px">${escHtml(r.dateNote)}</span>`:''}</td>
+        <td class="tbl-acts-col"><div class="tbl-acts"><button class="tbl-act-btn">${iconSvg('overflow-menu-vertical',14)}</button></div></td>
       </tr>`;
     }).join('');
 
@@ -2957,17 +2964,17 @@ async function downloadAllPins() {
                 </button>
               </div>
 
-              <!-- Table (exact DS table component) -->
-              <div style="border-radius:4px;border:1px solid var(--n4);overflow:auto">
-              <table class="tbl">
-                <thead><tr>
-                  <th style="width:40px;padding:9px 8px 9px 16px"><div class="chk"></div></th>
-                  ${(data.columns||[]).map(c=>`<th>${escHtml(c)}</th>`).join('')}
-                  <th style="width:28px"></th>
-                </tr></thead>
-                <tbody>${rows}</tbody>
-              </table>
-            </div>
+              <!-- Table: exact DS tbl-outer > tbl-wrap > table.tbl structure -->
+              <div style="border-radius:4px;border:1px solid var(--n4);overflow:hidden">
+                <div class="tbl-outer">
+                  <div class="tbl-wrap">
+                    <table class="tbl">
+                      <thead>${thead}</thead>
+                      <tbody>${tbody}</tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
 
             </div><!-- end container (filter bar + table) -->
 
