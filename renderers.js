@@ -3132,7 +3132,9 @@ async function downloadAllPins() {
               </div>
 
               <!-- Table: tblDemoTable(data.scrollDemo) from table.json -->
-              ${tblDemoTable(data.scrollDemo || {})}
+              <div style="border:1px solid var(--n4);border-radius:4px;overflow:hidden">
+                ${tblDemoTable(data.scrollDemo || {})}
+              </div>
 
             </div><!-- end container (filter bar + table) -->
 
