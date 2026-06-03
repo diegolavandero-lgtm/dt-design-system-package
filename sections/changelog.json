@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:16:31.534Z",
+  "generated": "2026-06-03T15:20:51.652Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "fff9663",
+          "type": "fix",
+          "section": "Icons",
+          "message": "fix(DES-825): replace ? help icons with info (i) icons and improve tooltip copy",
+          "author": "Carlos"
+        },
         {
           "hash": "db12f75",
           "type": "update",
