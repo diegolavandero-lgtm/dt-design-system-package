@@ -2,11 +2,25 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:33:48.330Z",
+  "generated": "2026-06-03T15:40:46.039Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "d7a3c05",
+          "type": "update",
+          "section": "General",
+          "message": "feat(DES-825): rebuild DS review doc matching DES-824 collapsible list pattern",
+          "author": "Carlos"
+        },
+        {
+          "hash": "e58b5cd",
+          "type": "update",
+          "section": "General",
+          "message": "CLAUDE.md: document 7 standard components with exact call patterns",
+          "author": "Diego"
+        },
         {
           "hash": "75d63c7",
           "type": "update",
