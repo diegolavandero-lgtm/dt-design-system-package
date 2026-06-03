@@ -77,8 +77,9 @@ const ICON_PATHS = {
   'bell':          '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
   'overflow-menu-vertical': '<circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/>',
   'chevron--down':  '<path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/>',
-  'filter--add':    '<path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="26 20 24 20 24 17 21 17 21 15 24 15 24 12 26 12 26 15 29 15 29 17 26 17 26 20"/>',
+  'filter--add':    '<polygon points="29.7,18.7 29.7,16.7 23.2,16.7 23.2,10.2 21.2,10.2 21.2,16.7 14.8,16.7 14.8,18.7 21.2,18.7 21.2,25.2 23.2,25.2 23.2,18.7"/><path d="M4,4C2.9,4,2,4.9,2,6v3.2c0,0.5,0.2,1,0.6,1.4L10,18v8c0,1.1,0.9,2,2,2h4c1.1,0,2-0.9,2-2v-2h-2v2h-4v-8.8l-0.6-0.6L4,9.2V6h20v2h2V6c0-1.1-0.9-2-2-2H4z"/>',
   'filter--remove': '<path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="29 15 27.586 13.586 25 16.172 22.414 13.586 21 15 23.586 17.586 21 20.172 22.414 21.586 25 19 27.586 21.586 29 20.172 26.414 17.586 29 15"/>',
+  'filter--reset': '<path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><path d="M28,20V18A6,6,0,1,0,22,24H24A4,4,0,1,1,28,20Z"/><polygon points="26 16 22 20 26 24 27.41 22.59 25.83 21 30 21 30 19 25.83 19 27.41 17.41"/>',
   // sidebar / navigation icons
   'group':            '<path d="M16,8a5,5,0,1,0,5,5A5,5,0,0,0,16,8Zm0,8a3,3,0,1,1,3-3A3,3,0,0,1,16,16Z"/><path d="M26,12a4,4,0,1,0,4,4A4,4,0,0,0,26,12Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,26,18Z"/><path d="M6,12a4,4,0,1,0,4,4A4,4,0,0,0,6,12Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,6,18Z"/><path d="M24.23,21.85A14.08,14.08,0,0,0,16,20a14.08,14.08,0,0,0-8.23,1.85A1,1,0,0,0,7.33,23V28h2V23.38A12.18,12.18,0,0,1,16,22a12.18,12.18,0,0,1,6.67,1.38V28h2V23A1,1,0,0,0,24.23,21.85Z"/><path d="M4,25.63V28H2V23A8,8,0,0,1,5,21.1a5.94,5.94,0,0,1-1.27-1.74A6,6,0,0,0,0,25V28H2V25.63A6.17,6.17,0,0,1,4,25.63Z"/><path d="M28.27,19.36A5.94,5.94,0,0,1,27,21.1,8,8,0,0,1,30,23v5h2V25A6,6,0,0,0,28.27,19.36Z"/>',
   'receipt':          '<path d="M26,2H6A2,2,0,0,0,4,4V30l4-2,4,2,4-2,4,2,4-2,4,2V4A2,2,0,0,0,26,2Zm0,26.18-2-1-4,2-4-2-4,2-4-2-2,1V4H26ZM9,10H23V12H9Zm0,6H23V18H9Zm0,6H17V24H9Z"/>',
@@ -2745,7 +2746,7 @@ async function downloadAllPins() {
 
     // ── icon buttons ────────────────────────────────────────────────────
     const iconBtn = (icon, borderColor, fillColor, title) =>
-      `<button title="${escHtml(title)}" style="width:40px;height:40px;border:1px solid ${borderColor};border-radius:6px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
+      `<button title="${escHtml(title)}" style="width:32px;height:32px;border:1px solid ${borderColor};border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
         ${iconSvg(icon, 16, fillColor)}
       </button>`;
 
@@ -2755,8 +2756,8 @@ async function downloadAllPins() {
         <div style="display:flex;align-items:center;gap:8px">
           ${fields.map(renderField).join('')}
           ${secBtn(data.filterBtnLabel || 'Filtrar')}
-          ${iconBtn('filter--add',    'var(--o5)', 'var(--o5)', 'Add filter')}
-          ${iconBtn('filter--remove', 'var(--r6)', 'var(--r6)', 'Remove filters')}
+          ${iconBtn('filter--add',    'var(--b6)', 'var(--b6)', 'Add more filters')}
+          ${iconBtn('filter--reset',  'var(--r6)', 'var(--r6)', 'Reset filters')}
         </div>
       </div>`;
 
@@ -2767,13 +2768,13 @@ async function downloadAllPins() {
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Icon buttons</h3>
       <div class="card" style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin:0 0 28px">
         <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
-          ${iconBtn('filter--add','var(--o5)','var(--o5)','Add filter')}
+          ${iconBtn('filter--add','var(--b6)','var(--b6)','Add more filters')}
           <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--add</span>
-          <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--o5)</span>
+          <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--b6)</span>
         </div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
-          ${iconBtn('filter--remove','var(--r6)','var(--r6)','Remove filters')}
-          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--remove</span>
+          ${iconBtn('filter--reset','var(--r6)','var(--r6)','Reset filters')}
+          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--reset</span>
           <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--r6)</span>
         </div>
         <div style="flex:1;min-width:200px;font:400 12px/1.6 var(--font-sans);color:var(--n5)">
