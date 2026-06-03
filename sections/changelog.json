@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:55:17.338Z",
+  "generated": "2026-06-03T14:57:20.315Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "9f29a85",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-824): set group header min-height to 64.8px to match Alerts row height",
+          "author": "Carlos"
+        },
         {
           "hash": "51830ba",
           "type": "fix",
