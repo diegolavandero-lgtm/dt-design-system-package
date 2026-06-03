@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:57:08.947Z",
+  "generated": "2026-06-03T16:06:09.322Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "c107998",
+          "type": "update",
+          "section": "General",
+          "message": "DS: replace pageUsage HTML dumps with concise call nomenclature",
+          "author": "Diego"
+        },
         {
           "hash": "953079f",
           "type": "fix",
