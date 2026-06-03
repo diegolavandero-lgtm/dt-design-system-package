@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strategy Planner — DispatchTrack Planner Pro</title>
+<!--
+  DT Strategy Planner · Planner Pro — Strategic Planner (Plans tab), screens 01–09
+  Built 1:1 with the DispatchTrack Design System (GitHub repo) — no invented tokens.
+  Sources (canonical):
+    · colors_and_type.css        — all tokens
+    · sections/components/topbar.json    — topbar (real plannerpro-desktop-white.svg logo)
+    · sections/components/sidebar.json   — Planner Pro nav (Planificador/Historial/Importador/Bases/Ajustes)
+    · sections/components/buttons.json   — pill 50px · h32 · 1px border · 700 14/20 · primary #4B82FA→#1F60ED→#0052CC
+    · sections/components/inputs.json     — h32/h40 · radius 6 · focus 2px #1F60ED
+    · sections/components/table.json      — cell 44 · header N3 40 · hover N2 · sel B1 + G5 3px stripe · actions sticky
+    · sections/components/modal.json      — w500 · radius 4 · border 1px #A3B5D1 · title #546884 700/22 · overlay rgba(19,32,69,.45)
+    · sections/components/banners.json    — 3px left border + tinted bg · info/warning/danger/success
+    · sections/components/badges.json     — pill 11 600 · success/danger/warning/info/neutral/outline
+  New (DT-compliant, DS tokens only): Wizard/Stepper · RadioCard · AccordionSection · KPIStrip/WithDelta · DayChip · FindingItem · Plan/StatusBand
+  Screens: 1 Lista · 2 Wizard crear · 3 Comparar · 4 Canvas · 5 Hallazgos · 6 Review Changes · 7 Activar · 8 Cliente+sugerencias · 9 Errores
+-->
+<style>
+/* ============ TOKENS (colors_and_type.css) ============ */
+:root{
+  --indigo:#132045;--white:#fff;
+  --n1:#F5F6FA;--n2:#F0F2F5;--n3:#E1E6ED;--n4:#C5D2E7;--n45:#8FA0BA;--n5:#67768D;--n6:#4B5564;--n7:#39414D;
+  --b1:#EDF5FF;--b2:#D1E0FF;--b3:#ADC7FF;--b5:#4B82FA;--b6:#1F60ED;--b7:#0052CC;
+  --g1:#E3FCEF;--g5:#36B37E;--g6:#00875A;--g7:#006844;
+  --r1:#FFEBE6;--r5:#FF5630;--r6:#DE350B;--r7:#BF2600;
+  --o1:#FFFAE6;--o5:#FFAB00;--o7:#FF8B00;
+  --p5:#8777D9;--t5:#00B8D9;
+  --pp:#47D09A;--sec:#546884;--sep:#E9ECF2;--mborder:#A3B5D1;
+  --su1:#FE4EC4;--su2:#36B37E;--su3:#00B8D9;--su4:#1F60ED;--su5:#8777D9;--su6:#FF5630;--su7:#FFAB00;
+  --font-sans:'DM Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --shadow-sm:0 2px 4px rgba(19,32,69,.08);--shadow-md:0 4px 12px rgba(19,32,69,.10);--shadow-lg:0 12px 32px rgba(19,32,69,.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:var(--font-sans);color:var(--n7);background:var(--n2);font-size:14px;overflow:hidden;}
+button{font-family:inherit;cursor:pointer;}
+::-webkit-scrollbar{width:10px;height:10px;}::-webkit-scrollbar-thumb{background:var(--n4);border-radius:8px;border:2px solid var(--n2);}
+
+/* ============ APP SHELL ============ */
+.app{height:100vh;display:flex;flex-direction:column;}
+/* TOPBAR (topbar.json) */
+.tb{height:52px;background:var(--indigo);display:flex;align-items:center;padding:0 0 0 22px;flex-shrink:0;z-index:40;}
+.tb .logo{height:18px;display:block;}
+.tb .acts{margin-left:auto;display:flex;align-items:center;gap:24px;padding-right:0;}
+.tb .acts .ti{width:18px;height:18px;color:rgba(255,255,255,.92);display:flex;cursor:pointer;position:relative;}
+.tb .acts .ti:hover{color:#fff;}
+.tb .acts .ti.bell:after{content:"";position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:var(--r5);border:2px solid var(--indigo);}
+.tb .slot{width:98px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;color:var(--indigo);font:700 11px var(--font-sans);margin-left:20px;flex-shrink:0;}
+
+.body{display:flex;flex:1;min-height:0;position:relative;}
+
+/* SIDEBAR (sidebar.json — Planner Pro) */
+.sb{width:240px;background:#fff;box-shadow:0 6px 12px rgba(0,0,0,.10);flex-shrink:0;padding:10px 0;display:flex;flex-direction:column;z-index:30;transition:width .16s;overflow:hidden;}
+.sb .it{height:40px;display:flex;align-items:center;gap:14px;padding:0 16px 0 18px;font:500 13px var(--font-sans);color:var(--n7);cursor:pointer;position:relative;white-space:nowrap;}
+.sb .it svg{width:18px;height:18px;stroke:var(--b5);fill:none;stroke-width:1.8;flex-shrink:0;}
+.sb .it:hover{background:rgba(75,130,250,.04);}
+.sb .it.sel{background:rgba(75,130,250,.08);font-weight:700;}
+.sb .it.sel svg{stroke:var(--b7);}
+.sb .it.sel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--b7);}
+.sb .it .lbl{transition:opacity .12s;}
+.sb .sep{height:1px;background:var(--sep);margin:8px 16px;}
+/* collapsed (canvas view) — hover expands as overlay so map doesn't reflow */
+.app[data-view="canvas"] .sb{width:56px;}
+.app[data-view="canvas"] .sb .lbl{opacity:0;}
+.app[data-view="canvas"] .sb:hover{width:240px;position:absolute;top:0;bottom:0;box-shadow:var(--shadow-lg);}
+.app[data-view="canvas"] .sb:hover .lbl{opacity:1;}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--n2);min-height:0;}
+
+/* ============ DS BUTTONS (buttons.json) ============ */
+.btn{font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;border:1px solid transparent;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:64px;white-space:nowrap;}
+.btn svg{width:15px;height:15px;}
+.btn.pri{background:var(--b5);color:#fff;}.btn.pri:hover{background:var(--b6);}.btn.pri:active{background:var(--b7);}
+.btn.sec{background:#fff;color:var(--b5);border-color:var(--b6);}.btn.sec:hover{background:var(--b1);}.btn.sec:active{background:var(--b2);}
+.btn.ter{background:#fff;color:var(--n7);border-color:var(--n4);}.btn.ter:hover{background:var(--b1);}
+.btn.txt{background:transparent;color:var(--b5);border-color:transparent;padding:0 8px;min-width:0;}.btn.txt:hover{text-decoration:underline;}
+.btn.dng{background:var(--r5);color:#fff;}.btn.dng:hover{background:var(--r6);}.btn.dng:active{background:var(--r7);}
+.btn:disabled{background:var(--n3);color:var(--n45);border-color:transparent;cursor:not-allowed;}
+.btn.tall{height:56px;}
+
+/* ============ DS INPUTS (inputs.json) ============ */
+.inp{height:32px;display:flex;align-items:center;gap:7px;border:1px solid var(--n3);border-radius:6px;background:#fff;padding:0 10px;}
+.inp input,.inp textarea{border:0;outline:0;flex:1;font:400 14px var(--font-sans);color:var(--n7);background:transparent;min-width:0;resize:none;}
+.inp input::placeholder,.inp textarea::placeholder{color:var(--n6);}
+.inp svg{color:var(--n5);flex-shrink:0;}
+.inp.foc{border:2px solid var(--b6);padding:0 9px;}
+.inp.lg{height:40px;}
+.inp.area{height:auto;padding:9px 12px;}.inp.area textarea{height:54px;line-height:1.4;}
+.ddl{height:32px;display:flex;align-items:center;justify-content:space-between;gap:7px;border:1px solid var(--n3);border-radius:6px;background:#fff;padding:0 10px;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer;}
+.ddl b{font-weight:400;color:var(--n6);}
+.ddl:hover{background:var(--n2);}
+
+/* ============ DS TABLE (table.json) ============ */
+.tcard{position:relative;background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;}
+.twrap{overflow-x:auto;}
+table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color:var(--n7);}
+.t thead th{height:40px;background:var(--n3);font:700 13px var(--font-sans);text-align:left;padding:0 16px;color:var(--n7);white-space:nowrap;border-bottom:1px solid var(--n4);}
+.t td{height:44px;padding:0 16px;border-bottom:1px solid var(--n3);vertical-align:middle;white-space:nowrap;}
+.t tbody tr:last-child td{border-bottom:0;}
+.t tr.hov td{background:var(--n2);}
+.t tr.sel td{background:var(--b1);}
+.t tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--g5);}
+.cb-td{width:44px;min-width:44px;text-align:center;padding:0;}
+.cb-td input{width:14px;height:14px;accent-color:var(--b5);cursor:pointer;}
+.t .sort{margin-left:5px;opacity:.5;font-size:9px;}
+.t .lnk{color:var(--b7);font-weight:600;cursor:pointer;}.t .lnk:hover{text-decoration:underline;}
+.t .muted{color:var(--n5);}
+.t .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;}
+.av{display:flex;align-items:center;gap:9px;}
+.av .dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11px var(--font-sans);color:#fff;flex-shrink:0;}
+.pill-new{display:inline-flex;align-items:center;padding:2px 7px;border-radius:99px;background:var(--b1);border:1px solid var(--b3);font:700 9px var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.06em;margin-left:8px;}
+/* badges */
+.bdg{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font:600 11px var(--font-sans);}
+.bdg .d{width:5px;height:5px;border-radius:999px;background:currentColor;}
+.bdg.g{background:var(--g1);color:var(--g6);}
+.bdg.n{background:var(--n2);color:var(--n7);}
+.bdg.b{background:var(--b1);color:var(--b7);}
+.bdg.o{background:var(--o1);color:var(--o7);}
+.bdg.r{background:var(--r1);color:var(--r6);}
+.bdg.ol{background:#fff;color:var(--n7);border:1px solid var(--n4);}
+/* actions sticky */
+.t th.actcol{position:sticky;right:0;z-index:2;width:92px;min-width:92px;background:var(--n3);box-shadow:-6px 0 12px -6px rgba(0,0,0,.14);text-align:center;}
+.t td.actcol{position:sticky;right:0;z-index:1;width:92px;min-width:92px;background:#fff;box-shadow:-6px 0 12px -6px rgba(0,0,0,.10);text-align:center;}
+.t tr.hov td.actcol{background:var(--n2);}.t tr.sel td.actcol{background:var(--b1);}
+.acts{display:flex;gap:2px;justify-content:center;}
+.act{width:28px;height:28px;border:none;background:none;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5);}
+.act:hover{background:var(--n2);color:var(--n7);}
+/* bulk bar */
+.bulk{position:absolute;top:0;left:44px;right:0;height:40px;background:var(--b1);border-bottom:1px solid var(--b3);display:flex;align-items:center;padding:0 16px;gap:12px;z-index:5;transform:translateX(-24px);opacity:0;pointer-events:none;transition:.18s;}
+.tcard.bulkon .bulk{transform:none;opacity:1;pointer-events:all;}
+.bulk .cnt{font:600 13px var(--font-sans);color:var(--b7);}
+.bulk .bb{height:28px;padding:0 10px;border:1px solid var(--b3);border-radius:4px;background:#fff;font:500 12px var(--font-sans);color:var(--b7);cursor:pointer;}
+.bulk .bb:hover{background:var(--b1);border-color:var(--b5);}
+.bulk .bb:disabled{opacity:.45;cursor:not-allowed;}
+/* dropdown menu */
+.drop{position:absolute;background:#fff;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);border:1px solid var(--n3);z-index:60;min-width:200px;padding:4px 0;}
+.drop .di{height:36px;padding:0 14px;display:flex;align-items:center;gap:9px;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer;}
+.drop .di:hover{background:var(--b1);color:var(--b7);}
+.drop .di.dis{color:var(--n45);cursor:not-allowed;}
+.drop .di.dis:hover{background:#fff;color:var(--n45);}
+.drop .dsep{height:1px;background:var(--n3);margin:4px 0;}
+.drop .di.dng{color:var(--r6);}.drop .di.dng:hover{background:var(--r1);}
+
+/* ============ PAGE HEADER + TABS ============ */
+.phead{padding:18px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.ptitle{font:700 26px/32px var(--font-sans);letter-spacing:-.01em;}
+.pacts{display:flex;gap:8px;align-items:center;}
+.tabs{display:flex;padding:14px 28px 0;border-bottom:1px solid var(--n3);}
+.tab{padding:10px 16px;font:500 14px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.tab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);}
+.content{padding:18px 28px 28px;flex:1;overflow:auto;min-height:0;}
+.filters{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.filters .search{width:300px;}
+
+/* ============ MODAL (modal.json) ============ */
+.ov{position:fixed;inset:0;background:rgba(19,32,69,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:24px;}
+.ov.on{display:flex;}
+.modal{width:560px;max-width:100%;max-height:90vh;background:#fff;border-radius:4px;border:1px solid var(--mborder);box-shadow:0 8px 16px rgba(0,0,0,.15);display:flex;flex-direction:column;}
+.modal.wide{width:800px;}
+.modal.narrow{width:480px;}
+.mh{display:flex;align-items:flex-start;gap:12px;padding:24px 24px 0;}
+.mh h1{font:700 22px/1.3 var(--font-sans);color:var(--sec);flex:1;margin:0;}
+.mh .x{background:none;border:0;color:var(--n5);cursor:pointer;padding:2px;display:flex;}.mh .x:hover{color:var(--n7);}
+.msub{font:400 12px var(--font-sans);color:var(--n5);padding:6px 24px 0;}
+.mbody{padding:18px 24px;overflow:auto;flex:1;}
+.mfot{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--n3);padding:14px 24px;}
+.mfot .back{margin-right:auto;}
+
+/* ============ BANNERS (banners.json) ============ */
+.bn{display:flex;gap:9px;padding:10px 14px;font:400 12px/1.45 var(--font-sans);color:var(--n7);align-items:flex-start;border-radius:4px;}
+.bn svg{flex-shrink:0;margin-top:1px;}
+.bn.in{background:var(--b1);border-left:3px solid var(--b6);}
+.bn.wr{background:var(--o1);border-left:3px solid var(--o5);}
+.bn.er{background:var(--r1);border-left:3px solid var(--r6);}
+.bn.ok{background:var(--g1);border-left:3px solid var(--g6);}
+.bn .lnk{color:var(--b7);font-weight:700;cursor:pointer;}
+
+/* ============ [NUEVO] Wizard / Stepper ============ */
+.stepper{display:flex;align-items:center;margin-bottom:20px;}
+.step{display:flex;align-items:center;gap:8px;}
+.step .num{width:24px;height:24px;border-radius:999px;display:flex;align-items:center;justify-content:center;font:700 12px var(--font-sans);flex-shrink:0;}
+.step .lbl{font:500 13px var(--font-sans);white-space:nowrap;}
+.step.pending .num{background:#fff;border:1.5px solid var(--n4);color:var(--n45);}.step.pending .lbl{color:var(--n45);}
+.step.active .num{background:var(--b6);color:#fff;}.step.active .lbl{color:var(--n7);font-weight:700;}
+.step.done .num{background:var(--g6);color:#fff;}.step.done .lbl{color:var(--n7);}
+.step-line{flex:1;height:1.5px;background:var(--n3);margin:0 12px;min-width:20px;}
+.step-line.done{background:var(--g6);}
+.panel{min-height:240px;}.panel.hidden{display:none;}
+.fld{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.fld label{font:400 12px/16px var(--font-sans);color:var(--n7);}
+.fld label .req{color:var(--r6);}
+.errtext{font:400 12px var(--font-sans);color:var(--r6);margin:-11px 0 16px;display:none;}.errtext.show{display:block;}
+.qlabel{font:700 14px var(--font-sans);color:var(--n7);margin-bottom:12px;}
+
+/* ============ [NUEVO] RadioCard ============ */
+.rcard{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--n3);border-radius:8px;cursor:pointer;margin-bottom:10px;transition:border-color .12s,background .12s;}
+.rcard:hover{border-color:var(--b3);}
+.rcard.sel{border-color:var(--b5);background:var(--b1);box-shadow:inset 0 0 0 1px var(--b5);}
+.rad{width:17px;height:17px;border:1.5px solid var(--n4);border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rcard.sel .rad{border-color:var(--b6);}
+.rcard.sel .rad:after{content:"";width:9px;height:9px;border-radius:999px;background:var(--b6);}
+.rcard .rc-t{font:600 14px var(--font-sans);color:var(--n7);}
+.rcard .rc-d{font:400 12px var(--font-sans);color:var(--n5);margin-top:2px;}
+.rcard .rc-sub{margin-top:10px;display:none;}.rcard.sel .rc-sub{display:block;}
+.sumcard{background:var(--n1);border-radius:6px;padding:10px 16px;margin-bottom:14px;}
+.sumrow{display:flex;justify-content:space-between;padding:6px 0;font:400 13px var(--font-sans);}
+.sumrow .k{color:var(--n5);}.sumrow .v{color:var(--n7);font-weight:600;}
+
+/* ============ CANVAS — plan header + KPIs ============ */
+.cphead{background:#fff;border-bottom:1px solid var(--n3);padding:11px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.cphead .ptit{font:700 18px var(--font-sans);color:var(--n7);}
+.kpis{display:flex;align-items:center;gap:18px;flex:1;flex-wrap:wrap;}
+.kpi{display:flex;flex-direction:column;gap:1px;}
+.kpi .k{font:400 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;}
+.kpi .v{font:700 14px var(--font-sans);color:var(--n7);display:flex;align-items:center;gap:4px;}
+.kpi .v .dl{font:600 10px var(--font-sans);}
+.kpi .v .dl.better{color:var(--g6);}.kpi .v .dl.worse{color:var(--r6);}
+.kpi.muted .v{color:var(--n45);}
+.phacts{display:flex;gap:8px;align-items:center;}
+.ctabs{display:flex;background:#fff;border-bottom:1px solid var(--n3);padding:0 20px;}
+.ctab{padding:9px 16px;font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.ctab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);}
+
+.ws{display:flex;flex:1;min-height:0;}
+.cfg{width:320px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;}
+.cfg .srch{padding:14px;border-bottom:1px solid var(--n3);}
+/* [NUEVO] AccordionSection */
+.acc{border-bottom:1px solid var(--n3);}
+.acc-h{display:flex;align-items:center;gap:8px;padding:14px 16px;cursor:pointer;user-select:none;}
+.acc-h .n{width:18px;height:18px;border-radius:999px;background:var(--n2);color:var(--n6);font:700 10px var(--font-sans);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.acc-h .t{font:700 14px var(--font-sans);color:var(--n7);flex:1;}
+.acc-h .chev{color:var(--n5);transition:transform .15s;display:flex;}
+.acc.closed .acc-h .chev{transform:rotate(-90deg);}
+.acc-b{padding:0 16px 16px;}.acc.closed .acc-b{display:none;}
+.acc.disabled .acc-h{opacity:.5;cursor:not-allowed;}
+.acc.disabled .acc-b{display:none;}
+.acc .dis-note{font:italic 400 12px var(--font-sans);color:var(--n5);padding:0 16px 14px;}
+.acc.disabled.show-note .dis-note{display:block;}
+.frow{margin-bottom:14px;}
+.flbl{font:400 12px var(--font-sans);color:var(--n7);margin-bottom:6px;}
+/* [NUEVO] DayChip */
+.days{display:flex;gap:5px;}
+.day{flex:1;height:38px;border-radius:6px;border:1px solid var(--n3);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font:700 11px var(--font-sans);color:var(--n6);line-height:1;}
+.day .c{font:400 9px var(--font-sans);color:var(--n45);margin-top:2px;}
+.day.on{background:var(--b5);border-color:var(--b5);color:#fff;}.day.on .c{color:rgba(255,255,255,.85);}
+.day.off{opacity:.5;}
+.seg{display:flex;border:1px solid var(--n3);border-radius:6px;overflow:hidden;}
+.seg button{flex:1;height:32px;border:0;background:#fff;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer;}
+.seg button.on{background:var(--b5);color:#fff;}
+.ck{display:flex;align-items:center;gap:8px;font:400 13px var(--font-sans);color:var(--n7);margin-bottom:8px;cursor:pointer;}
+.chk{width:17px;height:17px;border:1.5px solid var(--n4);border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chk.on{background:var(--b6);border-color:var(--b6);}
+.btn.full{width:100%;}
+.or{text-align:center;font:400 12px var(--font-sans);color:var(--n5);margin:10px 0;}
+.lastopt{font:400 11px var(--font-sans);color:var(--n5);margin-top:10px;}
+.tools{display:flex;gap:6px;flex-wrap:wrap;}
+.tools .btn{height:32px;}
+
+/* MAP */
+.map{flex:1;position:relative;background:linear-gradient(135deg,#dfeaf3,#e9f0f6);overflow:hidden;}
+.map .gmark{position:absolute;bottom:6px;left:8px;font:700 13px var(--font-sans);color:#5b5b5b;opacity:.6;}
+.band{position:absolute;top:0;left:0;right:0;display:flex;gap:9px;padding:10px 16px;background:var(--b1);border-bottom:1px solid var(--b3);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:6;}
+.band svg{flex-shrink:0;}.band .lnk{color:var(--b7);font-weight:700;cursor:pointer;}
+.stale{position:absolute;top:41px;left:0;right:0;display:flex;gap:9px;padding:9px 16px;background:var(--o1);border-bottom:1px solid var(--o5);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:6;}
+.stale .reopt{margin-left:auto;}
+.daybar{position:absolute;left:16px;right:16px;background:#fff;border:1px solid var(--n3);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:16px;z-index:5;box-shadow:var(--shadow-sm);flex-wrap:wrap;}
+.daybar .dtag{font:700 12px var(--font-sans);color:var(--n7);background:var(--n2);padding:3px 10px;border-radius:4px;}
+.daybar .m{font:400 11px var(--font-sans);color:var(--n5);}.daybar .m b{color:var(--n7);font-weight:700;}
+.pin{position:absolute;width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 4px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;}
+.pin span{transform:rotate(45deg);color:#fff;font:700 10px var(--font-sans);}
+.pin.big{width:30px;height:30px;}
+.depot{position:absolute;width:24px;height:24px;background:var(--indigo);border:2px solid #fff;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font:700 10px var(--font-sans);box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:4;}
+.route-line{position:absolute;height:2px;transform-origin:left center;opacity:.55;z-index:2;}
+.unrouted{width:14px;height:14px;border-radius:50% 50% 50% 0;background:var(--su1);transform:rotate(-45deg);position:absolute;opacity:.85;box-shadow:0 1px 2px rgba(0,0,0,.25);z-index:3;}
+
+/* loading overlay */
+.loading{position:absolute;inset:0;background:rgba(255,255,255,.55);display:none;align-items:center;justify-content:center;z-index:20;}
+.loading.on{display:flex;}
+.loadcard{background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:var(--shadow-lg);padding:26px 34px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.spin{width:34px;height:34px;border:3px solid var(--b2);border-top-color:var(--b6);border-radius:50%;animation:sp 0.8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.loadcard .lt{font:600 13px var(--font-sans);color:var(--n7);}
+
+/* ============ [NUEVO] Hallazgos panel ============ */
+.findings{position:absolute;top:0;right:0;bottom:0;width:360px;background:#fff;border-left:1px solid var(--n3);box-shadow:var(--shadow-lg);z-index:10;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .2s;}
+.findings.on{transform:none;}
+.fh{padding:16px 18px;border-bottom:1px solid var(--n3);display:flex;align-items:center;gap:10px;}
+.fh .ft{font:700 16px var(--font-sans);color:var(--n7);flex:1;}
+.fh .x{background:none;border:0;color:var(--n5);cursor:pointer;display:flex;}
+.fcount{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--n3);}
+.fpill{display:inline-flex;align-items:center;gap:5px;font:600 11px var(--font-sans);padding:3px 9px;border-radius:999px;}
+.fpill.cr{background:var(--r1);color:var(--r6);}.fpill.wn{background:var(--o1);color:var(--o7);}.fpill.ok{background:var(--g1);color:var(--g6);}
+.flist{flex:1;overflow:auto;padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
+.finding{border-radius:6px;padding:12px 14px;}
+.finding.cr{background:var(--r1);border-left:3px solid var(--r6);}
+.finding.wn{background:var(--o1);border-left:3px solid var(--o5);}
+.finding .ftt{font:700 13px var(--font-sans);color:var(--n7);display:flex;gap:7px;align-items:flex-start;}
+.finding .fdd{font:400 12px/1.45 var(--font-sans);color:var(--n6);margin:6px 0 10px 21px;}
+.finding .fact{margin-left:21px;}
+
+/* ============ [NUEVO] Right drawer (Changes / Customer) ============ */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:480px;max-width:92vw;background:#fff;box-shadow:var(--shadow-lg);z-index:110;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s;}
+.drawer.on{transform:none;}
+.dwrap{position:fixed;inset:0;background:rgba(19,32,69,.35);z-index:105;display:none;}.dwrap.on{display:block;}
+.dh{padding:18px 22px;border-bottom:1px solid var(--n3);display:flex;align-items:flex-start;gap:10px;}
+.dh h2{font:700 18px var(--font-sans);color:var(--n7);flex:1;}
+.dh .sub{font:400 12px var(--font-sans);color:var(--n5);margin-top:3px;}
+.dh .x{background:none;border:0;color:var(--n5);cursor:pointer;display:flex;}
+.dtabs{display:flex;padding:0 22px;border-bottom:1px solid var(--n3);}
+.dtab{padding:11px 14px;font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.dtab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);}
+.dbody{flex:1;overflow:auto;padding:18px 22px;}
+.dfoot{border-top:1px solid var(--n3);padding:14px 22px;display:flex;justify-content:flex-end;gap:8px;}
+.chrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--n3);}
+.chrow:last-child{border-bottom:0;}
+.chrow .ci{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chrow .ct{font:600 13px var(--font-sans);color:var(--n7);}
+.chrow .cd{font:400 12px var(--font-sans);color:var(--n5);margin-top:2px;}
+.movepath{font:700 12px var(--font-sans);color:var(--n7);display:inline-flex;align-items:center;gap:6px;}
+.tagk{display:inline-flex;padding:1px 7px;border-radius:4px;background:var(--n2);font:600 11px var(--font-sans);color:var(--n6);}
+
+/* customer detail */
+.cdrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--n3);font:400 13px var(--font-sans);}
+.cdrow .k{color:var(--n5);}.cdrow .v{color:var(--n7);font-weight:600;text-align:right;}
+.sech{font:700 13px var(--font-sans);color:var(--n7);margin:18px 0 8px;text-transform:uppercase;letter-spacing:.04em;font-size:11px;color:var(--n5);}
+.sugg{border:1px solid var(--n3);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+.sugg .st{font:600 13px var(--font-sans);color:var(--n7);display:flex;align-items:center;gap:8px;}
+.sugg .sd{font:400 12px/1.45 var(--font-sans);color:var(--n5);margin:5px 0 10px;}
+.sugg .sm{display:flex;gap:14px;margin-bottom:10px;}
+.sugg .sm .mi{font:400 11px var(--font-sans);color:var(--n5);}.sugg .sm .mi b{color:var(--g6);font-weight:700;}
+
+/* ============ ERROR STATES (screen 9) ============ */
+.errpanel{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#eef3f8,#f3f6fa);z-index:8;padding:24px;}
+.errpanel.on{display:flex;}
+.errbox{max-width:460px;text-align:center;background:#fff;border:1px solid var(--n3);border-radius:12px;box-shadow:var(--shadow-md);padding:30px 30px 26px;}
+.erricon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.errbox h3{font:700 18px var(--font-sans);color:var(--n7);margin-bottom:6px;}
+.errbox .em{font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:14px;}
+.errlist{text-align:left;background:var(--n1);border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+.errlist .el{font:400 12px/1.5 var(--font-sans);color:var(--n6);display:flex;gap:8px;padding:3px 0;}
+.errlist .el svg{flex-shrink:0;margin-top:2px;}
+.erract{display:flex;gap:8px;justify-content:center;}
+
+/* ============ Prototype nav (jump to screen) ============ */
+.protonav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(19,32,69,.94);border-radius:999px;padding:5px;display:flex;gap:2px;z-index:200;box-shadow:var(--shadow-lg);max-width:96vw;overflow:auto;}
+.protonav button{background:transparent;border:0;color:rgba(255,255,255,.7);font:600 11px var(--font-sans);padding:6px 11px;border-radius:999px;white-space:nowrap;}
+.protonav button:hover{color:#fff;background:rgba(255,255,255,.1);}
+.protonav button.on{background:var(--pp);color:var(--indigo);}
+</style>
+</head>
+<body>
+<div class="app" id="app" data-view="list">
+  <!-- ===== TOPBAR ===== -->
+  <div class="tb">
+    <img class="logo" src="sections/assets/logos/plannerpro-desktop-white.svg" alt="DispatchTrack Planner Pro">
+    <div class="acts">
+      <span class="ti" title="Apps"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+      <span class="ti" title="Ayuda"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17"/></svg></span>
+      <span class="ti" title="Mensajes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="ti bell" title="Alertas"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+      <span class="ti" title="Usuario"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+    </div>
+    <div class="slot">ACME CO</div>
+  </div>
+
+  <div class="body">
+    <!-- ===== SIDEBAR (Planner Pro) ===== -->
+    <div class="sb">
+      <div class="it sel"><svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 12h6M9 16h6"/></svg><span class="lbl">Planificador</span></div>
+      <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="lbl">Historial</span></div>
+      <div class="it"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 8l5-5 5 5M12 3v12"/></svg><span class="lbl">Importador</span></div>
+      <div class="it"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg><span class="lbl">Bases</span></div>
+      <div class="sep"></div>
+      <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 0 1 0-4h.1A1.6 1.6 0 0 0 2.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H7a1.6 1.6 0 0 0 1-1.5V1a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V7a1.6 1.6 0 0 0 1.5 1H23a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg><span class="lbl">Ajustes</span></div>
+    </div>
+
+    <!-- ===== MAIN — LISTA (screen 1) ===== -->
+    <div class="main" id="view-list">
+      <div class="phead">
+        <div class="ptitle">Strategy Planner</div>
+        <div class="pacts">
+          <button class="btn txt" id="cmpTop" disabled>Comparar planes (0)</button>
+          <button class="btn ter">Importar</button>
+          <button class="btn pri" onclick="openWizard()">+ Crear plan</button>
+        </div>
+      </div>
+      <div class="tabs"><div class="tab on">Planes</div><div class="tab">Territorios</div></div>
+      <div class="content">
+        <div class="filters">
+          <div class="inp search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Buscar por nombre o notas"></div>
+          <div class="ddl" style="width:170px">Estado: <b>Todos</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="ddl" style="width:170px">Vigencia: <b>Todas</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tcard" id="tcard">
+          <div class="bulk">
+            <span class="cnt" id="bcnt">0 seleccionados</span>
+            <button class="bb" id="bcmp" disabled onclick="openCompare()">Comparar</button>
+            <button class="bb">Archivar</button>
+            <button class="bb">Exportar</button>
+            <button class="bb">Eliminar</button>
+          </div>
+          <div class="twrap">
+            <table class="t">
+              <thead><tr>
+                <th class="cb-td"><input type="checkbox" id="cbAll" onclick="mAll(this)"></th>
+                <th>Nombre <span class="sort">&#9650;&#9660;</span></th>
+                <th>Estado</th><th>Creado por</th><th>Vigencia</th>
+                <th style="text-align:right">Paradas</th><th style="text-align:right">Camiones</th>
+                <th class="actcol">Acciones</th>
+              </tr></thead>
+              <tbody>
+                <tr data-r>
+                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                  <td><span class="lnk" onclick="openCanvas(true)">Plan Estándar 2</span></td>
+                  <td><span class="bdg g"><span class="d"></span>Activo</span></td>
+                  <td><span class="av"><span class="dot" style="background:var(--b6)">MJ</span>Maya Johnson</span></td>
+                  <td class="muted">01-05-26</td><td class="num">539</td><td class="num">12</td>
+                  <td class="actcol"><div class="acts">
+                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="act" onclick="menu(this,'active')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </div></td>
+                </tr>
+                <tr data-r>
+                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                  <td><span class="lnk" onclick="openCanvas(false)">Plan Norte Junio</span><span class="pill-new">Nuevo</span></td>
+                  <td><span class="bdg o"><span class="d"></span>Programado</span></td>
+                  <td><span class="av"><span class="dot" style="background:var(--p5)">LM</span>Lucas Martínez</span></td>
+                  <td class="muted">01-06-26</td><td class="num">312</td><td class="num">8</td>
+                  <td class="actcol"><div class="acts">
+                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="act" onclick="menu(this,'scheduled')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </div></td>
+                </tr>
+                <tr data-r>
+                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                  <td><span class="lnk" onclick="openCanvas(false)">Borrador Holiday</span></td>
+                  <td><span class="bdg b">Borrador</span></td>
+                  <td><span class="av"><span class="dot" style="background:var(--g5)">LS</span>Liam Smith</span></td>
+                  <td class="muted">—</td><td class="num">540</td><td class="num muted">—</td>
+                  <td class="actcol"><div class="acts">
+                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="act" onclick="menu(this,'draft')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </div></td>
+                </tr>
+                <tr data-r>
+                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                  <td><span class="lnk" onclick="openCanvas(true)">Plan Estándar</span></td>
+                  <td><span class="bdg n">Archivado</span></td>
+                  <td><span class="av"><span class="dot" style="background:var(--t5)">AP</span>Aisha Patel</span></td>
+                  <td class="muted">01-05-26</td><td class="num">539</td><td class="num">12</td>
+                  <td class="actcol"><div class="acts">
+                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                    <button class="act" onclick="menu(this,'archived')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                  </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MAIN — CANVAS (screens 4 / 5 / 9) ===== -->
+    <div class="main" id="view-canvas" style="display:none">
+      <div class="cphead">
+        <span class="bdg b" id="planBadge">Borrador</span>
+        <span class="ptit">Plan Estándar</span>
+        <div class="kpis" id="kpis">
+          <div class="kpi"><span class="k">Clientes</span><span class="v">223</span></div>
+          <div class="kpi"><span class="k">Paradas</span><span class="v">540</span></div>
+          <div class="kpi mt"><span class="k">Camiones</span><span class="v" data-opt>58/72</span></div>
+          <div class="kpi mt"><span class="k">Millas</span><span class="v" data-opt>12.530 <span class="dl better">↓4,2%</span></span></div>
+          <div class="kpi mt"><span class="k">Costo</span><span class="v" data-opt>$55.329</span></div>
+          <div class="kpi mt"><span class="k">Tiempo</span><span class="v" data-opt>59%</span></div>
+          <div class="kpi mt"><span class="k">Carga</span><span class="v" data-opt>46%</span></div>
+        </div>
+        <div class="phacts">
+          <button class="btn txt" onclick="goList()">← Planes</button>
+          <button class="btn ter" id="btnChanges" disabled onclick="openChanges()">Cambios (1)</button>
+          <button class="btn ter" id="btnFindings" disabled onclick="toggleFindings(true)">Hallazgos (3)</button>
+          <button class="btn pri" id="btnOpt" onclick="optimize()">Optimizar semana</button>
+          <button class="btn sec" id="btnActivate" disabled onclick="openActivate()">Activar plan</button>
+        </div>
+      </div>
+      <div class="ctabs"><div class="ctab on">Planes</div><div class="ctab">Territorios</div></div>
+
+      <div class="ws">
+        <div class="cfg">
+          <div class="srch"><div class="inp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Buscar cliente o parada"></div></div>
+
+          <div class="acc" id="a1">
+            <div class="acc-h" onclick="toggleAcc('a1')"><span class="n">1</span><span class="t">Vista</span><span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+            <div class="acc-b">
+              <div class="frow"><div class="flbl">Días visibles</div>
+                <div class="days" id="dayChips">
+                  <div class="day on" data-d="Lun">L<span class="c">108</span></div>
+                  <div class="day off" data-d="Mar">M<span class="c">78</span></div>
+                  <div class="day off" data-d="Mié">X<span class="c">86</span></div>
+                  <div class="day off" data-d="Jue">J<span class="c">94</span></div>
+                  <div class="day off" data-d="Vie">V<span class="c">88</span></div>
+                  <div class="day off" data-d="Sáb">S<span class="c">86</span></div>
+                </div>
+              </div>
+              <div class="frow"><div class="flbl">Layout del mapa</div><div class="ddl">1 día <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+              <div class="frow"><div class="flbl">Estilo de ruta</div><div class="seg"><button class="on">Líneas rectas</button><button>Rutas viales</button></div></div>
+              <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mostrar tramo a bodega</label>
+              <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mostrar rutas bloqueadas</label>
+            </div>
+          </div>
+
+          <div class="acc" id="a2">
+            <div class="acc-h" onclick="toggleAcc('a2')"><span class="n">2</span><span class="t">Optimización</span><span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+            <div class="acc-b">
+              <button class="btn pri full" onclick="optimize()">Optimizar semana</button>
+              <div class="or">— o —</div>
+              <div style="display:flex;gap:6px;"><button class="btn ter" style="flex:1" onclick="optimize()">Optimizar día</button><div class="ddl" style="width:92px;">Lun <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+              <div class="lastopt" id="lastOpt">El plan está en borrador. Aún no se ha optimizado.</div>
+            </div>
+          </div>
+
+          <div class="acc closed disabled show-note" id="a3">
+            <div class="acc-h" onclick="toggleAcc('a3')"><span class="n">3</span><span class="t">Edición</span><span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
+            <div class="dis-note">Las herramientas de Bloquear y Mover se habilitan después de correr <b>1 · Optimización</b>.</div>
+            <div class="acc-b">
+              <div class="frow"><div class="flbl">Herramientas</div><div class="tools"><button class="btn ter">Bloquear</button><button class="btn ter">Mover</button><button class="btn ter">Mover días</button><button class="btn ter">Limpiar</button></div></div>
+              <div class="frow"><div class="flbl">Opciones de movimiento</div>
+                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Re-optimizar ruta de origen</label>
+                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Reflejar en días del ciclo</label>
+                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mantener mismo camión</label>
+                <label class="ck"><span class="chk"></span>Vincular ruta de origen</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAP -->
+        <div class="map" id="map">
+          <!-- pre-optimization band -->
+          <div class="band" id="bandUnrouted">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+            <span>Este plan aún no se ha ruteado. Mostrando las <b>540 paradas</b> activas. <span class="lnk" onclick="optimize()">Optimizar semana</span> cuando estés listo.</span>
+          </div>
+          <!-- post-optimization band -->
+          <div class="band" id="bandRouted" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+            <span>Mostrando el día <b>Lunes</b> · 108 paradas ruteadas en 12 camiones.</span>
+          </div>
+          <!-- staleness (shown after a customer change) -->
+          <div class="stale" id="bandStale" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+            <span>El plan está desactualizado. <b>3 clientes</b> cambiaron desde la última optimización.</span>
+            <button class="btn ter reopt" style="height:28px" onclick="optimize()">Re-optimizar</button>
+          </div>
+
+          <div class="daybar" id="dayBar" style="display:none;top:84px">
+            <span class="dtag">Lun</span>
+            <span class="m">Paradas <b>108</b></span><span class="m">Camiones <b>12/12</b></span><span class="m">Millas <b>2.504</b></span>
+            <span class="m">Costo <b>$11.333</b></span><span class="m">Tiempo <b>70%</b></span><span class="m">Carga <b>45%</b></span>
+          </div>
+
+          <!-- pins -->
+          <div id="mapPins"></div>
+
+          <div class="loading" id="mapLoading"><div class="loadcard"><div class="spin"></div><div class="lt">Optimizando semana…</div></div></div>
+
+          <!-- ERROR STATES (screen 9) -->
+          <div class="errpanel" id="errPanel"><div class="errbox" id="errBox"></div></div>
+
+          <div class="gmark">Google</div>
+        </div>
+
+        <!-- HALLAZGOS PANEL (screen 5) -->
+        <div class="findings" id="findings">
+          <div class="fh"><div class="ft">Hallazgos</div><button class="x" onclick="toggleFindings(false)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+          <div class="fcount">
+            <span class="fpill cr"><span style="width:5px;height:5px;border-radius:50%;background:currentColor"></span>1 crítico</span>
+            <span class="fpill wn"><span style="width:5px;height:5px;border-radius:50%;background:currentColor"></span>2 advertencias</span>
+          </div>
+          <div class="flist">
+            <div class="finding cr">
+              <div class="ftt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#DE350B" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>4 paradas quedaron sin rutear</div>
+              <div class="fdd">No caben en la capacidad disponible del jueves. Sus ventanas de entrega no permiten moverlas a otro día del ciclo.</div>
+              <div class="fact"><button class="btn sec" style="height:28px">Ver paradas sin rutear</button></div>
+            </div>
+            <div class="finding wn">
+              <div class="ftt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>Camión 7 al 96 % de su capacidad</div>
+              <div class="fdd">El lunes el camión 7 va casi lleno. Un pico de demanda podría dejar paradas sin atender.</div>
+              <div class="fact"><button class="btn ter" style="height:28px">Rebalancear día</button></div>
+            </div>
+            <div class="finding wn">
+              <div class="ftt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>Cruce de rutas en Stockton</div>
+              <div class="fdd">Las rutas 3 y 8 se cruzan el miércoles, sumando ~38 millas. Bloquear una parada o re-optimizar el día reduce el solape.</div>
+              <div class="fact"><button class="btn ter" style="height:28px">Optimizar miércoles</button></div>
+            </div>
+          </div>
+          <div style="padding:14px 18px;border-top:1px solid var(--n3);display:flex;gap:8px;justify-content:flex-end;">
+            <button class="btn ter" onclick="toggleFindings(false)">Cerrar</button>
+            <button class="btn pri" onclick="toggleFindings(false)">Aceptar y continuar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: WIZARD CREAR PLAN (screen 2) ============ -->
+<div class="ov" id="ovWizard">
+  <div class="modal" role="dialog" aria-label="Crear plan">
+    <div class="mh"><h1>Crear plan</h1><button class="x" onclick="closeWizard()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="mbody">
+      <div class="stepper" id="stepper">
+        <div class="step active" data-s="1"><span class="num">1</span><span class="lbl">Identidad</span></div>
+        <div class="step-line" data-l="1"></div>
+        <div class="step pending" data-s="2"><span class="num">2</span><span class="lbl">Origen</span></div>
+        <div class="step-line" data-l="2"></div>
+        <div class="step pending" data-s="3"><span class="num">3</span><span class="lbl">Confirmar</span></div>
+      </div>
+      <div class="panel" id="p1">
+        <div class="fld"><label>Nombre del plan <span class="req">*</span></label><div class="inp lg foc"><input id="planName" value="Plan Estándar Junio" placeholder="Ej: Plan Estándar Junio"></div></div>
+        <div class="fld"><label>Vigencia desde <span class="req">*</span></label><div class="inp lg"><input type="text" value="01-06-26"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div></div>
+        <div class="fld"><label>Notas (opcional)</label><div class="inp lg area"><textarea placeholder="Notas internas sobre este plan…"></textarea></div></div>
+      </div>
+      <div class="panel hidden" id="p2">
+        <div class="qlabel">¿De dónde salen las paradas?</div>
+        <div class="rcard sel" onclick="pick(this)"><span class="rad"></span><div class="rc-body"><div class="rc-t">Desde el catálogo de clientes activos</div><div class="rc-d">Usa todos los clientes activos (223 disponibles).</div></div></div>
+        <div class="rcard" onclick="pick(this)"><span class="rad"></span><div class="rc-body"><div class="rc-t">Duplicar un plan existente</div><div class="rc-d">Copia paradas y ajustes; podrás re-optimizar.</div><div class="rc-sub"><div class="inp lg"><input value="Plan Estándar 2" readonly><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div></div></div>
+        <div class="rcard" onclick="pick(this)"><span class="rad"></span><div class="rc-body"><div class="rc-t">Importar archivo</div><div class="rc-d">Sube un CSV o Excel con las paradas.</div></div></div>
+        <div class="rcard" onclick="pick(this)"><span class="rad"></span><div class="rc-body"><div class="rc-t">Empezar vacío</div><div class="rc-d">Agregarás paradas manualmente.</div></div></div>
+      </div>
+      <div class="panel hidden" id="p3">
+        <div class="qlabel">Revisa antes de crear</div>
+        <div class="sumcard">
+          <div class="sumrow"><span class="k">Nombre</span><span class="v" id="sName">Plan Estándar Junio</span></div>
+          <div class="sumrow"><span class="k">Vigencia desde</span><span class="v">01-06-26</span></div>
+          <div class="sumrow"><span class="k">Origen</span><span class="v" id="sOrigin">Catálogo de clientes activos</span></div>
+          <div class="sumrow"><span class="k">Paradas estimadas</span><span class="v">223</span></div>
+        </div>
+        <div class="bn in"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg><span>Al crear, el plan queda en <b>Borrador</b>. Deberás optimizarlo antes de activarlo. La optimización inicial puede tardar ~30&nbsp;s para 223 paradas.</span></div>
+      </div>
+    </div>
+    <div class="mfot">
+      <button class="btn txt back" id="backBtn" style="display:none" onclick="goBack()">← Atrás</button>
+      <button class="btn ter" onclick="closeWizard()">Cancelar</button>
+      <button class="btn pri" id="nextBtn" onclick="goNext()">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: COMPARAR PLANES (screen 3) ============ -->
+<div class="ov" id="ovCompare">
+  <div class="modal wide" role="dialog" aria-label="Comparar planes">
+    <div class="mh"><h1>Comparar planes</h1><button class="x" onclick="closeCompare()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="msub">Diferencia calculada como <b>Plan Estándar 2</b> respecto a <b>Plan Estándar</b>. Verde indica mejora.</div>
+    <div class="mbody">
+      <div class="tcard"><div class="twrap"><table class="t">
+        <thead><tr><th>Métrica</th><th style="text-align:right;color:var(--b7)">Plan Estándar 2</th><th style="text-align:right;color:var(--b7)">Plan Estándar</th><th style="text-align:right">Diferencia</th></tr></thead>
+        <tbody>
+          <tr><td>Estado</td><td class="num" style="font-weight:400"><span class="bdg g"><span class="d"></span>Activo</span></td><td class="num" style="font-weight:400"><span class="bdg n">Archivado</span></td><td class="num" style="color:var(--n5);font-weight:400">—</td></tr>
+          <tr><td>Paradas totales</td><td class="num">539</td><td class="num">539</td><td class="num" style="color:var(--n5);font-weight:400">—</td></tr>
+          <tr><td>Paradas ruteadas</td><td class="num">552</td><td class="num">549</td><td class="num" style="color:var(--g6)">+3 ▲</td></tr>
+          <tr><td>Paradas sin rutear</td><td class="num">0</td><td class="num">0</td><td class="num" style="color:var(--n5);font-weight:400">—</td></tr>
+          <tr><td>Millas totales</td><td class="num">11.900,7</td><td class="num">12.466,4</td><td class="num" style="color:var(--g6)">−565,7 ▼</td></tr>
+          <tr><td>Tiempo total</td><td class="num">458h 38m</td><td class="num">467h 38m</td><td class="num" style="color:var(--g6)">−9h 0m ▼</td></tr>
+          <tr><td>Camiones pico</td><td class="num">10</td><td class="num">11</td><td class="num" style="color:var(--g6)">−1 ▼</td></tr>
+          <tr><td>Total camión-días</td><td class="num">55</td><td class="num">58</td><td class="num" style="color:var(--g6)">−3 ▼</td></tr>
+          <tr><td>Camiones disponibles</td><td class="num">12</td><td class="num">12</td><td class="num" style="color:var(--n5);font-weight:400">—</td></tr>
+        </tbody>
+      </table></div></div>
+      <div class="sech" style="margin-top:18px">Detalle por día</div>
+      <div class="tcard"><div class="twrap"><table class="t">
+        <thead><tr><th>Día</th><th style="text-align:right">Paradas ruteadas</th><th style="text-align:right">Millas</th><th style="text-align:right">Camiones</th></tr></thead>
+        <tbody>
+          <tr><td>Lunes</td><td class="num">105 / 117</td><td class="num">2.208 / 2.376</td><td class="num">10 / 11</td></tr>
+          <tr><td>Martes</td><td class="num">86 / 78</td><td class="num">2.129 / 2.224</td><td class="num">9 / 9</td></tr>
+          <tr><td>Miércoles</td><td class="num">96 / 88</td><td class="num">1.285 / 1.346</td><td class="num">8 / 8</td></tr>
+          <tr><td>Jueves</td><td class="num">80 / 93</td><td class="num">2.410 / 2.445</td><td class="num">10 / 10</td></tr>
+          <tr><td>Viernes</td><td class="num">100 / 93</td><td class="num">1.537 / 1.596</td><td class="num">8 / 9</td></tr>
+          <tr><td>Sábado</td><td class="num">85 / 80</td><td class="num">2.328 / 2.476</td><td class="num">10 / 11</td></tr>
+        </tbody>
+      </table></div></div>
+    </div>
+    <div class="mfot"><button class="btn ter">Exportar comparación</button><button class="btn pri" onclick="closeCompare()">Cerrar</button></div>
+  </div>
+</div>
+
+<!-- ============ MODAL: ACTIVAR PLAN (screen 7) ============ -->
+<div class="ov" id="ovActivate">
+  <div class="modal narrow" role="dialog" aria-label="Activar plan">
+    <div class="mh"><h1>Activar “Plan Estándar”</h1><button class="x" onclick="closeActivate()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="mbody">
+      <div class="bn wr" style="margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg><span>Activar este plan <b>re-rutea a los conductores</b> y <b>re-envía las notificaciones</b> a los clientes afectados. Esta acción no se puede deshacer fácilmente.</span></div>
+      <div class="sumcard">
+        <div class="sumrow"><span class="k">Plan a activar</span><span class="v">Plan Estándar</span></div>
+        <div class="sumrow"><span class="k">Vigencia desde</span><span class="v">01-06-26</span></div>
+        <div class="sumrow"><span class="k">Plan activo actual</span><span class="v">Plan Estándar 2 → se archivará</span></div>
+        <div class="sumrow"><span class="k">Clientes notificados</span><span class="v">223</span></div>
+      </div>
+      <div class="fld" style="margin-top:14px"><label>Activar a partir de</label>
+        <div class="seg" style="max-width:260px"><button class="on">Ahora</button><button>Programar fecha</button></div>
+      </div>
+    </div>
+    <div class="mfot"><button class="btn ter" onclick="closeActivate()">Cancelar</button><button class="btn pri" onclick="confirmActivate()">Activar plan</button></div>
+  </div>
+</div>
+
+<!-- ============ DRAWER: REVIEW CHANGES (screen 6) ============ -->
+<div class="dwrap" id="wrapChanges" onclick="if(event.target===this)closeChanges()"></div>
+<div class="drawer" id="drawerChanges">
+  <div class="dh"><div style="flex:1"><h2>Revisar cambios</h2><div class="sub">5 cambios sin confirmar en <b>Plan Estándar</b></div></div><button class="x" onclick="closeChanges()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="dtabs"><div class="dtab on" onclick="chTab(this,'chMove')">Mover (2)</div><div class="dtab" onclick="chTab(this,'chDays')">Mover días (1)</div><div class="dtab" onclick="chTab(this,'chCust')">Cambios de cliente (2)</div></div>
+  <div class="dbody">
+    <div id="chMove">
+      <div class="chrow"><div class="ci" style="background:var(--b1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9"/></svg></div><div style="flex:1"><div class="ct">Ferretería El Roble</div><div class="cd"><span class="movepath"><span class="tagk">Ruta 3</span> → <span class="tagk">Ruta 8</span></span> · Lun · mismo camión</div></div></div>
+      <div class="chrow"><div class="ci" style="background:var(--b1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9"/></svg></div><div style="flex:1"><div class="ct">Distribuidora Sur</div><div class="cd"><span class="movepath"><span class="tagk">Ruta 5</span> → <span class="tagk">Ruta 2</span></span> · Mié · re-optimiza origen</div></div></div>
+    </div>
+    <div id="chDays" style="display:none">
+      <div class="chrow"><div class="ci" style="background:var(--p1,#F0EDFF)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6554C0" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div style="flex:1"><div class="ct">Supermercado Central</div><div class="cd"><span class="movepath"><span class="tagk">Jue</span> → <span class="tagk">Mar</span></span> · refleja en días del ciclo</div></div></div>
+    </div>
+    <div id="chCust" style="display:none">
+      <div class="chrow"><div class="ci" style="background:var(--o1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div style="flex:1"><div class="ct">Bodega Norte 14</div><div class="cd">Dirección actualizada · <span style="color:var(--o7);font-weight:600">marca el plan como desactualizado</span></div></div></div>
+      <div class="chrow"><div class="ci" style="background:var(--o1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div style="flex:1"><div class="ct">Comercial Andes</div><div class="cd">Ventana de entrega cambiada · <span style="color:var(--o7);font-weight:600">requiere re-optimizar</span></div></div></div>
+    </div>
+  </div>
+  <div class="dfoot"><button class="btn ter" onclick="closeChanges()">Descartar</button><button class="btn pri" onclick="closeChanges()">Confirmar cambios</button></div>
+</div>
+
+<!-- ============ DRAWER: CLIENTE + SUGERENCIAS (screen 8) ============ -->
+<div class="dwrap" id="wrapCustomer" onclick="if(event.target===this)closeCustomer()"></div>
+<div class="drawer" id="drawerCustomer">
+  <div class="dh"><div style="flex:1"><h2>Bodega Norte 14</h2><div class="sub">Cliente · ruta 7 · Lunes</div></div><button class="x" onclick="closeCustomer()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="dbody">
+    <div class="cdrow"><span class="k">Dirección</span><span class="v">Av. Industrial 1450, Stockton</span></div>
+    <div class="cdrow"><span class="k">Días de visita</span><span class="v">Lun · Jue</span></div>
+    <div class="cdrow"><span class="k">Ventana de entrega</span><span class="v">08:00 – 13:00</span></div>
+    <div class="cdrow"><span class="k">Cadencia</span><span class="v">2 visitas/sem · cada 2 sem</span></div>
+    <div class="cdrow"><span class="k">Tiempo de servicio</span><span class="v">25 min</span></div>
+    <div class="cdrow"><span class="k">Estado</span><span class="v"><span class="bdg g"><span class="d"></span>Activo</span></span></div>
+    <div class="sech">Sugerencias de ruta</div>
+    <div class="sugg">
+      <div class="st"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9"/></svg>Mover a Ruta 8 (Lunes)</div>
+      <div class="sd">Esta parada está más cerca del clúster de la ruta 8. Moverla reduce el solape con la ruta 7.</div>
+      <div class="sm"><span class="mi">Millas <b>−12,4</b></span><span class="mi">Tiempo <b>−18 min</b></span><span class="mi">Carga ruta 8 <b>+6 %</b></span></div>
+      <button class="btn sec" style="height:28px">Aplicar sugerencia</button>
+    </div>
+    <div class="sugg">
+      <div class="st"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00875A" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>Cambiar visita de Jue → Mié</div>
+      <div class="sd">El miércoles tiene capacidad libre y mantiene la cadencia de 2 visitas/semana.</div>
+      <div class="sm"><span class="mi">Millas <b>−5,1</b></span><span class="mi">Camión-días <b>−1</b></span></div>
+      <button class="btn ter" style="height:28px">Aplicar sugerencia</button>
+    </div>
+  </div>
+  <div class="dfoot"><button class="btn ter" onclick="closeCustomer()">Cerrar</button><button class="btn pri" onclick="closeCustomer()">Editar cliente</button></div>
+</div>
+
+<!-- ============ PROTOTYPE NAV ============ -->
+<div class="protonav" id="protonav">
+  <button data-n="list" class="on" onclick="goList()">1 · Lista</button>
+  <button data-n="wizard" onclick="openWizard()">2 · Crear</button>
+  <button data-n="compare" onclick="openCompare()">3 · Comparar</button>
+  <button data-n="canvas" onclick="openCanvas(false)">4 · Canvas</button>
+  <button data-n="findings" onclick="openCanvas(true);toggleFindings(true)">5 · Hallazgos</button>
+  <button data-n="changes" onclick="openCanvas(true);openChanges()">6 · Cambios</button>
+  <button data-n="activate" onclick="openCanvas(true);openActivate()">7 · Activar</button>
+  <button data-n="customer" onclick="openCanvas(true);openCustomer()">8 · Cliente</button>
+  <button data-n="errors" onclick="openCanvas(false);showErrPicker(event)">9 · Errores</button>
+</div>
+
+<script>
+var app=document.getElementById('app');
+function setProto(n){document.querySelectorAll('#protonav button').forEach(function(b){b.classList.toggle('on',b.dataset.n===n);});}
+
+/* ---------- SCREEN 1: Lista — selection + row menu ---------- */
+function upd(){
+  var cbs=[].slice.call(document.querySelectorAll('#view-list tbody input[type=checkbox]'));
+  var n=cbs.filter(function(c){return c.checked;}).length;
+  document.getElementById('bcnt').textContent=n+' seleccionado'+(n!==1?'s':'');
+  document.getElementById('tcard').classList.toggle('bulkon',n>0);
+  document.getElementById('bcmp').disabled=(n!==2);
+  var top=document.getElementById('cmpTop');top.disabled=(n!==2);top.textContent='Comparar planes ('+n+')';
+  var all=document.getElementById('cbAll');all.indeterminate=n>0&&n<cbs.length;all.checked=n>0&&n===cbs.length;
+}
+function rCb(cb){cb.closest('tr').classList.toggle('sel',cb.checked);upd();}
+function mAll(cb){[].slice.call(document.querySelectorAll('#view-list tbody input[type=checkbox]')).forEach(function(c){c.checked=cb.checked;c.closest('tr').classList.toggle('sel',cb.checked);});upd();}
+function menu(btn,st){
+  var ex=document.querySelector('.drop');if(ex){var s=ex._s;ex.remove();if(s===btn)return;}
+  var canDel=(st==='draft'||st==='archived');
+  var items=st==='archived'?[['Restaurar como borrador',0],['Duplicar',0],['sep'],['Eliminar',!canDel,1]]
+    :[['Activar plan',st==='active'],['Programar activación',0],['Archivar',0],['Duplicar',0],['sep'],['Eliminar',!canDel,1]];
+  var d=document.createElement('div');d.className='drop';d._s=btn;
+  d.innerHTML=items.map(function(i){return i[0]==='sep'?'<div class="dsep"></div>':'<div class="di'+(i[1]?' dis':'')+(i[2]?' dng':'')+'">'+i[0]+'</div>';}).join('');
+  var td=btn.closest('td');td.style.position='relative';td.appendChild(d);d.style.top='36px';d.style.right='8px';
+  setTimeout(function(){document.addEventListener('click',function h(e){if(!d.contains(e.target)){d.remove();document.removeEventListener('click',h);}});},0);
+}
+[].slice.call(document.querySelectorAll('#view-list tr[data-r]')).forEach(function(r){
+  r.addEventListener('mouseenter',function(){r.classList.add('hov');});
+  r.addEventListener('mouseleave',function(){r.classList.remove('hov');});
+});
+
+/* ---------- SCREEN 2: Wizard ---------- */
+var cur=1;
+function setStepper(){
+  [1,2,3].forEach(function(s){
+    var el=document.querySelector('#stepper .step[data-s="'+s+'"]');el.classList.remove('pending','active','done');
+    if(s<cur)el.classList.add('done');else if(s===cur)el.classList.add('active');else el.classList.add('pending');
+    if(s<3)document.querySelector('#stepper .step-line[data-l="'+s+'"]').classList.toggle('done',s<cur);
+    document.getElementById('p'+s).classList.toggle('hidden',s!==cur);
+  });
+  document.getElementById('backBtn').style.display=cur>1?'inline-flex':'none';
+  document.getElementById('nextBtn').textContent=cur===3?'Crear plan':'Continuar';
+}
+function openWizard(){cur=1;setStepper();document.getElementById('ovWizard').classList.add('on');setProto('wizard');}
+function closeWizard(){document.getElementById('ovWizard').classList.remove('on');setProto(app.dataset.view);}
+function goNext(){if(cur<3){cur++;setStepper();}else{closeWizard();openCanvas(false);}}
+function goBack(){if(cur>1){cur--;setStepper();}}
+function pick(el){
+  document.querySelectorAll('#p2 .rcard').forEach(function(c){c.classList.remove('sel');});el.classList.add('sel');
+  document.getElementById('sOrigin').textContent=el.querySelector('.rc-t').textContent.replace('Desde el catálogo de clientes activos','Catálogo de clientes activos');
+}
+
+/* ---------- SCREEN 3: Comparar ---------- */
+function openCompare(){document.getElementById('ovCompare').classList.add('on');setProto('compare');}
+function closeCompare(){document.getElementById('ovCompare').classList.remove('on');setProto(app.dataset.view);}
+
+/* ---------- SCREEN 4/5/9: Canvas ---------- */
+function goList(){app.dataset.view='list';document.getElementById('view-list').style.display='';document.getElementById('view-canvas').style.display='none';setProto('list');}
+function openCanvas(optimized){
+  app.dataset.view='canvas';document.getElementById('view-list').style.display='none';document.getElementById('view-canvas').style.display='flex';
+  hideErr();setOptimized(!!optimized);setProto('canvas');
+}
+function toggleAcc(id){var el=document.getElementById(id);if(el.classList.contains('disabled'))return;el.classList.toggle('closed');}
+
+function setOptimized(on){
+  // KPIs
+  document.querySelectorAll('#kpis .kpi.mt').forEach(function(k){k.classList.toggle('muted',!on);});
+  // bands
+  document.getElementById('bandUnrouted').style.display=on?'none':'flex';
+  document.getElementById('bandRouted').style.display=on?'flex':'none';
+  document.getElementById('dayBar').style.display=on?'flex':'none';
+  document.getElementById('bandStale').style.display='none';
+  // header actions
+  document.getElementById('btnChanges').disabled=!on;
+  document.getElementById('btnFindings').disabled=!on;
+  document.getElementById('btnActivate').disabled=!on;
+  document.getElementById('btnOpt').textContent=on?'Re-optimizar':'Optimizar semana';
+  // edition accordion
+  var a3=document.getElementById('a3');a3.classList.toggle('disabled',!on);
+  if(on){a3.classList.remove('show-note');}else{a3.classList.add('show-note','closed');}
+  // last opt label
+  document.getElementById('lastOpt').innerHTML=on?'Última optimización: hace 12 min':'El plan está en borrador. Aún no se ha optimizado.';
+  // pins
+  renderPins(on);
+  if(!on)toggleFindings(false);
+}
+function renderPins(on){
+  var box=document.getElementById('mapPins');
+  if(!on){
+    var html='<div class="depot" style="left:50%;top:48%">D</div>';
+    var pts=[[30,30],[36,33],[42,28],[28,42],[34,46],[40,44],[46,38],[52,30],[58,34],[62,42],[26,56],[33,58],[44,56],[55,52],[64,55],[70,40],[48,62],[38,66],[58,64],[68,62],[30,68],[50,70]];
+    pts.forEach(function(p){html+='<div class="unrouted" style="left:'+p[0]+'%;top:'+p[1]+'%"></div>';});
+    box.innerHTML=html;return;
+  }
+  var su=['var(--su2)','var(--su4)','var(--su7)','var(--su5)','var(--su3)','var(--su1)','var(--su6)'];
+  var lines=[[120,200],[140,150],[160,20],[130,240],[150,75],[110,310]];
+  var h='<div class="depot" style="left:52%;top:46%">D</div>';
+  lines.forEach(function(l,i){h+='<div class="route-line" style="left:52%;top:47%;width:'+l[0]+'px;background:'+su[i%su.length]+';transform:rotate('+l[1]+'deg)"></div>';});
+  var pins=[[30,38,17,0],[28,52,12,1],[34,60,5,4],[62,30,11,2],[70,55,4,4],[40,44,2,5],[46,66,1,6],[58,40,8,3],[66,46,7,3],[24,46,9,1]];
+  pins.forEach(function(p){h+='<div class="pin'+(p===pins[0]?' big':'')+'" style="left:'+p[0]+'%;top:'+p[1]+'%;background:'+su[p[3]]+'" onclick="openCustomer()"><span>'+p[2]+'</span></div>';});
+  box.innerHTML=h;
+}
+function optimize(){
+  hideErr();
+  var ld=document.getElementById('mapLoading');ld.classList.add('on');
+  setTimeout(function(){ld.classList.remove('on');setOptimized(true);toggleFindings(true);},1300);
+}
+function toggleFindings(on){document.getElementById('findings').classList.toggle('on',on);setProto(on?'findings':'canvas');}
+
+/* ---------- SCREEN 7: Activar ---------- */
+function openActivate(){document.getElementById('ovActivate').classList.add('on');setProto('activate');}
+function closeActivate(){document.getElementById('ovActivate').classList.remove('on');setProto('canvas');}
+function confirmActivate(){
+  closeActivate();
+  document.getElementById('planBadge').className='bdg g';document.getElementById('planBadge').innerHTML='<span class="d"></span>Programado';
+}
+
+/* ---------- SCREEN 6: Review Changes ---------- */
+function openChanges(){document.getElementById('wrapChanges').classList.add('on');document.getElementById('drawerChanges').classList.add('on');setProto('changes');}
+function closeChanges(){document.getElementById('wrapChanges').classList.remove('on');document.getElementById('drawerChanges').classList.remove('on');setProto('canvas');}
+function chTab(t,id){document.querySelectorAll('#drawerChanges .dtab').forEach(function(x){x.classList.remove('on');});t.classList.add('on');['chMove','chDays','chCust'].forEach(function(p){document.getElementById(p).style.display=p===id?'':'none';});}
+
+/* ---------- SCREEN 8: Cliente ---------- */
+function openCustomer(){document.getElementById('wrapCustomer').classList.add('on');document.getElementById('drawerCustomer').classList.add('on');setProto('customer');}
+function closeCustomer(){document.getElementById('wrapCustomer').classList.remove('on');document.getElementById('drawerCustomer').classList.remove('on');setProto('canvas');}
+
+/* ---------- SCREEN 9: Error states ---------- */
+var ERR={
+  infeasible:{c:'#DE350B',bg:'var(--r1)',icon:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/>',
+    t:'No se pudo generar un plan factible',m:'El optimizador no encontró una solución que cumpla todas las restricciones. Revisa estas causas probables:',
+    list:['Capacidad insuficiente: faltan ~2 camiones para la demanda del jueves.','Ventanas de entrega muy ajustadas en 18 paradas.','12 paradas no se pudieron asignar a ningún día del ciclo.'],
+    acts:'<button class="btn ter" onclick="hideErr()">Ajustar parámetros</button><button class="btn pri" onclick="hideErr()">Ver paradas en conflicto</button>'},
+  timeout:{c:'#FF8B00',bg:'var(--o1)',icon:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/>',
+    t:'La optimización superó el tiempo límite',m:'El plan es grande (540 paradas). Puedes reintentar o reducir el alcance:',
+    list:['Optimiza día por día en lugar de la semana completa.','Bloquea las rutas que ya estén bien para acotar el problema.','Reintenta: a veces converge en un segundo intento.'],
+    acts:'<button class="btn ter" onclick="hideErr()">Optimizar por día</button><button class="btn pri" onclick="optimize()">Reintentar</button>'},
+  geocoding:{c:'#FF8B00',bg:'var(--o1)',icon:'<path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    t:'12 paradas sin geocodificar',m:'No pudimos ubicar estas direcciones en el mapa. Se excluirán del ruteo hasta corregirlas:',
+    list:['8 direcciones con formato incompleto (falta ciudad o código postal).','3 direcciones ambiguas (varios resultados posibles).','1 dirección fuera del área de servicio.'],
+    acts:'<button class="btn ter" onclick="hideErr()">Excluir y continuar</button><button class="btn pri" onclick="hideErr()">Revisar direcciones</button>'},
+  offline:{c:'#67768D',bg:'var(--n2)',icon:'<path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><line x1="12" y1="20" x2="12" y2="20"/>',
+    t:'Sin conexión',m:'Perdimos la conexión con el servidor de optimización. Tus cambios locales están guardados.',
+    list:['Verifica tu conexión a internet.','El plan se conservó como borrador; nada se perdió.','Reintentaremos automáticamente al reconectar.'],
+    acts:'<button class="btn pri" onclick="hideErr()">Reintentar</button>'}
+};
+function showErr(type){
+  var e=ERR[type];var box=document.getElementById('errBox');
+  box.innerHTML='<div class="erricon" style="background:'+e.bg+'"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="'+e.c+'" stroke-width="2">'+e.icon+'</svg></div>'+
+    '<h3>'+e.t+'</h3><div class="em">'+e.m+'</div>'+
+    '<div class="errlist">'+e.list.map(function(l){return '<div class="el"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="'+e.c+'" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h0"/></svg><span>'+l+'</span></div>';}).join('')+'</div>'+
+    '<div class="erract">'+e.acts+'</div>';
+  document.getElementById('errPanel').classList.add('on');setProto('errors');
+}
+function hideErr(){document.getElementById('errPanel').classList.remove('on');if(app.dataset.view==='canvas')setProto('canvas');}
+function showErrPicker(ev){
+  ev.stopPropagation();
+  var ex=document.querySelector('.drop');if(ex)ex.remove();
+  var d=document.createElement('div');d.className='drop';d.style.bottom='52px';d.style.left='50%';d.style.position='fixed';d.style.transform='translateX(-50%)';
+  var opts=[['Infactible','infeasible'],['Timeout','timeout'],['Sin geocodificar','geocoding'],['Sin conexión','offline']];
+  d.innerHTML=opts.map(function(o){return '<div class="di" data-e="'+o[1]+'">'+o[0]+'</div>';}).join('');
+  document.body.appendChild(d);
+  d.querySelectorAll('.di').forEach(function(i){i.onclick=function(){showErr(i.dataset.e);d.remove();};});
+  setTimeout(function(){document.addEventListener('click',function h(e){if(!d.contains(e.target)){d.remove();document.removeEventListener('click',h);}});},0);
+}
+
+/* init */
+renderPins(false);setOptimized(false);setProto('list');
+</script>
+</body>
+</html>
