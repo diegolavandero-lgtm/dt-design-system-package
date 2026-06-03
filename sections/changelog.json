@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T13:37:45.541Z",
+  "generated": "2026-06-03T13:55:16.284Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "7797e5d",
+          "type": "feat",
+          "section": "General",
+          "message": "feat(DES-825): add Alerts Settings redesign prototype and DS review doc",
+          "author": "Carlos"
+        },
         {
           "hash": "265270f",
           "type": "feat",
