@@ -165,6 +165,11 @@ input,select{font-family:inherit}
 }
 .form-input:focus{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.18)}
 .form-input.error{border-color:#DE350B;box-shadow:0 0 0 3px rgba(222,53,11,.12)}
+.form-input:disabled{background:#F0F2F5;color:#8FA0BA;border-color:#E1E6ED;cursor:not-allowed}
+.multi-select-box.disabled{background:#F0F2F5;border-color:#E1E6ED;cursor:not-allowed;pointer-events:none}
+.multi-select-box.disabled .chip{opacity:.5}
+.check-row input:disabled + label{color:#8FA0BA;cursor:not-allowed}
+.check-row.disabled{opacity:.5;pointer-events:none}
 .form-error{font-size:11px;color:#DE350B;margin-top:4px;display:none}
 .form-input.error + .form-helper + .form-error,
 .form-input.error + .form-error{display:block}
@@ -530,13 +535,20 @@ function toggleSwitch(e, key) {
   const swt = document.getElementById('swt-' + key);
   const chip = document.getElementById('chip-' + key);
   alertStates[key] = !alertStates[key];
+  const on = alertStates[key];
 
-  swt.classList.toggle('on', alertStates[key]);
-  chip.classList.toggle('on', alertStates[key]);
-  chip.classList.toggle('off', !alertStates[key]);
-  chip.innerHTML = alertStates[key]
-    ? '<span class="dot"></span>Activa'
-    : '<span class="dot"></span>Pausada';
+  swt.classList.toggle('on', on);
+  chip.classList.toggle('on', on);
+  chip.classList.toggle('off', !on);
+  chip.innerHTML = on ? '<span class="dot"></span>Activa' : '<span class="dot"></span>Pausada';
+
+  // Disable / enable all form controls inside this row's body
+  const body = document.querySelector('#row-' + key + ' .alert-row-body');
+  if (body) {
+    body.querySelectorAll('input, select, textarea').forEach(el => el.disabled = !on);
+    body.querySelectorAll('.multi-select-box').forEach(el => el.classList.toggle('disabled', !on));
+    body.querySelectorAll('.check-row').forEach(el => el.classList.toggle('disabled', !on));
+  }
 
   markDirty();
 }
