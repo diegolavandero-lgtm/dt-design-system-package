@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T16:35:57.507Z",
+  "generated": "2026-06-03T19:23:16.124Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "2b53049",
+          "type": "feat",
+          "section": "General",
+          "message": "feat(DES-825): add Notify and Group selects to all alert rows",
+          "author": "Carlos"
+        },
         {
           "hash": "138cf69",
           "type": "update",
