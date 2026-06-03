@@ -225,7 +225,7 @@ button{font-family:inherit;cursor:pointer}
 /* status cell */
 .status-cell{min-width:0;padding-right:12px}
 .status-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#39414D}
-.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot{display:none}
 .status-pill{
   font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;
   text-transform:uppercase;letter-spacing:.03em;
@@ -233,7 +233,7 @@ button{font-family:inherit;cursor:pointer}
 .status-pill.crit{background:#FFEBE6;color:#BF2600}
 .status-pill.mand{background:#EAE6FF;color:#5243AA}
 .notif-name{font-size:12px;color:#67768D;margin-top:3px;padding-left:16px}
-.notif-name.add a{color:#0052CC;font-weight:600}
+.notif-name.add a{color:#0052CC;font-weight:400}
 .notif-name .muted{color:#8FA0BA}
 
 /* channel paused toggle — amber track, thumb stays left, pause icon inside */
