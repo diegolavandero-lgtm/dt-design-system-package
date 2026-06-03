@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:12:10.212Z",
+  "generated": "2026-06-03T20:19:41.375Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "bb55240",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-824): separate status header from notification rows for Partial delivery",
+          "author": "Carlos"
+        },
         {
           "hash": "b3dd499",
           "type": "feat",
