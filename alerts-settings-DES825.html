@@ -164,6 +164,16 @@ input,select{font-family:inherit}
   transition:border-color .12s,box-shadow .12s;
 }
 .form-input:focus{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.form-select{
+  width:100%;height:36px;border:1px solid #C5D2E7;border-radius:6px;
+  padding:0 32px 0 10px;font:400 13px 'DM Sans';color:#39414D;background:#fff;outline:0;
+  appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  transition:border-color .12s,box-shadow .12s;
+}
+.form-select:focus{border-color:#4B82FA;box-shadow:0 0 0 3px rgba(75,130,250,.18)}
+.form-select:disabled{background:#F0F2F5;color:#8FA0BA;border-color:#E1E6ED;cursor:not-allowed}
 .form-input.error{border-color:#DE350B;box-shadow:0 0 0 3px rgba(222,53,11,.12)}
 .form-input:disabled{background:#F0F2F5;color:#8FA0BA;border-color:#E1E6ED;cursor:not-allowed}
 .multi-select-box.disabled{background:#F0F2F5;border-color:#E1E6ED;cursor:not-allowed;pointer-events:none}
@@ -226,6 +236,12 @@ input,select{font-family:inherit}
   max-width:260px;pointer-events:none;
   box-shadow:0 4px 14px rgba(19,32,69,.18);
   display:none;
+}
+
+/* notify + group footer shared across all alert forms */
+.alert-form-footer{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  border-top:1px solid #F0F2F5;margin-top:8px;padding-top:16px;
 }
 
 /* validation notice */
@@ -423,6 +439,25 @@ input,select{font-family:inherit}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               Select at least one status to activate this alert.
             </div>
+            <div class="alert-form-footer">
+              <div class="form-row">
+                <div class="form-label">Notify</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All users</option>
+                  <option>Web users only</option>
+                  <option>Mobile users only</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Group</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All groups</option>
+                  <option>Group A</option>
+                  <option>Group B</option>
+                  <option>Group C</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -452,6 +487,25 @@ input,select{font-family:inherit}
               <input type="number" class="form-input" id="input-nota" min="1" max="5" value="3" oninput="markDirty();validateNumeric(this,1,5,'err-nota')" onblur="validateNumeric(this,1,5,'err-nota')">
               <div class="form-helper">Value between 1 (very bad) and 5 (excellent).</div>
               <div class="form-error" id="err-nota">Enter a value between 1 and 5.</div>
+            </div>
+            <div class="alert-form-footer">
+              <div class="form-row">
+                <div class="form-label">Notify</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All users</option>
+                  <option>Web users only</option>
+                  <option>Mobile users only</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Group</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All groups</option>
+                  <option>Group A</option>
+                  <option>Group B</option>
+                  <option>Group C</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -487,6 +541,25 @@ input,select{font-family:inherit}
               <input type="checkbox" id="chk-movil" onchange="markDirty()">
               <label for="chk-movil">Also notify the mobile user (driver)</label>
             </div>
+            <div class="alert-form-footer">
+              <div class="form-row">
+                <div class="form-label">Notify</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All users</option>
+                  <option>Web users only</option>
+                  <option>Mobile users only</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Group</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All groups</option>
+                  <option>Group A</option>
+                  <option>Group B</option>
+                  <option>Group C</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -516,6 +589,25 @@ input,select{font-family:inherit}
               <input type="number" class="form-input" id="input-minutos" min="1" max="999" value="20" oninput="markDirty();validateNumeric(this,1,999,'err-minutos')" onblur="validateNumeric(this,1,999,'err-minutos')">
               <div class="form-helper">Enter a value between 1 and 999 minutes.</div>
               <div class="form-error" id="err-minutos">Enter a value between 1 and 999.</div>
+            </div>
+            <div class="alert-form-footer">
+              <div class="form-row">
+                <div class="form-label">Notify</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All users</option>
+                  <option>Web users only</option>
+                  <option>Mobile users only</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Group</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All groups</option>
+                  <option>Group A</option>
+                  <option>Group B</option>
+                  <option>Group C</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -555,6 +647,25 @@ input,select{font-family:inherit}
               <input type="number" class="form-input" id="input-dwell" min="1" max="999" value="15" oninput="markDirty();validateNumeric(this,1,999,'err-dwell')" onblur="validateNumeric(this,1,999,'err-dwell')">
               <div class="form-helper">Enter a value between 1 and 999 minutes.</div>
               <div class="form-error" id="err-dwell">Enter a value between 1 and 999.</div>
+            </div>
+            <div class="alert-form-footer">
+              <div class="form-row">
+                <div class="form-label">Notify</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All users</option>
+                  <option>Web users only</option>
+                  <option>Mobile users only</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-label">Group</div>
+                <select class="form-select" onchange="markDirty()">
+                  <option>All groups</option>
+                  <option>Group A</option>
+                  <option>Group B</option>
+                  <option>Group C</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
