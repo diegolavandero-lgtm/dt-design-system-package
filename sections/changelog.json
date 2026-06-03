@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:10:31.644Z",
+  "generated": "2026-06-03T15:13:26.114Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "03e5349",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(DES-825): normalize all input widths to match Statuses field",
+          "author": "Carlos"
+        },
         {
           "hash": "06bf802",
           "type": "feat",
