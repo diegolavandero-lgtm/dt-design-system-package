@@ -784,12 +784,12 @@ textarea.inp{resize:vertical;min-height:72px;line-height:1.5}
 
         <!-- 5 · SCHEDULE -->
         <section class="section" id="s5">
-          <div class="section-head"><div class="section-num">5</div><div><h2>Schedule</h2><p>When can this notification go out?</p></div></div>
+          <div class="section-head"><div class="section-num">5</div><div><h2>Schedule</h2><p>Control when this notification fires.</p></div></div>
           <div class="section-body">
-            <label class="chk-row" style="padding-top:0"><input type="checkbox" id="quiet-toggle" onchange="document.getElementById('quiet-window').style.display=this.checked?'grid':'none'"><span class="ct">Set quiet hours<span class="cs">Hold notifications outside this window and send them when it reopens</span></span></label>
+            <label class="chk-row" style="padding-top:0"><input type="checkbox" id="quiet-toggle" onchange="toggleMuteWindow(this)"><span class="ct">Mute notifications<span class="cs">Silence this notification during a specific time window. It will not be queued or resent.</span></span></label>
             <div class="row2" id="quiet-window" style="display:none;margin-top:8px">
-              <div class="field" style="margin-bottom:0"><label>Send from</label><input class="inp" type="time" value="08:00"></div>
-              <div class="field" style="margin-bottom:0"><label>Send until</label><input class="inp" type="time" value="20:00"></div>
+              <div class="field" style="margin-bottom:0"><label>Mute from</label><input class="inp" type="time" value="08:00" id="mute-from" disabled></div>
+              <div class="field" style="margin-bottom:0"><label>Mute until</label><input class="inp" type="time" value="20:00" id="mute-until" disabled></div>
             </div>
           </div>
         </section>
@@ -1081,6 +1081,14 @@ let channel='email';
 let lastFocus=null;
 
 function setFocus(el){lastFocus=el;}
+function toggleMuteWindow(cb){
+  const win=document.getElementById('quiet-window');
+  const from=document.getElementById('mute-from');
+  const until=document.getElementById('mute-until');
+  win.style.display=cb.checked?'grid':'none';
+  from.disabled=!cb.checked;
+  until.disabled=!cb.checked;
+}
 function fmt(cmd){
   if(cmd==='createLink'){const url=prompt('Link URL:','https://');if(url)document.execCommand(cmd,false,url);}
   else document.execCommand(cmd,false,null);
