@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T19:58:41.105Z",
+  "generated": "2026-06-03T20:01:53.498Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "732b4f6",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-825): add subtle hover background to unread alert items",
+          "author": "Carlos"
+        },
         {
           "hash": "a209654",
           "type": "fix",
