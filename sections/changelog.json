@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:02:01.622Z",
+  "generated": "2026-06-03T14:03:54.910Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "93ca6a6",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-825): replace subestados with real production values",
+          "author": "Carlos"
+        },
         {
           "hash": "20a81fc",
           "type": "fix",
