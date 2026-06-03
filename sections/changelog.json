@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:58:32.935Z",
+  "generated": "2026-06-03T21:01:20.764Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "f365c90",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "feat(planner): collapsed LM sidebar + real Leaflet/OSM map with DS pins",
+          "author": "Diego"
+        },
         {
           "hash": "175b8e4",
           "type": "fix",
