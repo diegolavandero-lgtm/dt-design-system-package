@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:08:13.473Z",
+  "generated": "2026-06-03T15:10:31.644Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "06bf802",
+          "type": "feat",
+          "section": "General",
+          "message": "feat(DES-825): add missing 5th alert — excess dwell time",
+          "author": "Carlos"
+        },
         {
           "hash": "8751ddc",
           "type": "fix",
