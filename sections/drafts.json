@@ -1,0 +1,6 @@
+{
+  "title": "Draft components",
+  "titleKey": "nav.drafts.components",
+  "description": "Proposed components pending approval. No new component can enter the DS without passing through here first. Approve to choose where it lives.",
+  "keywords": ["drafts", "new", "components", "proposals", "pending", "review", "approve"]
+}

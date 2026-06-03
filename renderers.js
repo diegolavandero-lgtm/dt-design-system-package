@@ -3271,5 +3271,176 @@ async function downloadAllPins() {
     `;
   },
 
+  /* ── DRAFTS ── */
+  drafts(data) {
+    const STORAGE_KEY = 'dt-ds-drafts-v1';
+    return `
+      ${sectionHeader(data)}
+      <style>
+        .draft-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:4px}
+        .draft-card{background:#fff;border:1.5px dashed var(--o5);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}
+        .draft-card:hover{box-shadow:0 4px 16px rgba(19,32,69,.1)}
+        .draft-card.approved{border:1.5px solid var(--g5)}
+        .draft-card-preview{background:var(--n2);padding:24px;display:flex;align-items:center;justify-content:center;min-height:120px}
+        .draft-card-body{padding:14px 16px 10px;display:flex;flex-direction:column;gap:6px;flex:1}
+        .draft-badge{display:inline-flex;align-items:center;gap:4px;font:700 9px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px}
+        .draft-badge.pending{background:var(--o1);color:#7A4A00}
+        .draft-badge.approved{background:var(--g1);color:var(--g7)}
+        .draft-card-name{font:700 14px var(--font-sans);color:var(--n7)}
+        .draft-card-desc{font:400 12px var(--font-sans);color:var(--n5);line-height:1.5;flex:1}
+        .draft-card-footer{display:flex;gap:8px;padding:10px 16px 14px}
+        .draft-btn-approve{height:30px;padding:0 14px;border-radius:50px;font:700 12px var(--font-sans);background:var(--g6);color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+        .draft-btn-approve:hover{background:var(--g7)}
+        .draft-btn-discard{height:30px;padding:0 14px;border-radius:50px;font:700 12px var(--font-sans);background:#fff;color:var(--r6);border:1px solid var(--r6);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+        .draft-btn-discard:hover{background:var(--r1)}
+        .draft-empty{grid-column:1/-1;padding:48px 24px;text-align:center;background:#fff;border:1px solid var(--n3);border-radius:8px}
+        .draft-empty-icon{width:40px;height:40px;background:var(--n2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+        .draft-empty-title{font:700 14px var(--font-sans);color:var(--n6);margin-bottom:4px}
+        .draft-empty-sub{font:400 12px var(--font-sans);color:var(--n5);max-width:320px;margin:0 auto 16px}
+        .draft-add-btn{height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+        .draft-add-btn:hover{background:var(--b7)}
+        /* Approval modal */
+        .draft-modal-bg{position:fixed;inset:0;background:rgba(19,32,69,.5);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
+        .draft-modal{background:#fff;border-radius:12px;width:100%;max-width:460px;box-shadow:0 12px 48px rgba(19,32,69,.2)}
+        .draft-modal-head{padding:20px 20px 14px;border-bottom:1px solid var(--n3)}
+        .draft-modal-head h4{font:700 15px var(--font-sans);color:var(--n7);margin:0 0 4px}
+        .draft-modal-head p{font:400 13px var(--font-sans);color:var(--n5);margin:0}
+        .draft-modal-opts{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+        .draft-modal-opt{border:1.5px solid var(--n3);border-radius:8px;padding:12px 14px;cursor:pointer;transition:border-color .12s,background .12s}
+        .draft-modal-opt:hover{border-color:var(--b6);background:var(--b1)}
+        .draft-modal-opt.sel{border-color:var(--b6);background:var(--b1)}
+        .draft-modal-opt-title{font:700 13px var(--font-sans);color:var(--n7)}
+        .draft-modal-opt-desc{font:400 12px var(--font-sans);color:var(--n5);margin-top:2px}
+        .draft-modal-foot{padding:12px 20px;border-top:1px solid var(--n3);display:flex;justify-content:flex-end;gap:8px}
+      </style>
+
+      <!-- Approval modal -->
+      <div id="draft-modal-bg" class="draft-modal-bg" style="display:none" onclick="if(event.target===this)closeDraftModal()">
+        <div class="draft-modal">
+          <div class="draft-modal-head">
+            <h4 id="draft-modal-title">Approve component</h4>
+            <p>Where do you want to add it to the Design System?</p>
+          </div>
+          <div class="draft-modal-opts">
+            <div class="draft-modal-opt" onclick="selectDraftOpt(this,'new')">
+              <div class="draft-modal-opt-title">➕ New section</div>
+              <div class="draft-modal-opt-desc">Create a new nav section for this component.</div>
+            </div>
+            <div class="draft-modal-opt" onclick="selectDraftOpt(this,'existing')">
+              <div class="draft-modal-opt-title">📂 Existing section</div>
+              <div class="draft-modal-opt-desc">Add it inside an existing DS section.</div>
+            </div>
+            <div class="draft-modal-opt" onclick="selectDraftOpt(this,'replace')">
+              <div class="draft-modal-opt-title">🔄 Replace existing component</div>
+              <div class="draft-modal-opt-desc">This draft replaces a previous version of the same component.</div>
+            </div>
+          </div>
+          <div class="draft-modal-foot">
+            <button onclick="closeDraftModal()" style="height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:#fff;color:var(--n6);border:1px solid var(--n3);cursor:pointer">Cancel</button>
+            <button id="draft-confirm-btn" onclick="confirmDraftApproval()" disabled style="height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;opacity:.4">Confirm approval</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="draft-grid" class="draft-grid"></div>
+
+      <script>
+      (function(){
+        const KEY = '${STORAGE_KEY}';
+        let _activeIdx = null, _selectedOpt = null;
+
+        function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
+        function save(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
+
+        function render(){
+          const drafts = load();
+          const grid = document.getElementById('draft-grid');
+          if (!grid) return;
+          // update nav badge
+          const badge = document.getElementById('draft-nav-badge');
+          const pending = drafts.filter(d=>d.status==='pending').length;
+          if (badge){ badge.textContent=pending; badge.style.display=pending?'inline':'none'; }
+
+          if (!drafts.length){
+            grid.innerHTML = \`<div class="draft-empty">
+              <div class="draft-empty-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+              <div class="draft-empty-title">No draft components</div>
+              <div class="draft-empty-sub">When a new component is proposed it will appear here for review before entering the DS.</div>
+              <button class="draft-add-btn" onclick="window.__addDraft&&window.__addDraft()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add draft component
+              </button>
+            </div>\`;
+            return;
+          }
+
+          grid.innerHTML = drafts.map((d,i) => \`
+            <div class="draft-card \${d.status==='approved'?'approved':''}" id="dc-\${i}">
+              <div class="draft-card-preview">\${d.preview||'<span style="font:400 12px var(--font-sans);color:var(--n5)">No preview</span>'}</div>
+              <div class="draft-card-body">
+                <span class="draft-badge \${d.status==='approved'?'approved':'pending'}">\${d.status==='approved'?'✓ Approved':'Pending review'}</span>
+                \${d.addedTo?'<span style="font:400 11px var(--font-sans);color:var(--n5)">→ '+d.addedTo+'</span>':''}
+                <div class="draft-card-name">\${d.name}</div>
+                <div class="draft-card-desc">\${d.description||''}</div>
+              </div>
+              \${d.status==='pending'?\`
+              <div class="draft-card-footer">
+                <button class="draft-btn-approve" onclick="openDraftModal(\${i})">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Approve
+                </button>
+                <button class="draft-btn-discard" onclick="discardDraft(\${i})">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Discard
+                </button>
+              </div>\`:''}
+            </div>
+          \`).join('');
+        }
+
+        window.openDraftModal = function(idx){
+          _activeIdx = idx; _selectedOpt = null;
+          const d = load()[idx];
+          document.getElementById('draft-modal-title').textContent = 'Approve: ' + d.name;
+          document.querySelectorAll('.draft-modal-opt').forEach(o=>o.classList.remove('sel'));
+          const btn = document.getElementById('draft-confirm-btn');
+          btn.disabled=true; btn.style.opacity='.4';
+          document.getElementById('draft-modal-bg').style.display='flex';
+        };
+        window.closeDraftModal = function(){
+          document.getElementById('draft-modal-bg').style.display='none';
+          _activeIdx=null; _selectedOpt=null;
+        };
+        window.selectDraftOpt = function(el, val){
+          document.querySelectorAll('.draft-modal-opt').forEach(o=>o.classList.remove('sel'));
+          el.classList.add('sel'); _selectedOpt=val;
+          const btn=document.getElementById('draft-confirm-btn');
+          btn.disabled=false; btn.style.opacity='1';
+        };
+        window.confirmDraftApproval = function(){
+          if(_activeIdx===null||!_selectedOpt) return;
+          const labels={new:'New section',existing:'Existing section',replace:'Replace existing'};
+          const drafts=load();
+          drafts[_activeIdx].status='approved';
+          drafts[_activeIdx].addedTo=labels[_selectedOpt];
+          save(drafts); closeDraftModal(); render();
+        };
+        window.discardDraft = function(idx){
+          if(!confirm('Discard this draft? It will be removed.')) return;
+          const drafts=load(); drafts.splice(idx,1); save(drafts); render();
+        };
+        // Public API — call from anywhere to propose a new component
+        window.addDraft = function(name, description, previewHtml){
+          if(!name){ name=prompt('Component name:'); if(!name) return; }
+          if(!description){ description=prompt('Short description:',''); }
+          const drafts=load();
+          drafts.push({name, description:description||'', preview:previewHtml||'', status:'pending'});
+          save(drafts); render();
+        };
+        window.__addDraft = function(){ window.addDraft(); };
+
+        render();
+      })();
+      <\/script>
+    `;
+  },
 
 };

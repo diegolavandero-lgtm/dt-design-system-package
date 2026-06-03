@@ -702,6 +702,11 @@ const NAV = [
       icon: null,
       path: 'sections/figma.json', renderer: 'figma' },
   ]},
+  { group: 'Drafts', i18n: 'nav.drafts', items: [
+    { id: 'drafts', label: 'Draft components', i18n: 'nav.drafts.components',
+      icon: 'M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z',
+      path: 'sections/drafts.json', renderer: 'drafts' },
+  ]},
 ];
 
 /* ================================================================
@@ -778,9 +783,13 @@ function buildNav() {
       } else if (item.icon) {
         iconHtml = `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${item.icon}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       }
+      const badgeHtmlNav = item.id === 'drafts'
+        ? `<span id="draft-nav-badge" style="display:none;background:#FFAB00;color:#fff;font:700 9px var(--font-sans);border-radius:99px;padding:1px 6px;line-height:16px;margin-left:auto"></span>`
+        : '';
       html += `<a href="#${item.id}" class="snav" data-sec="${item.id}" data-i18n="${item.i18n || ''}" data-label="${item.label.toLowerCase()}" onclick="navigate('${item.id}');return false;">
         ${iconHtml}
         <span>${item.label}</span>
+        ${badgeHtmlNav}
       </a>`;
     });
   });
