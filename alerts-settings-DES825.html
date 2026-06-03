@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Alertas — DispatchTrack</title>
+<title>Alerts — DispatchTrack</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 /* ── RESET ── */
@@ -262,45 +262,45 @@ input,select{font-family:inherit}
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <aside class="sidebar">
   <div class="sb-icons">
-    <div class="sb-icon-btn" title="Actividad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-    <div class="sb-icon-btn" title="Rutas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h4"/></svg></div>
-    <div class="sb-icon-btn" title="Pedidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-    <div class="sb-icon-btn" title="Flota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-    <div class="sb-icon-btn" title="Estadísticas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-    <div class="sb-icon-btn" title="Alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-    <div class="sb-icon-btn" title="Clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-    <div class="sb-icon-btn" title="Reportes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-    <div class="sb-icon-btn" title="Mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-    <div class="sb-icon-btn active" title="Configuración"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-    <div class="sb-icon-btn" title="Importar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+    <div class="sb-icon-btn" title="Activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="sb-icon-btn" title="Routes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h4"/></svg></div>
+    <div class="sb-icon-btn" title="Orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+    <div class="sb-icon-btn" title="Fleet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+    <div class="sb-icon-btn" title="Stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    <div class="sb-icon-btn" title="Alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+    <div class="sb-icon-btn" title="Customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <div class="sb-icon-btn" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+    <div class="sb-icon-btn" title="Map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+    <div class="sb-icon-btn active" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+    <div class="sb-icon-btn" title="Import"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
     <div class="sb-icon-btn" title="Integraciones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
   </div>
 
   <nav class="sb-nav">
-    <div class="sb-group">Cuenta</div>
-    <div class="sb-item">Configuración de cuenta</div>
-    <div class="sb-group">Usuarios</div>
-    <div class="sb-item">Usuarios web <span class="sb-badge">24</span></div>
-    <div class="sb-item">Usuarios móviles <span class="sb-badge">57</span></div>
-    <div class="sb-group">Gestionar</div>
-    <div class="sb-item">Vehículos</div>
-    <div class="sb-item">Subestados</div>
-    <div class="sb-item">Pruebas de entrega</div>
-    <div class="sb-item">Formularios de ruta</div>
-    <div class="sb-item">Centros de distribución</div>
-    <div class="sb-item">Agrupaciones</div>
-    <div class="sb-item active">Alertas</div>
-    <div class="sb-item">Notificaciones</div>
-    <div class="sb-item">Configuración de operación</div>
-    <div class="sb-group">Configuración avanzada</div>
-    <div class="sb-item">Importar órdenes</div>
-    <div class="sb-item">Campos personalizados</div>
-    <div class="sb-item">Llaves API</div>
+    <div class="sb-group">Account</div>
+    <div class="sb-item">Account configuration</div>
+    <div class="sb-group">Users</div>
+    <div class="sb-item">Web users <span class="sb-badge">24</span></div>
+    <div class="sb-item">Mobile users <span class="sb-badge">57</span></div>
+    <div class="sb-group">Manage</div>
+    <div class="sb-item">Vehicles</div>
+    <div class="sb-item">Substatuses</div>
+    <div class="sb-item">Proof of deliveries</div>
+    <div class="sb-item">Route forms</div>
+    <div class="sb-item">Distribution centers</div>
+    <div class="sb-item">Group categories</div>
+    <div class="sb-item active">Alerts</div>
+    <div class="sb-item">Notifications</div>
+    <div class="sb-item">Operation setup</div>
+    <div class="sb-group">Advanced settings</div>
+    <div class="sb-item">Import orders</div>
+    <div class="sb-item">Custom fields</div>
+    <div class="sb-item">API Keys</div>
     <div class="sb-item">Webhooks</div>
-    <div class="sb-item">Etiquetas de órdenes</div>
-    <div class="sb-item">Seguridad</div>
+    <div class="sb-item">Order labels</div>
+    <div class="sb-item">Security</div>
     <div class="sb-group">Widget</div>
-    <div class="sb-item">Seguimiento de pedidos</div>
+    <div class="sb-item">Order tracking</div>
   </nav>
 </aside>
 
@@ -309,11 +309,11 @@ input,select{font-family:inherit}
 
   <!-- page header -->
   <div class="page-header">
-    <h1>Alertas</h1>
+    <h1>Alerts</h1>
     <div class="page-header-actions">
-      <button class="btn" onclick="exportExcel()">Exportar a Excel</button>
-      <button class="btn" onclick="cancelChanges()">Cancelar</button>
-      <button class="btn primary" id="btn-save" onclick="saveChanges()">Guardar cambios</button>
+      <button class="btn" onclick="exportExcel()">Export to Excel</button>
+      <button class="btn" onclick="cancelChanges()">Cancel</button>
+      <button class="btn primary" id="btn-save" onclick="saveChanges()">Save changes</button>
     </div>
   </div>
 
@@ -324,9 +324,9 @@ input,select{font-family:inherit}
 
       <!-- list header -->
       <div class="alert-list-head">
-        <div class="lh">Tipo de alerta</div>
-        <div class="lh">Estado</div>
-        <div class="lh">Activar / pausar</div>
+        <div class="lh">Alert type</div>
+        <div class="lh">Status</div>
+        <div class="lh">Enable / pause</div>
       </div>
 
       <!-- ── ROW 1: Por estados ── -->
@@ -335,12 +335,12 @@ input,select{font-family:inherit}
           <div class="alert-row-info">
             <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             <div class="alert-row-text">
-              <div class="alert-row-name">Alerta por estado</div>
-              <div class="alert-row-desc">Notifica cuando una entrega cambia a uno de los estados o subestados seleccionados.</div>
+              <div class="alert-row-name">Alert by status</div>
+              <div class="alert-row-desc">Notifies when a delivery changes to one of the selected statuses or substatuses.</div>
             </div>
           </div>
           <div class="status-chip on" id="chip-estados">
-            <span class="dot"></span>Activa
+            <span class="dot"></span>Active
           </div>
           <div class="swt on" id="swt-estados" onclick="toggleSwitch(event,'estados')" title="Pausar alerta por estado"></div>
         </div>
@@ -348,63 +348,63 @@ input,select{font-family:inherit}
           <div class="alert-form" id="form-estados">
             <div class="form-row">
               <div class="form-label">
-                Estados
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Selecciona los estados de entrega que disparan esta alerta."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                Statuses
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Select the delivery statuses that trigger this alert."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
               </div>
               <!-- multi-select: Estados (single selection for parent state) -->
               <div class="multi-select-wrap">
                 <div class="multi-select-box" id="ms-estados" onclick="openDropdown('dd-estados')">
-                  <span class="ms-placeholder" id="pl-estados">Selecciona un estado…</span>
+                  <span class="ms-placeholder" id="pl-estados">Select a status…</span>
                 </div>
                 <div class="ms-dropdown" id="dd-estados">
-                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Entregado','Entregado')">
-                    <input type="checkbox" id="opt-entregado"> Entregado
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Delivered','Delivered')">
+                    <input type="checkbox" id="opt-entregado"> Delivered
                   </div>
-                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Fallido','Fallido')">
-                    <input type="checkbox" id="opt-fallido"> Fallido
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Failed','Failed')">
+                    <input type="checkbox" id="opt-fallido"> Failed
                   </div>
-                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','En ruta','En ruta')">
-                    <input type="checkbox" id="opt-enruta"> En ruta
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','On the way','On the way')">
+                    <input type="checkbox" id="opt-enruta"> On the way
                   </div>
-                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Pendiente','Pendiente')">
-                    <input type="checkbox" id="opt-pendiente"> Pendiente
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Pending','Pending')">
+                    <input type="checkbox" id="opt-pendiente"> Pending
                   </div>
-                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Cancelado','Cancelado')">
-                    <input type="checkbox" id="opt-cancelado"> Cancelado
+                  <div class="ms-option" onclick="toggleOption('dd-estados','ms-estados','pl-estados','Cancelled','Cancelled')">
+                    <input type="checkbox" id="opt-cancelado"> Cancelled
                   </div>
                 </div>
               </div>
-              <div class="form-helper">Selecciona al menos un estado para activar esta alerta.</div>
+              <div class="form-helper">Select at least one status to activate this alert.</div>
             </div>
 
             <div class="form-row">
               <div class="form-label">
-                Subestados
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Filtra por subestados específicos dentro de los estados seleccionados."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                Substatuses
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Filter by specific substatuses within the selected statuses."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
               </div>
               <div class="multi-select-wrap">
                 <div class="multi-select-box" id="ms-sub" onclick="openDropdown('dd-sub')">
-                  <span class="chip">Entregado a cliente <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Dirección errónea <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Cliente ausente <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Producto rechazado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="chip">Producto dañado <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
-                  <span class="ms-placeholder" id="pl-sub" style="display:none">Selecciona subestados…</span>
+                  <span class="chip">Delivered to customer <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Wrong address <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Customer absent <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Product rejected <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="chip">Damaged product <button onclick="removeChip(event,this,'ms-sub','pl-sub')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>
+                  <span class="ms-placeholder" id="pl-sub" style="display:none">Select substatuses…</span>
                 </div>
                 <div class="ms-dropdown" id="dd-sub">
-                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Entregado a cliente','Entregado a cliente')"><input type="checkbox" checked> Entregado a cliente</div>
-                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Dirección errónea','Dirección errónea')"><input type="checkbox" checked> Dirección errónea</div>
-                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Cliente ausente','Cliente ausente')"><input type="checkbox" checked> Cliente ausente</div>
-                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Producto rechazado','Producto rechazado')"><input type="checkbox" checked> Producto rechazado</div>
-                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Producto dañado','Producto dañado')"><input type="checkbox" checked> Producto dañado</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Delivered to customer','Delivered to customer')"><input type="checkbox" checked> Delivered to customer</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Wrong address','Wrong address')"><input type="checkbox" checked> Wrong address</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Customer absent','Customer absent')"><input type="checkbox" checked> Customer absent</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Product rejected','Product rejected')"><input type="checkbox" checked> Product rejected</div>
+                  <div class="ms-option selected" onclick="toggleOption('dd-sub','ms-sub','pl-sub','Damaged product','Damaged product')"><input type="checkbox" checked> Damaged product</div>
                 </div>
               </div>
-              <div class="form-helper">Opcional. Deja vacío para recibir alertas de todos los subestados.</div>
+              <div class="form-helper">Optional. Leave empty to receive alerts for all substatuses.</div>
             </div>
 
             <div class="validation-notice" id="vn-estados">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              Selecciona al menos un estado para activar esta alerta.
+              Select at least one status to activate this alert.
             </div>
           </div>
         </div>
@@ -416,12 +416,12 @@ input,select{font-family:inherit}
           <div class="alert-row-info">
             <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             <div class="alert-row-text">
-              <div class="alert-row-name">Alerta por feedback</div>
-              <div class="alert-row-desc">Notifica cuando la calificación de entrega del cliente es igual o menor al umbral configurado.</div>
+              <div class="alert-row-name">Alert by feedback</div>
+              <div class="alert-row-desc">Notifies when the customer's delivery rating is equal to or lower than the configured threshold.</div>
             </div>
           </div>
           <div class="status-chip on" id="chip-feedback">
-            <span class="dot"></span>Activa
+            <span class="dot"></span>Active
           </div>
           <div class="swt on" id="swt-feedback" onclick="toggleSwitch(event,'feedback')" title="Pausar alerta por feedback"></div>
         </div>
@@ -429,12 +429,12 @@ input,select{font-family:inherit}
           <div class="alert-form">
             <div class="form-row" style="max-width:200px">
               <div class="form-label">
-                Calificación mínima (1–5)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="La alerta se activa cuando el cliente da una calificación igual o menor a este valor."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                Minimum rating (1–5)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the customer gives a rating equal to or lower than this value."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
               </div>
               <input type="number" class="form-input" id="input-nota" min="1" max="5" value="3" oninput="markDirty();validateNumeric(this,1,5,'err-nota')" onblur="validateNumeric(this,1,5,'err-nota')">
-              <div class="form-helper">Valor entre 1 (muy malo) y 5 (excelente).</div>
-              <div class="form-error" id="err-nota">Ingresa un valor entre 1 y 5.</div>
+              <div class="form-helper">Value between 1 (very bad) and 5 (excellent).</div>
+              <div class="form-error" id="err-nota">Enter a value between 1 and 5.</div>
             </div>
           </div>
         </div>
@@ -446,12 +446,12 @@ input,select{font-family:inherit}
           <div class="alert-row-info">
             <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             <div class="alert-row-text">
-              <div class="alert-row-name">Alerta por entrega fuera de rango</div>
-              <div class="alert-row-desc">Notifica cuando el conductor está a más de la distancia configurada del punto de entrega.</div>
+              <div class="alert-row-name">Alert by out-of-range delivery</div>
+              <div class="alert-row-desc">Notifies when the driver is further than the configured distance from the delivery point.</div>
             </div>
           </div>
           <div class="status-chip on" id="chip-rango">
-            <span class="dot"></span>Activa
+            <span class="dot"></span>Active
           </div>
           <div class="swt on" id="swt-rango" onclick="toggleSwitch(event,'rango')" title="Pausar alerta por rango"></div>
         </div>
@@ -459,16 +459,16 @@ input,select{font-family:inherit}
           <div class="alert-form">
             <div class="form-row" style="max-width:240px">
               <div class="form-label">
-                Distancia máxima (metros)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="La alerta se activa cuando el conductor supera esta distancia al punto de entrega."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                Maximum distance (meters)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the driver exceeds this distance from the delivery point."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
               </div>
               <input type="number" class="form-input" id="input-distancia" min="1" max="9999" value="200" oninput="markDirty();validateNumeric(this,1,9999,'err-distancia')" onblur="validateNumeric(this,1,9999,'err-distancia')">
-              <div class="form-helper">Ingresa un valor entre 1 y 9.999 metros.</div>
-              <div class="form-error" id="err-distancia">Ingresa un valor entre 1 y 9.999.</div>
+              <div class="form-helper">Enter a value between 1 and 9,999 meters.</div>
+              <div class="form-error" id="err-distancia">Enter a value between 1 and 9,999.</div>
             </div>
             <div class="check-row">
               <input type="checkbox" id="chk-movil" onchange="markDirty()">
-              <label for="chk-movil">Notificar también al usuario móvil (conductor)</label>
+              <label for="chk-movil">Also notify the mobile user (driver)</label>
             </div>
           </div>
         </div>
@@ -480,12 +480,12 @@ input,select{font-family:inherit}
           <div class="alert-row-info">
             <svg class="alert-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             <div class="alert-row-text">
-              <div class="alert-row-name">Alerta por entrega fuera de tiempo</div>
-              <div class="alert-row-desc">Notifica cuando una entrega supera el tiempo máximo estimado configurado.</div>
+              <div class="alert-row-name">Alert by out-of-time delivery</div>
+              <div class="alert-row-desc">Notifies when a delivery exceeds the configured maximum estimated time.</div>
             </div>
           </div>
           <div class="status-chip on" id="chip-tiempo">
-            <span class="dot"></span>Activa
+            <span class="dot"></span>Active
           </div>
           <div class="swt on" id="swt-tiempo" onclick="toggleSwitch(event,'tiempo')" title="Pausar alerta por tiempo"></div>
         </div>
@@ -493,12 +493,12 @@ input,select{font-family:inherit}
           <div class="alert-form">
             <div class="form-row" style="max-width:200px">
               <div class="form-label">
-                Tiempo máximo (minutos)
-                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="La alerta se activa cuando la entrega supera este número de minutos desde la llegada al punto."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
+                Maximum time (minutes)
+                <svg class="help-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="The alert triggers when the delivery exceeds this number of minutes from arrival at the stop."><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor" stroke="none"/></svg>
               </div>
               <input type="number" class="form-input" id="input-minutos" min="1" max="999" value="20" oninput="markDirty();validateNumeric(this,1,999,'err-minutos')" onblur="validateNumeric(this,1,999,'err-minutos')">
-              <div class="form-helper">Ingresa un valor entre 1 y 999 minutos.</div>
-              <div class="form-error" id="err-minutos">Ingresa un valor entre 1 y 999.</div>
+              <div class="form-helper">Enter a value between 1 and 999 minutes.</div>
+              <div class="form-error" id="err-minutos">Enter a value between 1 and 999.</div>
             </div>
           </div>
         </div>
@@ -513,7 +513,7 @@ input,select{font-family:inherit}
 <!-- ═══════════════ TOAST ═══════════════ -->
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  Configuración de alertas guardada
+  Alert settings saved
 </div>
 
 <script>
@@ -540,7 +540,7 @@ function toggleSwitch(e, key) {
   swt.classList.toggle('on', on);
   chip.classList.toggle('on', on);
   chip.classList.toggle('off', !on);
-  chip.innerHTML = on ? '<span class="dot"></span>Activa' : '<span class="dot"></span>Pausada';
+  chip.innerHTML = on ? '<span class="dot"></span>Active' : '<span class="dot"></span>Paused';
 
   // Disable / enable all form controls inside this row's body
   const body = document.querySelector('#row-' + key + ' .alert-row-body');
