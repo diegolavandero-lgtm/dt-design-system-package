@@ -2862,16 +2862,6 @@ async function downloadAllPins() {
       </div>`;
     }).join('');
 
-    // ── Filter helpers ─────────────────────────────────────────────────
-    const fsel = (lbl) => `<div class="inp" style="height:32px;min-width:0;flex-shrink:0;cursor:pointer;justify-content:space-between;gap:4px;padding:0 8px"><span style="font:400 12px var(--font-sans);color:var(--n6);white-space:nowrap">${escHtml(lbl)}</span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>`;
-    const finp  = (ph) => `<div class="inp" style="height:32px;flex-shrink:0;min-width:160px;gap:6px;padding:0 10px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span style="font:400 12px var(--font-sans);color:var(--n5)">${escHtml(ph)}</span></div>`;
-    const fdate = (ph) => `<div class="inp" style="height:32px;flex-shrink:0;gap:6px;padding:0 8px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--n45)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span style="font:400 12px var(--font-sans);color:var(--n5)">${escHtml(ph)}</span></div>`;
-    const fibtn = (active) => active
-      ? `<button class="btn" style="width:32px;height:32px;padding:0;border-radius:6px;background:var(--o5);border:1px solid var(--o5);flex-shrink:0;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 32 32" fill="#fff"><path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/></svg></button>`
-      : `<button class="btn sec" style="width:32px;height:32px;padding:0;border-radius:6px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 32 32" fill="var(--r6)"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16z"/></svg></button>`;
-
-    const [f1, f2, f3, f4] = data.filters?.row1 || [];
-    const [s1, s2, s3, s4] = data.filters?.row2 || [];
 
     return `
       ${sbStyle}
@@ -2910,21 +2900,46 @@ async function downloadAllPins() {
               <button class="btn pri" style="padding:0 14px;gap:5px"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
             </div>
 
-            <!-- Filter bar (white card) -->
-            <div class="card" style="padding:10px 12px;display:flex;flex-direction:column;gap:8px;margin:0">
-              <div style="display:flex;align-items:center;gap:6px">
-                ${fsel(f1||'Código de orden')}${fsel(f2||'Tipo de fecha para filtrar')}${fdate(f3||'Seleccionar fecha')}${fsel(f4||'Estado')}
-                <div style="display:inline-flex;align-items:center;gap:6px;font:400 12px var(--font-sans);color:var(--n6);white-space:nowrap;flex-shrink:0"><div class="chk" style="flex-shrink:0"></div>Filtrar por último despacho</div>
-                <div style="margin-left:auto;display:inline-flex;gap:5px;flex-shrink:0">${fibtn(true)}${fibtn(false)}</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:6px">
-                ${fsel(s1||'Subestado')}${finp(s2||'Nombre del contacto')}${fsel(s3||'Identificador de contacto')}${fsel(s4||'Vehículo')}
-                <div style="margin-left:auto;display:inline-flex;gap:5px;flex-shrink:0">${fibtn(true)}${fibtn(false)}</div>
-              </div>
-            </div>
+            <!-- Container: filter bar + table -->
+            <div style="border-radius:8px;border:1px solid var(--n4);background:#fff;padding:20px;display:flex;flex-direction:column;gap:20px">
 
-            <!-- Table (exact DS table component) -->
-            <div class="card flush" style="margin:0">
+              <!-- Filter bar (from Filters component) -->
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="position:relative;flex:1;min-width:0">
+                  <input type="text" placeholder="Código de orden" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+                </div>
+                <div style="position:relative;flex:1;min-width:0">
+                  <select style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n5);box-sizing:border-box;outline:none;padding:0 28px 0 10px;-webkit-appearance:none;appearance:none;cursor:pointer" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';if(this.value)this.style.color='var(--n7)'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+                    <option value="" disabled selected>Tipo de fecha para filtrar</option>
+                    <option value="fecha-creacion">Fecha de creación</option>
+                    <option value="fecha-ruta">Fecha de ruta</option>
+                  </select>
+                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5);pointer-events:none"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></div>
+                </div>
+                <div style="position:relative;flex:1;min-width:0">
+                  <input type="text" placeholder="Seleccionar fecha" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 34px 0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5);pointer-events:none"><svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0"><path d="M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z"/></svg></div>
+                </div>
+                <div style="position:relative;flex:1;min-width:0">
+                  <select style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n5);box-sizing:border-box;outline:none;padding:0 28px 0 10px;-webkit-appearance:none;appearance:none;cursor:pointer" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';if(this.value)this.style.color='var(--n7)'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+                    <option value="" disabled selected>Estado</option>
+                    <option value="entregado">Entregado</option>
+                    <option value="no-entregado">No entregado</option>
+                    <option value="por-entregar">Por entregar</option>
+                  </select>
+                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5);pointer-events:none"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></div>
+                </div>
+                <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'" onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'">Filtrar</button>
+                <button title="Add more filters" style="width:32px;height:32px;border:1px solid var(--b6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
+                  ${iconSvg('filter--add', 24, 'var(--b6)')}
+                </button>
+                <button title="Reset filters" style="width:32px;height:32px;border:1px solid var(--r6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
+                  ${iconSvg('filter--reset', 24, 'var(--r6)')}
+                </button>
+              </div>
+
+              <!-- Table (exact DS table component) -->
+              <div style="border-radius:0;overflow:auto">
               <table class="tbl">
                 <thead><tr>
                   <th style="width:40px;padding:9px 8px 9px 16px"><div class="chk"></div></th>
@@ -2934,6 +2949,8 @@ async function downloadAllPins() {
                 <tbody>${rows}</tbody>
               </table>
             </div>
+
+            </div><!-- end container (filter bar + table) -->
 
             <!-- Pagination -->
             <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px">
