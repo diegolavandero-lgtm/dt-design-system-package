@@ -221,21 +221,6 @@ input,select{font-family:inherit}
 .validation-notice svg{width:14px;height:14px;color:#FFAB00;flex-shrink:0}
 
 /* ════════════════════════
-   STICKY SAVE BAR
-════════════════════════ */
-.save-bar{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:#fff;border-top:1px solid #E1E6ED;
-  padding:12px 24px;
-  display:flex;align-items:center;justify-content:flex-end;gap:10px;
-  box-shadow:0 -4px 16px rgba(19,32,69,.07);
-  transform:translateY(100%);transition:transform .2s;
-}
-.save-bar.visible{transform:translateY(0)}
-.save-bar .dirty-hint{flex:1;font-size:12px;color:#67768D;display:flex;align-items:center;gap:6px}
-.save-bar .dirty-hint svg{width:13px;height:13px;color:#FFAB00;flex-shrink:0}
-
-/* ════════════════════════
    TOAST
 ════════════════════════ */
 .toast{
@@ -248,25 +233,7 @@ input,select{font-family:inherit}
 .toast.show{transform:translateY(0);opacity:1}
 .toast svg{width:16px;height:16px;stroke:#fff;stroke-width:3;fill:none;flex-shrink:0}
 
-/* ════════════════════════
-   UNSAVED LEAVE BANNER
-════════════════════════ */
-.nav-warning{
-  display:none;
-  align-items:center;gap:8px;
-  background:#FFFAE6;border:1px solid #FFE380;border-radius:6px;
-  padding:10px 14px;font-size:12px;color:#39414D;
-  margin:12px 24px 0;
-}
-.nav-warning.show{display:flex}
-.nav-warning svg{width:14px;height:14px;color:#FFAB00;flex-shrink:0}
-.nav-warning strong{font-weight:700}
-.nav-warning .nw-actions{margin-left:auto;display:flex;gap:8px}
-.nav-warning .nw-actions button{font-size:11px;font-weight:700;font-family:inherit;padding:4px 10px;border-radius:999px;cursor:pointer;border:1px solid transparent}
-.nav-warning .nw-actions .nw-save{background:#1F60ED;color:#fff;border-color:#1F60ED}
-.nav-warning .nw-actions .nw-save:hover{background:#0052CC}
-.nav-warning .nw-actions .nw-discard{background:#fff;color:#67768D;border-color:#C5D2E7}
-.nav-warning .nw-actions .nw-discard:hover{background:#F5F6FA}
+
 </style>
 </head>
 <body>
@@ -339,16 +306,6 @@ input,select{font-family:inherit}
 <!-- ═══════════════ MAIN ═══════════════ -->
 <div class="main">
 
-  <!-- unsaved leave banner -->
-  <div class="nav-warning" id="nav-warning">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    <span><strong>Tienes cambios sin guardar.</strong> ¿Guardar antes de salir?</span>
-    <div class="nw-actions">
-      <button class="nw-discard" onclick="discardChanges()">Descartar</button>
-      <button class="nw-save" onclick="saveChanges()">Guardar</button>
-    </div>
-  </div>
-
   <!-- page header -->
   <div class="page-header">
     <div class="page-header-text">
@@ -360,6 +317,8 @@ input,select{font-family:inherit}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Exportar a Excel
       </button>
+      <button class="btn" onclick="cancelChanges()">Cancelar</button>
+      <button class="btn primary" id="btn-save" onclick="saveChanges()">Guardar cambios</button>
     </div>
   </div>
 
@@ -573,16 +532,6 @@ input,select{font-family:inherit}
 </div><!-- /main -->
 </div><!-- /shell -->
 
-<!-- ═══════════════ STICKY SAVE BAR ═══════════════ -->
-<div class="save-bar" id="save-bar">
-  <div class="dirty-hint">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    Tienes cambios sin guardar
-  </div>
-  <button class="btn" onclick="cancelChanges()">Cancelar</button>
-  <button class="btn primary" id="btn-save" onclick="saveChanges()">Guardar cambios</button>
-</div>
-
 <!-- ═══════════════ TOAST ═══════════════ -->
 <div class="toast" id="toast">
   <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -591,16 +540,10 @@ input,select{font-family:inherit}
 
 <script>
 // ── State ──────────────────────────────────────────────
-let dirty = false;
 const alertStates = { estados: true, feedback: true, rango: true, tiempo: true };
 
-// ── Dirty tracking ──────────────────────────────────────
-function markDirty() {
-  if (!dirty) {
-    dirty = true;
-    document.getElementById('save-bar').classList.add('visible');
-  }
-}
+// ── Dirty tracking (no-op — save bar is always visible in header) ──
+function markDirty() {}
 
 // ── Row accordion ──────────────────────────────────────
 function toggleRow(id) {
@@ -705,9 +648,6 @@ function validateNumeric(input, min, max, errId) {
 
 // ── Save ───────────────────────────────────────────────
 function saveChanges() {
-  // Validate estados if ON and no states selected
-  const estadosOn = alertStates.estados;
-  // (simplified validation: just show the save toast in prototype)
   const nota = document.getElementById('input-nota');
   const dist = document.getElementById('input-distancia');
   const min  = document.getElementById('input-minutos');
@@ -718,22 +658,17 @@ function saveChanges() {
     (!min  || validateNumeric(min, 1, 999, 'err-minutos'));
 
   if (!valid) return;
-
-  dirty = false;
-  document.getElementById('save-bar').classList.remove('visible');
-  document.getElementById('nav-warning').classList.remove('show');
   showToast();
 }
 
 function cancelChanges() {
-  dirty = false;
-  document.getElementById('save-bar').classList.remove('visible');
-}
-
-function discardChanges() {
-  dirty = false;
-  document.getElementById('save-bar').classList.remove('visible');
-  document.getElementById('nav-warning').classList.remove('show');
+  // Reset form values to defaults (prototype stub)
+  const nota = document.getElementById('input-nota');
+  const dist = document.getElementById('input-distancia');
+  const min  = document.getElementById('input-minutos');
+  if (nota) nota.value = 3;
+  if (dist) dist.value = 200;
+  if (min)  min.value  = 20;
 }
 
 // ── Toast ───────────────────────────────────────────────
@@ -759,17 +694,6 @@ function showToastMsg(msg, bg) {
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => { t.innerHTML = orig; t.style.background = ''; }, 300); }, 2800);
 }
 
-// ── Nav item click: show dirty warning ────────────────
-document.querySelectorAll('.sb-item').forEach(item => {
-  if (!item.classList.contains('active')) {
-    item.addEventListener('click', () => {
-      if (dirty) {
-        document.getElementById('nav-warning').classList.add('show');
-        document.getElementById('nav-warning').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    });
-  }
-});
 </script>
 </body>
 </html>
