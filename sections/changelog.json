@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T16:06:09.322Z",
+  "generated": "2026-06-03T16:25:30.880Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "511e9d7",
+          "type": "update",
+          "section": "Tables",
+          "message": "Table page: replace custom table with tblDemoTable(data.scrollDemo)",
+          "author": "Diego"
+        },
         {
           "hash": "c107998",
           "type": "update",
