@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:08:38.175Z",
+  "generated": "2026-06-03T14:14:49.222Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "c59eb59",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-825): align page header with Notifications pattern",
+          "author": "Carlos"
+        },
         {
           "hash": "554d2ba",
           "type": "fix",
