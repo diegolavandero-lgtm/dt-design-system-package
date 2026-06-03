@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T14:48:09.530Z",
+  "generated": "2026-06-03T14:49:04.337Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "c7f664e",
+          "type": "fix",
+          "section": "Buttons",
+          "message": "Table page: fix title baseline alignment with buttons",
+          "author": "Diego"
+        },
         {
           "hash": "c8ff573",
           "type": "feat",
