@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T15:13:26.114Z",
+  "generated": "2026-06-03T15:16:07.612Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "bc42b6e",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(DES-825): add chevron indicator to multi-select inputs",
+          "author": "Carlos"
+        },
         {
           "hash": "03e5349",
           "type": "fix",
