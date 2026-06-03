@@ -1633,14 +1633,12 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
   },
 
-  /* ── TABLE ── */
-  table(data) {
-    const sortBothSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg>`;
-    const sortAscSvg  = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 20h20L16 8z"/></svg>`;
-    const sortDescSvg = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 12h20l-10 12z"/></svg>`;
+/* ── TABLE HELPERS — module-level so tablepage can call demoTable() ── */
+const _tblSortBoth = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg>`;
+const _tblSortAsc  = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 20h20L16 8z"/></svg>`;
+const _tblSortDesc = `<svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M6 12h20l-10 12z"/></svg>`;
 
-    /* ── cell renderer ── */
-    function rc(cell, extraCls) {
+function tblRc(cell, extraCls) {
       const cls = extraCls ? ` class="${extraCls}"` : '';
       if (cell === null || cell === undefined) return `<td${cls}></td>`;
       if (typeof cell !== 'object') return `<td${cls}>${escHtml(String(cell))}</td>`;
@@ -1752,14 +1750,13 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       }
     }
 
-    /* ── header renderer (supports sub-label and lazy) ── */
-    function rh(col, actsCls) {
+function tblRh(col, actsCls) {
       const extra = actsCls ? ` class="${actsCls}"` : '';
       if (col.type === 'lazy') {
         return `<th${extra}><div class="tbl-skel hd"></div></th>`;
       }
       const w = col.type === 'checkbox' ? ' style="width:40px"' : '';
-      const sv = col.sort==='asc' ? sortAscSvg : col.sort==='desc' ? sortDescSvg : col.sortable ? sortBothSvg : '';
+      const sv = col.sort==='asc' ? _tblSortAsc : col.sort==='desc' ? _tblSortDesc : col.sortable ? _tblSortBoth : '';
       if (col.sub) {
         return `<th${w}${extra}><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(col.sub)}</span><span>${escHtml(col.label||'')}${sv}</span></div></th>`;
       }
@@ -1769,18 +1766,16 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       return `<th${w}${extra}>${escHtml(col.label||'')}${sv}</th>`;
     }
 
-    /* ── row renderer ── */
-    function rr(row, cols) {
+function tblRr(row, cols) {
       const cls = row.state==='hover'?'hov':row.state==='selected'?'sel':row.state==='disabled'?'dis':'';
       const cells = (row.cells||[]).map((c,i) => {
         const colType = cols && cols[i] ? cols[i].type : null;
-        return rc(c);
+        return tblRc(c);
       }).join('');
       return `<tr${cls?' class="'+cls+'"':''  }>${cells}</tr>`;
     }
 
-    /* ── build one scrollable demo table ── */
-    function demoTable(def) {
+function tblDemoTable(def) {
       const cols = def.columns || [];
       const hasCb = cols.some(c => c.type === 'checkbox');
       const hasActs = cols.some(c => c.type === 'actions');
@@ -1808,31 +1803,31 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         head = cols.map(c => {
           if (c.type === 'checkbox') return `<th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>`;
           if (c.type === 'actions') return `<th class="tbl-acts-col" style="text-align:center">${escHtml(c.label||'')}</th>`;
-          const sv = c.sort==='asc' ? sortAscSvg : c.sort==='desc' ? sortDescSvg : c.sortable ? sortBothSvg : '';
+          const sv = c.sort==='asc' ? _tblSortAsc : c.sort==='desc' ? _tblSortDesc : c.sortable ? _tblSortBoth : '';
           if (c.sub) return `<th><div class="th-inner"><div class="tbl-hd-stack"><span class="tbl-hd-sub">${escHtml(c.sub)}</span><span>${escHtml(c.label||'')}${sv}</span></div></div></th>`;
           return `<th><div class="th-inner">${escHtml(c.label||'')}${sv}</div></th>`;
         }).join('');
       } else {
-        head = cols.map(c => rh(c)).join('');
+        head = cols.map(c => tblRh(c)).join('');
       }
 
-      const body = (def.rows||[]).map(r => rr(r, cols)).join('');
+      const body = (def.rows||[]).map(r => tblRr(r, cols)).join('');
       return `<div class="tbl-outer">${bulkBarHtml}<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
     }
 
     /* ── row types demo ── */
     const rd = data.rowTypeDemo || {};
-    const rdTable = demoTable(rd);
+    const rdTable = tblDemoTable(rd);
 
     /* ── cell types demo ── */
     const cd = data.cellTypeDemo || {};
-    const cdTable = demoTable(cd);
+    const cdTable = tblDemoTable(cd);
 
     /* ── extended demo groups ── */
     const groupSections = (data.cellTypeDemoGroups||[]).map(g =>
       `<div style="margin-bottom:20px">
         <div style="font:600 13px var(--font-sans);color:var(--n5);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em;font-size:11px">${escHtml(g.label)}</div>
-        <div class="card flush">${demoTable(g)}</div>
+        <div class="card flush">${tblDemoTable(g)}</div>
       </div>`
     ).join('');
 
@@ -2825,37 +2820,6 @@ async function downloadAllPins() {
     </style>`;
 
     // ── status → DS badge variant ─────────────────────────────────────
-    const statusVariant = s => {
-      switch ((s||'').toLowerCase()) {
-        case 'entregado':    return 'success';
-        case 'no entregado': return 'danger';
-        case 'asignada':     return 'info';
-        default:             return 'neutral';
-      }
-    };
-
-    // ── table rows using exact DS table component structure ───────────
-    const masterCb = `<div class="tbl-cb"><input type="checkbox" onclick="tblMaster(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div>`;
-
-    const thead = `<tr>
-      <th style="width:40px;padding:10px 0;text-align:center">${masterCb}</th>
-      ${(data.columns||[]).map(c=>`<th>${escHtml(c)}</th>`).join('')}
-      <th class="tbl-acts-col"></th>
-    </tr>`;
-
-    const tbody = (data.rows||[]).map(r => {
-      const cls = r.selected ? ' class="sel"' : r.hover ? ' class="hov"' : '';
-      return `<tr${cls}>
-        <td class="tbl-cb-td"><div class="tbl-cb"><input type="checkbox"${r.selected?' checked':''} onclick="tblRowSel(this)" style="width:14px;height:14px;accent-color:var(--b5);cursor:pointer"></div></td>
-        <td class="cell-lnk">${escHtml(r.order)}</td>
-        <td>${badgeHtml(r.status, statusVariant(r.status))}</td>
-        <td class="cell-muted">—</td>
-        <td>${escHtml(r.vehicle||'—')}</td>
-        <td>${escHtml(r.client)}</td>
-        <td>${r.date&&r.date!=='—'?escHtml(r.date):'<span style="color:var(--n45)">—</span>'}${r.dateNote?`<span style="color:var(--n45);margin-left:4px">${escHtml(r.dateNote)}</span>`:''}</td>
-        <td class="tbl-acts-col"><div class="tbl-acts"><button class="tbl-act-btn">${iconSvg('overflow-menu-vertical',14)}</button></div></td>
-      </tr>`;
-    }).join('');
 
     // ── DS Sidebar items (Carbon icons, Órdenes selected) ─────────────
     const sbItems = [
@@ -2964,17 +2928,8 @@ async function downloadAllPins() {
                 </button>
               </div>
 
-              <!-- Table: exact DS tbl-outer > tbl-wrap > table.tbl structure -->
-              <div style="border-radius:4px;border:1px solid var(--n4);overflow:hidden">
-                <div class="tbl-outer">
-                  <div class="tbl-wrap">
-                    <table class="tbl">
-                      <thead>${thead}</thead>
-                      <tbody>${tbody}</tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <!-- DS table: scrollDemo from table.json via tblDemoTable() -->
+              ${tblDemoTable(data.scrollDemo || {})}
 
             </div><!-- end container (filter bar + table) -->
 

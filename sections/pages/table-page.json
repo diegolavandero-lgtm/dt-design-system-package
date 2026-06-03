@@ -2,20 +2,415 @@
   "title": "Table page",
   "description": "Full-page template for list views. Built with LM Topbar, collapsed 52px Sidebar, filter bar, data table, and pagination. Use only DS components and tokens.",
   "pageTitle": "Órdenes",
-  "buttons": { "log": "Bitácora", "export": "Exportar a excel", "create": "Nueva orden" },
-  "filters": {
-    "row1": ["Código de orden", "Tipo de fecha para filtrar", "Seleccionar fecha", "Estado"],
-    "row2": ["Subestado", "Nombre del contacto", "Identificador de contacto", "Vehículo"]
+  "buttons": {
+    "log": "Bitácora",
+    "export": "Exportar a excel",
+    "create": "Nueva orden"
   },
-  "columns": ["Orden", "Estado", "Subestado", "Vehículo", "Cliente", "Fecha de ruta"],
+  "filters": {
+    "row1": [
+      "Código de orden",
+      "Tipo de fecha para filtrar",
+      "Seleccionar fecha",
+      "Estado"
+    ],
+    "row2": [
+      "Subestado",
+      "Nombre del contacto",
+      "Identificador de contacto",
+      "Vehículo"
+    ]
+  },
+  "columns": [
+    "Orden",
+    "Estado",
+    "Subestado",
+    "Vehículo",
+    "Cliente",
+    "Fecha de ruta"
+  ],
   "rows": [
-    { "order": "73AWS30-05",       "status": "Por entregar", "vehicle": "VEH001", "client": "Boxman Ltda",         "date": "2026-06-02", "dateNote": "Est. 2 horas" },
-    { "order": "73AWS30-03",       "status": "No entregado", "vehicle": "VEH001", "client": "Boxman Ltda",         "date": "2026-06-02", "dateNote": "hace 4 horas" },
-    { "order": "73AWS30-01",       "status": "Entregado",    "vehicle": "VEH001", "client": "Raul Perez",          "date": "2026-06-02", "dateNote": "hace 4 horas", "selected": true },
-    { "order": "73AWS30-02",       "status": "No entregado", "vehicle": "VEH001", "client": "Armando Fernandez",   "date": "2026-06-02", "dateNote": "hace 4 horas" },
-    { "order": "73AWS30-07",       "status": "Por entregar", "vehicle": "VEH001", "client": "Armando Fernandez",   "date": "2026-06-02", "dateNote": "Est. 1 hora",  "hover": true },
-    { "order": "37373AWS01-CON05", "status": "Asignada",     "vehicle": "VEH001", "client": "Boxman Ltda",         "date": "2026-06-02" },
-    { "order": "8",                "status": "Ingresada",    "vehicle": "—",      "client": "John Smith",          "date": "—" },
-    { "order": "3",                "status": "Ingresada",    "vehicle": "—",      "client": "John Smith",          "date": "—" }
-  ]
+    {
+      "order": "73AWS30-05",
+      "status": "Por entregar",
+      "vehicle": "VEH001",
+      "client": "Boxman Ltda",
+      "date": "2026-06-02",
+      "dateNote": "Est. 2 horas"
+    },
+    {
+      "order": "73AWS30-03",
+      "status": "No entregado",
+      "vehicle": "VEH001",
+      "client": "Boxman Ltda",
+      "date": "2026-06-02",
+      "dateNote": "hace 4 horas"
+    },
+    {
+      "order": "73AWS30-01",
+      "status": "Entregado",
+      "vehicle": "VEH001",
+      "client": "Raul Perez",
+      "date": "2026-06-02",
+      "dateNote": "hace 4 horas",
+      "selected": true
+    },
+    {
+      "order": "73AWS30-02",
+      "status": "No entregado",
+      "vehicle": "VEH001",
+      "client": "Armando Fernandez",
+      "date": "2026-06-02",
+      "dateNote": "hace 4 horas"
+    },
+    {
+      "order": "73AWS30-07",
+      "status": "Por entregar",
+      "vehicle": "VEH001",
+      "client": "Armando Fernandez",
+      "date": "2026-06-02",
+      "dateNote": "Est. 1 hora",
+      "hover": true
+    },
+    {
+      "order": "37373AWS01-CON05",
+      "status": "Asignada",
+      "vehicle": "VEH001",
+      "client": "Boxman Ltda",
+      "date": "2026-06-02"
+    },
+    {
+      "order": "8",
+      "status": "Ingresada",
+      "vehicle": "—",
+      "client": "John Smith",
+      "date": "—"
+    },
+    {
+      "order": "3",
+      "status": "Ingresada",
+      "vehicle": "—",
+      "client": "John Smith",
+      "date": "—"
+    }
+  ],
+  "scrollDemo": {
+    "columns": [
+      {
+        "label": "",
+        "type": "checkbox"
+      },
+      {
+        "label": "# Orden",
+        "type": "link"
+      },
+      {
+        "label": "Cliente",
+        "type": "avatar-text",
+        "sortable": true
+      },
+      {
+        "label": "Estado",
+        "type": "badge"
+      },
+      {
+        "label": "Zona",
+        "type": "chip-sm"
+      },
+      {
+        "label": "Dirección",
+        "type": "icon-text"
+      },
+      {
+        "label": "Conductor",
+        "type": "text"
+      },
+      {
+        "label": "F. Creación",
+        "type": "date",
+        "sortable": true
+      },
+      {
+        "label": "F. Entrega",
+        "type": "date"
+      },
+      {
+        "label": "Progreso",
+        "type": "loading-bar"
+      },
+      {
+        "label": "Calificación",
+        "type": "rating"
+      },
+      {
+        "label": "Activo",
+        "type": "switch"
+      },
+      {
+        "label": "Acciones",
+        "type": "actions"
+      }
+    ],
+    "rows": [
+      {
+        "state": "default",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-4821"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Maya Johnson",
+            "initials": "MJ",
+            "color": "#1F60ED"
+          },
+          {
+            "type": "badge",
+            "value": "Entregado",
+            "variant": "success"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Norte"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Av. Principal 123"
+          },
+          {
+            "type": "text",
+            "value": "Carlos Ríos"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 08:00"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 14:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 100
+          },
+          {
+            "type": "rating",
+            "value": 4
+          },
+          {
+            "type": "switch",
+            "value": true
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
+        ]
+      },
+      {
+        "state": "hover",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-3917"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Lucas Martínez",
+            "initials": "LM",
+            "color": "#8777D9"
+          },
+          {
+            "type": "badge",
+            "value": "En tránsito",
+            "variant": "info"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Sur"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Calle Secundaria 45"
+          },
+          {
+            "type": "text",
+            "value": "Ana López"
+          },
+          {
+            "type": "date",
+            "value": "09-10-25 10:30"
+          },
+          {
+            "type": "text-secondary",
+            "value": "—"
+          },
+          {
+            "type": "loading-bar",
+            "value": 52
+          },
+          {
+            "type": "rating",
+            "value": 3
+          },
+          {
+            "type": "switch",
+            "value": true
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete",
+              "document",
+              "message"
+            ]
+          }
+        ]
+      },
+      {
+        "state": "selected",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": true
+          },
+          {
+            "type": "link",
+            "value": "#ORD-5102"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Aisha Patel",
+            "initials": "AP",
+            "color": "#00B8D9"
+          },
+          {
+            "type": "badge",
+            "value": "Pendiente",
+            "variant": "warning"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Este"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Pasaje Los Álamos 7"
+          },
+          {
+            "type": "text",
+            "value": "Diego Torres"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 09:15"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 16:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 20
+          },
+          {
+            "type": "rating",
+            "value": 0
+          },
+          {
+            "type": "switch",
+            "value": false
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
+        ]
+      },
+      {
+        "state": "default",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-2856"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Liam Smith",
+            "initials": "LS",
+            "color": "#36B37E"
+          },
+          {
+            "type": "badge",
+            "value": "Cancelado",
+            "variant": "danger"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Centro"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Blvd. Industrial 220"
+          },
+          {
+            "type": "text",
+            "value": "María García"
+          },
+          {
+            "type": "date",
+            "value": "08-10-25 07:00"
+          },
+          {
+            "type": "date",
+            "value": "08-10-25 11:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 0
+          },
+          {
+            "type": "rating",
+            "value": 1
+          },
+          {
+            "type": "switch",
+            "value": false
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete",
+              "document"
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
