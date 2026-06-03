@@ -188,58 +188,165 @@ At the end of every ticket:
 - ❌ Don't use generic modal copy ("Are you sure?") — always name the specific item
 - ❌ Don't use amber warning banner for neutral system information — use blue info banner
 
-# Design System Rules
+---
 
-## CRITICAL: Never recreate components
-When I ask for a TopBar, Sidebar, Button, Input, Table, Modal, 
-or any UI component — ALWAYS import it from the design system. 
-NEVER recreate or copy-paste component code.
+## Standard components — always call from JSON, never recreate
 
-## Component imports
-```jsx
-// TopBar
-import { TopBar } from '@/components/ds/TopBar'
+This project is vanilla HTML + `renderers.js`. There are no React imports.
+Every component lives in a JSON file under `sections/components/`.
+**Never write custom HTML for these — always call the function or copy the exact pattern below.**
 
-// Sidebar  
-import { Sidebar } from '@/components/ds/Sidebar'
+---
 
-// Button
-import { Button } from '@/components/ds/Button'
+### Topbar
+**Source:** `sections/components/topbar.json` · renderer: `renderers.topbar(data)`
 
-// TextField
-import { TextField } from '@/components/ds/TextField'
-
-// Table
-import { Table } from '@/components/ds/Table'
-
-// Modal
-import { Modal } from '@/components/ds/Modal'
-
-// Badge
-import { Badge } from '@/components/ds/Badge'
-
-// Banner
-import { Banner } from '@/components/ds/Banner'
+For page templates, use the `.tbar` CSS class with this exact structure:
+```html
+<div class="tbar" style="border-radius:0;padding:0 0 0 22px">
+  <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
+  <div class="acts">
+    ${iconSvg('apps',18,'#fff')}
+    ${iconSvg('help',18,'#fff')}
+    ${iconSvg('messages',18,'#fff')}
+    <div class="bell">${iconSvg('alerts',18,'#fff')}</div>
+    ${iconSvg('user',18,'#fff')}
+  </div>
+  <div class="slot">ACME CO</div>
+</div>
 ```
 
-## Usage examples
-```jsx
-// CORRECT — import the component
-import { TopBar } from '@/components/ds/TopBar'
-const MyPage = () => <TopBar product="lastmile" company="ACME CO" />
+---
 
-// WRONG — never do this
-const MyPage = () => (
-  <div style={{height:52, background:'#132045'}}>...</div>
-)
+### Sidebar
+**Source:** `sections/components/sidebar.json` · renderer: `renderers.sidebar(data)`
+
+For page templates, inject the `.sbx` CSS block and use this structure:
+```html
+<!-- inject sbStyle (copy from tablepage renderer in renderers.js) -->
+<div class="sbx">${sidebarHtml}</div>
+```
+`sidebarHtml` is built by mapping `sbItems` (icon + label + sel flag) using `iconSvg()`.
+See the `tablepage()` renderer for the exact CSS injection and HTML pattern.
+
+---
+
+### Button
+**Source:** `sections/components/buttons.json`
+
+Use **full inline styles** — do NOT use `.btn` CSS class in page templates (causes alignment issues).
+Copy these exact token values from `buttons.json`:
+
+```javascript
+// Secondary
+style="height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);
+       background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;
+       display:inline-flex;align-items:center;gap:5px;box-sizing:border-box"
+
+// Primary
+style="height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);
+       background:var(--b6);color:#fff;border:none;cursor:pointer;
+       display:inline-flex;align-items:center;gap:5px;box-sizing:border-box"
 ```
 
-## Tokens
-Always use CSS variables from colors_and_type.css. 
-Never hardcode colors — use var(--primary-background), 
-var(--neutral-text), etc.
+Hover/active handlers (inline, secondary example):
+```
+onmouseenter="this.style.background='#EDF5FF'"
+onmouseleave="this.style.background='#fff'"
+onmousedown="this.style.background='#D1E0FF'"
+onmouseup="this.style.background='#EDF5FF'"
+```
 
-## File locations
-- Tokens: /src/styles/colors_and_type.css
-- Components: /src/components/ds/
-- Layouts: /src/layouts/
+---
+
+### Input
+**Source:** `sections/components/inputs.json` · renderer: `renderers.inputs(data)`
+
+**Text input** — exact tokens from `inputs.json`:
+```html
+<input type="text" placeholder="..."
+  style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;
+         font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);
+         box-sizing:border-box;outline:none;padding:0 10px"
+  onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+  onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+  onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+  onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+```
+
+**Dropdown select** — use the `dt-drop-wrap` component (NOT a `<select>` element).
+This is the interactive dropdown from `inputs.json`. See `dtSelect()` helper in `filters()` renderer:
+```html
+<div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
+  <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)"
+    onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+    onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+    style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);
+           border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+    <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Placeholder</span>
+    <span style="color:var(--n5);display:flex;flex-shrink:0">[CHEVRON SVG]</span>
+  </div>
+  <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;
+       background:#fff;border:1px solid var(--n3);border-radius:6px;
+       box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">
+    <div onclick="dtPickOpt(this)" data-val="Option 1"
+      onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
+      onmouseleave="this.style.background='';this.style.color='var(--n7)'"
+      style="height:36px;padding:0 12px;display:flex;align-items:center;
+             font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Option 1</div>
+  </div>
+</div>
+```
+
+---
+
+### Table
+**Source:** `sections/components/table.json` · module-level function: `tblDemoTable(def)`
+
+`tblDemoTable()` is defined at module level in `renderers.js` and available to all renderers.
+To use it in a page template:
+1. Add a table definition to the page's JSON file (or copy `scrollDemo` from `table.json`)
+2. Call `tblDemoTable(data.myTableKey)` in the renderer — one line, no custom HTML
+
+```javascript
+// In table-page.json: add "scrollDemo" key copied from table.json
+// In tablepage renderer:
+${tblDemoTable(data.scrollDemo || {})}
+```
+
+The table definition format is the `columns` / `rows` / `cells` structure used in `table.json`.
+Never write `<table>`, `<tr>`, `<td>` manually for DS tables.
+
+---
+
+### Pills / Badges
+**Source:** `sections/components/badges.json` · module-level function: `badgeHtml(label, variant)`
+
+`badgeHtml()` is defined at module level in `renderers.js`. Always use it for status labels:
+```javascript
+badgeHtml('Entregado',    'success')  // green
+badgeHtml('No entregado', 'danger')   // red
+badgeHtml('En tránsito',  'warning')  // amber
+badgeHtml('Asignada',     'info')     // blue
+badgeHtml('Ingresada',    'neutral')  // gray
+badgeHtml('Label',        'outline')  // gray border, white bg
+```
+
+---
+
+### Filter bar
+**Source:** `sections/components/filters.json` · renderer: `renderers.filters(data)`
+
+For page templates, replicate the filter bar from the `filters()` renderer:
+- Text inputs: exact Input pattern above with `flex:1`
+- Dropdowns: `dt-drop-wrap` pattern above with `flex:1`
+- "Filtrar" button: exact Secondary button tokens above
+- filter--add button: `32×32px`, `border-radius:4px`, `1px solid var(--b6)`, icon 24px B6
+- filter--reset button: `32×32px`, `border-radius:4px`, `1px solid var(--r6)`, icon 24px R6
+
+Icons via `iconSvg('filter--add', 24, 'var(--b6)')` and `iconSvg('filter--reset', 24, 'var(--r6)')`.
+
+The filter bar container wrapping filter + table:
+```
+border-radius:8px · border:1px solid var(--n4) · background:#fff · padding:20px · gap:20px
+```
