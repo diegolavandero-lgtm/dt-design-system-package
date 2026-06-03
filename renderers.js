@@ -601,7 +601,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const t  = data.tokens || {};
     const mt = data.mobileTokens || {};
 
-    function renderStates(states, height, padding, fontSize) {
+    function renderStates(states, height, padding, fontSize, fontWeight, lineHeight) {
+      const fw = fontWeight || 700;
+      const lh = lineHeight || fontSize;
       return states.map(s => {
         const style = [
           `background:${s.bg}`,
@@ -610,7 +612,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           s.underline ? 'text-decoration:underline' : '',
         ].filter(Boolean).join(';');
         return `<div style="display:flex;flex-direction:column;align-items:center;gap:5px">
-          <button style="${style};font:500 ${fontSize}/${fontSize} var(--font-sans);height:${height};padding:${padding};border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">${escHtml(s.text)}</button>
+          <button style="${style};font:${fw} ${fontSize}/${lh} var(--font-sans);height:${height};padding:${padding};border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">${escHtml(s.text)}</button>
           <span style="font:400 9px var(--font-sans);color:var(--n45);text-transform:uppercase;letter-spacing:.05em">${escHtml(s.label)}</span>
         </div>`;
       }).join('');
@@ -623,12 +625,12 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         </td>
         <td style="padding:14px;vertical-align:middle;border-left:1px solid var(--n3);background:#FAFBFD">
           <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-            ${renderStates(v.states, t.height || '40px', t.padding || '0 32px', t.fontSize || '16px')}
+            ${renderStates(v.states, t.height || '32px', t.padding || '0 32px', t.fontSize || '14px', t.fontWeight || 700, t.lineHeight || '20px')}
           </div>
         </td>
         <td style="padding:14px;vertical-align:middle;border-left:1px solid var(--n3);background:#F5F6FA">
           <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-            ${renderStates(v.states, mt.height || '48px', mt.padding || '0 24px', mt.fontSize || '14px')}
+            ${renderStates(v.states, mt.height || '48px', mt.padding || '0 24px', mt.fontSize || '14px', mt.fontWeight || t.fontWeight || 700, mt.lineHeight || t.lineHeight || '20px')}
           </div>
         </td>
       </tr>`).join('');
@@ -644,7 +646,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
               <span style="display:flex;align-items:center;gap:5px">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                Desktop <span style="font-weight:400;color:var(--n5);margin-left:4px">40px · 16px · 0 32px</span>
+                Desktop <span style="font-weight:400;color:var(--n5);margin-left:4px">32px · body-small-bold · 0 32px</span>
               </span>
             </th>
             <th style="padding:9px 14px;font:700 11px var(--font-sans);text-align:left;color:var(--n7);border-left:1px solid var(--n3)">
@@ -2732,7 +2734,7 @@ async function downloadAllPins() {
     };
 
     // ── secondary button: exact tokens from buttons.json ───────────────
-    const secBtnStyle = `background:#fff;color:#4B82FA;border:2px solid #1F60ED;font:500 16px/16px var(--font-sans);height:40px;padding:0 32px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box`;
+    const secBtnStyle = `background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 32px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box`;
     const secBtn = (label) =>
       `<button style="${secBtnStyle}"
         onmouseenter="this.style.background='#EDF5FF'"
@@ -2902,9 +2904,9 @@ async function downloadAllPins() {
             <!-- Page header -->
             <div style="display:flex;align-items:center;gap:12px">
               <span style="font:700 22px/1 var(--font-sans);color:var(--n7);flex:1">${escHtml(data.pageTitle)}</span>
-              <button class="btn sec" style="font-size:12px;padding:6px 12px;gap:5px">${iconSvg('plan',13,'var(--b7)')}${escHtml(data.buttons?.log||'Bitácora')}</button>
-              <button class="btn sec" style="font-size:12px;padding:6px 12px;gap:5px">${iconSvg('download',13,'var(--b7)')}${escHtml(data.buttons?.export||'Exportar a excel')}</button>
-              <button class="btn pri" style="font-size:12px;padding:6px 14px;gap:5px"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
+              <button class="btn sec" style="padding:0 12px;gap:5px">${iconSvg('plan',13,'var(--b7)')}${escHtml(data.buttons?.log||'Bitácora')}</button>
+              <button class="btn sec" style="padding:0 12px;gap:5px">${iconSvg('download',13,'var(--b7)')}${escHtml(data.buttons?.export||'Exportar a excel')}</button>
+              <button class="btn pri" style="padding:0 14px;gap:5px"><svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>${escHtml(data.buttons?.create||'Nueva orden')}</button>
             </div>
 
             <!-- Filter bar (white card) -->

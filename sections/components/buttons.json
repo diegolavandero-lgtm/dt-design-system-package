@@ -1,18 +1,26 @@
 {
   "title": "Buttons",
   "titleKey": "nav.buttons",
-  "description": "Pill-shaped (border-radius: 50px), body 16px/16px medium. Altura normal 40px ($hp-button-size), tall 56px ($hp-button-tall-size). Siete variantes. Un primary por vista.",
-  "keywords": ["buttons", "cta", "primary", "secondary", "tertiary", "danger", "pill"],
+  "description": "Pill-shaped (border-radius: 50px), body-small-bold 14px/20px 700. Height 32px desktop. Siete variantes. Un primary por vista.",
+  "keywords": [
+    "buttons",
+    "cta",
+    "primary",
+    "secondary",
+    "tertiary",
+    "danger",
+    "pill"
+  ],
   "tokens": {
     "radius": "50px",
-    "height": "40px",
+    "height": "32px",
     "heightTall": "56px",
     "padding": "0 32px",
-    "borderWidth": "2px",
+    "borderWidth": "1px",
     "minWidth": "64px",
-    "fontSize": "16px",
-    "lineHeight": "16px",
-    "fontWeight": 500
+    "fontSize": "14px",
+    "lineHeight": "20px",
+    "fontWeight": 700
   },
   "mobileTokens": {
     "height": "48px",
@@ -25,56 +33,160 @@
   },
   "variants": [
     {
-      "name": "primary", "label": "Primary",
+      "name": "primary",
+      "label": "Primary",
       "states": [
-        { "label": "Default", "text": "Guardar", "bg": "#4B82FA", "color": "#fff", "border": "none" },
-        { "label": "Hover", "text": "Hover", "bg": "#1F60ED", "color": "#fff", "border": "none" },
-        { "label": "Active", "text": "Active", "bg": "#0052CC", "color": "#fff", "border": "none" },
-        { "label": "Disabled", "text": "Disabled", "bg": "#E1E6ED", "color": "#8FA0BA", "border": "none" }
+        {
+          "label": "Default",
+          "text": "Guardar",
+          "bg": "#4B82FA",
+          "color": "#fff",
+          "border": "none"
+        },
+        {
+          "label": "Hover",
+          "text": "Hover",
+          "bg": "#1F60ED",
+          "color": "#fff",
+          "border": "none"
+        },
+        {
+          "label": "Active",
+          "text": "Active",
+          "bg": "#0052CC",
+          "color": "#fff",
+          "border": "none"
+        },
+        {
+          "label": "Disabled",
+          "text": "Disabled",
+          "bg": "#E1E6ED",
+          "color": "#8FA0BA",
+          "border": "none"
+        }
       ]
     },
     {
-      "name": "secondary", "label": "Secondary",
+      "name": "secondary",
+      "label": "Secondary",
       "states": [
-        { "label": "Default", "text": "Cancelar", "bg": "#fff", "color": "#4B82FA", "border": "2px solid #1F60ED" },
-        { "label": "Hover", "text": "Hover", "bg": "#EDF5FF", "color": "#4B82FA", "border": "2px solid #1F60ED" },
-        { "label": "Active", "text": "Active", "bg": "#D1E0FF", "color": "#4B82FA", "border": "2px solid #1F60ED" }
+        {
+          "label": "Default",
+          "text": "Cancelar",
+          "bg": "#fff",
+          "color": "#4B82FA",
+          "border": "1px solid #1F60ED"
+        },
+        {
+          "label": "Hover",
+          "text": "Hover",
+          "bg": "#EDF5FF",
+          "color": "#4B82FA",
+          "border": "1px solid #1F60ED"
+        },
+        {
+          "label": "Active",
+          "text": "Active",
+          "bg": "#D1E0FF",
+          "color": "#4B82FA",
+          "border": "1px solid #1F60ED"
+        }
       ]
     },
     {
-      "name": "tertiary", "label": "Tertiary",
+      "name": "tertiary",
+      "label": "Tertiary",
       "states": [
-        { "label": "Default", "text": "Ver más", "bg": "#fff", "color": "#39414D", "border": "2px solid #C5D2E7" },
-        { "label": "Hover", "text": "Hover", "bg": "#EDF5FF", "color": "#39414D", "border": "2px solid #C5D2E7" }
+        {
+          "label": "Default",
+          "text": "Ver más",
+          "bg": "#fff",
+          "color": "#39414D",
+          "border": "1px solid #C5D2E7"
+        },
+        {
+          "label": "Hover",
+          "text": "Hover",
+          "bg": "#EDF5FF",
+          "color": "#39414D",
+          "border": "1px solid #C5D2E7"
+        }
       ]
     },
     {
-      "name": "text", "label": "Text",
+      "name": "text",
+      "label": "Text",
       "states": [
-        { "label": "Default", "text": "Ver detalles", "bg": "transparent", "color": "#4B82FA", "border": "none" },
-        { "label": "Hover", "text": "Hover", "bg": "transparent", "color": "#4B82FA", "border": "none", "underline": true }
+        {
+          "label": "Default",
+          "text": "Ver detalles",
+          "bg": "transparent",
+          "color": "#4B82FA",
+          "border": "none"
+        },
+        {
+          "label": "Hover",
+          "text": "Hover",
+          "bg": "transparent",
+          "color": "#4B82FA",
+          "border": "none",
+          "underline": true
+        }
       ]
     },
     {
-      "name": "danger", "label": "Danger",
+      "name": "danger",
+      "label": "Danger",
       "states": [
-        { "label": "Default", "text": "Eliminar", "bg": "#FF5630", "color": "#fff", "border": "none" },
-        { "label": "Hover", "text": "Hover", "bg": "#DE350B", "color": "#fff", "border": "none" },
-        { "label": "Active", "text": "Active", "bg": "#BF2600", "color": "#fff", "border": "none" }
+        {
+          "label": "Default",
+          "text": "Eliminar",
+          "bg": "#FF5630",
+          "color": "#fff",
+          "border": "none"
+        },
+        {
+          "label": "Hover",
+          "text": "Hover",
+          "bg": "#DE350B",
+          "color": "#fff",
+          "border": "none"
+        },
+        {
+          "label": "Active",
+          "text": "Active",
+          "bg": "#BF2600",
+          "color": "#fff",
+          "border": "none"
+        }
       ]
     },
     {
-      "name": "tertiary-blue", "label": "Tertiary blue",
+      "name": "tertiary-blue",
+      "label": "Tertiary blue",
       "states": [
-        { "label": "Default", "text": "Acción", "bg": "#fff", "color": "#4B82FA", "border": "2px solid #4B82FA" }
+        {
+          "label": "Default",
+          "text": "Acción",
+          "bg": "#fff",
+          "color": "#4B82FA",
+          "border": "1px solid #4B82FA"
+        }
       ]
     },
     {
-      "name": "tertiary-red", "label": "Tertiary red",
+      "name": "tertiary-red",
+      "label": "Tertiary red",
       "states": [
-        { "label": "Default", "text": "Eliminar", "bg": "#fff", "color": "#FF5630", "border": "2px solid #FF5630" }
+        {
+          "label": "Default",
+          "text": "Eliminar",
+          "bg": "#fff",
+          "color": "#FF5630",
+          "border": "1px solid #FF5630"
+        }
       ]
     }
   ],
-  "code": "/* Source: styles/packages/button/src/ — Honeypot */\n.hp-button {\n  font: 500 16px/16px 'DM Sans'; /* hp-typography__button--medium */\n  height: 40px;       /* $hp-button-size */\n  padding: 0 32px;    /* $hp-space-x-large */\n  border-radius: 50px; /* $hp-button-border-basic-radius */\n  border: none;\n  min-width: 64px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.hp-button--primary        { background: #4B82FA; color: #fff; } /* $dt-primary-main */\n.hp-button--primary:hover  { background: #1F60ED; } /* $dt-primary-middle */\n.hp-button--primary:active { background: #0052CC; } /* $dt-primary-dark */\n.hp-button--secondary      { background: #fff; color: #4B82FA; border: 2px solid #1F60ED; }\n.hp-button--tertiary       { background: #fff; color: #39414D; border: 2px solid #C5D2E7; }\n.hp-button--danger         { background: #FF5630; color: #fff; } /* $dt-feedback-r3 */\n.hp-button--tall           { height: 56px; } /* $hp-button-tall-size, submit actions */\n.hp-button:disabled        { background: #E1E6ED; color: #8FA0BA; }"
+  "code": "/* Source: styles/packages/button/src/ — Honeypot */\n.hp-button {\n  font: 700 14px/20px /* body-small-bold */ 'DM Sans'; /* hp-typography__button--medium */\n  height: 32px;       /* $hp-button-size */\n  padding: 0 32px;    /* $hp-space-x-large */\n  border-radius: 50px; /* $hp-button-border-basic-radius */\n  border: none;\n  min-width: 64px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n}\n.hp-button--primary        { background: #4B82FA; color: #fff; } /* $dt-primary-main */\n.hp-button--primary:hover  { background: #1F60ED; } /* $dt-primary-middle */\n.hp-button--primary:active { background: #0052CC; } /* $dt-primary-dark */\n.hp-button--secondary      { background: #fff; color: #4B82FA; border: 1px solid #1F60ED; }\n.hp-button--tertiary       { background: #fff; color: #39414D; border: 1px solid #C5D2E7; }\n.hp-button--danger         { background: #FF5630; color: #fff; } /* $dt-feedback-r3 */\n.hp-button--tall           { height: 56px; } /* $hp-button-tall-size, submit actions */\n.hp-button:disabled        { background: #E1E6ED; color: #8FA0BA; }"
 }
