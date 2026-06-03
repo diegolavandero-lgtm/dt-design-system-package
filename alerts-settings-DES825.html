@@ -176,9 +176,15 @@ input,select{font-family:inherit}
 
 /* multi-select chips */
 .multi-select-wrap{position:relative}
+.multi-select-wrap::after{
+  content:'';position:absolute;right:10px;top:14px;
+  width:12px;height:12px;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-size:contain;
+}
 .multi-select-box{
   min-height:36px;border:1px solid #C5D2E7;border-radius:6px;
-  padding:5px 8px;display:flex;flex-wrap:wrap;gap:4px;cursor:text;
+  padding:5px 28px 5px 8px;display:flex;flex-wrap:wrap;gap:4px;cursor:text;
   background:#fff;transition:border-color .12s,box-shadow .12s;
   align-items:flex-start;
 }
