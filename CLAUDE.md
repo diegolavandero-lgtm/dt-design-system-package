@@ -9,7 +9,7 @@ Follow this guide to maintain continuity across tickets without re-explaining co
 
 This repo is the **DispatchTrack Design System** for the Lastmile product.
 Every session here produces one or more HTML prototypes that are committed, pushed to GitHub,
-and auto-deployed via Vercel to `https://dt-design-system-package.vercel.app`.
+and auto-deployed via Vercel to `https://dt-design-system-package.pages.dev`.
 
 ---
 
@@ -101,9 +101,9 @@ and auto-deployed via Vercel to `https://dt-design-system-package.vercel.app`.
 
 | File | Description | Live URL |
 |---|---|---|
-| `notifications-settings-DES824.html` | Notification settings listing page | [view](https://dt-design-system-package.vercel.app/notifications-settings-DES824.html) |
-| `notifications-new-DES824.html` | New notification editor | [view](https://dt-design-system-package.vercel.app/notifications-new-DES824.html) |
-| `ds-new-components-DES824.html` | DS review document (template) | [view](https://dt-design-system-package.vercel.app/ds-new-components-DES824.html) |
+| `notifications-settings-DES824.html` | Notification settings listing page | [view](https://dt-design-system-package.pages.dev/notifications-settings-DES824.html) |
+| `notifications-new-DES824.html` | New notification editor | [view](https://dt-design-system-package.pages.dev/notifications-new-DES824.html) |
+| `ds-new-components-DES824.html` | DS review document (template) | [view](https://dt-design-system-package.pages.dev/ds-new-components-DES824.html) |
 
 These represent the current baseline. New prototypes should match this level of fidelity.
 
@@ -151,7 +151,7 @@ Tag each component as: `NEW` / `EXTENDED` / `RULE`
 
 ## Vercel deployment
 
-- Domain: `https://dt-design-system-package.vercel.app`
+- Domain: `https://dt-design-system-package.pages.dev`
 - Trigger: any `git push` to `main`
 - All `.html` files in root are served at their filename path
 - No build step required — static HTML only
