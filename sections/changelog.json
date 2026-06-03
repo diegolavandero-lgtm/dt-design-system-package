@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-03T20:49:30.890Z",
+  "generated": "2026-06-03T20:51:14.321Z",
   "days": [
     {
       "date": "2026-06-03",
       "entries": [
+        {
+          "hash": "d8db518",
+          "type": "fix",
+          "section": "Banners",
+          "message": "fix(DES-824): generalize upsell banner title to 'Unlock other channels'",
+          "author": "Carlos"
+        },
         {
           "hash": "6304b8b",
           "type": "update",
