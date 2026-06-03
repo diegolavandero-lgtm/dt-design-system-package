@@ -2734,7 +2734,7 @@ async function downloadAllPins() {
     };
 
     // ── secondary button: exact tokens from buttons.json ───────────────
-    const secBtnStyle = `background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 32px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box`;
+    const secBtnStyle = `background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box`;
     const secBtn = (label) =>
       `<button style="${secBtnStyle}"
         onmouseenter="this.style.background='#EDF5FF'"
