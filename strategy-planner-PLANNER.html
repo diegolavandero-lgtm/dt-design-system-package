@@ -1574,22 +1574,27 @@ function svgPt(e){
   var r=document.getElementById('sv-map').getBoundingClientRect();
   return [e.clientX-r.left, e.clientY-r.top];
 }
+/* 1-day lasso: global document listeners for smooth tracking anywhere in the map */
 function lassoStart(e){
   e.preventDefault();e.stopPropagation();
   lassoDrawing=true; lassoPts=[];
   lassoPts.push(svgPt(e));
   updateLassoPath(false);
+  document.addEventListener('mousemove',_lassoGlobalMove,{passive:false});
+  document.addEventListener('mouseup',_lassoGlobalEnd);
 }
-function lassoMove(e){
-  e.preventDefault();e.stopPropagation();
+function _lassoGlobalMove(e){
   if(!lassoDrawing)return;
-  if(lassoPts.length%3!==0)lassoPts.push(svgPt(e));
+  e.preventDefault();
+  lassoPts.push(svgPt(e));
   updateLassoPath(false);
 }
-function lassoEnd(e){
-  e.preventDefault();e.stopPropagation();
-  if(!lassoDrawing||lassoPts.length<3)return;
+function _lassoGlobalEnd(e){
+  document.removeEventListener('mousemove',_lassoGlobalMove);
+  document.removeEventListener('mouseup',_lassoGlobalEnd);
+  if(!lassoDrawing)return;
   lassoDrawing=false;
+  if(lassoPts.length<3)return;
   lassoPts.push(svgPt(e));
   updateLassoPath(true);
   setTimeout(function(){
@@ -1597,6 +1602,9 @@ function lassoEnd(e){
     document.getElementById('ovLasso').classList.add('on');
   },500);
 }
+/* Inline handlers are now stubs — real work done by global listeners */
+function lassoMove(e){e.preventDefault();e.stopPropagation();}
+function lassoEnd(e){e.preventDefault();e.stopPropagation();}
 function updateLassoPath(close){
   if(lassoPts.length<2)return;
   var d='M'+lassoPts[0][0]+','+lassoPts[0][1];
@@ -1649,32 +1657,45 @@ function exitLassoCell(){
   if(m){m.dragging.enable();m.scrollWheelZoom.enable();}
   activeLassoCell=null;cellDrawing=false;cellPts=[];
 }
+/* cellLassoStart — attach global mousemove/mouseup so draw tracks mouse anywhere */
+var _cellLassoLayer=null;
 function cellLassoStart(e,layer){
   e.preventDefault();e.stopPropagation();
+  _cellLassoLayer=layer;
   cellDrawing=true;cellPts=[];
   var r=layer.getBoundingClientRect();
   cellPts.push([e.clientX-r.left,e.clientY-r.top]);
   _drawCell(layer,false);
+  document.addEventListener('mousemove',_cellGlobalMove,{passive:false});
+  document.addEventListener('mouseup',_cellGlobalEnd);
 }
-function cellLassoMove(e,layer){
-  e.preventDefault();e.stopPropagation();
-  if(!cellDrawing)return;
-  // Sample every 3rd point to keep path smooth without too many nodes
-  if(cellPts.length%3!==0){var r=layer.getBoundingClientRect();cellPts.push([e.clientX-r.left,e.clientY-r.top]);}
-  _drawCell(layer,false);
-}
-function cellLassoEnd(e,layer){
-  e.preventDefault();e.stopPropagation();
-  if(!cellDrawing||cellPts.length<3)return;
-  cellDrawing=false;
-  var r=layer.getBoundingClientRect();
+function _cellGlobalMove(e){
+  if(!cellDrawing||!_cellLassoLayer)return;
+  e.preventDefault();
+  var r=_cellLassoLayer.getBoundingClientRect();
   cellPts.push([e.clientX-r.left,e.clientY-r.top]);
-  _drawCell(layer,true);
+  _drawCell(_cellLassoLayer,false);
+}
+function _cellGlobalEnd(e){
+  document.removeEventListener('mousemove',_cellGlobalMove);
+  document.removeEventListener('mouseup',_cellGlobalEnd);
+  if(!cellDrawing){return;}
+  cellDrawing=false;
+  if(cellPts.length<3){_cellLassoLayer=null;return;}
+  if(_cellLassoLayer){
+    var r=_cellLassoLayer.getBoundingClientRect();
+    cellPts.push([e.clientX-r.left,e.clientY-r.top]);
+    _drawCell(_cellLassoLayer,true);
+  }
+  _cellLassoLayer=null;
   setTimeout(function(){
     exitLassoCell();
     document.getElementById('ovLasso').classList.add('on');
   },500);
 }
+/* Inline handlers are now stubs — real work done by global listeners above */
+function cellLassoMove(e,layer){e.preventDefault();e.stopPropagation();}
+function cellLassoEnd(e,layer){e.preventDefault();e.stopPropagation();}
 function _drawCell(layer,close){
   var ml=layer.closest('.mc-lm');
   if(!ml)return;
