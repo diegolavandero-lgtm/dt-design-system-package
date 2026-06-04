@@ -1,7 +1,7 @@
 {
   "title": "Topbar",
   "titleKey": "nav.topbar",
-  "description": "Height 52px ($hp-top-bar-height), bg $hp-dt-indigo (#132045). Customer slot 100px, border-radius 25px 0 0 0. Icon order invariable. Source: styles/packages/top-bar/src/",
+  "description": "Height 52px ($hp-top-bar-height), bg $hp-dt-indigo (#132045). Customer slot 100px, border-radius 25px 0 0 0. Icon order invariable: apps · alerts · messages · help · settings · user. Source: styles/packages/top-bar/src/",
   "keywords": [
     "topbar",
     "header",
@@ -24,13 +24,14 @@
   },
   "iconOrder": [
     "apps",
-    "help",
-    "messages",
     "alerts",
+    "messages",
+    "help",
+    "settings",
     "user"
   ],
   "breakpoints": {
-    "desktop": "≥1024px — full logo + all 5 icons + customer slot",
+    "desktop": "≥1024px — full logo + all 6 icons + customer slot",
     "tablet": "768–1023px — full logo + 3 icons (alerts, messages, user) + customer slot abbreviated",
     "mobile": "<768px — mobile logo (icon only) + 2 icons (alerts, user) + no customer slot"
   },
@@ -49,9 +50,10 @@
           "logo": "sections/assets/logos/lastmile-desktop-white.svg",
           "icons": [
             "apps",
-            "help",
-            "messages",
             "alerts",
+            "messages",
+            "help",
+            "settings",
             "user"
           ],
           "customerSlot": {
@@ -103,9 +105,10 @@
           "logo": "sections/assets/logos/plannerpro-desktop-white.svg",
           "icons": [
             "apps",
-            "help",
-            "messages",
             "alerts",
+            "messages",
+            "help",
+            "settings",
             "user"
           ],
           "customerSlot": {
@@ -157,9 +160,10 @@
           "logo": "sections/assets/logos/ondemand-desktop-white.svg",
           "icons": [
             "apps",
-            "help",
-            "messages",
             "alerts",
+            "messages",
+            "help",
+            "settings",
             "user"
           ],
           "customerSlot": {
@@ -211,9 +215,10 @@
           "logo": "sections/assets/logos/customer-portal-desktop-white.svg",
           "icons": [
             "apps",
-            "help",
-            "messages",
             "alerts",
+            "messages",
+            "help",
+            "settings",
             "user"
           ],
           "customerSlot": {
@@ -265,9 +270,10 @@
           "logo": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
           "icons": [
             "apps",
-            "help",
-            "messages",
             "alerts",
+            "messages",
+            "help",
+            "settings",
             "user"
           ],
           "customerSlot": {
@@ -319,9 +325,10 @@
           "logo": "sections/assets/logos/soporte-desktop-white.svg",
           "icons": [
             "apps",
-            "help",
-            "messages",
             "alerts",
+            "messages",
+            "help",
+            "settings",
             "user"
           ],
           "customerSlot": {
