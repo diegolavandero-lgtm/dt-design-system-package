@@ -24,13 +24,16 @@ button{font-family:inherit;cursor:pointer}
 
 /* ── SHELL + SIDEBAR (identical to live) ── */
 .shell{display:flex;min-height:calc(100vh - 52px)}
-.sidebar{display:flex;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden}
-.sb-icons{width:44px;flex-shrink:0;background:#132045;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px;overflow-y:auto}
-.sb-icon-btn{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.sb-icon-btn svg{width:18px;height:18px;color:rgba(255,255,255,.55);display:block}
-.sb-icon-btn:hover svg{color:rgba(255,255,255,.9)}
-.sb-icon-btn.active{background:rgba(255,255,255,.12)}
-.sb-icon-btn.active svg{color:#fff}
+.sidebar{display:flex;flex-shrink:0}
+.pg-sidenav{width:52px;background:#fff;border-right:1px solid #E1E6ED;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden}
+.pg-sidenav .psn-mark{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#1F60ED,#0052CC);display:flex;align-items:center;justify-content:center;font:700 10px 'DM Sans';color:#fff;margin-bottom:12px;flex-shrink:0}
+.pg-sidenav .psn-it{width:36px;height:36px;border-radius:30px;display:flex;align-items:center;justify-content:center;color:#0052CC;cursor:pointer;position:relative;flex-shrink:0}
+.pg-sidenav .psn-it:hover{background:#EDF5FF}
+.pg-sidenav .psn-it.psn-sel{background:#EDF5FF;border-radius:0 30px 30px 0;width:47px;align-self:flex-end}
+.pg-sidenav .psn-it.psn-sel::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;background:#4B82FA;border-radius:0 3px 3px 0}
+.pg-sidenav .psn-it svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;flex-shrink:0}
+.pg-sidenav .psn-sep{width:26px;border-top:1px solid #E1E6ED;margin:5px 0;flex-shrink:0}
+.pg-sidenav .psn-bot{margin-top:auto}
 .sb-nav{width:212px;flex-shrink:0;background:#fff;border-right:1px solid #E1E6ED;overflow-y:auto;padding-bottom:24px}
 .sb-nav::-webkit-scrollbar{width:4px}.sb-nav::-webkit-scrollbar-thumb{background:#E1E6ED;border-radius:2px}
 .sb-group{padding:16px 0 4px 16px;font-size:13px;font-weight:700;color:#39414D}
@@ -461,20 +464,20 @@ textarea.inp{resize:vertical;min-height:72px;line-height:1.5}
 <div class="shell">
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sb-icons">
-      <div class="sb-icon-btn" title="Activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <div class="sb-icon-btn" title="Routes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h4"/></svg></div>
-      <div class="sb-icon-btn" title="Orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-      <div class="sb-icon-btn" title="Fleet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-      <div class="sb-icon-btn" title="Stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-      <div class="sb-icon-btn" title="Alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-      <div class="sb-icon-btn" title="Customers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-      <div class="sb-icon-btn" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-      <div class="sb-icon-btn" title="Map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-      <div class="sb-icon-btn active" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-      <div class="sb-icon-btn" title="Upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-      <div class="sb-icon-btn" title="Integrations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-    </div>
+    <div class="pg-sidenav">
+  <div class="psn-mark">DT</div>
+  <div class="psn-it" title="Actividad"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+  <div class="psn-it" title="Rutas"><svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M9 19h4a4 4 0 0 0 0-8H11a4 4 0 0 1 0-8h4"/></svg></div>
+  <div class="psn-it" title="Órdenes"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+  <div class="psn-it" title="Flota"><svg viewBox="0 0 24 24"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+  <div class="psn-it" title="Estadísticas"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+  <div class="psn-it" title="Alertas"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg></div>
+  <div class="psn-it" title="Clientes"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <div class="psn-sep"></div>
+  <div class="psn-bot">
+    <div class="psn-it psn-sel" title="Ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+  </div>
+</div>
     <nav class="sb-nav">
       <div class="sb-group">Account</div><div class="sb-item">Account configuration</div>
       <div class="sb-group">Users</div><div class="sb-item">Web users <span class="sb-badge">20</span></div><div class="sb-item">Mobile users <span class="sb-badge">9</span></div>
