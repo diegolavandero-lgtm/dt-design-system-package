@@ -1580,8 +1580,9 @@ function lassoStart(e){
   lassoDrawing=true; lassoPts=[];
   lassoPts.push(svgPt(e));
   updateLassoPath(false);
-  document.addEventListener('mousemove',_lassoGlobalMove,{passive:false});
-  document.addEventListener('mouseup',_lassoGlobalEnd);
+  // capture:true fires BEFORE Leaflet's stopPropagation in the bubble phase
+  document.addEventListener('mousemove',_lassoGlobalMove,{capture:true,passive:false});
+  document.addEventListener('mouseup',_lassoGlobalEnd,{capture:true});
 }
 function _lassoGlobalMove(e){
   if(!lassoDrawing)return;
@@ -1590,8 +1591,8 @@ function _lassoGlobalMove(e){
   updateLassoPath(false);
 }
 function _lassoGlobalEnd(e){
-  document.removeEventListener('mousemove',_lassoGlobalMove);
-  document.removeEventListener('mouseup',_lassoGlobalEnd);
+  document.removeEventListener('mousemove',_lassoGlobalMove,{capture:true});
+  document.removeEventListener('mouseup',_lassoGlobalEnd,{capture:true});
   if(!lassoDrawing)return;
   lassoDrawing=false;
   if(lassoPts.length<3)return;
@@ -1666,8 +1667,9 @@ function cellLassoStart(e,layer){
   var r=layer.getBoundingClientRect();
   cellPts.push([e.clientX-r.left,e.clientY-r.top]);
   _drawCell(layer,false);
-  document.addEventListener('mousemove',_cellGlobalMove,{passive:false});
-  document.addEventListener('mouseup',_cellGlobalEnd);
+  // capture:true fires BEFORE Leaflet's stopPropagation in the bubble phase
+  document.addEventListener('mousemove',_cellGlobalMove,{capture:true,passive:false});
+  document.addEventListener('mouseup',_cellGlobalEnd,{capture:true});
 }
 function _cellGlobalMove(e){
   if(!cellDrawing||!_cellLassoLayer)return;
@@ -1677,8 +1679,8 @@ function _cellGlobalMove(e){
   _drawCell(_cellLassoLayer,false);
 }
 function _cellGlobalEnd(e){
-  document.removeEventListener('mousemove',_cellGlobalMove);
-  document.removeEventListener('mouseup',_cellGlobalEnd);
+  document.removeEventListener('mousemove',_cellGlobalMove,{capture:true});
+  document.removeEventListener('mouseup',_cellGlobalEnd,{capture:true});
   if(!cellDrawing){return;}
   cellDrawing=false;
   if(cellPts.length<3){_cellLassoLayer=null;return;}
