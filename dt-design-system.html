@@ -1643,15 +1643,23 @@ button,input,select{font-family:inherit}
   }
 
   var dmeMaps={};
+  window._dmeMaps=dmeMaps;
   function initDme(){
-    dmeMaps.main=buildDmeMap('dme-map-main',13);
-    dmeMaps.form=buildDmeMap('dme-map-form2',14);
+    // Double rAF guarantees two paint cycles — containers are fully measured
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        dmeMaps.main=buildDmeMap('dme-map-main',13);
+        dmeMaps.form=buildDmeMap('dme-map-form2',14);
+      });
+    });
   }
-  /* Wait for Leaflet (may already be loaded by initMaps) */
-  if(window.L){initDme();}
-  else{
-    var t=setInterval(function(){if(window.L){clearInterval(t);initDme();}},100);
-  }
+  /* Init after full page load so all containers are painted and measured */
+  window.addEventListener('load', function(){
+    if(window.L){initDme();}
+    else{
+      var t=setInterval(function(){if(window.L){clearInterval(t);initDme();}},50);
+    }
+  });
 
   /* ── Ver dropdown ── */
   window.dmeToggleVer=function(e,btn,menuId){
