@@ -1,0 +1,16 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Skip if the push was the changelog auto-update (avoids double deploys)
+    if: "!contains(github.event.head_commit.message, 'chore: auto-update changelog')"
+    steps:
+      - name: Trigger Vercel deploy hook
+        run: |
+          curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_AZswHk5LsShNzukc4B972ILKtQpX/ETm6unZWYV"
+          echo "Deploy triggered ✓"
