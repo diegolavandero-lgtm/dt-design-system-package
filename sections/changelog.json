@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T20:37:12.183Z",
+  "generated": "2026-06-04T20:41:11.368Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "fe07733",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix: apply DS spec consistency fixes — chips radius, input spec, coverage chips",
+          "author": "Carlos"
+        },
         {
           "hash": "bb90645",
           "type": "update",
