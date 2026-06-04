@@ -1220,14 +1220,30 @@ function updatePreview(){
 }
 
 /* step scrollspy */
+let _blockObs = false;
+
+function setActiveStep(id){
+  document.querySelectorAll('.step-chip').forEach(c=>c.classList.toggle('active',c.dataset.target===id));
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));
+}
+
 function goStep(id){
   const el = document.getElementById(id);
   const scrollEl = document.querySelector('.main');
   if(!el || !scrollEl) return;
+  _blockObs = true;
+  setActiveStep(id);
   scrollEl.scrollTo({top: Math.max(0, el.offsetTop - 120), behavior:'smooth'});
+  clearTimeout(window._stepTimer);
+  window._stepTimer = setTimeout(()=>{ _blockObs = false; }, 700);
 }
+
 const mainEl=document.querySelector('.main');
-const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.step-chip').forEach(c=>c.classList.toggle('active',c.dataset.target===e.target.id));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===e.target.id));}});},{root:mainEl,rootMargin:'-130px 0px -55% 0px',threshold:0});
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting && !_blockObs) setActiveStep(e.target.id);
+  });
+},{root:mainEl,rootMargin:'-130px 0px -55% 0px',threshold:0});
 document.querySelectorAll('.section').forEach(s=>obs.observe(s));
 
 function syncColorPicker(val){
