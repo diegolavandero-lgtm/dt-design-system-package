@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T20:56:28.380Z",
+  "generated": "2026-06-04T20:59:05.775Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "2c90f02",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): lazo dibuja sobre el mapa — capture phase listeners",
+          "author": "Diego"
+        },
         {
           "hash": "281dce3",
           "type": "fix",
