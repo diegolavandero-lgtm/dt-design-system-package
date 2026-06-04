@@ -207,13 +207,17 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .sumrow{display:flex;justify-content:space-between;padding:6px 0;font:400 13px var(--font-sans);}
 .sumrow .k{color:var(--n5);}.sumrow .v{color:var(--n7);font-weight:600;}
 
-/* ============ DS TABS (selection.json / dt-design-system.html canonical) ============ */
-/* Top-level tab bar — always at the top of .main */
-.tabs{display:flex;border-bottom:1px solid var(--n3);background:#FAFBFD;flex-shrink:0;}
-.t-tab{padding:11px 20px;font:500 14px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
-.t-tab:hover{color:var(--n7);}
-.t-tab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);background:#fff;}
-/* Tab panels — flex column so inner views fill the height */
+/* ============ DS PILL TABS (renderers.js tabGroup — canonical) ============ */
+/* Tab bar wrapper — sits at top of .main, white bg, bottom border */
+.tab-bar{background:#fff;border-bottom:1px solid var(--n3);padding:10px 20px;flex-shrink:0;}
+/* Pill container — matches tabGroup() output exactly */
+.tab-pill-wrap{display:inline-flex;background:var(--n2);border-radius:16px;padding:4px;position:relative;user-select:none;}
+/* Sliding background pill */
+.tab-pill-slider{position:absolute;top:4px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(19,32,69,.10);transition:left .18s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none;}
+/* Each tab button */
+.tab-pill-btn{position:relative;z-index:1;height:24px;border-radius:12px;background:transparent;border:none;font:700 12px/1 var(--font-sans);color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0 16px;white-space:nowrap;}
+.tab-pill-btn:hover{background:rgba(193,205,225,.45);}
+/* Tab panels */
 .tp{display:none;flex-direction:column;flex:1;min-height:0;}
 .tp.on{display:flex;}
 /* Empty state for Territorios */
@@ -400,10 +404,13 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
     <!-- ===== MAIN ===== -->
     <div class="main" id="view-main">
 
-      <!-- DS TOP-LEVEL TABS (Planes / Territorios) — governs everything below -->
-      <div class="tabs" id="mainTabs">
-        <div class="t-tab on" onclick="switchMainTab(0)">Planes</div>
-        <div class="t-tab" onclick="switchMainTab(1)">Territorios</div>
+      <!-- DS PILL TABS — matches tabGroup() in renderers.js exactly -->
+      <div class="tab-bar">
+        <div class="tab-pill-wrap" id="mainTabs" data-active="0">
+          <div class="tab-pill-slider" id="mainTabPill" style="left:4px;width:72px;"></div>
+          <button class="tab-pill-btn" id="tbPlanes"     onclick="switchMainTab(0)">Planes</button>
+          <button class="tab-pill-btn" id="tbTerrit"     onclick="switchMainTab(1)">Territorios</button>
+        </div>
       </div>
 
       <!-- ══ TAB PANEL: PLANES ══ -->
@@ -866,12 +873,21 @@ function pick(el){
 function openCompare(){document.getElementById('ovCompare').classList.add('on');setProto('compare');}
 function closeCompare(){document.getElementById('ovCompare').classList.remove('on');setProto(app.dataset.view);}
 
-/* ---------- Main tab switch ---------- */
+/* ---------- Main tab switch (DS pill tab — matches tabGroup() in renderers.js) ---------- */
 function switchMainTab(idx){
-  var tabs=document.querySelectorAll('#mainTabs .t-tab');
   var panels=[document.getElementById('tp-planes'),document.getElementById('tp-territories')];
-  tabs.forEach(function(t,i){t.classList.toggle('on',i===idx);});
   panels.forEach(function(p,i){p.classList.toggle('on',i===idx);});
+  // Slide the pill to the active button
+  var btns=[].slice.call(document.querySelectorAll('#mainTabs .tab-pill-btn'));
+  var pill=document.getElementById('mainTabPill');
+  var wrap=document.getElementById('mainTabs');
+  var wrapRect=wrap.getBoundingClientRect();
+  var btnRect=btns[idx].getBoundingClientRect();
+  var left=btnRect.left-wrapRect.left;
+  pill.style.left=left+'px';
+  pill.style.width=btnRect.width+'px';
+  // Reset hover bg on all btns
+  btns.forEach(function(b){b.style.background='transparent';});
   if(idx===0&&lmap)setTimeout(function(){lmap.invalidateSize();},120);
 }
 
