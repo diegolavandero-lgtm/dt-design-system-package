@@ -208,8 +208,11 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .sumrow .k{color:var(--n5);}.sumrow .v{color:var(--n7);font-weight:600;}
 
 /* ============ DS PILL TABS (renderers.js tabGroup — canonical) ============ */
-/* Tab bar wrapper — sits at top of .main, white bg, bottom border */
-.tab-bar{background:#fff;border-bottom:1px solid var(--n3);padding:10px 20px;flex-shrink:0;}
+/* Tab bar — flex row: pill tabs left · canvas actions right */
+.tab-bar{background:#fff;border-bottom:1px solid var(--n3);padding:8px 20px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+/* Canvas-only actions live in the tab bar; hidden on list view */
+.canvas-acts{display:none;align-items:center;gap:8px;}
+.app[data-view="canvas"] .canvas-acts{display:flex;}
 /* Pill container — matches tabGroup() output exactly */
 .tab-pill-wrap{display:inline-flex;background:var(--n2);border-radius:16px;padding:4px;position:relative;user-select:none;}
 /* Sliding background pill */
@@ -226,26 +229,20 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .empty-state h3{font:700 18px var(--font-sans);color:var(--n7);}
 .empty-state p{font:400 14px var(--font-sans);color:var(--n5);text-align:center;max-width:360px;line-height:1.5;}
 
-/* ============ CANVAS — two-row plan header ============ */
-/* Row 1: title bar (badge · name · actions) */
-.cphead{background:#fff;border-bottom:1px solid var(--n3);padding:0 20px;display:flex;flex-direction:column;flex-shrink:0;}
-.cprow1{display:flex;align-items:center;gap:10px;height:44px;}
-.cphead .ptit{font:700 15px var(--font-sans);color:var(--n7);white-space:nowrap;}
-/* Row 2: metrics bar */
-.cprow2{display:flex;align-items:center;height:34px;border-top:1px solid var(--n3);gap:0;overflow-x:auto;overflow-y:hidden;}
-.cprow2::-webkit-scrollbar{height:3px;}
-.cprow2::-webkit-scrollbar-thumb{background:var(--n3);border-radius:2px;}
+/* ============ CANVAS — single-row plan metrics bar ============ */
+/* badge · plan name | divider | metric: value • … | avatars */
+.cphead{background:#fff;border-bottom:1px solid var(--n3);padding:0 20px;height:40px;display:flex;align-items:center;gap:0;flex-shrink:0;overflow:hidden;}
+.cphead .ptit{font:700 14px var(--font-sans);color:var(--n7);white-space:nowrap;}
+.cphead .cdiv{width:1px;height:18px;background:var(--n3);margin:0 14px;flex-shrink:0;}
 .cmet{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;}
 .cmet .ml{font:400 12px var(--font-sans);color:var(--n5);}
 .cmet .mv{font:700 13px var(--font-sans);color:var(--n7);}
 .cmet .better{font:600 12px var(--font-sans);color:var(--g6);}
-.cbull{font:400 13px var(--font-sans);color:var(--n4);padding:0 10px;flex-shrink:0;}
-/* avatars stack */
-.cavs{display:flex;align-items:center;margin-left:auto;padding-left:16px;flex-shrink:0;}
+.cbull{font:400 13px var(--font-sans);color:var(--n4);padding:0 9px;flex-shrink:0;}
+/* avatars */
+.cavs{display:flex;align-items:center;margin-left:auto;padding-left:14px;flex-shrink:0;}
 .cavs .ca{width:22px;height:22px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font:700 8px var(--font-sans);color:#fff;flex-shrink:0;}
 .cavs .ca:not(:first-child){margin-left:-6px;}
-/* actions */
-.phacts{display:flex;gap:8px;align-items:center;margin-left:auto;}
 
 .ws{display:flex;flex:1;min-height:0;}
 .cfg{width:320px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;}
@@ -413,12 +410,20 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
     <!-- ===== MAIN ===== -->
     <div class="main" id="view-main">
 
-      <!-- DS PILL TABS — matches tabGroup() in renderers.js exactly -->
+      <!-- DS PILL TABS + canvas action buttons in same row -->
       <div class="tab-bar">
         <div class="tab-pill-wrap" id="mainTabs" data-active="0">
           <div class="tab-pill-slider" id="mainTabPill" style="left:4px;width:72px;"></div>
-          <button class="tab-pill-btn" id="tbPlanes"     onclick="switchMainTab(0)">Planes</button>
-          <button class="tab-pill-btn" id="tbTerrit"     onclick="switchMainTab(1)">Territorios</button>
+          <button class="tab-pill-btn" id="tbPlanes" onclick="switchMainTab(0)">Planes</button>
+          <button class="tab-pill-btn" id="tbTerrit" onclick="switchMainTab(1)">Territorios</button>
+        </div>
+        <!-- Canvas-only actions (hidden on list view via CSS) -->
+        <div class="canvas-acts">
+          <button class="btn txt" onclick="goList()">← Planes</button>
+          <button class="btn ter" id="btnChanges" disabled onclick="openChanges()">Cambios (1)</button>
+          <button class="btn ter" id="btnFindings" disabled onclick="toggleFindings(true)">Hallazgos (3)</button>
+          <button class="btn pri" id="btnOpt" onclick="optimize()">Optimizar semana</button>
+          <button class="btn sec" id="btnActivate" disabled onclick="openActivate()">Activar plan</button>
         </div>
       </div>
 
@@ -589,40 +594,28 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 
     <!-- ─── CANVAS (screens 4 / 5 / 9) ─── -->
     <div id="view-canvas" style="display:none;flex-direction:column;flex:1;min-height:0;">
-      <!-- Plan header — row 1: badge · name · actions / row 2: bullet metrics -->
-      <div class="cphead">
-        <!-- Row 1: title + actions -->
-        <div class="cprow1">
-          <span class="bdg b" id="planBadge">Borrador</span>
-          <span class="ptit">Plan Estándar</span>
-          <div class="phacts">
-            <button class="btn txt" onclick="goList()">← Planes</button>
-            <button class="btn ter" id="btnChanges" disabled onclick="openChanges()">Cambios (1)</button>
-            <button class="btn ter" id="btnFindings" disabled onclick="toggleFindings(true)">Hallazgos (3)</button>
-            <button class="btn pri" id="btnOpt" onclick="optimize()">Optimizar semana</button>
-            <button class="btn sec" id="btnActivate" disabled onclick="openActivate()">Activar plan</button>
-          </div>
-        </div>
-        <!-- Row 2: bullet-separated metrics + stacked avatars -->
-        <div class="cprow2" id="kpis">
-          <span class="cmet"><span class="ml">Clientes:</span><span class="mv">223</span></span>
-          <span class="cbull">•</span>
-          <span class="cmet"><span class="ml">Paradas:</span><span class="mv">540</span></span>
-          <span class="cbull">•</span>
-          <span class="cmet"><span class="ml">Camiones:</span><span class="mv">58/72</span></span>
-          <span class="cbull">•</span>
-          <span class="cmet"><span class="ml">Millas:</span><span class="mv">12.530 <span class="better">↓4,2%</span></span></span>
-          <span class="cbull">•</span>
-          <span class="cmet"><span class="ml">Costo:</span><span class="mv">$55.329</span></span>
-          <span class="cbull">•</span>
-          <span class="cmet"><span class="ml">Tiempo:</span><span class="mv">59%</span></span>
-          <span class="cbull">•</span>
-          <span class="cmet"><span class="ml">Carga:</span><span class="mv">46%</span></span>
-          <div class="cavs">
-            <span class="ca" style="background:var(--b6)" title="Maya Johnson">MJ</span>
-            <span class="ca" style="background:var(--p5)" title="Lucas Martínez">LM</span>
-            <span class="ca" style="background:var(--g5)" title="Liam Smith">LS</span>
-          </div>
+      <!-- Plan metrics bar — single row: badge · name | metrics · avatars -->
+      <div class="cphead" id="kpis">
+        <span class="bdg b" id="planBadge" style="flex-shrink:0">Borrador</span>
+        <span class="ptit" style="margin-left:10px">Plan Estándar</span>
+        <div class="cdiv"></div>
+        <span class="cmet"><span class="ml">Clientes:</span><span class="mv">223</span></span>
+        <span class="cbull">•</span>
+        <span class="cmet"><span class="ml">Paradas:</span><span class="mv">540</span></span>
+        <span class="cbull">•</span>
+        <span class="cmet"><span class="ml">Camiones:</span><span class="mv">58/72</span></span>
+        <span class="cbull">•</span>
+        <span class="cmet"><span class="ml">Millas:</span><span class="mv">12.530 <span class="better">↓4,2%</span></span></span>
+        <span class="cbull">•</span>
+        <span class="cmet"><span class="ml">Costo:</span><span class="mv">$55.329</span></span>
+        <span class="cbull">•</span>
+        <span class="cmet"><span class="ml">Tiempo:</span><span class="mv">59%</span></span>
+        <span class="cbull">•</span>
+        <span class="cmet"><span class="ml">Carga:</span><span class="mv">46%</span></span>
+        <div class="cavs">
+          <span class="ca" style="background:var(--b6)" title="Maya Johnson">MJ</span>
+          <span class="ca" style="background:var(--p5)" title="Lucas Martínez">LM</span>
+          <span class="ca" style="background:var(--g5)" title="Liam Smith">LS</span>
         </div>
       </div>
 
