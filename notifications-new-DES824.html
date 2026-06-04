@@ -75,7 +75,8 @@ button{font-family:inherit;cursor:pointer}
 .preview-col{width:380px;flex-shrink:0;position:sticky;top:112px}
 
 /* section card */
-.section{background:#fff;border:1px solid #E1E6ED;border-radius:8px;overflow:hidden;scroll-margin-top:120px}
+.section{background:#fff;border:1px solid #E1E6ED;border-radius:8px;overflow:hidden;scroll-margin-top:120px;transition:border-color .2s,box-shadow .2s}
+.section.active{border-color:#ADC7FF !important;outline:3px solid rgba(75,130,250,.18);outline-offset:0}
 .section-head{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-bottom:1px solid #F0F2F5}
 .section-num{width:26px;height:26px;border-radius:50%;background:#EDF5FF;color:#0052CC;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .section-head h2{font-size:15px;font-weight:700;color:#39414D}
@@ -1221,7 +1222,7 @@ function updatePreview(){
 /* step scrollspy */
 function goStep(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
 const mainEl=document.querySelector('.main');
-const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.step-chip').forEach(c=>c.classList.toggle('active',c.dataset.target===e.target.id));}});},{root:mainEl,rootMargin:'-130px 0px -55% 0px',threshold:0});
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.step-chip').forEach(c=>c.classList.toggle('active',c.dataset.target===e.target.id));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===e.target.id));}});},{root:mainEl,rootMargin:'-130px 0px -55% 0px',threshold:0});
 document.querySelectorAll('.section').forEach(s=>obs.observe(s));
 
 function syncColorPicker(val){
