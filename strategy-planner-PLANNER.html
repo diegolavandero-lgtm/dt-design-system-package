@@ -416,23 +416,30 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
       <!-- ══ TAB PANEL: PLANES ══ -->
       <div class="tp on" id="tp-planes">
 
-    <!-- ─── LISTA (screen 1) ─── -->
-    <div id="view-list" style="display:flex;flex-direction:column;flex:1;min-height:0;">
-      <div class="phead">
-        <div class="ptitle">Strategy Planner</div>
-        <div class="pacts">
-          <button class="btn txt" id="cmpTop" disabled>Comparar planes (0)</button>
-          <button class="btn ter">Importar</button>
-          <button class="btn pri" onclick="openWizard()">+ Crear plan</button>
+    <!-- ─── LISTA (screen 1) — DS table page template layout (tablepage in renderers.js) ─── -->
+    <div id="view-list" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:auto;background:var(--n2);">
+      <div style="padding:20px 24px 16px;display:flex;flex-direction:column;gap:20px;min-height:100%;">
+
+        <!-- Page header: title left · buttons right (tablepage exact pattern) -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <span style="font:700 22px/1 var(--font-sans);color:var(--n7)">Strategy Planner</span>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <button id="cmpTop" disabled
+              style="height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);background:#fff;color:#8FA0BA;border:1px solid #C5D2E7;cursor:not-allowed;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box">Comparar planes (0)</button>
+            <button
+              style="height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box"
+              onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'">Importar</button>
+            <button onclick="openWizard()"
+              style="height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box"
+              onmouseenter="this.style.background='#1F60ED'" onmouseleave="this.style.background='var(--b6)'">
+              <svg width="13" height="13" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3"><line x1="16" y1="6" x2="16" y2="26"/><line x1="6" y1="16" x2="26" y2="16"/></svg>Crear plan</button>
+          </div>
         </div>
-      </div>
-      <div class="content">
-        <div class="filters">
-          <div class="inp search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Buscar por nombre o notas"></div>
-          <div class="ddl" style="width:170px">Estado: <b>Todos</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="ddl" style="width:170px">Vigencia: <b>Todas</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-        </div>
-        <div class="tcard" id="tcard">
+
+        <!-- White container: filter bar + table (tablepage exact pattern) -->
+        <div id="tcard" style="border-radius:8px;border:1px solid var(--n4);background:#fff;padding:20px;display:flex;flex-direction:column;gap:20px;position:relative;">
+
+          <!-- Bulk bar (absolute overlay on table header) -->
           <div class="bulk">
             <span class="cnt" id="bcnt">0 seleccionados</span>
             <button class="bb" id="bcmp" disabled onclick="openCompare()">Comparar</button>
@@ -440,65 +447,135 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
             <button class="bb">Exportar</button>
             <button class="bb">Eliminar</button>
           </div>
-          <div class="twrap">
-            <table class="t">
-              <thead><tr>
-                <th class="cb-td"><input type="checkbox" id="cbAll" onclick="mAll(this)"></th>
-                <th>Nombre <span class="sort">&#9650;&#9660;</span></th>
-                <th>Estado</th><th>Creado por</th><th>Vigencia</th>
-                <th style="text-align:right">Paradas</th><th style="text-align:right">Camiones</th>
-                <th class="actcol">Acciones</th>
-              </tr></thead>
-              <tbody>
-                <tr data-r>
-                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
-                  <td><span class="lnk" onclick="openCanvas(true)">Plan Estándar 2</span></td>
-                  <td><span class="bdg g"><span class="d"></span>Activo</span></td>
-                  <td><span class="av"><span class="dot" style="background:var(--b6)">MJ</span>Maya Johnson</span></td>
-                  <td class="muted">01-05-26</td><td class="num">539</td><td class="num">12</td>
-                  <td class="actcol"><div class="acts">
-                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
-                    <button class="act" onclick="menu(this,'active')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                  </div></td>
-                </tr>
-                <tr data-r>
-                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
-                  <td><span class="lnk" onclick="openCanvas(false)">Plan Norte Junio</span><span class="pill-new">Nuevo</span></td>
-                  <td><span class="bdg o"><span class="d"></span>Programado</span></td>
-                  <td><span class="av"><span class="dot" style="background:var(--p5)">LM</span>Lucas Martínez</span></td>
-                  <td class="muted">01-06-26</td><td class="num">312</td><td class="num">8</td>
-                  <td class="actcol"><div class="acts">
-                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
-                    <button class="act" onclick="menu(this,'scheduled')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                  </div></td>
-                </tr>
-                <tr data-r>
-                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
-                  <td><span class="lnk" onclick="openCanvas(false)">Borrador Holiday</span></td>
-                  <td><span class="bdg b">Borrador</span></td>
-                  <td><span class="av"><span class="dot" style="background:var(--g5)">LS</span>Liam Smith</span></td>
-                  <td class="muted">—</td><td class="num">540</td><td class="num muted">—</td>
-                  <td class="actcol"><div class="acts">
-                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
-                    <button class="act" onclick="menu(this,'draft')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                  </div></td>
-                </tr>
-                <tr data-r>
-                  <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
-                  <td><span class="lnk" onclick="openCanvas(true)">Plan Estándar</span></td>
-                  <td><span class="bdg n">Archivado</span></td>
-                  <td><span class="av"><span class="dot" style="background:var(--t5)">AP</span>Aisha Patel</span></td>
-                  <td class="muted">01-05-26</td><td class="num">539</td><td class="num">12</td>
-                  <td class="actcol"><div class="acts">
-                    <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
-                    <button class="act" onclick="menu(this,'archived')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                  </div></td>
-                </tr>
-              </tbody>
-            </table>
+
+          <!-- Filter bar (DS filters component inline styles) -->
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="position:relative;flex:1.5;min-width:0;">
+              <input type="text" placeholder="Buscar por nombre o notas"
+                style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px 0 32px"
+                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                onblur="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
+              <div style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--n5);pointer-events:none;display:flex;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              </div>
+            </div>
+            <!-- Estado dropdown -->
+            <div style="position:relative;flex:1;min-width:0;" id="ddEstado">
+              <div onclick="(function(w){var m=w.querySelector('.ddmenu');var open=m.style.display==='block';document.querySelectorAll('.ddmenu').forEach(function(x){x.style.display='none';});m.style.display=open?'none':'block';})(this.closest('[id]'))"
+                style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;"
+                onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
+                <span id="ddEstadoLbl" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Estado</span>
+                <svg viewBox="0 0 32 32" width="12" height="12" fill="var(--n5)"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>
+              </div>
+              <div class="ddmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0;">
+                <div onclick="document.getElementById('ddEstadoLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Todos</div>
+                <div onclick="document.getElementById('ddEstadoLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Activo</div>
+                <div onclick="document.getElementById('ddEstadoLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Programado</div>
+                <div onclick="document.getElementById('ddEstadoLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Borrador</div>
+                <div onclick="document.getElementById('ddEstadoLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Archivado</div>
+              </div>
+            </div>
+            <!-- Vigencia dropdown -->
+            <div style="position:relative;flex:1;min-width:0;" id="ddVigencia">
+              <div onclick="(function(w){var m=w.querySelector('.ddmenu');var open=m.style.display==='block';document.querySelectorAll('.ddmenu').forEach(function(x){x.style.display='none';});m.style.display=open?'none':'block';})(this.closest('[id]'))"
+                style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;"
+                onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
+                <span id="ddVigenciaLbl" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Vigencia</span>
+                <svg viewBox="0 0 32 32" width="12" height="12" fill="var(--n5)"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>
+              </div>
+              <div class="ddmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0;">
+                <div onclick="document.getElementById('ddVigenciaLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Todas</div>
+                <div onclick="document.getElementById('ddVigenciaLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Vigente</div>
+                <div onclick="document.getElementById('ddVigenciaLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Futura</div>
+                <div onclick="document.getElementById('ddVigenciaLbl').textContent=this.textContent;this.closest('.ddmenu').style.display='none'" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Vencida</div>
+              </div>
+            </div>
+            <!-- Filtrar button -->
+            <button style="height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;display:inline-flex;align-items:center;flex-shrink:0;box-sizing:border-box"
+              onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'">Filtrar</button>
+            <!-- filter-add icon button -->
+            <button title="Más filtros" style="width:32px;height:32px;border:1px solid var(--b6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
+              <svg viewBox="0 0 32 32" width="18" height="18" fill="var(--b6)"><path d="M18 28h-4a2 2 0 0 1-2-2v-7.59L4.59 11A2 2 0 0 1 4 9.59V6a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v3.59a2 2 0 0 1-.59 1.41L20 18.41V22l-2 6zm-4-2h2.76L18 21v-3.41l8-8V6H6v3.59l8 8V26z"/><line x1="26" y1="22" x2="22" y2="22" stroke="var(--b6)" stroke-width="2"/><line x1="24" y1="20" x2="24" y2="24" stroke="var(--b6)" stroke-width="2"/></svg>
+            </button>
+            <!-- filter-reset icon button -->
+            <button title="Limpiar filtros" style="width:32px;height:32px;border:1px solid var(--r6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
+              <svg viewBox="0 0 32 32" width="18" height="18" fill="var(--r6)"><path d="M18 28h-4a2 2 0 0 1-2-2v-7.59L4.59 11A2 2 0 0 1 4 9.59V6a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v3.59a2 2 0 0 1-.59 1.41L20 18.41V26a2 2 0 0 1-2 2zm-4-2h4v-8.41l8-8V6H6v3.59l8 8V26z"/><path d="M27 21 21 27" stroke="var(--r6)" stroke-width="2"/><path d="M21 21 27 27" stroke="var(--r6)" stroke-width="2"/></svg>
+            </button>
           </div>
+
+          <!-- Table (DS table.json — exact class names, tablepage wrapper) -->
+          <div style="border:1px solid var(--n4);border-radius:4px;overflow:hidden;">
+            <div class="twrap">
+              <table class="t">
+                <thead><tr>
+                  <th class="cb-td"><input type="checkbox" id="cbAll" onclick="mAll(this)"></th>
+                  <th>Nombre <span class="sort">&#9650;&#9660;</span></th>
+                  <th>Estado</th><th>Creado por</th><th>Vigencia</th>
+                  <th style="text-align:right">Paradas</th><th style="text-align:right">Camiones</th>
+                  <th class="actcol">Acciones</th>
+                </tr></thead>
+                <tbody>
+                  <tr data-r>
+                    <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                    <td><span class="lnk" onclick="openCanvas(true)">Plan Estándar 2</span></td>
+                    <td><span class="bdg g"><span class="d"></span>Activo</span></td>
+                    <td><span class="av"><span class="dot" style="background:var(--b6)">MJ</span>Maya Johnson</span></td>
+                    <td class="muted">01-05-26</td><td class="num">539</td><td class="num">12</td>
+                    <td class="actcol"><div class="acts">
+                      <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                      <button class="act" onclick="menu(this,'active')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </div></td>
+                  </tr>
+                  <tr data-r>
+                    <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                    <td><span class="lnk" onclick="openCanvas(false)">Plan Norte Junio</span><span class="pill-new">Nuevo</span></td>
+                    <td><span class="bdg o"><span class="d"></span>Programado</span></td>
+                    <td><span class="av"><span class="dot" style="background:var(--p5)">LM</span>Lucas Martínez</span></td>
+                    <td class="muted">01-06-26</td><td class="num">312</td><td class="num">8</td>
+                    <td class="actcol"><div class="acts">
+                      <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                      <button class="act" onclick="menu(this,'scheduled')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </div></td>
+                  </tr>
+                  <tr data-r>
+                    <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                    <td><span class="lnk" onclick="openCanvas(false)">Borrador Holiday</span></td>
+                    <td><span class="bdg b">Borrador</span></td>
+                    <td><span class="av"><span class="dot" style="background:var(--g5)">LS</span>Liam Smith</span></td>
+                    <td class="muted">—</td><td class="num">540</td><td class="num muted">—</td>
+                    <td class="actcol"><div class="acts">
+                      <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                      <button class="act" onclick="menu(this,'draft')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </div></td>
+                  </tr>
+                  <tr data-r>
+                    <td class="cb-td"><input type="checkbox" onclick="rCb(this)"></td>
+                    <td><span class="lnk" onclick="openCanvas(true)">Plan Estándar</span></td>
+                    <td><span class="bdg n">Archivado</span></td>
+                    <td><span class="av"><span class="dot" style="background:var(--t5)">AP</span>Aisha Patel</span></td>
+                    <td class="muted">01-05-26</td><td class="num">539</td><td class="num">12</td>
+                    <td class="actcol"><div class="acts">
+                      <button class="act" title="Exportar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button>
+                      <button class="act" onclick="menu(this,'archived')" title="Más"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /white container -->
+
+        <!-- Pagination (tablepage exact pattern — right-aligned, below container) -->
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;">
+          <button style="width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n6)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--b6);background:var(--b6);display:inline-flex;align-items:center;justify-content:center;font:700 12px var(--font-sans);color:#fff;cursor:pointer;padding:0 6px">1</button>
+          <button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;font:500 12px var(--font-sans);color:var(--n6);cursor:pointer;padding:0 6px">2</button>
+          <button style="min-width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;font:500 12px var(--font-sans);color:var(--n6);cursor:pointer;padding:0 6px">3</button>
+          <button style="width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n6)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
         </div>
-      </div>
+
+      </div><!-- /padding wrapper -->
     </div><!-- /view-list -->
 
     <!-- ─── CANVAS (screens 4 / 5 / 9) ─── -->
