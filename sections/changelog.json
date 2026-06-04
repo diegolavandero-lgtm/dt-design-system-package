@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T21:35:31.884Z",
+  "generated": "2026-06-04T21:37:55.732Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "d8c24dd",
+          "type": "fix",
+          "section": "Map pins",
+          "message": "fix(ds): map controls + tiles in renderers.js mappins section",
+          "author": "Diego"
+        },
         {
           "hash": "1232a36",
           "type": "fix",
