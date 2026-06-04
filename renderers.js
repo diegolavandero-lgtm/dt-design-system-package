@@ -1625,7 +1625,65 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <\/script>`;
 
     /* ─── TABS ─── */
-    // Per-tab state pill renderer
+    // Render a complete tab GROUP (container + n tabs + sliding pill)
+    // gid = unique ID for JS interactivity; active = initially active index
+    let _tabGid = 0;
+    function tabGroup(n, size, active, badgeNums) {
+      const gid = 'tg-' + (++_tabGid);
+      const pillW = size === 'dense' ? 74 : 98;
+      const gap   = size === 'dense' ? 12 : 24;        // gap between pill positions
+      const totalW = 8 + pillW * n + gap * (n - 1);
+      const pillX  = 4 + active * (pillW + gap);
+      const BADGE_NUMS = [5,12,3,8,1,7];
+      const tabs = Array.from({length:n}, (_,i) => {
+        const badge = badgeNums
+          ? `<span style="position:absolute;top:-8px;right:-5px;min-width:16px;height:16px;border-radius:8px;background:var(--r6);color:#fff;font:700 9px/1 var(--font-sans);display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box;z-index:3">${BADGE_NUMS[i]||1}</span>`
+          : '';
+        return `<button onclick="dtGroupClick('${gid}',${i})" style="position:relative;z-index:1;width:${pillW}px;height:24px;border-radius:12px;background:transparent;border:none;font:700 12px/1 var(--font-sans);color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center"
+          onmouseenter="if(!this.classList.contains('dtact'))this.style.background='rgba(193,205,225,.45)'"
+          onmouseleave="this.style.background='transparent'">Section${badge}</button>`;
+      }).join('');
+      return `<div id="${gid}" style="display:inline-flex;background:var(--n2);border-radius:16px;padding:4px;position:relative;user-select:none">
+        <div id="${gid}-pill" style="position:absolute;top:4px;left:${pillX}px;width:${pillW}px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(19,32,69,.1);transition:left .2s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none"></div>
+        ${tabs}
+      </div>`;
+    }
+
+    // Dense rows (2–6 tabs)
+    const denseRows = [2,3,4,5,6].map(n =>
+      `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--n3)">
+        <span style="font:500 11px var(--font-sans);color:var(--n5);width:54px;flex-shrink:0">${n} tabs</span>
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+          <div>
+            <div style="font:400 10px var(--font-sans);color:var(--n4);margin-bottom:6px">No badge</div>
+            ${tabGroup(n,'dense',0,false)}
+          </div>
+          <div style="padding-top:8px">
+            <div style="font:400 10px var(--font-sans);color:var(--n4);margin-bottom:6px">With badge</div>
+            ${tabGroup(n,'dense',0,true)}
+          </div>
+        </div>
+      </div>`
+    ).join('');
+
+    // Wide rows (2–6 tabs)
+    const wideRows = [2,3,4,5,6].map(n =>
+      `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--n3)">
+        <span style="font:500 11px var(--font-sans);color:var(--n5);width:54px;flex-shrink:0">${n} tabs</span>
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+          <div>
+            <div style="font:400 10px var(--font-sans);color:var(--n4);margin-bottom:6px">No badge</div>
+            ${tabGroup(n,'wide',0,false)}
+          </div>
+          <div style="padding-top:8px">
+            <div style="font:400 10px var(--font-sans);color:var(--n4);margin-bottom:6px">With badge</div>
+            ${tabGroup(n,'wide',0,true)}
+          </div>
+        </div>
+      </div>`
+    ).join('');
+
+    // Per-tab state pill renderer (kept for reference row at the bottom)
     function tabPill(size, status, withBadge, badgeNum) {
       const w = size === 'dense' ? 74 : 98;
       const h = 24;
@@ -1750,44 +1808,21 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
 
     const tabsSection = `
-      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:32px 0 6px;display:flex;align-items:center;gap:8px">Tabs</h3>
-      <p class="desc" style="margin-bottom:16px">Pill-shaped segment switcher. Two sizes (Dense 74px · Wide 98px), 2–6 options, optional numeric badge per tab. Active tab has a white sliding pill. Hover state darkens the tab area. Focused tab shows a blue outline.</p>
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:32px 0 6px">Tabs</h3>
+      <p class="desc" style="margin-bottom:16px">Pill-shaped segment switcher. Two sizes (Dense 74px · Wide 98px), 2–6 options, optional numeric badge per tab. Click any tab in the groups below to see the sliding pill animation.</p>
 
-      <!-- Variant reference -->
+      <!-- Dense groups -->
       <div class="card" style="margin-bottom:12px">
-        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:16px">All tab states (individual pill)</div>
-        ${tabVariantsHTML}
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:4px">Dense · all combinations</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5);margin-bottom:16px">Tab pill width: 74px · Container height: 32px · Click any tab to activate</div>
+        ${denseRows}
       </div>
 
-      <!-- Functional preview -->
+      <!-- Wide groups -->
       <div class="card" style="margin-bottom:12px">
-        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:16px">Live preview</div>
-
-        <!-- Controls -->
-        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:6px">
-            <span style="font:500 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Size</span>
-            <div style="display:flex;border:1px solid var(--n3);border-radius:6px;overflow:hidden">
-              <button id="tabs-ctrl-dense" onclick="dtPreviewCtrl('size','dense')" style="height:28px;padding:0 12px;font:600 11px var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Dense</button>
-              <button id="tabs-ctrl-wide"  onclick="dtPreviewCtrl('size','wide')"  style="height:28px;padding:0 12px;font:600 11px var(--font-sans);background:#fff;color:var(--n6);border:none;cursor:pointer;border-left:1px solid var(--n3)">Wide</button>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <span style="font:500 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Options</span>
-            <div id="tabs-count-btns" style="display:flex;gap:4px">
-              ${[2,3,4,5,6].map((n,i) => `<button onclick="dtPreviewCtrl('count',${n})" id="tabs-ctrl-count-${n}" style="width:28px;height:28px;border-radius:4px;font:600 11px var(--font-sans);background:${i===1?'var(--b6)':'var(--n2)'};color:${i===1?'#fff':'var(--n6)'};border:1px solid ${i===1?'var(--b6)':'var(--n3)'};cursor:pointer">${n}</button>`).join('')}
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <span style="font:500 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Badge</span>
-            <div class="swt" id="tabs-badge-toggle" onclick="dtPreviewCtrl('badge',null)"></div>
-          </div>
-        </div>
-
-        <!-- The actual tabs -->
-        <div style="padding:24px 0 8px;display:flex;justify-content:center">
-          <div id="dt-tabs-preview"></div>
-        </div>
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:4px">Wide · all combinations</div>
+        <div style="font:400 11px var(--font-sans);color:var(--n5);margin-bottom:16px">Tab pill width: 98px · Container height: 32px · Click any tab to activate</div>
+        ${wideRows}
       </div>
 
       <!-- Tokens -->
@@ -1805,77 +1840,22 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <!-- Claude usage note -->
       ${tabClaudeNote}
 
-      <style>
-        .dt-tabs-live { display:inline-flex; background:var(--n2); border-radius:16px; padding:4px; position:relative; }
-        .dt-tabs-live .dt-tl-indicator { position:absolute; top:4px; left:4px; height:24px; border-radius:12px; background:#fff; box-shadow:0 1px 3px rgba(19,32,69,.1); transition:transform .2s cubic-bezier(.4,0,.2,1), width .15s; z-index:0; pointer-events:none; }
-        .dt-tabs-live .dt-tl-tab { position:relative; z-index:1; height:24px; border-radius:12px; font:700 12px/1 var(--font-sans); color:var(--n7); border:none; background:transparent; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:background .1s; }
-        .dt-tabs-live .dt-tl-tab:hover { background:rgba(193,205,225,.5); }
-        .dt-tabs-live .dt-tl-tab.act { background:transparent; }
-        .dt-tl-badge { position:absolute; top:-8px; right:-5px; min-width:16px; height:16px; border-radius:8px; background:var(--r6); color:#fff; font:700 9px/1 var(--font-sans); display:flex; align-items:center; justify-content:center; padding:0 4px; box-sizing:border-box; z-index:3; }
-      </style>
-
       <script>
-      (function(){
-        var _size = 'dense', _count = 3, _badge = false, _active = 0;
-        var BADGE_NUMS = [5,12,3,8,1,7];
-        var TAB_W = { dense:74, wide:98 };
-        var TAB_GAP = { dense:12, wide:24 };
-
-        function render() {
-          var w = TAB_W[_size];
-          var g = TAB_GAP[_size];
-          var labels = ['Section 1','Section 2','Section 3','Section 4','Section 5','Section 6'].slice(0,_count);
-          var totalW = 8 + _count * w + (_count - 1) * g;
-          var pillX = 4 + _active * (w + g);
-
-          var tabs = labels.map(function(lbl,i){
-            var badge = _badge ? '<span class="dt-tl-badge">'+BADGE_NUMS[i]+'</span>' : '';
-            var cls = i === _active ? 'dt-tl-tab act' : 'dt-tl-tab';
-            return '<button class="'+cls+'" style="width:'+w+'px" onclick="window.__dtTabClick('+i+')">'+lbl+badge+'</button>';
-          }).join('');
-
-          var el = document.getElementById('dt-tabs-preview');
-          if (!el) return;
-          el.innerHTML = '<div class="dt-tabs-live" style="width:'+totalW+'px"><div class="dt-tl-indicator" id="dt-tl-ind" style="width:'+w+'px;transform:translateX('+(pillX-4)+'px)"></div>'+tabs+'</div>';
-        }
-
-        window.__dtTabClick = function(idx) {
-          _active = idx;
-          var w = TAB_W[_size];
-          var g = TAB_GAP[_size];
-          var pillX = 4 + idx * (w + g);
-          var ind = document.getElementById('dt-tl-ind');
-          if (ind) ind.style.transform = 'translateX('+(pillX-4)+'px)';
-          var tabs = document.querySelectorAll('.dt-tl-tab');
-          tabs.forEach(function(t,i){ t.classList.toggle('act', i===idx); });
-        };
-
-        window.dtPreviewCtrl = function(type, val) {
-          if (type === 'size') {
-            _size = val; _active = 0;
-            document.getElementById('tabs-ctrl-dense').style.cssText = 'height:28px;padding:0 12px;font:600 11px var(--font-sans);background:'+(val==='dense'?'var(--b6)':'#fff')+';color:'+(val==='dense'?'#fff':'var(--n6)')+';border:none;cursor:pointer';
-            document.getElementById('tabs-ctrl-wide').style.cssText  = 'height:28px;padding:0 12px;font:600 11px var(--font-sans);background:'+(val==='wide'?'var(--b6)':'#fff')+';color:'+(val==='wide'?'#fff':'var(--n6)')+';border:none;cursor:pointer;border-left:1px solid var(--n3)';
-          }
-          if (type === 'count') {
-            _count = val; _active = 0;
-            [2,3,4,5,6].forEach(function(n){
-              var b = document.getElementById('tabs-ctrl-count-'+n);
-              if(!b) return;
-              var on = n===val;
-              b.style.background = on ? 'var(--b6)' : 'var(--n2)';
-              b.style.color      = on ? '#fff'       : 'var(--n6)';
-              b.style.border     = '1px solid '+(on?'var(--b6)':'var(--n3)');
-            });
-          }
-          if (type === 'badge') {
-            _badge = !_badge;
-            document.getElementById('tabs-badge-toggle').classList.toggle('on', _badge);
-          }
-          render();
-        };
-
-        render();
-      })();
+      // Shared click handler for all static tab groups on the page
+      window.dtGroupClick = function(gid, idx) {
+        var container = document.getElementById(gid);
+        if (!container) return;
+        var pill = document.getElementById(gid + '-pill');
+        var tabs = container.querySelectorAll('button');
+        if (!pill || !tabs.length) return;
+        // Get the actual rendered width of the first tab (all equal)
+        var tabW = tabs[0].offsetWidth;
+        pill.style.left = (4 + idx * tabW) + 'px';
+        tabs.forEach(function(t,i) {
+          t.style.background = 'transparent';
+          t.classList.toggle('dtact', i === idx);
+        });
+      };
       <\/script>`;
 
     return `
