@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T21:34:07.686Z",
+  "generated": "2026-06-04T21:35:31.884Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "1232a36",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(DES-824): fix stepper anchor — use direct querySelector instead of closure variable",
+          "author": "Carlos"
+        },
         {
           "hash": "9480960",
           "type": "fix",
