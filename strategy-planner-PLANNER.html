@@ -295,6 +295,36 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .lpin svg{display:block;}
 /* Leaflet attribution tweak */
 .leaflet-control-attribution{font-size:10px!important;}
+/* Single-view wrapper */
+#single-view{position:absolute;inset:0;}
+/* Grid-view layouts */
+#grid-view{position:absolute;inset:0;display:none;}
+.map-grid{width:100%;height:100%;display:grid;gap:0;}
+/* 2 stacked */
+.mg2{grid-template-rows:1fr 1fr;grid-template-columns:1fr;}
+/* 4 grid 2×2 */
+.mg4{grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;}
+/* 5 grid 2+3 */
+.mg5{grid-template-rows:1fr 1fr;grid-template-columns:repeat(6,1fr);}
+.mg5 .mc:nth-child(1),.mg5 .mc:nth-child(2){grid-column:span 3;}
+.mg5 .mc:nth-child(3),.mg5 .mc:nth-child(4),.mg5 .mc:nth-child(5){grid-column:span 2;}
+/* 6 grid 3×2 */
+.mg6{grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr 1fr;}
+/* Grid map cell */
+.mc{position:relative;overflow:hidden;border-right:1px solid var(--n3);border-bottom:1px solid var(--n3);display:flex;flex-direction:column;}
+.mc:nth-last-child(-n+3).mg6-last,.mg6 .mc:nth-child(n+4){border-bottom:0;}
+.mc:nth-child(3n).mg6-edge,.mg6 .mc:nth-child(3n){border-right:0;}
+.mg5 .mc:nth-child(2),.mg5 .mc:nth-child(5){border-right:0;}
+.mg4 .mc:nth-child(2n){border-right:0;}
+.mg4 .mc:nth-child(3),.mg4 .mc:nth-child(4){border-bottom:0;}
+.mg2 .mc:last-child{border-bottom:0;}
+/* Cell header (matches daybar in screenshot) */
+.mc-h{height:28px;background:#fff;border-bottom:1px solid var(--n3);display:flex;align-items:center;padding:0 8px;gap:6px;font:400 11px var(--font-sans);color:var(--n5);flex-shrink:0;z-index:10;}
+.mc-h .dtag{font:700 11px var(--font-sans);color:var(--n7);background:var(--n2);padding:2px 8px;border-radius:4px;flex-shrink:0;}
+.mc-h .dm{white-space:nowrap;}.mc-h .dm b{color:var(--n7);font-weight:700;}
+.mc-h .mc-fs{margin-left:auto;background:none;border:1px solid var(--n3);border-radius:3px;color:var(--n5);cursor:pointer;display:flex;padding:2px;}
+/* Leaflet container inside cell */
+.mc-lm{flex:1;position:relative;}
 
 /* loading overlay */
 .loading{position:absolute;inset:0;background:rgba(255,255,255,.55);display:none;align-items:center;justify-content:center;z-index:20;}
@@ -636,7 +666,30 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                   <div class="day off" data-d="Sáb">S<span class="c">86</span></div>
                 </div>
               </div>
-              <div class="frow"><div class="flbl">Layout del mapa</div><div class="ddl">1 día <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+              <div class="frow">
+                <div class="flbl">Layout del mapa</div>
+                <div style="position:relative;" id="ddLayout">
+                  <div id="ddLayoutTrigger" onclick="toggleDdLayout()"
+                    style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;font:400 14px var(--font-sans);color:var(--n7);"
+                    onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
+                    <span id="ddLayoutLbl" style="flex:1">1 día</span>
+                    <svg viewBox="0 0 32 32" width="12" height="12" fill="var(--n5)"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>
+                  </div>
+                  <div id="ddLayoutMenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;padding:4px 0;min-width:200px;">
+                    <div class="ddlo on" data-n="1"  onclick="pickLayout(this)">1 día</div>
+                    <div class="ddlo"    data-n="2"  onclick="pickLayout(this)">2 días (apilado)</div>
+                    <div class="ddlo"    data-n="4"  onclick="pickLayout(this)">4 días (grilla)</div>
+                    <div class="ddlo"    data-n="5"  onclick="pickLayout(this)">5 días (grilla 2+3)</div>
+                    <div class="ddlo"    data-n="6"  onclick="pickLayout(this)">6 días (grilla)</div>
+                  </div>
+                </div>
+              </div>
+              <style>
+                .ddlo{height:34px;padding:0 12px;display:flex;align-items:center;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer;gap:8px;}
+                .ddlo:hover{background:var(--b1);color:var(--b7);}
+                .ddlo.on::before{content:"✓";font-size:11px;color:var(--b6);width:14px;flex-shrink:0;}
+                .ddlo:not(.on)::before{content:"";width:14px;flex-shrink:0;}
+              </style>
               <div class="frow"><div class="flbl">Estilo de ruta</div><div class="seg"><button class="on">Líneas rectas</button><button>Rutas viales</button></div></div>
               <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mostrar tramo a bodega</label>
               <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mostrar rutas bloqueadas</label>
@@ -670,6 +723,9 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 
         <!-- MAP -->
         <div class="map" id="map">
+
+          <!-- ── SINGLE-DAY VIEW ── -->
+          <div id="single-view">
           <!-- pre-optimization band -->
           <div class="band" id="bandUnrouted">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
@@ -700,6 +756,11 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 
           <!-- ERROR STATES (screen 9) -->
           <div class="errpanel" id="errPanel"><div class="errbox" id="errBox"></div></div>
+          </div><!-- /single-view -->
+
+          <!-- ── GRID VIEW (multi-day) ── -->
+          <div id="grid-view"></div>
+
         </div>
 
         <!-- HALLAZGOS PANEL (screen 5) -->
@@ -1184,6 +1245,99 @@ function showErrPicker(ev){
   document.body.appendChild(d);
   d.querySelectorAll('.di').forEach(function(i){i.onclick=function(){showErr(i.dataset.e);d.remove();};});
   setTimeout(function(){document.addEventListener('click',function h(e){if(!d.contains(e.target)){d.remove();document.removeEventListener('click',h);}});},0);
+}
+
+/* ── MAP LAYOUT / GRID ── */
+var DAYS=[
+  {id:'Mon',lbl:'Lun',stops:108,trucks:'12/12',miles:'2.504',cost:'$11.333',time:'70%',load:'45%'},
+  {id:'Tue',lbl:'Mar',stops:78, trucks:'8/12', miles:'1.955',cost:'$7.910', time:'58%',load:'38%'},
+  {id:'Wed',lbl:'Mié',stops:86, trucks:'11/12',miles:'2.200',cost:'$7.910', time:'63%',load:'41%'},
+  {id:'Thu',lbl:'Jue',stops:94, trucks:'8/12', miles:'1.649',cost:'$7.590', time:'55%',load:'44%'},
+  {id:'Fri',lbl:'Vie',stops:88, trucks:'10/12',miles:'2.295',cost:'$9.600', time:'66%',load:'43%'},
+  {id:'Sat',lbl:'Sáb',stops:86, trucks:'9/12', miles:'1.924',cost:'$8.540', time:'60%',load:'40%'}
+];
+var curLayout=1;
+var gridMaps={};
+
+/* Dropdown toggle */
+function toggleDdLayout(){
+  var m=document.getElementById('ddLayoutMenu');
+  m.style.display=m.style.display==='block'?'none':'block';
+  if(m.style.display==='block'){
+    setTimeout(function(){document.addEventListener('click',function h(e){
+      if(!document.getElementById('ddLayout').contains(e.target)){m.style.display='none';document.removeEventListener('click',h);}
+    });},0);
+  }
+}
+function pickLayout(el){
+  document.querySelectorAll('.ddlo').forEach(function(d){d.classList.remove('on');});
+  el.classList.add('on');
+  document.getElementById('ddLayoutLbl').textContent=el.textContent;
+  document.getElementById('ddLayoutMenu').style.display='none';
+  setMapLayout(parseInt(el.dataset.n));
+}
+
+/* Build grid HTML and init maps */
+function setMapLayout(n){
+  curLayout=n;
+  var sv=document.getElementById('single-view');
+  var gv=document.getElementById('grid-view');
+  if(n===1){
+    sv.style.display='';gv.style.display='none';
+    Object.keys(gridMaps).forEach(function(k){try{gridMaps[k].remove();}catch(e){}});
+    gridMaps={};
+    setTimeout(function(){lmap&&lmap.invalidateSize();},80);
+    return;
+  }
+  sv.style.display='none';gv.style.display='block';
+  // Destroy old grid maps
+  Object.keys(gridMaps).forEach(function(k){try{gridMaps[k].remove();}catch(e){}});
+  gridMaps={};
+  // Determine which days to show and CSS class
+  var cls,count;
+  if(n===2){cls='mg2';count=2;}
+  else if(n===4){cls='mg4';count=4;}
+  else if(n===5){cls='mg5';count=5;}
+  else{cls='mg6';count=6;}
+  var days=DAYS.slice(0,count);
+  gv.innerHTML='<div class="map-grid '+cls+'">'+days.map(function(d,i){
+    return '<div class="mc" id="mc'+i+'">'+
+      '<div class="mc-h">'+
+        '<span class="dtag">'+d.lbl+'</span>'+
+        '<span class="dm">Paradas <b>'+d.stops+'</b></span>'+
+        '<span class="dm">Camiones <b>'+d.trucks+'</b></span>'+
+        '<span class="dm">Millas <b>'+d.miles+'</b></span>'+
+        '<span class="dm">Costo <b>'+d.cost+'</b></span>'+
+        '<button class="mc-fs" title="Expandir"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>'+
+      '</div>'+
+      '<div class="mc-lm" id="ml'+i+'"></div>'+
+    '</div>';
+  }).join('')+'</div>';
+  // Init Leaflet maps after DOM paint
+  setTimeout(function(){
+    days.forEach(function(d,i){
+      var el=document.getElementById('ml'+i);
+      if(!el)return;
+      var m=L.map(el,{zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView(DEPOT,10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(m);
+      renderGridPins(m,i);
+      gridMaps['ml'+i]=m;
+    });
+  },80);
+}
+
+/* Render pins for a grid map cell — rotate SU colors by day index */
+function renderGridPins(m,dayIdx){
+  var shiftedSU=SU.slice(dayIdx%SU.length).concat(SU.slice(0,dayIdx%SU.length));
+  var ds=24, dh=Math.round(ds*49/33);
+  L.marker(DEPOT,{icon:L.divIcon({html:depotPinHtml(ds),className:'',iconSize:[ds,dh],iconAnchor:[ds/2,dh]})}).addTo(m);
+  // Route lines + pins — rotate which stop belongs to which color
+  ROUTED_PINS.forEach(function(p,i){
+    var color=shiftedSU[(p[3]+dayIdx)%shiftedSU.length];
+    L.polyline([DEPOT,[p[0],p[1]]],{color:color,weight:1.5,opacity:0.5}).addTo(m);
+    var sz=22, h=Math.round(sz*49/33);
+    L.marker([p[0],p[1]],{icon:L.divIcon({html:routePinHtml(p[2],color,sz),className:'',iconSize:[sz,h],iconAnchor:[sz/2,h]})}).addTo(m);
+  });
 }
 
 /* init */
