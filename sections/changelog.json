@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T20:41:57.936Z",
+  "generated": "2026-06-04T20:44:38.239Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "f567406",
+          "type": "fix",
+          "section": "General",
+          "message": "fix: set primary CTA to Blue 7 (#0052CC) across all prototypes",
+          "author": "Carlos"
+        },
         {
           "hash": "a926eea",
           "type": "fix",
