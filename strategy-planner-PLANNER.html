@@ -282,14 +282,7 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 /* MAP — Leaflet container */
 .map{flex:1;position:relative;overflow:hidden;}
 #leaflet-map{position:absolute;inset:0;z-index:0;}
-/* UI overlays sit above Leaflet (which uses up to z-index ~700) */
-.band{position:absolute;top:0;left:0;right:0;display:flex;gap:9px;padding:10px 16px;background:var(--b1);border-bottom:1px solid var(--b3);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:1000;}
-.band svg{flex-shrink:0;}.band .lnk{color:var(--b7);font-weight:700;cursor:pointer;}
-.stale{position:absolute;top:41px;left:0;right:0;display:flex;gap:9px;padding:9px 16px;background:var(--o1);border-bottom:1px solid var(--o5);font:400 12px var(--font-sans);color:var(--n7);align-items:center;z-index:1000;}
-.stale .reopt{margin-left:auto;}
-.daybar{position:absolute;left:16px;right:16px;background:#fff;border:1px solid var(--n3);border-radius:6px;padding:8px 14px;display:flex;align-items:center;gap:16px;z-index:1000;box-shadow:var(--shadow-sm);flex-wrap:wrap;}
-.daybar .dtag{font:700 12px var(--font-sans);color:var(--n7);background:var(--n2);padding:3px 10px;border-radius:4px;}
-.daybar .m{font:400 11px var(--font-sans);color:var(--n5);}.daybar .m b{color:var(--n7);font-weight:700;}
+/* Leaflet zoom control z-index */
 /* DS SVG pin divIcons — Leaflet sets position; we just style the wrapper */
 .lpin{cursor:pointer;filter:drop-shadow(0 2px 3px rgba(19,32,69,.35));line-height:0;}
 .lpin svg{display:block;}
@@ -318,21 +311,41 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
   font:400 13px var(--font-sans);color:var(--n7);cursor:pointer;}
 .ver-opt:hover{background:var(--b1);color:var(--b7);}
 .ver-opt input[type=checkbox]{width:14px;height:14px;accent-color:var(--b5);flex-shrink:0;cursor:pointer;}
-/* Lasso overlay — covers the map, enables draw cursor */
+/* Lasso overlay (grid cells only) */
 .lasso-overlay{position:absolute;inset:0;cursor:crosshair;z-index:1050;
-  background:rgba(19,32,69,.06);display:none;}
+  background:rgba(19,32,69,.04);display:none;}
 .lasso-overlay.on{display:block;}
-/* Lasso banner — top of the map */
-.lasso-banner{position:absolute;top:0;left:0;right:0;height:40px;background:var(--b6);
-  color:#fff;font:400 12px var(--font-sans);display:none;align-items:center;
-  gap:10px;padding:0 16px;z-index:1300;}
+
+/* Single-view — flex column so bars stack naturally above the map */
+#single-view{position:absolute;inset:0;display:flex;flex-direction:column;}
+#sv-bars{flex-shrink:0;} /* stacking area for banner + bands + daybar */
+#sv-map{flex:1;position:relative;overflow:hidden;} /* map fills remaining height */
+#leaflet-map{position:absolute;inset:0;z-index:0;}
+
+/* Bands — natural flow (no absolute positioning) */
+.band{display:flex;gap:9px;padding:9px 16px;background:var(--b1);border-bottom:1px solid var(--b3);font:400 12px var(--font-sans);color:var(--n7);align-items:center;}
+.band svg{flex-shrink:0;}.band .lnk{color:var(--b7);font-weight:700;cursor:pointer;}
+.stale{display:flex;gap:9px;padding:8px 16px;background:var(--o1);border-bottom:1px solid var(--o5);font:400 12px var(--font-sans);color:var(--n7);align-items:center;}
+.stale .reopt{margin-left:auto;}
+/* Daybar — natural flow bar below bands */
+.daybar{display:flex;align-items:center;gap:16px;padding:6px 16px;background:#fff;border-bottom:1px solid var(--n3);flex-wrap:wrap;}
+.daybar .dtag{font:700 12px var(--font-sans);color:var(--n7);background:var(--n2);padding:3px 10px;border-radius:4px;}
+.daybar .m{font:400 11px var(--font-sans);color:var(--n5);}.daybar .m b{color:var(--n7);font-weight:700;}
+
+/* Lasso banner — natural flow inside #sv-bars */
+.lasso-banner{height:40px;background:var(--b6);color:#fff;font:400 12px var(--font-sans);
+  display:none;align-items:center;gap:10px;padding:0 16px;flex-shrink:0;}
 .lasso-banner.on{display:flex;}
 .lasso-banner svg{flex-shrink:0;}
 .lasso-banner .lbx{margin-left:auto;font:700 13px var(--font-sans);color:#fff;
   background:none;border:0;cursor:pointer;text-decoration:underline;}
 
-/* Single-view wrapper */
-#single-view{position:absolute;inset:0;}
+/* Lasso SVG draw canvas — sits inside #sv-map */
+#lassoSvg{position:absolute;inset:0;width:100%;height:100%;z-index:1060;
+  display:none;pointer-events:none;}
+/* Lasso interaction layer — captures mouse events for drawing */
+#lassoDrawLayer{position:absolute;inset:0;z-index:1070;cursor:crosshair;display:none;}
+
 /* Grid-view layouts */
 #grid-view{position:absolute;inset:0;display:none;}
 .map-grid{width:100%;height:100%;display:grid;gap:0;}
@@ -764,67 +777,80 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
         <!-- MAP -->
         <div class="map" id="map">
 
-          <!-- ── SINGLE-DAY VIEW ── -->
+          <!-- ── SINGLE-DAY VIEW (flex column: #sv-bars stacks above #sv-map) ── -->
           <div id="single-view">
 
-          <!-- Lasso banner (aparece al activar modo lazo) -->
-          <div class="lasso-banner" id="lassoBanner">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="9" cy="7" r="5" stroke-dasharray="2.5,1.5"/><path d="M9 12L9 20M6 17l3 3 3-3"/></svg>
-            <span>Estás en modo de selección de lazo. Haz clic en el mapa y dibuja alrededor de los vehículos para seleccionarlos.</span>
-            <button class="lbx" onclick="exitLasso()">Cancelar</button>
-          </div>
-          <!-- Overlay clickeable en modo lazo -->
-          <div class="lasso-overlay" id="lassoOverlay" onclick="onLassoSelect()"></div>
-
-          <!-- Map control buttons (DS tertiary "subtle") -->
-          <div class="map-ctrls" id="mapCtrls">
-            <div class="ver-wrap">
-              <button class="mctrl" id="btnVer" onclick="toggleVer(event,this)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                <span class="mlbl">Ver</span>
-              </button>
-              <div class="ver-menu" id="verMenu">
-                <label class="ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
-                <label class="ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
-                <label class="ver-opt"><input type="checkbox"> Geocercas</label>
+            <!-- #sv-bars: stacking info bars (banner → band → daybar) -->
+            <div id="sv-bars">
+              <!-- Lasso mode banner (shows when lasso is active) -->
+              <div class="lasso-banner" id="lassoBanner">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7"/></svg>
+                <span>Estás en modo de selección de lazo. Dibuja alrededor de las paradas para seleccionarlas.</span>
+                <button class="lbx" onclick="exitLasso()">Cancelar</button>
               </div>
-            </div>
-            <button class="mctrl" id="btnLasso" onclick="toggleLasso()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
-              <span class="mlbl">Seleccionar con lazo</span>
-            </button>
-          </div>
+              <!-- Pre-optimization info band -->
+              <div class="band" id="bandUnrouted">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+                <span>Este plan aún no se ha ruteado. Mostrando las <b>540 paradas</b> activas. <span class="lnk" onclick="optimize()">Optimizar semana</span> cuando estés listo.</span>
+              </div>
+              <!-- Post-optimization band -->
+              <div class="band" id="bandRouted" style="display:none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+                <span>Mostrando el día <b>Lunes</b> · 108 paradas ruteadas en 12 camiones.</span>
+              </div>
+              <!-- Staleness warning -->
+              <div class="stale" id="bandStale" style="display:none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+                <span>El plan está desactualizado. <b>3 clientes</b> cambiaron desde la última optimización.</span>
+                <button class="btn ter reopt" style="height:28px" onclick="optimize()">Re-optimizar</button>
+              </div>
+              <!-- Day metrics bar -->
+              <div class="daybar" id="dayBar" style="display:none">
+                <span class="dtag">Lun</span>
+                <span class="m">Paradas <b>108</b></span><span class="m">Camiones <b>12/12</b></span>
+                <span class="m">Millas <b>2.504</b></span><span class="m">Costo <b>$11.333</b></span>
+                <span class="m">Tiempo <b>70%</b></span><span class="m">Carga <b>45%</b></span>
+              </div>
+            </div><!-- /#sv-bars -->
 
-          <!-- pre-optimization band -->
-          <div class="band" id="bandUnrouted">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
-            <span>Este plan aún no se ha ruteado. Mostrando las <b>540 paradas</b> activas. <span class="lnk" onclick="optimize()">Optimizar semana</span> cuando estés listo.</span>
-          </div>
-          <!-- post-optimization band -->
-          <div class="band" id="bandRouted" style="display:none">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
-            <span>Mostrando el día <b>Lunes</b> · 108 paradas ruteadas en 12 camiones.</span>
-          </div>
-          <!-- staleness (shown after a customer change) -->
-          <div class="stale" id="bandStale" style="display:none">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
-            <span>El plan está desactualizado. <b>3 clientes</b> cambiaron desde la última optimización.</span>
-            <button class="btn ter reopt" style="height:28px" onclick="optimize()">Re-optimizar</button>
-          </div>
+            <!-- #sv-map: Leaflet map + controls (fills remaining height) -->
+            <div id="sv-map">
+              <div id="leaflet-map"></div>
 
-          <div class="daybar" id="dayBar" style="display:none;top:84px">
-            <span class="dtag">Lun</span>
-            <span class="m">Paradas <b>108</b></span><span class="m">Camiones <b>12/12</b></span><span class="m">Millas <b>2.504</b></span>
-            <span class="m">Costo <b>$11.333</b></span><span class="m">Tiempo <b>70%</b></span><span class="m">Carga <b>45%</b></span>
-          </div>
+              <!-- Map control buttons — top-right of map area -->
+              <div class="map-ctrls" id="mapCtrls">
+                <div class="ver-wrap">
+                  <button class="mctrl" id="btnVer" onclick="toggleVer(event,this)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span class="mlbl">Ver</span>
+                  </button>
+                  <div class="ver-menu" id="verMenu">
+                    <label class="ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
+                    <label class="ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
+                    <label class="ver-opt"><input type="checkbox"> Geocercas</label>
+                  </div>
+                </div>
+                <button class="mctrl" id="btnLasso" onclick="toggleLasso()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
+                  <span class="mlbl">Seleccionar con lazo</span>
+                </button>
+              </div>
 
-          <!-- Leaflet map tile layer -->
-          <div id="leaflet-map"></div>
+              <!-- SVG canvas for free-form lasso drawing -->
+              <svg id="lassoSvg" xmlns="http://www.w3.org/2000/svg">
+                <path id="lassoPath" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2.5"
+                  stroke-linejoin="round" stroke-linecap="round" d=""/>
+              </svg>
+              <!-- Lasso mouse-capture layer (active only in lasso mode) -->
+              <div id="lassoDrawLayer"
+                onmousedown="lassoStart(event)"
+                onmousemove="lassoMove(event)"
+                onmouseup="lassoEnd(event)"></div>
 
-          <div class="loading" id="mapLoading"><div class="loadcard"><div class="spin"></div><div class="lt">Optimizando semana…</div></div></div>
+              <div class="loading" id="mapLoading"><div class="loadcard"><div class="spin"></div><div class="lt">Optimizando semana…</div></div></div>
+              <div class="errpanel" id="errPanel"><div class="errbox" id="errBox"></div></div>
+            </div><!-- /#sv-map -->
 
-          <!-- ERROR STATES (screen 9) -->
-          <div class="errpanel" id="errPanel"><div class="errbox" id="errBox"></div></div>
           </div><!-- /single-view -->
 
           <!-- ── GRID VIEW (multi-day) ── -->
@@ -1522,20 +1548,57 @@ function toggleVer(e,btn){
   }
 }
 
-/* ── Lasso mode ── */
-var lassoActive=false;
+/* ── Lasso mode + free-form drawing ── */
+var lassoActive=false, lassoDrawing=false, lassoPts=[];
 function toggleLasso(){if(lassoActive)exitLasso();else enterLasso();}
 function enterLasso(){
   lassoActive=true;
   document.getElementById('lassoBanner').classList.add('on');
-  document.getElementById('lassoOverlay').classList.add('on');
+  document.getElementById('lassoDrawLayer').style.display='block';
+  document.getElementById('lassoSvg').style.display='block';
   document.getElementById('btnLasso').classList.add('active');
 }
 function exitLasso(){
-  lassoActive=false;
+  lassoActive=false;lassoDrawing=false;lassoPts=[];
   document.getElementById('lassoBanner').classList.remove('on');
-  document.getElementById('lassoOverlay').classList.remove('on');
+  document.getElementById('lassoDrawLayer').style.display='none';
+  document.getElementById('lassoSvg').style.display='none';
+  document.getElementById('lassoPath').setAttribute('d','');
   document.getElementById('btnLasso').classList.remove('active');
+}
+/* Convert mouse event coords to SVG-local coords */
+function svgPt(e){
+  var r=document.getElementById('sv-map').getBoundingClientRect();
+  return [e.clientX-r.left, e.clientY-r.top];
+}
+function lassoStart(e){
+  lassoDrawing=true; lassoPts=[];
+  lassoPts.push(svgPt(e));
+  updateLassoPath(false);
+}
+function lassoMove(e){
+  if(!lassoDrawing)return;
+  lassoPts.push(svgPt(e));
+  updateLassoPath(false);
+}
+function lassoEnd(e){
+  if(!lassoDrawing||lassoPts.length<3)return;
+  lassoDrawing=false;
+  lassoPts.push(svgPt(e));
+  updateLassoPath(true); // close the polygon
+  // Brief pause to show filled selection, then open modal
+  setTimeout(function(){
+    exitLasso();
+    document.getElementById('ovLasso').classList.add('on');
+  },500);
+}
+function updateLassoPath(close){
+  if(lassoPts.length<2)return;
+  var d='M'+lassoPts[0][0]+','+lassoPts[0][1];
+  // Smooth with every 2nd point to reduce jitter
+  for(var i=1;i<lassoPts.length;i++){d+=' L'+lassoPts[i][0]+','+lassoPts[i][1];}
+  if(close)d+='Z';
+  document.getElementById('lassoPath').setAttribute('d',d);
 }
 function onLassoSelect(){
   exitLasso();
@@ -1591,10 +1654,7 @@ function toggleLassoCell(btn){
   }
 }
 
-/* Update setMapLayout to inject buttons into each cell */
-var _origSetMapLayout=setMapLayout;
-/* Patch setMapLayout to add buttons after maps init */
-var _patchedSetML=false;
+/* Inject map control buttons into grid cell map area (inside .mc-lm, not over header) */
 (function patchSetML(){
   var orig=setMapLayout;
   setMapLayout=function(n,activeDayIndices){
@@ -1602,14 +1662,12 @@ var _patchedSetML=false;
     if(n>1){
       var compact=(n>=3);
       setTimeout(function(){
-        var cells=document.querySelectorAll('#grid-view .mc');
-        cells.forEach(function(mc,i){
-          if(!mc.querySelector('.map-ctrls')){
-            mc.style.position='relative';
-            mc.insertAdjacentHTML('beforeend',mapCtrlsHtml(compact,'g'+i));
+        document.querySelectorAll('#grid-view .mc-lm').forEach(function(ml,i){
+          if(!ml.querySelector('.map-ctrls')){
+            ml.insertAdjacentHTML('beforeend',mapCtrlsHtml(compact,'g'+i));
           }
         });
-      },100);
+      },120);
     }
   };
 })();
