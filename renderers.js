@@ -1638,10 +1638,11 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         const badge = badgeNums
           ? `<span style="position:absolute;top:-8px;right:-5px;min-width:16px;height:16px;border-radius:8px;background:var(--r6);color:#fff;font:700 9px/1 var(--font-sans);display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box;z-index:3">${BADGE_NUMS[i]||1}</span>`
           : '';
-        const isActive = i === active;
-        return `<button onclick="dtGroupClick('${gid}',${i})" data-idx="${i}"
+        // Fully inline onclick — no global function needed (innerHTML scripts don't auto-execute)
+        const onclick = `(function(b){var c=b.closest('[data-pillw]'),p=document.getElementById(c.id+'-pill'),ts=[].slice.call(c.querySelectorAll('button')),w=+c.dataset.pillw,g=+c.dataset.gap,i=ts.indexOf(b);p.style.left=(4+i*(w+g))+'px';c.dataset.active=String(i);ts.forEach(function(t){t.style.background='transparent'})})(this)`;
+        return `<button onclick="${onclick}"
           style="position:relative;z-index:1;width:${pillW}px;height:24px;border-radius:12px;background:transparent;border:none;font:700 12px/1 var(--font-sans);color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"
-          onmouseenter="if(this.dataset.idx!==this.closest('[data-active]').dataset.active)this.style.background='rgba(193,205,225,.45)'"
+          onmouseenter="if([].slice.call(this.closest('[data-pillw]').querySelectorAll('button')).indexOf(this)!==+this.closest('[data-active]').dataset.active)this.style.background='rgba(193,205,225,.45)'"
           onmouseleave="this.style.background='transparent'">Section${badge}</button>`;
       }).join('');
       // store pillW and gap as data-attrs so the click handler knows the step
@@ -1841,28 +1842,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>
 
       <!-- Claude usage note -->
-      ${tabClaudeNote}
-
-      <script>
-      // Shared click handler for all static tab groups
-      // Uses data-pillw and data-gap stored on the container — no layout measurement needed
-      window.dtGroupClick = function(gid, idx) {
-        var container = document.getElementById(gid);
-        if (!container) return;
-        var pill = document.getElementById(gid + '-pill');
-        if (!pill) return;
-        var pillW = parseInt(container.dataset.pillw) || 74;
-        var gap   = parseInt(container.dataset.gap)   || 12;
-        // Move pill
-        pill.style.left = (4 + idx * (pillW + gap)) + 'px';
-        // Update active state on container
-        container.dataset.active = idx;
-        // Reset all tab backgrounds (hover will re-apply on mouseover)
-        container.querySelectorAll('button').forEach(function(t) {
-          t.style.background = 'transparent';
-        });
-      };
-      <\/script>`;
+      ${tabClaudeNote}`;
 
     return `
       ${sectionHeader(data)}
