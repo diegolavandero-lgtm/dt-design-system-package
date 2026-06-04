@@ -16,14 +16,14 @@ and auto-deployed via Cloudflare Pages to `https://dt-design-system-package.page
 ## Established workflow (follow this every ticket)
 
 ```
-1. READ    → dt-design-system.html + colors_and_type.css + sections/ folder
+1. READ    → ALL sections/*.json specs + dt-design-system.html + colors_and_type.css (see "Files to read" table below)
 2. REVIEW  → navigate the live Jira ticket and the production page (if it exists)
 3. AUDIT   → use /ux-design-expert to identify layout and flow improvements
 4. CONFIRM → propose improvements, wait for user to choose directions
 5. BUILD   → create [feature]-[TICKET].html in repo root using DS tokens/components
 6. VERIFY  → preview in browser, confirm visual match against production
 7. DOCUMENT → create ds-new-components-[TICKET].html with review cards
-8. PUSH    → git commit + push → Vercel deploys automatically
+8. PUSH    → git commit + push → Cloudflare Pages deploys automatically (pages.dev, NOT vercel)
 9. JIRA    → post comment to the ticket via Jira REST API (browser session)
 ```
 
@@ -31,12 +31,59 @@ and auto-deployed via Cloudflare Pages to `https://dt-design-system-package.page
 
 ## Files to read at every session start
 
-| File | Why |
+**CRITICAL: Always read ALL of these before designing anything. This is the source of truth.**
+
+### Foundations
+| File | What it defines |
 |---|---|
-| `dt-design-system.html` | Complete component library with live CSS — extract exact class names and patterns |
-| `colors_and_type.css` | All design tokens — ALWAYS use these, never invent colors |
-| `sections/components/*.json` | Component specs |
-| `sections/assets/logos/` | Official SVG logos — always use the right lockup |
+| `colors_and_type.css` | All color tokens — NEVER invent colors |
+| `sections/foundations/colors.json` | Color palette + semantic tokens |
+| `sections/foundations/typography.json` | Font sizes, weights, line-heights per element |
+| `sections/foundations/spacing.json` | Spacing scale (4px base unit) |
+| `sections/foundations/shadows.json` | Shadow values per elevation level |
+| `sections/foundations/radii.json` | Border-radius per component type |
+| `sections/foundations/iconography.json` | **IBM Carbon icons** — always use these, never Feather/Heroicons |
+
+### Components
+| File | What it defines |
+|---|---|
+| `sections/components/buttons.json` | Height 32px, radius 50px, primary=#4B82FA default/#1F60ED hover |
+| `sections/components/inputs.json` | Height 32px, radius 6px, focus=2px #1F60ED + bg #EDF5FF |
+| `sections/components/chips.json` | Radius 4px (NOT pill), font-weight 600, padding 2px 6px |
+| `sections/components/badges.json` | Badge/pill component specs |
+| `sections/components/sidebar.json` | White bg, 52px collapsed, Carbon icons, selected=rgba(75,130,250,.08) |
+| `sections/components/topbar.json` | 52px, #132045, icon order: apps·help·messages·alerts·user, slot 100px |
+| `sections/components/modal.json` | Modal/drawer specs |
+| `sections/components/tooltip.json` | Tooltip specs |
+| `sections/components/banners.json` | Info/warning banner specs |
+| `sections/components/alerts.json` | Alert component specs |
+| `sections/components/dropdowns.json` | Dropdown menu specs |
+| `sections/components/table.json` | Table/matrix specs |
+| `sections/components/filters.json` | Filter builder specs |
+| `sections/components/selection.json` | Selection/checkbox specs |
+
+### Assets
+| File | What it defines |
+|---|---|
+| `sections/assets/logos/lastmile-desktop-white.svg` | Official LastMile logo — always use for topbar |
+| `sections/assets/logos/` | All product logos (never create custom logos) |
+| `sections/assets/pins/` | Map pin assets |
+
+### Pages & Patterns
+| File | What it defines |
+|---|---|
+| `dt-design-system.html` | Full live component library with CSS classes |
+| `sections/pages/table-page.json` | Table page shell pattern |
+| `sections/patterns/screen-examples.json` | Full screen examples |
+
+### Key spec values (memorize these)
+- **Icons**: IBM Carbon, `viewBox="0 0 32 32"`, `fill="currentColor"` (never stroke)
+- **Topbar**: 52px, `#132045`, icon order = apps · help · messages · alerts · user
+- **Primary button**: bg `#4B82FA` default, `#1F60ED` hover, `#0052CC` active, radius 50px, h 32px
+- **Input**: h 32px, radius 6px, focus = `2px solid #1F60ED` + bg `#EDF5FF`
+- **Chip**: radius `4px` (NOT 999px), `font-weight: 600`, padding `2px 6px`
+- **Topbar slot**: 100px wide, `border-radius: 25px 0 0 0`
+- **Sidebar**: white bg, 52px collapsed, selected = `rgba(75,130,250,.08)` + 3px `#4B82FA` left border
 
 ---
 
