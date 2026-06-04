@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T21:17:01.237Z",
+  "generated": "2026-06-04T21:21:54.527Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "d255ab3",
+          "type": "fix",
+          "section": "Topbar",
+          "message": "fix: topbar icons use stroke/outline style (fill:none, stroke-width:1.8)",
+          "author": "Carlos"
+        },
         {
           "hash": "4104eea",
           "type": "feat",
