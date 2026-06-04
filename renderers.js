@@ -2938,15 +2938,33 @@ async function downloadAllPins() {
       .me-map-section{margin-top:36px}
       .me-map-hdr{font:700 15px var(--font-sans);color:var(--n7);margin-bottom:6px;display:flex;align-items:center;gap:8px}
       .me-map-desc{font:400 12px var(--font-sans);color:var(--n5);margin-bottom:14px}
-      .me-map-wrap{width:100%;border-radius:8px;overflow:hidden;border:1px solid var(--n3)}
+      .me-map-wrap{width:100%;border-radius:8px;overflow:hidden;border:1px solid var(--n3);position:relative}
       .me-map{width:100%;height:380px}
       .me-map-form-demo{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-top:24px}
       .me-map-form-col{display:flex;flex-direction:column;gap:8px;width:240px;flex-shrink:0}
       .me-map-form-lbl{font:600 11px var(--font-sans);color:var(--n6);text-transform:uppercase;letter-spacing:.05em}
       .me-map-form-input{height:40px;background:#fff;border:1px solid var(--n4);border-radius:4px;padding:0 12px;display:flex;align-items:center;font:400 13px var(--font-sans);color:var(--n5)}
-      .me-map-in-form-wrap{border-radius:4px;overflow:hidden;border:1px solid var(--n4)}
+      .me-map-in-form-wrap{border-radius:4px;overflow:hidden;border:1px solid var(--n4);position:relative}
       .me-map-in-form{width:240px;min-height:144px;height:200px}
       .leaflet-container{font-family:inherit!important}
+      /* Map controls overlay */
+      .me-ctrls{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:1000;align-items:center}
+      .me-btn{height:32px;padding:0 14px;border-radius:50px;font:700 13px/1 var(--font-sans);background:rgba(255,255,255,.96);color:#39414D;border:1px solid #E1E6ED;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 1px 4px rgba(19,32,69,.12);white-space:nowrap;position:relative}
+      .me-btn:hover{background:#fff;border-color:#C5D2E7}
+      .me-btn.active{background:#EDF5FF;border-color:#4B82FA;color:#0052CC}
+      .me-ver-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid #E1E6ED;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0;min-width:210px}
+      .me-ver-menu.on{display:block}
+      .me-ver-opt{height:36px;padding:0 12px;display:flex;align-items:center;gap:9px;font:400 13px var(--font-sans);color:#39414D;cursor:pointer}
+      .me-ver-opt:hover{background:#EDF5FF;color:#0052CC}
+      .me-ver-opt input{width:14px;height:14px;accent-color:#4B82FA;cursor:pointer;flex-shrink:0}
+      /* Lasso */
+      .me-lasso-banner{display:none;position:absolute;top:0;left:0;right:0;height:40px;background:#1F60ED;color:#fff;font:400 12px var(--font-sans);align-items:center;gap:10px;padding:0 16px;z-index:1001}
+      .me-lasso-banner.on{display:flex}
+      .me-lasso-cancel{margin-left:auto;font:700 13px var(--font-sans);color:#fff;background:none;border:0;cursor:pointer;text-decoration:underline}
+      .me-lasso-svg{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:999}
+      .me-lasso-svg.on{display:block}
+      .me-lasso-layer{display:none;position:absolute;inset:0;cursor:crosshair;z-index:998}
+      .me-lasso-layer.on{display:block}
     </style>`;
 
     const mapScript = `<script>
@@ -2974,8 +2992,13 @@ async function downloadAllPins() {
 
   function init() {
     if (typeof L === 'undefined') return;
-    if (document.getElementById('me-map-main')) buildMap('me-map-main', 13);
-    if (document.getElementById('me-map-form')) buildMap('me-map-form', 14);
+    // Double rAF: ensures two paint cycles so containers are fully measured
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        if (document.getElementById('me-map-main')) buildMap('me-map-main', 13);
+        if (document.getElementById('me-map-form')) buildMap('me-map-form', 14);
+      });
+    });
   }
 
   if (typeof L !== 'undefined') {
@@ -2990,6 +3013,92 @@ async function downloadAllPins() {
     s.onload = init;
     document.head.appendChild(s);
   }
+
+  /* ── Ver dropdown ── */
+  window.meToggleVer = function(e, btn, menuId) {
+    e.stopPropagation();
+    const m = document.getElementById(menuId);
+    const open = m.classList.contains('on');
+    document.querySelectorAll('.me-ver-menu').forEach(x => x.classList.remove('on'));
+    m.classList.toggle('on', !open);
+    btn.classList.toggle('active', !open);
+    if (!open) {
+      setTimeout(() => document.addEventListener('click', function h(ev) {
+        if (!btn.parentElement.contains(ev.target)) { m.classList.remove('on'); btn.classList.remove('active'); document.removeEventListener('click', h); }
+      }), 0);
+    }
+  };
+
+  /* ── Lasso ── */
+  const _meMaps = {};
+  let _meDrawing = false, _mePts = [], _meKey = null, _meHandlers = {};
+
+  window.meToggleLasso = function(e, key) {
+    e.stopPropagation();
+    const btn = document.getElementById('me-btn-lasso-' + key);
+    if (btn.classList.contains('active')) { meExitLasso(key); return; }
+    btn.classList.add('active');
+    document.getElementById('me-banner-' + key).classList.add('on');
+    document.getElementById('me-svg-' + key).classList.add('on');
+    document.getElementById('me-layer-' + key).classList.add('on');
+    if (_meMaps[key]) { _meMaps[key].dragging.disable(); _meMaps[key].scrollWheelZoom.disable(); }
+  };
+  window.meExitLasso = function(key) {
+    const btn = document.getElementById('me-btn-lasso-' + key);
+    if (btn) btn.classList.remove('active');
+    document.getElementById('me-banner-' + key).classList.remove('on');
+    const svg = document.getElementById('me-svg-' + key);
+    svg.classList.remove('on');
+    document.getElementById('me-path-' + key).setAttribute('d', '');
+    document.getElementById('me-layer-' + key).classList.remove('on');
+    if (_meMaps[key]) { _meMaps[key].dragging.enable(); _meMaps[key].scrollWheelZoom.enable(); }
+    _meDrawing = false; _mePts = []; _meKey = null;
+    if (_meHandlers.move) document.removeEventListener('mousemove', _meHandlers.move, {capture:true});
+    if (_meHandlers.up)   document.removeEventListener('mouseup',   _meHandlers.up,   {capture:true});
+  };
+  window.meLassoStart = function(e, key) {
+    e.preventDefault(); e.stopPropagation();
+    _meKey = key; _meDrawing = true; _mePts = [];
+    const layer = document.getElementById('me-layer-' + key);
+    const r = layer.getBoundingClientRect();
+    _mePts.push([e.clientX - r.left, e.clientY - r.top]);
+    _meDrawPts(false);
+    _meHandlers.move = function(ev) {
+      if (!_meDrawing) return; ev.preventDefault();
+      const r2 = document.getElementById('me-layer-' + _meKey).getBoundingClientRect();
+      _mePts.push([ev.clientX - r2.left, ev.clientY - r2.top]);
+      _meDrawPts(false);
+    };
+    _meHandlers.up = function(ev) {
+      document.removeEventListener('mousemove', _meHandlers.move, {capture:true});
+      document.removeEventListener('mouseup',   _meHandlers.up,   {capture:true});
+      if (!_meDrawing) return; _meDrawing = false;
+      if (_mePts.length < 3) return;
+      const r3 = document.getElementById('me-layer-' + _meKey).getBoundingClientRect();
+      _mePts.push([ev.clientX - r3.left, ev.clientY - r3.top]);
+      _meDrawPts(true);
+      const k = _meKey;
+      setTimeout(() => meExitLasso(k), 600);
+    };
+    document.addEventListener('mousemove', _meHandlers.move, {capture:true, passive:false});
+    document.addEventListener('mouseup',   _meHandlers.up,   {capture:true});
+  };
+  function _meDrawPts(close) {
+    if (!_meKey || _mePts.length < 2) return;
+    let d = 'M' + _mePts[0][0] + ',' + _mePts[0][1];
+    for (let i = 1; i < _mePts.length; i++) d += ' L' + _mePts[i][0] + ',' + _mePts[i][1];
+    if (close) d += 'Z';
+    document.getElementById('me-path-' + _meKey).setAttribute('d', d);
+  }
+
+  // Store map refs for lasso control
+  const _origBuildMap = buildMap;
+  function buildMap(id, zoom) {
+    const m = _origBuildMap(id, zoom);
+    const key = id === 'me-map-main' ? 'main' : 'form';
+    _meMaps[key] = m;
+    return m;
+  }
 })();
 <\/script>`;
 
@@ -3002,8 +3111,38 @@ async function downloadAllPins() {
         </div>
         <div class="me-map-desc">Fill-container width standalone. When inside a form: 240px wide (= 1 input column), min-height 144px (= 3 input rows). CartoDB Positron tiles — minimal palette. Center: Santiago.</div>
 
-        <div class="me-map-wrap"><div id="me-map-main" class="me-map"></div></div>
+        <!-- Standalone map + controls -->
+        <div class="me-map-wrap">
+          <div id="me-map-main" class="me-map"></div>
+          <div class="me-ctrls">
+            <div style="position:relative">
+              <button class="me-btn" id="me-btn-ver" onclick="meToggleVer(event,this,'me-ver-main')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Ver
+              </button>
+              <div class="me-ver-menu" id="me-ver-main">
+                <label class="me-ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
+                <label class="me-ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
+                <label class="me-ver-opt"><input type="checkbox"> Geocercas</label>
+              </div>
+            </div>
+            <button class="me-btn" id="me-btn-lasso-main" onclick="meToggleLasso(event,'main')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
+              Seleccionar con lazo
+            </button>
+          </div>
+          <div class="me-lasso-banner" id="me-banner-main">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7"/></svg>
+            <span>Modo lazo activo — dibuja alrededor de las paradas.</span>
+            <button class="me-lasso-cancel" onclick="meExitLasso('main')">Cancelar</button>
+          </div>
+          <svg class="me-lasso-svg" id="me-svg-main" xmlns="http://www.w3.org/2000/svg">
+            <path id="me-path-main" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" d=""/>
+          </svg>
+          <div class="me-lasso-layer" id="me-layer-main" onmousedown="meLassoStart(event,'main')"></div>
+        </div>
 
+        <!-- Form layout + map -->
         <div class="me-map-form-demo">
           <div class="me-map-form-col">
             <div class="me-map-form-lbl">Dirección</div>
@@ -3015,7 +3154,32 @@ async function downloadAllPins() {
           </div>
           <div>
             <div class="me-map-form-lbl" style="margin-bottom:8px">Ubicación en mapa</div>
-            <div class="me-map-in-form-wrap"><div id="me-map-form" class="me-map-in-form"></div></div>
+            <div class="me-map-in-form-wrap">
+              <div id="me-map-form" class="me-map-in-form"></div>
+              <div class="me-ctrls" style="top:6px;right:6px">
+                <button class="me-btn" onclick="meToggleVer(event,this,'me-ver-form')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  Ver
+                </button>
+                <div class="me-ver-menu" id="me-ver-form">
+                  <label class="me-ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
+                  <label class="me-ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
+                  <label class="me-ver-opt"><input type="checkbox"> Geocercas</label>
+                </div>
+                <button class="me-btn" id="me-btn-lasso-form" onclick="meToggleLasso(event,'form')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
+                  Lazo
+                </button>
+              </div>
+              <div class="me-lasso-banner" id="me-banner-form" style="font-size:11px">
+                <span>Modo lazo activo.</span>
+                <button class="me-lasso-cancel" onclick="meExitLasso('form')" style="font-size:11px">Cancelar</button>
+              </div>
+              <svg class="me-lasso-svg" id="me-svg-form" xmlns="http://www.w3.org/2000/svg">
+                <path id="me-path-form" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" d=""/>
+              </svg>
+              <div class="me-lasso-layer" id="me-layer-form" onmousedown="meLassoStart(event,'form')"></div>
+            </div>
           </div>
         </div>
       </div>
