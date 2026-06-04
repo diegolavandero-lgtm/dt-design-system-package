@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T20:41:11.368Z",
+  "generated": "2026-06-04T20:41:57.936Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "a926eea",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): lasso en grilla — mapa no se arrastra al dibujar",
+          "author": "Diego"
+        },
         {
           "hash": "fe07733",
           "type": "fix",
