@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T15:38:52.817Z",
+  "generated": "2026-06-04T15:44:49.192Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "42f58c6",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): replace underline tabs with DS pill tab (tabGroup from renderers.js)",
+          "author": "Diego"
+        },
         {
           "hash": "07daff6",
           "type": "update",
