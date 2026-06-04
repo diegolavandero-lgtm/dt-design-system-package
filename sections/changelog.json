@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T21:42:07.320Z",
+  "generated": "2026-06-04T21:45:45.051Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "7a434ce",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(ds): rewrite mapScript cleanly — no duplicate init/const TDZ bug",
+          "author": "Diego"
+        },
         {
           "hash": "8b48c3e",
           "type": "fix",
