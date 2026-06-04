@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T15:53:07.294Z",
+  "generated": "2026-06-04T16:06:52.600Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "052f576",
+          "type": "update",
+          "section": "General",
+          "message": "feat(planner): compact bullet-separated metrics bar on canvas header",
+          "author": "Diego"
+        },
         {
           "hash": "0183965",
           "type": "update",
