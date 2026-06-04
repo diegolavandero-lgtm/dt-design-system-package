@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T21:27:50.487Z",
+  "generated": "2026-06-04T21:34:07.686Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "9480960",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(ds): map elements tiles render on load — double rAF + window.load",
+          "author": "Diego"
+        },
         {
           "hash": "28e6ec5",
           "type": "feat",
