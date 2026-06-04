@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T20:32:24.218Z",
+  "generated": "2026-06-04T20:37:12.183Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "bb90645",
+          "type": "update",
+          "section": "General",
+          "message": "feat(planner): lazo independiente por celda en todas las grillas",
+          "author": "Diego"
+        },
         {
           "hash": "8141927",
           "type": "fix",
