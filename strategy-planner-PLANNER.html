@@ -295,6 +295,42 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .lpin svg{display:block;}
 /* Leaflet attribution tweak */
 .leaflet-control-attribution{font-size:10px!important;}
+
+/* ── Map control buttons (buttons.json tertiary — subtle on map) ── */
+.map-ctrls{position:absolute;top:10px;right:10px;display:flex;align-items:center;gap:6px;z-index:1100;}
+/* Full button (1–2 day view) */
+.mctrl{height:32px;padding:0 14px;border-radius:50px;font:700 13px/1 var(--font-sans);
+  background:rgba(255,255,255,.96);color:var(--n7);border:1px solid var(--n3);
+  cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  box-shadow:0 1px 4px rgba(19,32,69,.12);white-space:nowrap;flex-shrink:0;}
+.mctrl:hover{background:#fff;border-color:var(--n4);}
+.mctrl.active{background:var(--b1);border-color:var(--b5);color:var(--b7);}
+/* Icon-only (3+ day view) */
+.mctrl.ico{width:30px;height:30px;padding:0;justify-content:center;border-radius:6px;}
+.mctrl .mlbl{} /* label span — hidden in icon mode by JS */
+/* Ver multiselect dropdown */
+.ver-wrap{position:relative;}
+.ver-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;
+  border:1px solid var(--n3);border-radius:6px;
+  box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:1200;padding:4px 0;min-width:210px;display:none;}
+.ver-menu.on{display:block;}
+.ver-opt{height:36px;padding:0 12px;display:flex;align-items:center;gap:9px;
+  font:400 13px var(--font-sans);color:var(--n7);cursor:pointer;}
+.ver-opt:hover{background:var(--b1);color:var(--b7);}
+.ver-opt input[type=checkbox]{width:14px;height:14px;accent-color:var(--b5);flex-shrink:0;cursor:pointer;}
+/* Lasso overlay — covers the map, enables draw cursor */
+.lasso-overlay{position:absolute;inset:0;cursor:crosshair;z-index:1050;
+  background:rgba(19,32,69,.06);display:none;}
+.lasso-overlay.on{display:block;}
+/* Lasso banner — top of the map */
+.lasso-banner{position:absolute;top:0;left:0;right:0;height:40px;background:var(--b6);
+  color:#fff;font:400 12px var(--font-sans);display:none;align-items:center;
+  gap:10px;padding:0 16px;z-index:1300;}
+.lasso-banner.on{display:flex;}
+.lasso-banner svg{flex-shrink:0;}
+.lasso-banner .lbx{margin-left:auto;font:700 13px var(--font-sans);color:#fff;
+  background:none;border:0;cursor:pointer;text-decoration:underline;}
+
 /* Single-view wrapper */
 #single-view{position:absolute;inset:0;}
 /* Grid-view layouts */
@@ -730,6 +766,35 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 
           <!-- ── SINGLE-DAY VIEW ── -->
           <div id="single-view">
+
+          <!-- Lasso banner (aparece al activar modo lazo) -->
+          <div class="lasso-banner" id="lassoBanner">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="9" cy="7" r="5" stroke-dasharray="2.5,1.5"/><path d="M9 12L9 20M6 17l3 3 3-3"/></svg>
+            <span>Estás en modo de selección de lazo. Haz clic en el mapa y dibuja alrededor de los vehículos para seleccionarlos.</span>
+            <button class="lbx" onclick="exitLasso()">Cancelar</button>
+          </div>
+          <!-- Overlay clickeable en modo lazo -->
+          <div class="lasso-overlay" id="lassoOverlay" onclick="onLassoSelect()"></div>
+
+          <!-- Map control buttons (DS tertiary "subtle") -->
+          <div class="map-ctrls" id="mapCtrls">
+            <div class="ver-wrap">
+              <button class="mctrl" id="btnVer" onclick="toggleVer(event,this)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span class="mlbl">Ver</span>
+              </button>
+              <div class="ver-menu" id="verMenu">
+                <label class="ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
+                <label class="ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
+                <label class="ver-opt"><input type="checkbox"> Geocercas</label>
+              </div>
+            </div>
+            <button class="mctrl" id="btnLasso" onclick="toggleLasso()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
+              <span class="mlbl">Seleccionar con lazo</span>
+            </button>
+          </div>
+
           <!-- pre-optimization band -->
           <div class="band" id="bandUnrouted">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
@@ -962,6 +1027,81 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
     </div>
   </div>
   <div class="dfoot"><button class="btn ter" onclick="closeCustomer()">Cerrar</button><button class="btn pri" onclick="closeCustomer()">Editar cliente</button></div>
+</div>
+
+<!-- ============ MODAL: REVISAR CAMBIOS DE MOVIMIENTO (lazo) ============ -->
+<div class="ov" id="ovLasso">
+  <div class="modal wide" role="dialog" aria-label="Revisar cambios de movimiento">
+    <div class="mh">
+      <h1>Revisar cambios de movimiento</h1>
+      <span style="margin-left:auto;font:500 13px var(--font-sans);color:var(--b7);cursor:pointer;white-space:nowrap;padding-right:16px">Ver todos los días afectados →</span>
+      <button class="x" onclick="closeLassoModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="msub">Revisa 2 día(s) afectado(s). Los totales son a nivel de día; haz clic en un día para ver el desglose por camión.</div>
+    <div class="mbody">
+      <div style="display:flex;gap:14px;padding-bottom:12px;font:500 13px var(--font-sans);color:var(--b7);">
+        <span style="cursor:pointer" onclick="lassoSelectAll(true)">Seleccionar todos</span>
+        <span style="color:var(--n4)">·</span>
+        <span style="cursor:pointer" onclick="lassoSelectAll(false)">Seleccionar ninguno</span>
+      </div>
+      <div style="border:1px solid var(--n3);border-radius:4px;overflow:hidden;">
+        <table class="t" id="lassoTable">
+          <thead><tr>
+            <th style="width:40px"></th>
+            <th>Día</th>
+            <th style="text-align:right">Millas</th>
+            <th style="text-align:right">Tiempo</th>
+            <th style="text-align:right">Costo</th>
+            <th style="text-align:center">Acciones</th>
+            <th style="text-align:center;width:70px">Aceptar</th>
+          </tr></thead>
+          <tbody>
+            <tr data-r>
+              <td class="cb-td" style="padding-left:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2" style="cursor:pointer"><polyline points="6 9 12 15 18 9"/></svg></td>
+              <td style="font:700 13px var(--font-sans)">Lun</td>
+              <td style="text-align:right">
+                <div style="font:400 13px var(--font-sans)">2.503,6 → 2.270,4 mi</div>
+                <div style="font:600 11px var(--font-sans);color:var(--g6)">▼ −233,2 mi</div>
+              </td>
+              <td style="text-align:right">
+                <div style="font:400 13px var(--font-sans)">92:42 → 88:42</div>
+                <div style="font:600 11px var(--font-sans);color:var(--g6)">▼ −4:00</div>
+              </td>
+              <td style="text-align:right">
+                <div style="font:400 13px var(--font-sans)">$11.333,47 → $10.458,67</div>
+                <div style="font:600 11px var(--font-sans);color:var(--g6)">▼ −874,80</div>
+              </td>
+              <td style="text-align:center"><button class="btn ter" style="height:28px;font-size:12px">Ver</button></td>
+              <td style="text-align:center"><input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--b5);cursor:pointer"></td>
+            </tr>
+            <tr data-r>
+              <td class="cb-td" style="padding-left:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2" style="cursor:pointer"><polyline points="6 9 12 15 18 9"/></svg></td>
+              <td style="font:700 13px var(--font-sans)">Vie</td>
+              <td style="text-align:right">
+                <div style="font:400 13px var(--font-sans)">2.295,0 → 2.061,8 mi</div>
+                <div style="font:600 11px var(--font-sans);color:var(--g6)">▼ −233,2 mi</div>
+              </td>
+              <td style="text-align:right">
+                <div style="font:400 13px var(--font-sans)">80:25 → 76:25</div>
+                <div style="font:600 11px var(--font-sans);color:var(--g6)">▼ −4:00</div>
+              </td>
+              <td style="text-align:right">
+                <div style="font:400 13px var(--font-sans)">$9.685,68 → $8.810,88</div>
+                <div style="font:600 11px var(--font-sans);color:var(--g6)">▼ −874,80</div>
+              </td>
+              <td style="text-align:center"><button class="btn ter" style="height:28px;font-size:12px">Ver</button></td>
+              <td style="text-align:center"><input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--b5);cursor:pointer"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mfot">
+      <button class="btn ter" onclick="closeLassoModal()">Continuar refinando</button>
+      <button class="btn dng" onclick="closeLassoModal()">Rechazar todo</button>
+      <button class="btn pri" onclick="closeLassoModal()">Aplicar días seleccionados</button>
+    </div>
+  </div>
 </div>
 
 <!-- ============ PROTOTYPE NAV ============ -->
@@ -1367,6 +1507,112 @@ function renderGridPins(m,dayIdx){
     L.marker([p[0],p[1]],{icon:L.divIcon({html:routePinHtml(p[2],color,sz),className:'',iconSize:[sz,h],iconAnchor:[sz/2,h]})}).addTo(m);
   });
 }
+
+/* ── Ver dropdown ── */
+function toggleVer(e,btn){
+  e.stopPropagation();
+  var m=document.getElementById('verMenu');
+  var isOpen=m.classList.contains('on');
+  m.classList.toggle('on',!isOpen);
+  btn.classList.toggle('active',!isOpen);
+  if(!isOpen){
+    setTimeout(function(){document.addEventListener('click',function h(ev){
+      if(!btn.closest('.ver-wrap').contains(ev.target)){m.classList.remove('on');btn.classList.remove('active');document.removeEventListener('click',h);}
+    });},0);
+  }
+}
+
+/* ── Lasso mode ── */
+var lassoActive=false;
+function toggleLasso(){if(lassoActive)exitLasso();else enterLasso();}
+function enterLasso(){
+  lassoActive=true;
+  document.getElementById('lassoBanner').classList.add('on');
+  document.getElementById('lassoOverlay').classList.add('on');
+  document.getElementById('btnLasso').classList.add('active');
+}
+function exitLasso(){
+  lassoActive=false;
+  document.getElementById('lassoBanner').classList.remove('on');
+  document.getElementById('lassoOverlay').classList.remove('on');
+  document.getElementById('btnLasso').classList.remove('active');
+}
+function onLassoSelect(){
+  exitLasso();
+  document.getElementById('ovLasso').classList.add('on');
+}
+function closeLassoModal(){document.getElementById('ovLasso').classList.remove('on');}
+function lassoSelectAll(v){
+  document.querySelectorAll('#lassoTable input[type=checkbox]').forEach(function(c){c.checked=v;});
+}
+
+/* ── Build map control buttons HTML for each cell ── */
+function mapCtrlsHtml(compact,cellId){
+  var ico=compact;
+  var verBtn='<button class="mctrl'+(ico?' ico':'')+'" onclick="toggleVerCell(event,this,\'vm'+cellId+'\')">'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'+
+    (ico?'':'<span class="mlbl">Ver</span>')+
+  '</button>'+
+  '<div class="ver-menu" id="vm'+cellId+'">'+
+    '<label class="ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>'+
+    '<label class="ver-opt"><input type="checkbox"> Órdenes sin asignar</label>'+
+    '<label class="ver-opt"><input type="checkbox"> Geocercas</label>'+
+  '</div>';
+  var lassoBtn='<button class="mctrl'+(ico?' ico':'')+'" onclick="toggleLassoCell(this)">'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>'+
+    (ico?'':'<span class="mlbl">Seleccionar con lazo</span>')+
+  '</button>';
+  return '<div class="map-ctrls ver-wrap" style="position:absolute;top:6px;right:6px;z-index:1100;display:flex;gap:5px;align-items:center;">'+
+    '<div style="position:relative">'+verBtn+'</div>'+lassoBtn+'</div>';
+}
+function toggleVerCell(e,btn,menuId){
+  e.stopPropagation();
+  var m=document.getElementById(menuId);
+  var isOpen=m.classList.contains('on');
+  m.classList.toggle('on',!isOpen);
+  btn.classList.toggle('active',!isOpen);
+  if(!isOpen){
+    setTimeout(function(){document.addEventListener('click',function h(ev){
+      if(!btn.closest('.ver-wrap').contains(ev.target)){m.classList.remove('on');btn.classList.remove('active');document.removeEventListener('click',h);}
+    });},0);
+  }
+}
+function toggleLassoCell(btn){
+  btn.classList.toggle('active');
+  // Show a brief lasso animation then open modal
+  if(btn.classList.contains('active')){
+    var mc=btn.closest('.mc');
+    if(mc){
+      var overlay=document.createElement('div');
+      overlay.className='lasso-overlay on';
+      overlay.onclick=function(){overlay.remove();btn.classList.remove('active');onLassoSelect();};
+      mc.querySelector('.mc-lm').appendChild(overlay);
+    }
+  }
+}
+
+/* Update setMapLayout to inject buttons into each cell */
+var _origSetMapLayout=setMapLayout;
+/* Patch setMapLayout to add buttons after maps init */
+var _patchedSetML=false;
+(function patchSetML(){
+  var orig=setMapLayout;
+  setMapLayout=function(n,activeDayIndices){
+    orig(n,activeDayIndices);
+    if(n>1){
+      var compact=(n>=3);
+      setTimeout(function(){
+        var cells=document.querySelectorAll('#grid-view .mc');
+        cells.forEach(function(mc,i){
+          if(!mc.querySelector('.map-ctrls')){
+            mc.style.position='relative';
+            mc.insertAdjacentHTML('beforeend',mapCtrlsHtml(compact,'g'+i));
+          }
+        });
+      },100);
+    }
+  };
+})();
 
 /* init */
 renderPins(false);setOptimized(false);setProto('list');
