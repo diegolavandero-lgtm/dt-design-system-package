@@ -1220,7 +1220,12 @@ function updatePreview(){
 }
 
 /* step scrollspy */
-function goStep(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+function goStep(id){
+  const el = document.getElementById(id);
+  const scrollEl = document.querySelector('.main');
+  if(!el || !scrollEl) return;
+  scrollEl.scrollTo({top: Math.max(0, el.offsetTop - 120), behavior:'smooth'});
+}
 const mainEl=document.querySelector('.main');
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.step-chip').forEach(c=>c.classList.toggle('active',c.dataset.target===e.target.id));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===e.target.id));}});},{root:mainEl,rootMargin:'-130px 0px -55% 0px',threshold:0});
 document.querySelectorAll('.section').forEach(s=>obs.observe(s));
