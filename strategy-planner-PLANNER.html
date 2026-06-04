@@ -145,13 +145,10 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .drop .dsep{height:1px;background:var(--n3);margin:4px 0;}
 .drop .di.dng{color:var(--r6);}.drop .di.dng:hover{background:var(--r1);}
 
-/* ============ PAGE HEADER + TABS ============ */
-.phead{padding:18px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+/* ============ PAGE HEADER ============ */
+.phead{padding:18px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;}
 .ptitle{font:700 26px/32px var(--font-sans);letter-spacing:-.01em;}
 .pacts{display:flex;gap:8px;align-items:center;}
-.tabs{display:flex;padding:14px 28px 0;border-bottom:1px solid var(--n3);}
-.tab{padding:10px 16px;font:500 14px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
-.tab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);}
 .content{padding:18px 28px 28px;flex:1;overflow:auto;min-height:0;}
 .filters{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
 .filters .search{width:300px;}
@@ -210,8 +207,23 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .sumrow{display:flex;justify-content:space-between;padding:6px 0;font:400 13px var(--font-sans);}
 .sumrow .k{color:var(--n5);}.sumrow .v{color:var(--n7);font-weight:600;}
 
+/* ============ DS TABS (selection.json / dt-design-system.html canonical) ============ */
+/* Top-level tab bar — always at the top of .main */
+.tabs{display:flex;border-bottom:1px solid var(--n3);background:#FAFBFD;flex-shrink:0;}
+.t-tab{padding:11px 20px;font:500 14px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+.t-tab:hover{color:var(--n7);}
+.t-tab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);background:#fff;}
+/* Tab panels — flex column so inner views fill the height */
+.tp{display:none;flex-direction:column;flex:1;min-height:0;}
+.tp.on{display:flex;}
+/* Empty state for Territorios */
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:48px;background:var(--n2);}
+.empty-state svg{color:var(--n4);}
+.empty-state h3{font:700 18px var(--font-sans);color:var(--n7);}
+.empty-state p{font:400 14px var(--font-sans);color:var(--n5);text-align:center;max-width:360px;line-height:1.5;}
+
 /* ============ CANVAS — plan header + KPIs ============ */
-.cphead{background:#fff;border-bottom:1px solid var(--n3);padding:11px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.cphead{background:#fff;border-bottom:1px solid var(--n3);padding:11px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex-shrink:0;}
 .cphead .ptit{font:700 18px var(--font-sans);color:var(--n7);}
 .kpis{display:flex;align-items:center;gap:18px;flex:1;flex-wrap:wrap;}
 .kpi{display:flex;flex-direction:column;gap:1px;}
@@ -221,9 +233,6 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .kpi .v .dl.better{color:var(--g6);}.kpi .v .dl.worse{color:var(--r6);}
 .kpi.muted .v{color:var(--n45);}
 .phacts{display:flex;gap:8px;align-items:center;}
-.ctabs{display:flex;background:#fff;border-bottom:1px solid var(--n3);padding:0 20px;}
-.ctab{padding:9px 16px;font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
-.ctab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5);}
 
 .ws{display:flex;flex:1;min-height:0;}
 .cfg{width:320px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;}
@@ -388,8 +397,20 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
       <div class="it"><svg viewBox="0 0 32 32"><path d="M27,16.76c0-.25,0-.5,0-.76s0-.51,0-.76l1.92-1.68A2,2,0,0,0,29.3,11.14l-2.36-4a2,2,0,0,0-2.37-.9L22.43,7a9.56,9.56,0,0,0-1.31-.75l-.51-2.14A2,2,0,0,0,18.64,2.5H13.92A2,2,0,0,0,12,4.11L11.44,6.26A9.56,9.56,0,0,0,10.13,7L7.83,6.24a2,2,0,0,0-2.37.9L3.1,11.14a2,2,0,0,0,.48,2.46L5.5,15.24c0,.25,0,.5,0,.76s0,.51,0,.76L3.58,18.44a2,2,0,0,0-.48,2.46l2.36,4a2,2,0,0,0,2.37.9l2.29-.77A9.56,9.56,0,0,0,11.44,25.74l.51,2.14A2,2,0,0,0,13.92,29.5h4.72a2,2,0,0,0,1.93-1.61l.51-2.14A9.56,9.56,0,0,0,22.23,25l2.29.77a2,2,0,0,0,2.37-.9l2.36-4a2,2,0,0,0-.48-2.46ZM26,19.14l1.28,1.12L25,24l-1.69-.57A7.64,7.64,0,0,1,21,24.77L20.41,27H17.59L17,24.77a7.64,7.64,0,0,1-2.32-1.34L13,24l-2.29-3.74,1.28-1.12a7.65,7.65,0,0,1,0-2.28L10.71,15.74,13,12l1.69.57A7.64,7.64,0,0,1,17,11.23L17.59,9h2.82L21,11.23a7.64,7.64,0,0,1,2.32,1.34L25,12l2.29,3.74-1.28,1.12A7.65,7.65,0,0,1,26,19.14Z"/><path d="M16,12a4,4,0,1,0,4,4A4,4,0,0,0,16,12Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,16,18Z"/></svg><span class="lbl">Ajustes</span></div>
     </div>
 
-    <!-- ===== MAIN — LISTA (screen 1) ===== -->
-    <div class="main" id="view-list">
+    <!-- ===== MAIN ===== -->
+    <div class="main" id="view-main">
+
+      <!-- DS TOP-LEVEL TABS (Planes / Territorios) — governs everything below -->
+      <div class="tabs" id="mainTabs">
+        <div class="t-tab on" onclick="switchMainTab(0)">Planes</div>
+        <div class="t-tab" onclick="switchMainTab(1)">Territorios</div>
+      </div>
+
+      <!-- ══ TAB PANEL: PLANES ══ -->
+      <div class="tp on" id="tp-planes">
+
+    <!-- ─── LISTA (screen 1) ─── -->
+    <div id="view-list" style="display:flex;flex-direction:column;flex:1;min-height:0;">
       <div class="phead">
         <div class="ptitle">Strategy Planner</div>
         <div class="pacts">
@@ -398,7 +419,6 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
           <button class="btn pri" onclick="openWizard()">+ Crear plan</button>
         </div>
       </div>
-      <div class="tabs"><div class="tab on">Planes</div><div class="tab">Territorios</div></div>
       <div class="content">
         <div class="filters">
           <div class="inp search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input placeholder="Buscar por nombre o notas"></div>
@@ -472,10 +492,10 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- /view-list -->
 
-    <!-- ===== MAIN — CANVAS (screens 4 / 5 / 9) ===== -->
-    <div class="main" id="view-canvas" style="display:none">
+    <!-- ─── CANVAS (screens 4 / 5 / 9) ─── -->
+    <div id="view-canvas" style="display:none;flex-direction:column;flex:1;min-height:0;">
       <div class="cphead">
         <span class="bdg b" id="planBadge">Borrador</span>
         <span class="ptit">Plan Estándar</span>
@@ -496,7 +516,6 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
           <button class="btn sec" id="btnActivate" disabled onclick="openActivate()">Activar plan</button>
         </div>
       </div>
-      <div class="ctabs"><div class="ctab on">Planes</div><div class="ctab">Territorios</div></div>
 
       <div class="ws">
         <div class="cfg">
@@ -609,11 +628,25 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
             <button class="btn ter" onclick="toggleFindings(false)">Cerrar</button>
             <button class="btn pri" onclick="toggleFindings(false)">Aceptar y continuar</button>
           </div>
+        </div><!-- /findings -->
+        </div><!-- /ws -->
+    </div><!-- /view-canvas -->
+
+      </div><!-- /tp-planes -->
+
+      <!-- ══ TAB PANEL: TERRITORIOS ══ -->
+      <div class="tp" id="tp-territories">
+        <div class="empty-state">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 6l9-4 9 4v12l-9 4-9-4V6z"/><path d="M12 2v20M3 6l9 4 9-4"/></svg>
+          <h3>Territorios</h3>
+          <p>La planificación de territorios aún no está configurada. Define las zonas geográficas y asigna vendedores con carga balanceada.</p>
+          <button class="btn pri">Planificar territorios</button>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+      </div><!-- /tp-territories -->
+
+    </div><!-- /view-main -->
+  </div><!-- /body -->
+</div><!-- /app -->
 
 <!-- ============ MODAL: WIZARD CREAR PLAN (screen 2) ============ -->
 <div class="ov" id="ovWizard">
@@ -833,10 +866,28 @@ function pick(el){
 function openCompare(){document.getElementById('ovCompare').classList.add('on');setProto('compare');}
 function closeCompare(){document.getElementById('ovCompare').classList.remove('on');setProto(app.dataset.view);}
 
+/* ---------- Main tab switch ---------- */
+function switchMainTab(idx){
+  var tabs=document.querySelectorAll('#mainTabs .t-tab');
+  var panels=[document.getElementById('tp-planes'),document.getElementById('tp-territories')];
+  tabs.forEach(function(t,i){t.classList.toggle('on',i===idx);});
+  panels.forEach(function(p,i){p.classList.toggle('on',i===idx);});
+  if(idx===0&&lmap)setTimeout(function(){lmap.invalidateSize();},120);
+}
+
 /* ---------- SCREEN 4/5/9: Canvas ---------- */
-function goList(){app.dataset.view='list';document.getElementById('view-list').style.display='';document.getElementById('view-canvas').style.display='none';setProto('list');}
+function goList(){
+  app.dataset.view='list';
+  document.getElementById('view-list').style.cssText='display:flex;flex-direction:column;flex:1;min-height:0;';
+  document.getElementById('view-canvas').style.display='none';
+  setProto('list');
+}
 function openCanvas(optimized){
-  app.dataset.view='canvas';document.getElementById('view-list').style.display='none';document.getElementById('view-canvas').style.display='flex';
+  app.dataset.view='canvas';
+  document.getElementById('view-list').style.display='none';
+  document.getElementById('view-canvas').style.cssText='display:flex;flex-direction:column;flex:1;min-height:0;';
+  // Make sure Planes tab is active
+  switchMainTab(0);
   hideErr();setOptimized(!!optimized);setProto('canvas');
   setTimeout(function(){lmap&&lmap.invalidateSize();},150);
 }
