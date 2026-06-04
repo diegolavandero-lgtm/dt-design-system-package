@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T21:06:53.682Z",
+  "generated": "2026-06-04T21:15:25.824Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "39c6baf",
+          "type": "update",
+          "section": "Topbar",
+          "message": "feat: move settings gear to topbar per DS spec",
+          "author": "Carlos"
+        },
         {
           "hash": "572a665",
           "type": "fix",
