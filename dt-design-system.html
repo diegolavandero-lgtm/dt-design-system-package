@@ -205,6 +205,43 @@ button,input,select{font-family:inherit}
 .dt-map-form-col .mock-label{font:600 11px var(--font-sans);color:var(--n6);text-transform:uppercase;letter-spacing:.04em}
 .dt-map-in-form-wrap{width:240px;border-radius:4px;overflow:hidden;border:1px solid var(--n4);flex-shrink:0}
 .dt-map-in-form{width:240px;min-height:144px;height:200px}
+
+/* ── Map elements section ── */
+/* Flexible map: fills 100% width, min-height 320px, stretches vertically */
+.dme-map-wrap{width:100%;min-height:320px;border-radius:8px;overflow:hidden;border:1px solid var(--n3);position:relative;}
+.dme-map{width:100%;height:360px;}
+/* Map with controls overlay */
+.dme-ctrls{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:1000;}
+.dme-btn{height:32px;padding:0 14px;border-radius:50px;font:700 13px/1 'DM Sans',sans-serif;background:rgba(255,255,255,.96);color:var(--n7);border:1px solid var(--n3);cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 1px 4px rgba(19,32,69,.12);white-space:nowrap;position:relative;}
+.dme-btn:hover{background:#fff;border-color:var(--n4);}
+.dme-btn.active{background:var(--b1);border-color:var(--b5);color:var(--b7);}
+/* Ver dropdown */
+.dme-ver-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0;min-width:210px;}
+.dme-ver-menu.on{display:block;}
+.dme-ver-opt{height:36px;padding:0 12px;display:flex;align-items:center;gap:9px;font:400 13px/1 'DM Sans',sans-serif;color:var(--n7);cursor:pointer;}
+.dme-ver-opt:hover{background:var(--b1);color:var(--b7);}
+.dme-ver-opt input{width:14px;height:14px;accent-color:var(--b5);cursor:pointer;flex-shrink:0;}
+/* Lasso mode */
+.dme-lasso-banner{display:none;position:absolute;top:0;left:0;right:0;height:40px;background:var(--b6);color:#fff;font:400 12px 'DM Sans',sans-serif;align-items:center;gap:10px;padding:0 16px;z-index:1001;}
+.dme-lasso-banner.on{display:flex;}
+.dme-lasso-banner b{font-weight:700;cursor:pointer;margin-left:auto;text-decoration:underline;}
+.dme-lasso-layer{display:none;position:absolute;inset:0;cursor:crosshair;z-index:999;}
+.dme-lasso-layer.on{display:block;}
+.dme-lasso-svg{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:998;}
+.dme-lasso-svg.on{display:block;}
+/* Form layout */
+.dme-form-layout{display:flex;gap:16px;align-items:flex-start;}
+.dme-form-inputs{display:flex;flex-direction:column;gap:8px;width:220px;flex-shrink:0;}
+.dme-form-lbl{font:600 11px 'DM Sans',sans-serif;color:var(--n6);text-transform:uppercase;letter-spacing:.04em;}
+.dme-form-inp{height:40px;background:#fff;border:1px solid var(--n4);border-radius:6px;padding:0 12px;display:flex;align-items:center;font:400 13px 'DM Sans',sans-serif;color:var(--n5);}
+/* Form map: single column, min-height = 3 inputs (3×40 + 2×8 gap = 136px) */
+.dme-map-form-wrap{flex:1;min-width:0;border-radius:6px;overflow:hidden;border:1px solid var(--n4);position:relative;}
+.dme-map-form{width:100%;min-height:136px;height:220px;}
+/* Spec table */
+.dme-spec{width:100%;border-collapse:collapse;font:400 12px 'DM Sans',sans-serif;margin-top:12px;}
+.dme-spec th{text-align:left;padding:6px 10px;background:var(--n2);font:700 11px 'DM Sans',sans-serif;color:var(--n5);text-transform:uppercase;letter-spacing:.04em;}
+.dme-spec td{padding:6px 10px;border-bottom:1px solid var(--n3);color:var(--n7);}
+.dme-spec td code{font:400 11px var(--font-mono,monospace);background:var(--n2);padding:1px 5px;border-radius:3px;}
 .leaflet-container{font-family:var(--font-sans)!important}
 
 /* ── RADII ── */
@@ -577,6 +614,10 @@ button,input,select{font-family:inherit}
   <a href="#mappins" class="snav" data-sec="mappins" onclick="setActive(this)">
     <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
     <span data-i18n="nav.mappins">Map pins</span>
+  </a>
+  <a href="#mapelements" class="snav" data-sec="mapelements" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 3v18M2 9h6M2 15h6"/><circle cx="15" cy="11" r="2"/><path d="M15 13v5"/></svg>
+    <span>Map elements</span>
   </a>
   <div class="grp-lbl" style="margin-top:8px" data-i18n="nav.data">Data</div>
   <a href="#dataviz" class="snav" data-sec="dataviz" onclick="setActive(this)">
@@ -1461,6 +1502,228 @@ button,input,select{font-family:inherit}
     </div>
   </div>
 </section>
+
+<!-- ══ MAP ELEMENTS ══ -->
+<section class="sec" id="mapelements" data-keywords="map lasso ver view controls standalone form flexible fill">
+  <h2>Map elements <span class="anch">#mapelements</span></h2>
+  <p class="desc">Mapa interactivo (Leaflet + CARTO Positron). Por defecto ocupa el 100% del ancho y el alto disponible. Los controles <b>Ver</b> y <b>Seleccionar con lazo</b> se superponen como botones terciarios sutiles en la esquina superior derecha.</p>
+
+  <!-- ── 1. Standalone flexible ── -->
+  <h3>Standalone · Flexible (fill)</h3>
+  <p class="desc">Ocupa todo el ancho. <code>height</code> ajustable; usa <code>min-height:320px</code> como base. Los controles se posicionan absolute top-right dentro del contenedor.</p>
+  <div class="card flush">
+    <div class="dme-map-wrap" id="dme-wrap-main">
+      <div id="dme-map-main" class="dme-map"></div>
+      <!-- Ver button -->
+      <div class="dme-ctrls">
+        <div style="position:relative" id="dme-ver-wrap">
+          <button class="dme-btn" id="dme-btn-ver" onclick="dmeToggleVer(event,this,'dme-ver-menu-main')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver
+          </button>
+          <div class="dme-ver-menu" id="dme-ver-menu-main">
+            <label class="dme-ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
+            <label class="dme-ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
+            <label class="dme-ver-opt"><input type="checkbox"> Geocercas</label>
+          </div>
+        </div>
+        <button class="dme-btn" id="dme-btn-lasso-main" onclick="dmeToggleLasso('main')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
+          Seleccionar con lazo
+        </button>
+      </div>
+      <!-- Lasso mode elements -->
+      <div class="dme-lasso-banner" id="dme-banner-main">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7"/></svg>
+        <span>Estás en modo lazo. Dibuja alrededor de las paradas para seleccionarlas.</span>
+        <b onclick="dmeExitLasso('main')">Cancelar</b>
+      </div>
+      <svg class="dme-lasso-svg" id="dme-svg-main" xmlns="http://www.w3.org/2000/svg">
+        <path id="dme-path-main" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" d=""/>
+      </svg>
+      <div class="dme-lasso-layer" id="dme-layer-main"
+        onmousedown="dmeLassoStart(event,'main')"></div>
+    </div>
+  </div>
+
+  <!-- ── 2. Inside form ── -->
+  <h3 style="margin-top:28px">Inside form · Columna única, alto mínimo 3 inputs</h3>
+  <p class="desc">En contexto de formulario el mapa ocupa una columna junto a los inputs. Alto mínimo = 3 rows de input <code>(3×40 + 2×8 = 136px)</code>. Los mismos controles Ver/Lazo se adaptan a ese tamaño.</p>
+  <div class="card">
+    <div class="dme-form-layout">
+      <div class="dme-form-inputs">
+        <div class="dme-form-lbl">Dirección</div>
+        <div class="dme-form-inp">Av. Lib. Bernardo O'Higgins…</div>
+        <div class="dme-form-lbl">Ciudad</div>
+        <div class="dme-form-inp">Santiago</div>
+        <div class="dme-form-lbl">Referencia</div>
+        <div class="dme-form-inp">Frente al metro Baquedano</div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div class="dme-form-lbl" style="margin-bottom:8px">Ubicación en mapa</div>
+        <div class="dme-map-form-wrap" id="dme-wrap-form">
+          <div id="dme-map-form2" class="dme-map-form"></div>
+          <div class="dme-ctrls" style="top:8px;right:8px;">
+            <div style="position:relative">
+              <button class="dme-btn" onclick="dmeToggleVer(event,this,'dme-ver-menu-form')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Ver
+              </button>
+              <div class="dme-ver-menu" id="dme-ver-menu-form">
+                <label class="dme-ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
+                <label class="dme-ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
+                <label class="dme-ver-opt"><input type="checkbox"> Geocercas</label>
+              </div>
+            </div>
+            <button class="dme-btn" id="dme-btn-lasso-form" onclick="dmeToggleLasso('form')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
+              Lazo
+            </button>
+          </div>
+          <div class="dme-lasso-banner" id="dme-banner-form">
+            <span style="font-size:11px">Modo lazo activo.</span>
+            <b onclick="dmeExitLasso('form')" style="margin-left:auto;font-size:11px">Cancelar</b>
+          </div>
+          <svg class="dme-lasso-svg" id="dme-svg-form" xmlns="http://www.w3.org/2000/svg">
+            <path id="dme-path-form" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" d=""/>
+          </svg>
+          <div class="dme-lasso-layer" id="dme-layer-form"
+            onmousedown="dmeLassoStart(event,'form')"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Spec table ── -->
+  <div class="card" style="margin-top:20px">
+    <table class="dme-spec">
+      <thead><tr><th>Propiedad</th><th>Standalone</th><th>En formulario</th></tr></thead>
+      <tbody>
+        <tr><td>Ancho</td><td><code>100%</code> del contenedor</td><td><code>flex:1</code> junto a columna de inputs</td></tr>
+        <tr><td>Alto por defecto</td><td><code>360px</code></td><td><code>220px</code></td></tr>
+        <tr><td>Alto mínimo</td><td><code>320px</code></td><td><code>136px</code> (= 3 inputs 40px + 2 gaps 8px)</td></tr>
+        <tr><td>Tile layer</td><td colspan="2">CARTO Positron (neutro, contraste mínimo)</td></tr>
+        <tr><td>Controles</td><td colspan="2">Ver (multiselect) + Seleccionar con lazo — <code>position:absolute; top:10px; right:10px</code></td></tr>
+        <tr><td>Lasso</td><td colspan="2">Draw layer <code>z-index:999</code> · SVG path fill <code>rgba(30,96,237,0.12)</code> · stroke <code>#1F60ED 2.5px</code></td></tr>
+        <tr><td>Borde contenedor</td><td colspan="2"><code>1px solid var(--n3)</code> · <code>border-radius:8px</code> standalone · <code>6px</code> en form</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+/* ── Map elements — interactive demo ── */
+(function initMapElements(){
+  var SANTIAGO=[-33.4489,-70.6693];
+  var TILE_URL='https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  var TILE_OPTS={attribution:'© CARTO',subdomains:'abcd',maxZoom:19};
+  var PINS=[
+    {latlng:[-33.4372,-70.6506],color:'#0C47C7',n:3},
+    {latlng:[-33.4512,-70.6741],color:'#8FA0BA',n:1},
+    {latlng:[-33.4438,-70.6598],color:'#36B37E',n:7},
+    {latlng:[-33.4560,-70.6630],color:'#FF5630',n:5},
+    {latlng:[-33.4489,-70.6550],color:'#8777D9',n:2},
+    {latlng:[-33.4410,-70.6780],color:'#FFAB00',n:4},
+    {latlng:[-33.4620,-70.6580],color:'#00B8D9',n:6},
+  ];
+  var PIN_BODY='M16.5 1.5C24.78 1.5 31.5 8.22 31.5 16.5C31.5 21.44 29.11 25.82 25.43 28.55C22.61 30.67 18.58 34.04 17.66 39.48C17.56 40.05 17.08 40.5 16.5 40.5C15.92 40.5 15.44 40.05 15.34 39.48C14.42 34.04 10.39 30.67 7.56 28.55C3.88 25.82 1.5 21.44 1.5 16.5C1.5 8.22 8.22 1.5 16.5 1.5Z';
+  function pinHtml(color,n){
+    var s=28,h=Math.round(s*49/33);
+    return '<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.3))"><svg width="'+s+'" height="'+h+'" viewBox="0 0 33 49"><path d="'+PIN_BODY+'" fill="'+color+'" stroke="#fff" stroke-width="2"/><text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#fff">'+n+'</text></svg></div>';
+  }
+  function buildDmeMap(elId,zoom){
+    if(!window.L)return null;
+    var m=L.map(elId,{center:SANTIAGO,zoom:zoom,zoomControl:true,scrollWheelZoom:false});
+    L.tileLayer(TILE_URL,TILE_OPTS).addTo(m);
+    PINS.forEach(function(p){
+      var s=28,h=Math.round(s*49/33);
+      L.marker(p.latlng,{icon:L.divIcon({html:pinHtml(p.color,p.n),className:'',iconSize:[s,h],iconAnchor:[s/2,h]})}).addTo(m);
+    });
+    return m;
+  }
+
+  var dmeMaps={};
+  function initDme(){
+    dmeMaps.main=buildDmeMap('dme-map-main',13);
+    dmeMaps.form=buildDmeMap('dme-map-form2',14);
+  }
+  /* Wait for Leaflet (may already be loaded by initMaps) */
+  if(window.L){initDme();}
+  else{
+    var t=setInterval(function(){if(window.L){clearInterval(t);initDme();}},100);
+  }
+
+  /* ── Ver dropdown ── */
+  window.dmeToggleVer=function(e,btn,menuId){
+    e.stopPropagation();
+    var m=document.getElementById(menuId);
+    var open=m.classList.contains('on');
+    m.classList.toggle('on',!open);
+    btn.classList.toggle('active',!open);
+    if(!open){setTimeout(function(){document.addEventListener('click',function h(ev){if(!btn.parentElement.contains(ev.target)){m.classList.remove('on');btn.classList.remove('active');document.removeEventListener('click',h);}});},0);}
+  };
+
+  /* ── Lasso ── */
+  var dmeDrawing={},dmePts={};
+  window.dmeToggleLasso=function(key){
+    var btn=document.getElementById('dme-btn-lasso-'+key);
+    if(btn.classList.contains('active')){dmeExitLasso(key);return;}
+    btn.classList.add('active');
+    document.getElementById('dme-banner-'+key).classList.add('on');
+    document.getElementById('dme-svg-'+key).classList.add('on');
+    document.getElementById('dme-layer-'+key).classList.add('on');
+    var m=dmeMaps[key];if(m){m.dragging.disable();m.scrollWheelZoom.disable();}
+  };
+  window.dmeExitLasso=function(key){
+    var btn=document.getElementById('dme-btn-lasso-'+key);
+    if(btn)btn.classList.remove('active');
+    document.getElementById('dme-banner-'+key).classList.remove('on');
+    var svg=document.getElementById('dme-svg-'+key);svg.classList.remove('on');
+    document.getElementById('dme-path-'+key).setAttribute('d','');
+    document.getElementById('dme-layer-'+key).classList.remove('on');
+    var m=dmeMaps[key];if(m){m.dragging.enable();m.scrollWheelZoom.enable();}
+    dmeDrawing[key]=false;dmePts[key]=[];
+    document.removeEventListener('mousemove',_dmeMoveHandlers[key],{capture:true});
+    document.removeEventListener('mouseup',_dmeEndHandlers[key],{capture:true});
+  };
+  var _dmeMoveHandlers={},_dmeEndHandlers={};
+  window.dmeLassoStart=function(e,key){
+    e.preventDefault();e.stopPropagation();
+    dmeDrawing[key]=true;dmePts[key]=[];
+    var layer=document.getElementById('dme-layer-'+key);
+    var r=layer.getBoundingClientRect();
+    dmePts[key].push([e.clientX-r.left,e.clientY-r.top]);
+    _dmeDraw(key,false);
+    _dmeMoveHandlers[key]=function(ev){
+      if(!dmeDrawing[key])return;
+      ev.preventDefault();
+      var r2=document.getElementById('dme-layer-'+key).getBoundingClientRect();
+      dmePts[key].push([ev.clientX-r2.left,ev.clientY-r2.top]);
+      _dmeDraw(key,false);
+    };
+    _dmeEndHandlers[key]=function(ev){
+      document.removeEventListener('mousemove',_dmeMoveHandlers[key],{capture:true});
+      document.removeEventListener('mouseup',_dmeEndHandlers[key],{capture:true});
+      if(!dmeDrawing[key])return;
+      dmeDrawing[key]=false;
+      if(dmePts[key].length<3)return;
+      var r3=document.getElementById('dme-layer-'+key).getBoundingClientRect();
+      dmePts[key].push([ev.clientX-r3.left,ev.clientY-r3.top]);
+      _dmeDraw(key,true);
+      setTimeout(function(){dmeExitLasso(key);},600);
+    };
+    document.addEventListener('mousemove',_dmeMoveHandlers[key],{capture:true,passive:false});
+    document.addEventListener('mouseup',_dmeEndHandlers[key],{capture:true});
+  };
+  function _dmeDraw(key,close){
+    var pts=dmePts[key];if(!pts||pts.length<2)return;
+    var d='M'+pts[0][0]+','+pts[0][1];
+    for(var i=1;i<pts.length;i++)d+=' L'+pts[i][0]+','+pts[i][1];
+    if(close)d+='Z';
+    document.getElementById('dme-path-'+key).setAttribute('d',d);
+  }
+})();
+</script>
 
 <!-- ══ DATA VIZ ══ -->
 <section class="sec" id="dataviz" data-keywords="data viz visualization chart graph palette ordered">
