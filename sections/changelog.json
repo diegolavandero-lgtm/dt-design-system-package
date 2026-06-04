@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T14:43:33.979Z",
+  "generated": "2026-06-04T14:48:12.021Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "5471236",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(tabs): fix sliding pill animation on click",
+          "author": "Diego"
+        },
         {
           "hash": "792d0ac",
           "type": "fix",
