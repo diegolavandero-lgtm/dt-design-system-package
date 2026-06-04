@@ -2969,34 +2969,52 @@ async function downloadAllPins() {
 
     const mapScript = `<script>
 (function(){
-  const MARKERS = ${markersJson};
-  const TILE = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-  const ATTR = '© <a href="https://carto.com/">CARTO</a>';
-  const SCL  = [-33.4489, -70.6693];
+  /* ── Exact same approach as strategy-planner-PLANNER.html ── */
+  const DEPOT  = [-33.472, -70.762];
+  const PINS   = [
+    [-33.37,-70.74,17,'#36B37E'], [-33.43,-70.61,12,'#1F60ED'],
+    [-33.61,-70.58, 5,'#00B8D9'], [-33.51,-70.77,11,'#FFAB00'],
+    [-33.52,-70.59, 4,'#00B8D9'], [-33.59,-70.70, 2,'#FE4EC4'],
+    [-33.46,-70.60, 1,'#FF5630'], [-33.41,-70.57, 8,'#8777D9'],
+    [-33.50,-70.65, 7,'#8777D9'], [-33.45,-70.73, 9,'#1F60ED']
+  ];
+  const PIN_BODY='M16.5 1.5C24.78 1.5 31.5 8.22 31.5 16.5C31.5 21.44 29.11 25.82 25.43 28.55C22.61 30.67 18.58 34.04 17.66 39.48C17.56 40.05 17.08 40.5 16.5 40.5C15.92 40.5 15.44 40.05 15.34 39.48C14.42 34.04 10.39 30.67 7.56 28.55C3.88 25.82 1.5 21.44 1.5 16.5C1.5 8.22 8.22 1.5 16.5 1.5Z';
 
-  function buildIcon(src, sz) {
-    sz = sz || 40;
-    return L.icon({ iconUrl: src, iconSize: [sz, sz], iconAnchor: [sz/2, sz], popupAnchor: [0, -sz] });
+  function pinHtml(color,n,sz){
+    sz=sz||30; const h=Math.round(sz*49/33);
+    return '<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.32))"><svg width="'+sz+'" height="'+h+'" viewBox="0 0 33 49"><path d="'+PIN_BODY+'" fill="'+color+'" stroke="#fff" stroke-width="2"/><text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#fff">'+n+'</text></svg></div>';
+  }
+  function depotHtml(sz){
+    sz=sz||34; const h=Math.round(sz*49/33);
+    return '<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.32))"><svg width="'+sz+'" height="'+h+'" viewBox="0 0 33 49"><path d="'+PIN_BODY+'" fill="#132045" stroke="#fff" stroke-width="2"/><path d="M24 18.17V16.5L22.75 10.67H9.83L9 16.5V18.17H9.83V23.17H18.17V18.17H21.5V23.17H23.17V18.17H24ZM16.5 21.5H11.5V18.17H16.5V21.5Z" fill="#fff"/></svg></div>';
+  }
+  function makeIcon(html,sz){
+    const h=Math.round(sz*49/33);
+    return L.divIcon({html,className:'',iconSize:[sz,h],iconAnchor:[sz/2,h]});
   }
 
   function buildMap(id, zoom) {
-    const map = L.map(id, { center: SCL, zoom, scrollWheelZoom: false, attributionControl: true });
-    L.tileLayer(TILE, { attribution: ATTR, subdomains: 'abcd', maxZoom: 19 }).addTo(map);
-    MARKERS.forEach(m => {
-      L.marker(m.latlng, { icon: buildIcon(m.file) })
-        .addTo(map)
-        .bindPopup('<span style="font:600 12px sans-serif">'+m.label+'</span>');
+    const map = L.map(id, { center: DEPOT, zoom, scrollWheelZoom: false, attributionControl: true });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      { attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom:18 }
+    ).addTo(map);
+    /* Depot */
+    L.marker(DEPOT,{icon:makeIcon(depotHtml(34),34),zIndexOffset:100}).addTo(map);
+    /* Route lines + pins */
+    PINS.forEach(function(p){
+      L.polyline([DEPOT,[p[0],p[1]]],{color:p[3],weight:2,opacity:0.55}).addTo(map);
+      L.marker([p[0],p[1]],{icon:makeIcon(pinHtml(p[3],p[2],30),30)}).addTo(map);
     });
     return map;
   }
 
   function init() {
     if (typeof L === 'undefined') return;
-    // Double rAF: ensures two paint cycles so containers are fully measured
+    // Double rAF — same pattern as strategy planner, ensures containers are painted
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
-        if (document.getElementById('me-map-main')) buildMap('me-map-main', 13);
-        if (document.getElementById('me-map-form')) buildMap('me-map-form', 14);
+        if (document.getElementById('me-map-main')) buildMap('me-map-main', 11);
+        if (document.getElementById('me-map-form')) buildMap('me-map-form', 12);
       });
     });
   }
@@ -3091,13 +3109,14 @@ async function downloadAllPins() {
     document.getElementById('me-path-' + _meKey).setAttribute('d', d);
   }
 
-  // Store map refs for lasso control
-  const _origBuildMap = buildMap;
-  function buildMap(id, zoom) {
-    const m = _origBuildMap(id, zoom);
-    const key = id === 'me-map-main' ? 'main' : 'form';
-    _meMaps[key] = m;
-    return m;
+  // Store refs after buildMap runs (called from init → rAF)
+  const _origInit = init;
+  function init() {
+    if (typeof L === 'undefined') return;
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      if (document.getElementById('me-map-main')) _meMaps.main = buildMap('me-map-main', 11);
+      if (document.getElementById('me-map-form')) _meMaps.form = buildMap('me-map-form', 12);
+    }); });
   }
 })();
 <\/script>`;
