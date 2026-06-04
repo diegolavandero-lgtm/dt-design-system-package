@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T19:20:04.886Z",
+  "generated": "2026-06-04T19:23:54.123Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "a170d32",
+          "type": "feat",
+          "section": "General",
+          "message": "docs(CLAUDE.md): add full DS resource index — all sections/*.json specs with key values",
+          "author": "Carlos"
+        },
         {
           "hash": "1298004",
           "type": "update",
