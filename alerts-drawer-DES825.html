@@ -69,7 +69,7 @@ button{font-family:inherit;cursor:pointer}
   width:460px;background:#fff;
   display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .25s ease;
-  box-shadow:-4px 0 24px rgba(19,32,69,.12);
+  box-shadow:0 8px 16px rgba(0,0,0,.15);
 }
 .drawer.open{transform:translateX(0)}
 
@@ -315,11 +315,11 @@ button{font-family:inherit;cursor:pointer}
   <!-- Tabs — production: All · Documents · Reports + new: Alerts -->
   <div class="drawer-tabs">
     <div class="drawer-tab" id="tab-all" onclick="switchTab('all')">All</div>
-    <div class="drawer-tab" id="tab-documents" onclick="switchTab('documents')">Documents</div>
-    <div class="drawer-tab" id="tab-reports" onclick="switchTab('reports')">Reports</div>
     <div class="drawer-tab" id="tab-alerts" onclick="switchTab('alerts')">
       Alerts <span class="tab-badge">3</span>
     </div>
+    <div class="drawer-tab" id="tab-documents" onclick="switchTab('documents')">Documents</div>
+    <div class="drawer-tab" id="tab-reports" onclick="switchTab('reports')">Reports</div>
   </div>
 
   <!-- Content -->
