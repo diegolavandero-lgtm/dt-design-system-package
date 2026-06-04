@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T20:20:39.798Z",
+  "generated": "2026-06-04T20:32:24.218Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "8141927",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): layout flow + real lasso drawing",
+          "author": "Diego"
+        },
         {
           "hash": "99f4ea1",
           "type": "update",
