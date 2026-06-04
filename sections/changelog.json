@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T20:49:15.067Z",
+  "generated": "2026-06-04T20:56:28.380Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "281dce3",
+          "type": "fix",
+          "section": "General",
+          "message": "fix: apply High priority DS spec fixes",
+          "author": "Carlos"
+        },
         {
           "hash": "2fbbded",
           "type": "fix",
