@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T16:57:16.822Z",
+  "generated": "2026-06-04T19:20:04.886Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "1298004",
+          "type": "update",
+          "section": "Topbar",
+          "message": "feat: apply official DS spec to all prototypes — Carbon icons, correct button/input/topbar tokens",
+          "author": "Carlos"
+        },
         {
           "hash": "b1d6e30",
           "type": "update",
