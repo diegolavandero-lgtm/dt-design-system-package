@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T19:23:54.123Z",
+  "generated": "2026-06-04T19:25:48.382Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "0ddd781",
+          "type": "update",
+          "section": "General",
+          "message": "feat(planner): map layout dropdown + multi-day grid views",
+          "author": "Diego"
+        },
         {
           "hash": "a170d32",
           "type": "feat",
