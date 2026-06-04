@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T21:39:54.816Z",
+  "generated": "2026-06-04T21:42:07.320Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "8b48c3e",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(ds): map elements — OSM tiles + DS SVG pins (same as planner)",
+          "author": "Diego"
+        },
         {
           "hash": "83d11b7",
           "type": "fix",
