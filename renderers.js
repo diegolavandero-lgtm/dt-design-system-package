@@ -1487,9 +1487,402 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
     }).join('');
 
+    /* ─── FILE UPLOADER ─── */
+    const fuBtnStyle = 'height:32px;padding:0 14px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap';
+    const fuBtnDisStyle = 'height:32px;padding:0 14px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:var(--n4);border:1px solid var(--n4);cursor:not-allowed;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap';
+    const fuFileIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`;
+    const fuCloseIcon = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+    function fuFilePill(filename, disabled) {
+      const bg = disabled ? 'var(--n2)' : '#fff';
+      const clr = disabled ? 'var(--n4)' : 'var(--n7)';
+      const bd  = disabled ? 'var(--n3)' : 'var(--n4)';
+      return `<span style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 8px 0 10px;border-radius:4px;background:${bg};border:1px solid ${bd};font:400 13px var(--font-sans);color:${clr};cursor:default">
+        <span style="color:${disabled?'var(--n4)':'var(--n5)'};">${fuFileIcon}</span>
+        <span>${filename}</span>
+        ${disabled ? '' : `<span style="width:16px;height:16px;border-radius:50%;background:var(--n3);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--n5)">${fuCloseIcon}</span>`}
+      </span>`;
+    }
+    function fuRow(label, hasToggle, toggleOn, hasFile, filename) {
+      const disabled = hasToggle && !toggleOn;
+      const labelClr = disabled ? 'var(--n4)' : 'var(--n6)';
+      const noFileTxt = disabled ? `<span style="font:400 12px var(--font-sans);color:var(--n4)">No file chosen</span>` : `<span style="font:400 12px var(--font-sans);color:var(--n5)">No file chosen</span>`;
+      const toggleHtml = hasToggle ? `<div class="swt ${toggleOn ? 'on' : ''}" style="pointer-events:none;flex-shrink:0"></div>` : '';
+      const fileArea = hasFile
+        ? fuFilePill(filename || 'Example', disabled)
+        : `${disabled ? `<button style="${fuBtnDisStyle}">${fuFileIcon}Choose File</button>` : `<button style="${fuBtnStyle}">${fuFileIcon}Choose File</button>`}${noFileTxt}`;
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--n3)">
+        ${toggleHtml}
+        <span style="font:500 13px var(--font-sans);color:${labelClr};min-width:100px">${label}</span>
+        <div style="display:flex;align-items:center;gap:8px">${fileArea}</div>
+      </div>`;
+    }
+    const fuVariantsHTML = [
+      fuRow('Header Image', false, false, false, null),
+      fuRow('Header Image', false, false, true,  'Logo.svg'),
+      fuRow('Header Image', true,  false, false, null),
+      fuRow('Header Image', true,  true,  false, null),
+      fuRow('Header Image', true,  true,  true,  'banner.png'),
+    ].join('');
+    const fuHelperText = `<div style="margin-top:4px;font:400 12px var(--font-sans);color:var(--n5)">Please upload the image of width 200px and height 60px</div>`;
+
+    const fuCodeSnippet = `&lt;!-- File uploader (no toggle) --&gt;
+&lt;div class="fu-wrap"&gt;
+  &lt;label class="fu-label"&gt;Header Image&lt;/label&gt;
+  &lt;div class="fu-control" id="fu-1"&gt;
+    &lt;button class="fu-btn" onclick="fuOpen('fu-1')"&gt;
+      &lt;!-- file icon --&gt; Choose File
+    &lt;/button&gt;
+    &lt;span class="fu-placeholder"&gt;No file chosen&lt;/span&gt;
+    &lt;!-- pill injected by JS when file selected --&gt;
+  &lt;/div&gt;
+  &lt;p class="fu-hint"&gt;Please upload an image 200×60px&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;!-- With toggle --&gt;
+&lt;div class="fu-wrap"&gt;
+  &lt;div class="swt" id="fu-toggle" onclick="fuToggle(this,'fu-2')"&gt;&lt;/div&gt;
+  &lt;label class="fu-label"&gt;Header Image&lt;/label&gt;
+  &lt;div class="fu-control" id="fu-2" data-disabled="true"&gt;...&lt;/div&gt;
+&lt;/div&gt;`;
+
+    const fileUploaderSection = `
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:32px 0 6px;display:flex;align-items:center;gap:8px">File uploader</h3>
+      <p class="desc" style="margin-bottom:16px">Combines an optional toggle, label and file picker. Clicking Choose File opens the OS picker. The selected file appears as a dismissible pill — closing it returns to the empty state. When the toggle is OFF the whole control is disabled.</p>
+      <div class="card" style="padding:0 20px;margin-bottom:12px">
+        <div style="padding:12px 0 4px;font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;display:grid;grid-template-columns:26px 108px 1fr;gap:10px;align-items:center">
+          <span>Toggle</span><span>Label</span><span>Control area</span>
+        </div>
+        ${fuVariantsHTML}
+      </div>
+
+      <!-- Live preview -->
+      <div class="card" style="margin-bottom:12px">
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:16px">Live preview</div>
+        <div id="fu-live-wrap" style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="swt on" id="fu-live-toggle" onclick="fuLiveToggle()"></div>
+            <span style="font:500 13px var(--font-sans);color:var(--n6);min-width:100px" id="fu-live-label">Header Image</span>
+            <div style="display:flex;align-items:center;gap:8px" id="fu-live-control">
+              <button id="fu-live-btn" style="${fuBtnStyle}" onclick="fuLivePick()">
+                ${fuFileIcon}Choose File
+              </button>
+              <span id="fu-live-placeholder" style="font:400 12px var(--font-sans);color:var(--n5)">No file chosen</span>
+            </div>
+          </div>
+          ${fuHelperText}
+        </div>
+        <input type="file" id="fu-live-input" style="display:none" onchange="fuLiveOnChange(this)">
+      </div>
+
+      <!-- Code snippet -->
+      <div class="card" style="margin-bottom:0;padding:0;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--n3)">
+          <span style="font:600 13px/1 var(--font-sans);color:var(--n7)">HTML snippet</span>
+          <button onclick="copyCode(this)" style="height:24px;padding:0 10px;border-radius:4px;font:600 11px var(--font-sans);background:var(--n2);color:var(--n6);border:1px solid var(--n3);cursor:pointer">Copy</button>
+        </div>
+        <pre style="margin:0;padding:16px;font:400 11px/1.7 var(--font-mono);color:var(--n6);background:var(--n1);overflow-x:auto">${fuCodeSnippet}</pre>
+      </div>
+
+      <script>
+      function fuLiveToggle() {
+        const toggle = document.getElementById('fu-live-toggle');
+        const btn = document.getElementById('fu-live-btn');
+        const label = document.getElementById('fu-live-label');
+        const placeholder = document.getElementById('fu-live-placeholder');
+        toggle.classList.toggle('on');
+        const isOn = toggle.classList.contains('on');
+        label.style.color = isOn ? 'var(--n6)' : 'var(--n4)';
+        if (!isOn) {
+          btn.style.cssText = '${fuBtnDisStyle.replace(/'/g, "\\'")}';
+          btn.onclick = null;
+          placeholder.style.color = 'var(--n4)';
+        } else {
+          btn.style.cssText = '${fuBtnStyle.replace(/'/g, "\\'")}';
+          btn.onclick = fuLivePick;
+          placeholder.style.color = 'var(--n5)';
+        }
+      }
+      function fuLivePick() {
+        const toggle = document.getElementById('fu-live-toggle');
+        if (!toggle.classList.contains('on')) return;
+        document.getElementById('fu-live-input').click();
+      }
+      function fuLiveOnChange(input) {
+        const ctrl = document.getElementById('fu-live-control');
+        const file = input.files[0];
+        if (!file) return;
+        ctrl.innerHTML = \`<span style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 8px 0 10px;border-radius:4px;background:#fff;border:1px solid var(--n4);font:400 13px var(--font-sans);color:var(--n7)">
+          <span style="color:var(--n5)">${fuFileIcon}</span>
+          <span>\${file.name}</span>
+          <span onclick="fuLiveClear()" style="width:16px;height:16px;border-radius:50%;background:var(--n3);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--n5)">${fuCloseIcon}</span>
+        </span>\`;
+        input.value = '';
+      }
+      function fuLiveClear() {
+        const ctrl = document.getElementById('fu-live-control');
+        ctrl.innerHTML = \`<button id="fu-live-btn" style="${fuBtnStyle.replace(/`/g,'\\`')}" onclick="fuLivePick()">${fuFileIcon}Choose File</button><span id="fu-live-placeholder" style="font:400 12px var(--font-sans);color:var(--n5)">No file chosen</span>\`;
+      }
+      <\/script>`;
+
+    /* ─── TABS ─── */
+    // Per-tab state pill renderer
+    function tabPill(size, status, withBadge, badgeNum) {
+      const w = size === 'dense' ? 74 : 98;
+      const h = 24;
+      let bg = 'transparent', border = 'none', shadow = '';
+      if (status === 'selected') { bg = '#fff'; shadow = ';box-shadow:0 1px 3px rgba(19,32,69,.1)'; }
+      if (status === 'hover')    { bg = '#E1E6ED'; }
+      if (status === 'focused')  { bg = '#fff'; border = '1.5px solid #4B82FA'; }
+      const bdStyle = border !== 'none' ? `border:${border};box-sizing:border-box;` : '';
+      const badgeHTML = withBadge
+        ? `<span style="position:absolute;top:-8px;right:-5px;min-width:${size==='dense'?20:17}px;height:16px;border-radius:8px;background:var(--r6);color:#fff;font:700 9px/1 var(--font-sans);display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box;z-index:2">${badgeNum}</span>`
+        : '';
+      return `<div style="position:relative;width:${w}px;height:${h}px;border-radius:12px;background:${bg};${bdStyle}display:flex;align-items:center;justify-content:center;font:700 12px/1 var(--font-sans);color:var(--n7)${shadow}">Section${badgeHTML}</div>`;
+    }
+
+    const tabStates = ['idle','hover','selected','focused'];
+    const tabStateLabels = { idle:'Idle', hover:'Hover', selected:'Selected', focused:'Focused' };
+    const tabVariantsHTML = `
+      <style>
+        .tab-vgrid{display:grid;grid-template-columns:80px 1fr 1fr 1fr 1fr;gap:8px;align-items:center}
+        .tab-vhdr{font:600 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;text-align:center}
+        .tab-vcell{display:flex;flex-direction:column;gap:8px;align-items:center}
+        .tab-vcell-inner{display:flex;flex-direction:column;align-items:center;gap:3px}
+        .tab-vcell-lbl{font:400 10px var(--font-sans);color:var(--n5);text-align:center}
+      </style>
+      <div class="tab-vgrid" style="margin-bottom:8px">
+        <div></div>
+        <div class="tab-vhdr">Dense · no badge</div>
+        <div class="tab-vhdr">Dense · badge</div>
+        <div class="tab-vhdr">Wide · no badge</div>
+        <div class="tab-vhdr">Wide · badge</div>
+      </div>
+      ${tabStates.map(st => `
+        <div class="tab-vgrid" style="padding:10px 0;border-top:1px solid var(--n3)">
+          <div style="font:500 12px var(--font-sans);color:var(--n7)">${tabStateLabels[st]}</div>
+          <div style="background:var(--n2);border-radius:8px;padding:10px;display:flex;justify-content:center">${tabPill('dense',st,false,3)}</div>
+          <div style="background:var(--n2);border-radius:8px;padding:14px 10px 10px;display:flex;justify-content:center">${tabPill('dense',st,true,3)}</div>
+          <div style="background:var(--n2);border-radius:8px;padding:10px;display:flex;justify-content:center">${tabPill('wide',st,false,3)}</div>
+          <div style="background:var(--n2);border-radius:8px;padding:14px 10px 10px;display:flex;justify-content:center">${tabPill('wide',st,true,3)}</div>
+        </div>`).join('')}`;
+
+    const tabTokensHTML = `
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--n3);font:600 13px/1 var(--font-sans);color:var(--n7)">Tokens</div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr style="background:var(--n2)">
+            <th style="padding:7px 12px;font:600 11px var(--font-sans);color:var(--n5);text-align:left;text-transform:uppercase;letter-spacing:.04em">Property</th>
+            <th style="padding:7px 12px;font:600 11px var(--font-sans);color:var(--n5);text-align:left;text-transform:uppercase;letter-spacing:.04em">Token</th>
+            <th style="padding:7px 12px;font:600 11px var(--font-sans);color:var(--n5);text-align:left;text-transform:uppercase;letter-spacing:.04em">Value</th>
+          </tr></thead>
+          <tbody>
+            ${[
+              ['Container bg','--n2','#F0F2F5'],
+              ['Container radius','—','16px (pill)'],
+              ['Container padding','—','4px'],
+              ['Dense tab width','—','74px'],
+              ['Wide tab width','—','98px'],
+              ['Tab height','—','24px'],
+              ['Tab radius','—','12px'],
+              ['Selected bg','—','#ffffff'],
+              ['Hover bg','--n3','#E1E6ED'],
+              ['Focused border','--b5','#4B82FA'],
+              ['Badge bg','--r6','#DE350B'],
+              ['Tab font','—','700 12px DM Sans'],
+            ].map(([p,t,v]) => `<tr style="border-top:1px solid var(--n3)">
+              <td style="padding:7px 12px;font:500 12px var(--font-sans);color:var(--n7)">${p}</td>
+              <td style="padding:7px 12px;font:400 11px var(--font-mono);color:var(--b7)">${t}</td>
+              <td style="padding:7px 12px;font:400 11px var(--font-mono);color:var(--n5)">${v}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+
+    const tabCodeSnippet = `&lt;!-- Dense tabs, 3 options, no badge --&gt;
+&lt;div class="dt-tabs dt-tabs--dense" data-active="0"&gt;
+  &lt;div class="dt-tab-indicator"&gt;&lt;/div&gt;
+  &lt;button class="dt-tab dt-tab--active" onclick="dtTabSelect(this,0)"&gt;Section 1&lt;/button&gt;
+  &lt;button class="dt-tab" onclick="dtTabSelect(this,1)"&gt;Section 2&lt;/button&gt;
+  &lt;button class="dt-tab" onclick="dtTabSelect(this,2)"&gt;Section 3&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Wide tabs with badges --&gt;
+&lt;div class="dt-tabs dt-tabs--wide" data-active="0"&gt;
+  &lt;div class="dt-tab-indicator"&gt;&lt;/div&gt;
+  &lt;button class="dt-tab dt-tab--active" onclick="dtTabSelect(this,0)"&gt;
+    Section 1&lt;span class="dt-tab-badge"&gt;3&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="dt-tab" onclick="dtTabSelect(this,1)"&gt;
+    Section 2&lt;span class="dt-tab-badge"&gt;12&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- CSS --&gt;
+&lt;style&gt;
+.dt-tabs { display:inline-flex; background:var(--n2); border-radius:16px;
+           padding:4px; position:relative; }
+.dt-tabs--dense .dt-tab { width:74px; }
+.dt-tabs--wide  .dt-tab { width:98px; }
+.dt-tab { position:relative; z-index:1; height:24px; border-radius:12px;
+          font:700 12px/1 var(--font-sans); color:var(--n7);
+          border:none; background:transparent; cursor:pointer; }
+.dt-tab:hover:not(.dt-tab--active) { background:var(--n3); }
+.dt-tab:focus-visible { outline:1.5px solid var(--b5); }
+.dt-tab-indicator { position:absolute; top:4px; left:4px; height:24px;
+                    border-radius:12px; background:#fff;
+                    box-shadow:0 1px 3px rgba(19,32,69,.1);
+                    transition:transform .2s cubic-bezier(.4,0,.2,1); z-index:0; }
+.dt-tab-badge { position:absolute; top:-8px; right:-5px; min-width:16px;
+                height:16px; border-radius:8px; background:var(--r6);
+                color:#fff; font:700 9px/1 var(--font-sans);
+                display:flex; align-items:center; justify-content:center; padding:0 4px; }
+&lt;/style&gt;`;
+
+    const tabClaudeNote = `
+      <div class="card" style="background:var(--b1);border:1px solid var(--b3);margin-bottom:0">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--b7)" stroke-width="2" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          <div>
+            <div style="font:700 13px var(--font-sans);color:var(--b7);margin-bottom:4px">Using tabs in new screens</div>
+            <div style="font:400 12px var(--font-sans);color:var(--b7);line-height:1.6">When a screen needs tabs, always call <code style="font:600 11px var(--font-mono);background:var(--b2);padding:1px 5px;border-radius:3px">dtTabsHtml(labels, activeIndex, opts)</code> from <strong>renderers.js</strong>. Never write the container + pill HTML manually — the sliding animation and token usage are encapsulated there. Pass <code style="font:600 11px var(--font-mono);background:var(--b2);padding:1px 5px;border-radius:3px">{ size:'dense'|'wide', badge:false|[n,n,...] }</code> as options.</div>
+          </div>
+        </div>
+      </div>`;
+
+    const tabsSection = `
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:32px 0 6px;display:flex;align-items:center;gap:8px">Tabs</h3>
+      <p class="desc" style="margin-bottom:16px">Pill-shaped segment switcher. Two sizes (Dense 74px · Wide 98px), 2–6 options, optional numeric badge per tab. Active tab has a white sliding pill. Hover state darkens the tab area. Focused tab shows a blue outline.</p>
+
+      <!-- Variant reference -->
+      <div class="card" style="margin-bottom:12px">
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:16px">All tab states (individual pill)</div>
+        ${tabVariantsHTML}
+      </div>
+
+      <!-- Functional preview -->
+      <div class="card" style="margin-bottom:12px">
+        <div style="font:600 13px/1 var(--font-sans);color:var(--n7);margin-bottom:16px">Live preview</div>
+
+        <!-- Controls -->
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font:500 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Size</span>
+            <div style="display:flex;border:1px solid var(--n3);border-radius:6px;overflow:hidden">
+              <button id="tabs-ctrl-dense" onclick="dtPreviewCtrl('size','dense')" style="height:28px;padding:0 12px;font:600 11px var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Dense</button>
+              <button id="tabs-ctrl-wide"  onclick="dtPreviewCtrl('size','wide')"  style="height:28px;padding:0 12px;font:600 11px var(--font-sans);background:#fff;color:var(--n6);border:none;cursor:pointer;border-left:1px solid var(--n3)">Wide</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font:500 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Options</span>
+            <div id="tabs-count-btns" style="display:flex;gap:4px">
+              ${[2,3,4,5,6].map((n,i) => `<button onclick="dtPreviewCtrl('count',${n})" id="tabs-ctrl-count-${n}" style="width:28px;height:28px;border-radius:4px;font:600 11px var(--font-sans);background:${i===1?'var(--b6)':'var(--n2)'};color:${i===1?'#fff':'var(--n6)'};border:1px solid ${i===1?'var(--b6)':'var(--n3)'};cursor:pointer">${n}</button>`).join('')}
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font:500 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Badge</span>
+            <div class="swt" id="tabs-badge-toggle" onclick="dtPreviewCtrl('badge',null)"></div>
+          </div>
+        </div>
+
+        <!-- The actual tabs -->
+        <div style="padding:24px 0 8px;display:flex;justify-content:center">
+          <div id="dt-tabs-preview"></div>
+        </div>
+      </div>
+
+      <!-- Tokens -->
+      ${tabTokensHTML}
+
+      <!-- Code snippet -->
+      <div class="card" style="margin-bottom:12px;padding:0;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--n3)">
+          <span style="font:600 13px/1 var(--font-sans);color:var(--n7)">HTML + CSS snippet</span>
+          <button onclick="copyCode(this)" style="height:24px;padding:0 10px;border-radius:4px;font:600 11px var(--font-sans);background:var(--n2);color:var(--n6);border:1px solid var(--n3);cursor:pointer">Copy</button>
+        </div>
+        <pre style="margin:0;padding:16px;font:400 11px/1.7 var(--font-mono);color:var(--n6);background:var(--n1);overflow-x:auto">${tabCodeSnippet}</pre>
+      </div>
+
+      <!-- Claude usage note -->
+      ${tabClaudeNote}
+
+      <style>
+        .dt-tabs-live { display:inline-flex; background:var(--n2); border-radius:16px; padding:4px; position:relative; }
+        .dt-tabs-live .dt-tl-indicator { position:absolute; top:4px; left:4px; height:24px; border-radius:12px; background:#fff; box-shadow:0 1px 3px rgba(19,32,69,.1); transition:transform .2s cubic-bezier(.4,0,.2,1), width .15s; z-index:0; pointer-events:none; }
+        .dt-tabs-live .dt-tl-tab { position:relative; z-index:1; height:24px; border-radius:12px; font:700 12px/1 var(--font-sans); color:var(--n7); border:none; background:transparent; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:background .1s; }
+        .dt-tabs-live .dt-tl-tab:hover { background:rgba(193,205,225,.5); }
+        .dt-tabs-live .dt-tl-tab.act { background:transparent; }
+        .dt-tl-badge { position:absolute; top:-8px; right:-5px; min-width:16px; height:16px; border-radius:8px; background:var(--r6); color:#fff; font:700 9px/1 var(--font-sans); display:flex; align-items:center; justify-content:center; padding:0 4px; box-sizing:border-box; z-index:3; }
+      </style>
+
+      <script>
+      (function(){
+        var _size = 'dense', _count = 3, _badge = false, _active = 0;
+        var BADGE_NUMS = [5,12,3,8,1,7];
+        var TAB_W = { dense:74, wide:98 };
+        var TAB_GAP = { dense:12, wide:24 };
+
+        function render() {
+          var w = TAB_W[_size];
+          var g = TAB_GAP[_size];
+          var labels = ['Section 1','Section 2','Section 3','Section 4','Section 5','Section 6'].slice(0,_count);
+          var totalW = 8 + _count * w + (_count - 1) * g;
+          var pillX = 4 + _active * (w + g);
+
+          var tabs = labels.map(function(lbl,i){
+            var badge = _badge ? '<span class="dt-tl-badge">'+BADGE_NUMS[i]+'</span>' : '';
+            var cls = i === _active ? 'dt-tl-tab act' : 'dt-tl-tab';
+            return '<button class="'+cls+'" style="width:'+w+'px" onclick="window.__dtTabClick('+i+')">'+lbl+badge+'</button>';
+          }).join('');
+
+          var el = document.getElementById('dt-tabs-preview');
+          if (!el) return;
+          el.innerHTML = '<div class="dt-tabs-live" style="width:'+totalW+'px"><div class="dt-tl-indicator" id="dt-tl-ind" style="width:'+w+'px;transform:translateX('+(pillX-4)+'px)"></div>'+tabs+'</div>';
+        }
+
+        window.__dtTabClick = function(idx) {
+          _active = idx;
+          var w = TAB_W[_size];
+          var g = TAB_GAP[_size];
+          var pillX = 4 + idx * (w + g);
+          var ind = document.getElementById('dt-tl-ind');
+          if (ind) ind.style.transform = 'translateX('+(pillX-4)+'px)';
+          var tabs = document.querySelectorAll('.dt-tl-tab');
+          tabs.forEach(function(t,i){ t.classList.toggle('act', i===idx); });
+        };
+
+        window.dtPreviewCtrl = function(type, val) {
+          if (type === 'size') {
+            _size = val; _active = 0;
+            document.getElementById('tabs-ctrl-dense').style.cssText = 'height:28px;padding:0 12px;font:600 11px var(--font-sans);background:'+(val==='dense'?'var(--b6)':'#fff')+';color:'+(val==='dense'?'#fff':'var(--n6)')+';border:none;cursor:pointer';
+            document.getElementById('tabs-ctrl-wide').style.cssText  = 'height:28px;padding:0 12px;font:600 11px var(--font-sans);background:'+(val==='wide'?'var(--b6)':'#fff')+';color:'+(val==='wide'?'#fff':'var(--n6)')+';border:none;cursor:pointer;border-left:1px solid var(--n3)';
+          }
+          if (type === 'count') {
+            _count = val; _active = 0;
+            [2,3,4,5,6].forEach(function(n){
+              var b = document.getElementById('tabs-ctrl-count-'+n);
+              if(!b) return;
+              var on = n===val;
+              b.style.background = on ? 'var(--b6)' : 'var(--n2)';
+              b.style.color      = on ? '#fff'       : 'var(--n6)';
+              b.style.border     = '1px solid '+(on?'var(--b6)':'var(--n3)');
+            });
+          }
+          if (type === 'badge') {
+            _badge = !_badge;
+            document.getElementById('tabs-badge-toggle').classList.toggle('on', _badge);
+          }
+          render();
+        };
+
+        render();
+      })();
+      <\/script>`;
+
     return `
       ${sectionHeader(data)}
-      <div class="card">${rows}</div>`;
+      <div class="card">${rows}</div>
+      ${fileUploaderSection}
+      ${tabsSection}`;
   },
 
   /* ── CHIPS / PILLS ── */

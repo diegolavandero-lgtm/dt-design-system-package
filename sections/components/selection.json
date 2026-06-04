@@ -1,8 +1,8 @@
 {
   "title": "Selection controls",
   "titleKey": "nav.selection",
-  "description": "Checkbox, radio, y switch. Cada uno tiene un estado on claro en azul primario. Toggle haciendo click en el switch.",
-  "keywords": ["checkbox", "radio", "switch", "toggle", "selection", "controls"],
+  "description": "Checkbox, radio, switch, file uploader y tabs. Cada control tiene estados interactivos en vivo.",
+  "keywords": ["checkbox", "radio", "switch", "toggle", "selection", "controls", "file uploader", "tabs", "segment"],
   "controls": [
     {
       "type": "checkbox",
