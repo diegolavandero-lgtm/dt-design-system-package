@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T14:35:20.091Z",
+  "generated": "2026-06-04T14:43:33.979Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "792d0ac",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(tabs): replace individual pills with full tab groups, all combinations",
+          "author": "Diego"
+        },
         {
           "hash": "729eede",
           "type": "feat",
