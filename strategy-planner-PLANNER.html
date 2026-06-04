@@ -1609,25 +1609,67 @@ function lassoSelectAll(v){
   document.querySelectorAll('#lassoTable input[type=checkbox]').forEach(function(c){c.checked=v;});
 }
 
-/* ── Build map control buttons HTML for each cell ── */
-function mapCtrlsHtml(compact,cellId){
-  var ico=compact;
-  var verBtn='<button class="mctrl'+(ico?' ico':'')+'" onclick="toggleVerCell(event,this,\'vm'+cellId+'\')">'+
-    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'+
-    (ico?'':'<span class="mlbl">Ver</span>')+
-  '</button>'+
-  '<div class="ver-menu" id="vm'+cellId+'">'+
-    '<label class="ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>'+
-    '<label class="ver-opt"><input type="checkbox"> Órdenes sin asignar</label>'+
-    '<label class="ver-opt"><input type="checkbox"> Geocercas</label>'+
-  '</div>';
-  var lassoBtn='<button class="mctrl'+(ico?' ico':'')+'" onclick="toggleLassoCell(this)">'+
-    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>'+
-    (ico?'':'<span class="mlbl">Seleccionar con lazo</span>')+
-  '</button>';
-  return '<div class="map-ctrls ver-wrap" style="position:absolute;top:6px;right:6px;z-index:1100;display:flex;gap:5px;align-items:center;">'+
-    '<div style="position:relative">'+verBtn+'</div>'+lassoBtn+'</div>';
+/* ── Per-cell lasso drawing (independent per grid cell) ── */
+var activeLassoCell=null; // ml element currently in lasso mode
+var cellDrawing=false, cellPts=[];
+
+function toggleLassoCell(btn){
+  var ml=btn.closest('.mc-lm');
+  if(!ml)return;
+  if(activeLassoCell===ml){exitLassoCell();return;}
+  if(activeLassoCell)exitLassoCell(); // cancel any other active cell
+  activeLassoCell=ml;
+  btn.classList.add('active');
+  ml.querySelector('.cl-svg').style.display='block';
+  ml.querySelector('.cl-layer').style.display='block';
 }
+function exitLassoCell(){
+  if(!activeLassoCell)return;
+  var ml=activeLassoCell;
+  var svg=ml.querySelector('.cl-svg');
+  if(svg){svg.style.display='none';svg.querySelector('.cl-path').setAttribute('d','');}
+  var layer=ml.querySelector('.cl-layer');
+  if(layer)layer.style.display='none';
+  var btn=ml.querySelector('.mctrl.active');
+  if(btn)btn.classList.remove('active');
+  activeLassoCell=null;cellDrawing=false;cellPts=[];
+}
+function cellLassoStart(e,layer){
+  cellDrawing=true;cellPts=[];
+  var r=layer.getBoundingClientRect();
+  cellPts.push([e.clientX-r.left,e.clientY-r.top]);
+  _drawCell(layer,false);
+  e.preventDefault();
+}
+function cellLassoMove(e,layer){
+  if(!cellDrawing)return;
+  var r=layer.getBoundingClientRect();
+  cellPts.push([e.clientX-r.left,e.clientY-r.top]);
+  _drawCell(layer,false);
+}
+function cellLassoEnd(e,layer){
+  if(!cellDrawing||cellPts.length<3)return;
+  cellDrawing=false;
+  var r=layer.getBoundingClientRect();
+  cellPts.push([e.clientX-r.left,e.clientY-r.top]);
+  _drawCell(layer,true); // close polygon
+  setTimeout(function(){
+    exitLassoCell();
+    document.getElementById('ovLasso').classList.add('on');
+  },500);
+}
+function _drawCell(layer,close){
+  var ml=layer.closest('.mc-lm');
+  if(!ml)return;
+  var path=ml.querySelector('.cl-path');
+  if(!path||cellPts.length<2)return;
+  var d='M'+cellPts[0][0]+','+cellPts[0][1];
+  for(var i=1;i<cellPts.length;i++)d+=' L'+cellPts[i][0]+','+cellPts[i][1];
+  if(close)d+='Z';
+  path.setAttribute('d',d);
+}
+
+/* Ver dropdown for grid cells */
 function toggleVerCell(e,btn,menuId){
   e.stopPropagation();
   var m=document.getElementById(menuId);
@@ -1640,21 +1682,41 @@ function toggleVerCell(e,btn,menuId){
     });},0);
   }
 }
-function toggleLassoCell(btn){
-  btn.classList.toggle('active');
-  // Show a brief lasso animation then open modal
-  if(btn.classList.contains('active')){
-    var mc=btn.closest('.mc');
-    if(mc){
-      var overlay=document.createElement('div');
-      overlay.className='lasso-overlay on';
-      overlay.onclick=function(){overlay.remove();btn.classList.remove('active');onLassoSelect();};
-      mc.querySelector('.mc-lm').appendChild(overlay);
-    }
-  }
+
+/* ── Build map control buttons + lasso infrastructure HTML for each cell ── */
+function mapCtrlsHtml(compact,cellId){
+  var ico=compact;
+  /* SVG lasso canvas for this cell */
+  var svg='<svg class="cl-svg" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;z-index:1060;display:none;pointer-events:none">'+
+    '<path class="cl-path" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" d=""/>'+
+  '</svg>';
+  /* Mouse-capture draw layer for this cell */
+  var layer='<div class="cl-layer" style="position:absolute;inset:0;z-index:1070;cursor:crosshair;display:none;"'+
+    ' onmousedown="cellLassoStart(event,this)"'+
+    ' onmousemove="cellLassoMove(event,this)"'+
+    ' onmouseup="cellLassoEnd(event,this)"></div>';
+  /* Ver button + dropdown */
+  var verBtn='<button class="mctrl'+(ico?' ico':'')+'" onclick="toggleVerCell(event,this,\'vm'+cellId+'\')">'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'+
+    (ico?'':'<span class="mlbl">Ver</span>')+
+  '</button>'+
+  '<div class="ver-menu" id="vm'+cellId+'">'+
+    '<label class="ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>'+
+    '<label class="ver-opt"><input type="checkbox"> Órdenes sin asignar</label>'+
+    '<label class="ver-opt"><input type="checkbox"> Geocercas</label>'+
+  '</div>';
+  /* Lasso button */
+  var lassoBtn='<button class="mctrl'+(ico?' ico':'')+'" onclick="toggleLassoCell(this)">'+
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>'+
+    (ico?'':'<span class="mlbl">Seleccionar con lazo</span>')+
+  '</button>';
+  var ctrlBar='<div class="map-ctrls ver-wrap" style="position:absolute;top:6px;right:6px;z-index:1100;display:flex;gap:5px;align-items:center;">'+
+    '<div style="position:relative">'+verBtn+'</div>'+lassoBtn+
+  '</div>';
+  return svg+layer+ctrlBar;
 }
 
-/* Inject map control buttons into grid cell map area (inside .mc-lm, not over header) */
+/* Inject lasso + buttons into each grid cell's map area */
 (function patchSetML(){
   var orig=setMapLayout;
   setMapLayout=function(n,activeDayIndices){
