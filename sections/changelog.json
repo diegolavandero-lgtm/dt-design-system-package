@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T14:51:33.160Z",
+  "generated": "2026-06-04T15:38:52.817Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "07daff6",
+          "type": "update",
+          "section": "General",
+          "message": "feat(planner): lift Planes/Territorios tabs to top of hierarchy",
+          "author": "Diego"
+        },
         {
           "hash": "a705a48",
           "type": "fix",
