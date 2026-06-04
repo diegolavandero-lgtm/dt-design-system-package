@@ -1629,22 +1629,25 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     // gid = unique ID for JS interactivity; active = initially active index
     let _tabGid = 0;
     function tabGroup(n, size, active, badgeNums) {
-      const gid = 'tg-' + (++_tabGid);
+      const gid  = 'tg-' + (++_tabGid);
       const pillW = size === 'dense' ? 74 : 98;
-      const gap   = size === 'dense' ? 12 : 24;        // gap between pill positions
-      const totalW = 8 + pillW * n + gap * (n - 1);
-      const pillX  = 4 + active * (pillW + gap);
+      const gap   = size === 'dense' ? 12 : 24;  // CSS gap between buttons = step between pill positions
+      const pillX = 4 + active * (pillW + gap);  // initial absolute left of pill
       const BADGE_NUMS = [5,12,3,8,1,7];
       const tabs = Array.from({length:n}, (_,i) => {
         const badge = badgeNums
           ? `<span style="position:absolute;top:-8px;right:-5px;min-width:16px;height:16px;border-radius:8px;background:var(--r6);color:#fff;font:700 9px/1 var(--font-sans);display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box;z-index:3">${BADGE_NUMS[i]||1}</span>`
           : '';
-        return `<button onclick="dtGroupClick('${gid}',${i})" style="position:relative;z-index:1;width:${pillW}px;height:24px;border-radius:12px;background:transparent;border:none;font:700 12px/1 var(--font-sans);color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center"
-          onmouseenter="if(!this.classList.contains('dtact'))this.style.background='rgba(193,205,225,.45)'"
+        const isActive = i === active;
+        return `<button onclick="dtGroupClick('${gid}',${i})" data-idx="${i}"
+          style="position:relative;z-index:1;width:${pillW}px;height:24px;border-radius:12px;background:transparent;border:none;font:700 12px/1 var(--font-sans);color:var(--n7);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"
+          onmouseenter="if(this.dataset.idx!==this.closest('[data-active]').dataset.active)this.style.background='rgba(193,205,225,.45)'"
           onmouseleave="this.style.background='transparent'">Section${badge}</button>`;
       }).join('');
-      return `<div id="${gid}" style="display:inline-flex;background:var(--n2);border-radius:16px;padding:4px;position:relative;user-select:none">
-        <div id="${gid}-pill" style="position:absolute;top:4px;left:${pillX}px;width:${pillW}px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(19,32,69,.1);transition:left .2s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none"></div>
+      // store pillW and gap as data-attrs so the click handler knows the step
+      return `<div id="${gid}" data-active="${active}" data-pillw="${pillW}" data-gap="${gap}"
+        style="display:inline-flex;gap:${gap}px;background:var(--n2);border-radius:16px;padding:4px;position:relative;user-select:none">
+        <div id="${gid}-pill" style="position:absolute;top:4px;left:${pillX}px;width:${pillW}px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(19,32,69,.1);transition:left .18s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none"></div>
         ${tabs}
       </div>`;
     }
@@ -1841,19 +1844,22 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       ${tabClaudeNote}
 
       <script>
-      // Shared click handler for all static tab groups on the page
+      // Shared click handler for all static tab groups
+      // Uses data-pillw and data-gap stored on the container — no layout measurement needed
       window.dtGroupClick = function(gid, idx) {
         var container = document.getElementById(gid);
         if (!container) return;
         var pill = document.getElementById(gid + '-pill');
-        var tabs = container.querySelectorAll('button');
-        if (!pill || !tabs.length) return;
-        // Get the actual rendered width of the first tab (all equal)
-        var tabW = tabs[0].offsetWidth;
-        pill.style.left = (4 + idx * tabW) + 'px';
-        tabs.forEach(function(t,i) {
+        if (!pill) return;
+        var pillW = parseInt(container.dataset.pillw) || 74;
+        var gap   = parseInt(container.dataset.gap)   || 12;
+        // Move pill
+        pill.style.left = (4 + idx * (pillW + gap)) + 'px';
+        // Update active state on container
+        container.dataset.active = idx;
+        // Reset all tab backgrounds (hover will re-apply on mouseover)
+        container.querySelectorAll('button').forEach(function(t) {
           t.style.background = 'transparent';
-          t.classList.toggle('dtact', i === idx);
         });
       };
       <\/script>`;
