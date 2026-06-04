@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-04T15:44:49.192Z",
+  "generated": "2026-06-04T15:53:07.294Z",
   "days": [
     {
       "date": "2026-06-04",
       "entries": [
+        {
+          "hash": "0183965",
+          "type": "update",
+          "section": "Tables",
+          "message": "feat(planner): rebuild list view as DS table page template",
+          "author": "Diego"
+        },
         {
           "hash": "42f58c6",
           "type": "fix",
