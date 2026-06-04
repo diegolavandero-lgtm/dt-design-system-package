@@ -302,7 +302,10 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .map-grid{width:100%;height:100%;display:grid;gap:0;}
 /* 2 stacked */
 .mg2{grid-template-rows:1fr 1fr;grid-template-columns:1fr;}
-/* 4 grid 2×2 */
+/* 3 row */
+.mg3{grid-template-rows:1fr;grid-template-columns:1fr 1fr 1fr;}
+.mg3 .mc:last-child{border-right:0;}
+/* 4 grid 2x2 */
 .mg4{grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;}
 /* 5 grid 2+3 */
 .mg5{grid-template-rows:1fr 1fr;grid-template-columns:repeat(6,1fr);}
@@ -658,12 +661,12 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
             <div class="acc-b">
               <div class="frow"><div class="flbl">Días visibles</div>
                 <div class="days" id="dayChips">
-                  <div class="day on" data-d="Lun">L<span class="c">108</span></div>
-                  <div class="day off" data-d="Mar">M<span class="c">78</span></div>
-                  <div class="day off" data-d="Mié">X<span class="c">86</span></div>
-                  <div class="day off" data-d="Jue">J<span class="c">94</span></div>
-                  <div class="day off" data-d="Vie">V<span class="c">88</span></div>
-                  <div class="day off" data-d="Sáb">S<span class="c">86</span></div>
+                  <div class="day on"  data-d="Lun" onclick="onDayClick(this)">L<span class="c">108</span></div>
+                  <div class="day off" data-d="Mar" onclick="onDayClick(this)">M<span class="c">78</span></div>
+                  <div class="day off" data-d="Mié" onclick="onDayClick(this)">X<span class="c">86</span></div>
+                  <div class="day off" data-d="Jue" onclick="onDayClick(this)">J<span class="c">94</span></div>
+                  <div class="day off" data-d="Vie" onclick="onDayClick(this)">V<span class="c">88</span></div>
+                  <div class="day off" data-d="Sáb" onclick="onDayClick(this)">S<span class="c">86</span></div>
                 </div>
               </div>
               <div class="frow">
@@ -678,6 +681,7 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                   <div id="ddLayoutMenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;padding:4px 0;min-width:200px;">
                     <div class="ddlo on" data-n="1"  onclick="pickLayout(this)">1 día</div>
                     <div class="ddlo"    data-n="2"  onclick="pickLayout(this)">2 días (apilado)</div>
+                    <div class="ddlo"    data-n="3"  onclick="pickLayout(this)">3 días (grilla)</div>
                     <div class="ddlo"    data-n="4"  onclick="pickLayout(this)">4 días (grilla)</div>
                     <div class="ddlo"    data-n="5"  onclick="pickLayout(this)">5 días (grilla 2+3)</div>
                     <div class="ddlo"    data-n="6"  onclick="pickLayout(this)">6 días (grilla)</div>
@@ -1269,17 +1273,49 @@ function toggleDdLayout(){
     });},0);
   }
 }
+/* ── Bidirectional sync: day chips ↔ layout dropdown ↔ map grid ── */
+var LAYOUT_LABELS={1:'1 día',2:'2 días (apilado)',3:'3 días (grilla)',4:'4 días (grilla)',5:'5 días (grilla 2+3)',6:'6 días (grilla)'};
+var LAYOUT_CLS={2:'mg2',3:'mg3',4:'mg4',5:'mg5',6:'mg6'};
+
+/* Called when a day chip is clicked */
+var _dayClickTimer=null;
+function onDayClick(chip){
+  var chips=[].slice.call(document.querySelectorAll('#dayChips .day'));
+  var onCount=chips.filter(function(c){return c.classList.contains('on');}).length;
+  var isOn=chip.classList.contains('on');
+  if(isOn&&onCount===1)return; // siempre al menos 1 día activo
+  chip.classList.toggle('on',!isOn);
+  chip.classList.toggle('off',isOn);
+  // Debounce: espera 120ms después del último clic antes de redibujar el mapa
+  if(_dayClickTimer)clearTimeout(_dayClickTimer);
+  _dayClickTimer=setTimeout(function(){
+    var activeIdx=[];chips.forEach(function(c,i){if(c.classList.contains('on'))activeIdx.push(i);});
+    _syncDropdown(activeIdx.length);
+    setMapLayout(activeIdx.length,activeIdx);
+  },120);
+}
+
+/* Called when the dropdown option is picked */
 function pickLayout(el){
-  document.querySelectorAll('.ddlo').forEach(function(d){d.classList.remove('on');});
-  el.classList.add('on');
-  document.getElementById('ddLayoutLbl').textContent=el.textContent;
+  var n=parseInt(el.dataset.n);
+  // Activate first n day chips, deactivate the rest
+  var chips=[].slice.call(document.querySelectorAll('#dayChips .day'));
+  chips.forEach(function(c,i){c.classList.toggle('on',i<n);c.classList.toggle('off',i>=n);});
+  _syncDropdown(n);
   document.getElementById('ddLayoutMenu').style.display='none';
-  setMapLayout(parseInt(el.dataset.n));
+  setMapLayout(n,Array.from({length:n},function(_,i){return i;}));
+}
+
+function _syncDropdown(n){
+  document.querySelectorAll('.ddlo').forEach(function(d){d.classList.toggle('on',parseInt(d.dataset.n)===n);});
+  document.getElementById('ddLayoutLbl').textContent=LAYOUT_LABELS[n]||(n+' días');
 }
 
 /* Build grid HTML and init maps */
-function setMapLayout(n){
+/* activeDayIndices: array of DAYS[] indices to display (e.g. [0,2,4] = Mon,Wed,Fri) */
+function setMapLayout(n, activeDayIndices){
   curLayout=n;
+  var idx=activeDayIndices||Array.from({length:n},function(_,i){return i;});
   var sv=document.getElementById('single-view');
   var gv=document.getElementById('grid-view');
   if(n===1){
@@ -1290,16 +1326,10 @@ function setMapLayout(n){
     return;
   }
   sv.style.display='none';gv.style.display='block';
-  // Destroy old grid maps
   Object.keys(gridMaps).forEach(function(k){try{gridMaps[k].remove();}catch(e){}});
   gridMaps={};
-  // Determine which days to show and CSS class
-  var cls,count;
-  if(n===2){cls='mg2';count=2;}
-  else if(n===4){cls='mg4';count=4;}
-  else if(n===5){cls='mg5';count=5;}
-  else{cls='mg6';count=6;}
-  var days=DAYS.slice(0,count);
+  var cls=LAYOUT_CLS[n]||'mg6';
+  var days=idx.map(function(i){return DAYS[i]||DAYS[0];});
   gv.innerHTML='<div class="map-grid '+cls+'">'+days.map(function(d,i){
     return '<div class="mc" id="mc'+i+'">'+
       '<div class="mc-h">'+
@@ -1313,14 +1343,12 @@ function setMapLayout(n){
       '<div class="mc-lm" id="ml'+i+'"></div>'+
     '</div>';
   }).join('')+'</div>';
-  // Init Leaflet maps after DOM paint
   setTimeout(function(){
     days.forEach(function(d,i){
-      var el=document.getElementById('ml'+i);
-      if(!el)return;
+      var el=document.getElementById('ml'+i);if(!el)return;
       var m=L.map(el,{zoomControl:false,attributionControl:false,dragging:true,scrollWheelZoom:true}).setView(DEPOT,10);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(m);
-      renderGridPins(m,i);
+      renderGridPins(m,idx[i]);
       gridMaps['ml'+i]=m;
     });
   },80);
