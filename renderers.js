@@ -359,6 +359,39 @@ function tblDemoTable(def) {
   return `<div class="tbl-outer">${bulkBarHtml}<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
 }
 
+/* ── MODULE-LEVEL: datepicker input+popover (used in filters + filter bars) ─
+   Renders a DS input trigger with calendar icon that opens a datepicker popover.
+   Each call generates a unique ID so multiple instances work independently. */
+let _dpFilterId = 0;
+function dpFilterField(placeholder) {
+  const id = 'dpf-' + (++_dpFilterId);
+  const cal = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+  return `<div style="position:relative;flex:1;min-width:0">
+    <div id="${id}-inp" style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;width:100%"
+      onclick="(function(el){var pop=el.nextElementSibling;if(!pop||!pop.hasAttribute('data-popover'))return;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open){pop.style.display='block';if(typeof initDateTimePickers==='function'&&!pop._dpInit){pop._dpInit=1;initDateTimePickers();}}})(this)"
+      onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
+      <span style="flex:1;font:400 14px/1 DM Sans,sans-serif;color:var(--n5)">${escHtml(placeholder)}</span>
+      <span style="color:var(--n5);display:flex">${cal}</span>
+    </div>
+    <div id="${id}-pop" data-dp="" data-month="4" data-year="2025" data-selected=""
+      data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);width:300px;overflow:hidden;font-family:DM Sans,sans-serif">
+      <div style="padding:10px 12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <button onclick="_dpNav(this,-1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6,#1F60ED);font-size:18px;line-height:1;padding:2px 6px">‹</button>
+          <span data-month-label="1" style="font:700 14px/1 DM Sans,sans-serif;color:var(--n7,#39414D)">Abril 2025</span>
+          <button onclick="_dpNav(this,1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6,#1F60ED);font-size:18px;line-height:1;padding:2px 6px">›</button>
+        </div>
+        <div data-grid="1" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px"></div>
+      </div>
+      <div style="padding:4px 12px 12px">
+        <button data-accept disabled
+          onclick="(function(btn){var inp=btn.closest('[style*=relative]').querySelector('[id$=-inp] span');var dp=btn.closest('[data-dp]');var d=dp.dataset.selected||dp.dataset.start;if(d&&inp)inp.textContent=d.slice(5).split('-').reverse().join('/');btn.closest('[data-popover]').style.display='none';})(this)"
+          style="width:100%;height:36px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 13px/1 DM Sans,sans-serif;cursor:pointer">Aceptar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
 /* ── MODULE-LEVEL: settings layout (shared by sidebar + formpage) ─────────
    contentHtml: if provided, replaces the "Content pushed right" placeholder.
    When null/undefined, renders the original placeholder (used by sidebar section).
@@ -1370,9 +1403,10 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             <div data-grid="2" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px"></div>
           </div>
         </div>
-        <div style="padding:8px 10px 10px">
+        <!-- Aceptar same width as single datepicker (300px) centered -->
+        <div style="padding:8px 10px 10px;display:flex;justify-content:center">
           <button data-accept disabled onclick="this.closest('[data-popover]').style.display='none'"
-            style="width:100%;height:34px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 13px var(--font-sans);cursor:pointer">Aceptar</button>
+            style="width:280px;height:36px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 13px var(--font-sans);cursor:pointer">Aceptar</button>
         </div>
       </div>`;
 
@@ -1380,7 +1414,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const tpPopover = (id, h24, initHour, initAmpm) => {
       const hStr = String(initHour).padStart(2,'0');
       return `<div data-tp="${id}" data-hour="${initHour}" data-ampm="${initAmpm}" data-mode="clock" data-h24="${h24}"
-        data-popover style="display:none;position:absolute;top:calc(100%+4px);left:0;z-index:200;background:#F0F2F5;border-radius:12px;padding:14px;width:260px;box-shadow:0 4px 24px rgba(19,32,69,.14);font-family:var(--font-sans)">
+        data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#F0F2F5;border-radius:12px;padding:14px;width:260px;box-shadow:0 4px 24px rgba(19,32,69,.14);font-family:var(--font-sans)">
         <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:10px">Seleccionar hora</div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
           <div style="background:#fff;border:2px solid var(--b6);border-radius:8px;width:64px;height:50px;display:flex;align-items:center;justify-content:center;font:700 28px var(--font-sans);color:var(--n7)">
@@ -4167,14 +4201,7 @@ async function downloadAllPins() {
         return dtSelect(f.placeholder, f.options);
       }
       if (f.type === 'date') {
-        // date: text input with calendar icon overlay
-        return `<div style="position:relative;flex:1;min-width:0">
-          <input type="text" placeholder="${escHtml(f.placeholder)}"
-            style="${inpBase};padding:0 34px 0 10px"
-            onfocus="${onFocus}" onblur="${onBlur}"
-            onmouseenter="${onMEnter}" onmouseleave="${onMLeave}">
-          <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5)">${CALENDAR}</div>
-        </div>`;
+        return dpFilterField(f.placeholder);
       }
       // text
       return `<div style="flex:1;min-width:0">
@@ -4463,10 +4490,7 @@ async function downloadAllPins() {
                     <div onclick="dtPickOpt(this)" data-val="Fecha de ruta" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Fecha de ruta</div>
                   </div>
                 </div>
-                <div style="position:relative;flex:1;min-width:0">
-                  <input type="text" placeholder="Seleccionar fecha" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 34px 0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
-                  <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5);pointer-events:none"><svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor" style="flex-shrink:0"><path d="M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z"/></svg></div>
-                </div>
+                ${dpFilterField('Seleccionar fecha')}
                 <div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
                   <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)" onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'" onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'" style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
                     <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Estado</span>
