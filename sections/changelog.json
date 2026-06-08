@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T17:19:21.236Z",
+  "generated": "2026-06-08T17:25:47.144Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "e061e22",
+          "type": "update",
+          "section": "Tables",
+          "message": "feat(filters): use real table from table.json for demo",
+          "author": "Diego"
+        },
         {
           "hash": "18dfb43",
           "type": "fix",
