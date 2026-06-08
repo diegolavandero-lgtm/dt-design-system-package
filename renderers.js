@@ -359,6 +359,56 @@ function tblDemoTable(def) {
   return `<div class="tbl-outer">${bulkBarHtml}<div class="tbl-wrap"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
 }
 
+/* ── MODULE-LEVEL: settings layout (shared by sidebar + formpage) ─────────
+   contentHtml: if provided, replaces the "Content pushed right" placeholder.
+   When null/undefined, renders the original placeholder (used by sidebar section).
+   activeItem: highlights a settings panel item by label. */
+function buildSettingsSidebar(product, activeItem, contentHtml) {
+  const items = product.settingsItems || product.items || [];
+  const iconItems = items.map(it => {
+    if (it.divider) return `<div style="height:1px;background:#E9ECF2;margin:4px 8px"></div>`;
+    const isSel = it.state === 'selected';
+    return `<div style="display:flex;align-items:center;height:40px;border-left:6px solid ${isSel?'#0052CC':'transparent'}">
+      <div style="display:flex;align-items:center;justify-content:center;flex:1;height:40px;${isSel?'background:rgba(75,130,250,.08)':''}">
+        ${iconSvg(it.icon, 18, isSel?'#0052CC':'#4B82FA')}
+      </div>
+    </div>`;
+  }).join('');
+
+  const sp = product.settingsPanel;
+  let panelHtml = '';
+  if (sp && sp.groups) {
+    const groupsHtml = sp.groups.map(g => {
+      const itemsHtml = (g.items || []).map(it => {
+        const isSel = it.state === 'selected' || it.label === activeItem;
+        const badge = it.count != null
+          ? `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 6px;border-radius:10px;background:var(--b2);color:var(--b6);font:600 11px/1 var(--font-sans)">${it.count}</span>`
+          : '';
+        return `<div style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 16px 0 14px;border-left:${isSel?'2px solid #0052CC':'2px solid #E9ECF2'};${isSel?'background:rgba(75,130,250,.08);':''}">
+          <span style="font:${isSel?'700':'400'} 13px/1 var(--font-sans);color:${isSel?'#0052CC':'var(--n6)'}">${escHtml(it.label)}</span>
+          ${badge}
+        </div>`;
+      }).join('');
+      return `<div style="margin-bottom:4px">
+        <div style="padding:12px 16px 6px;font:700 14px/1 var(--font-sans);color:var(--n7)">${escHtml(g.label)}</div>
+        <div style="margin-left:14px">${itemsHtml}</div>
+      </div>`;
+    }).join('');
+    const ver = sp.version ? `<div style="height:1px;background:#E9ECF2;margin:8px 16px"></div><div style="padding:10px 16px;font:400 11px var(--font-sans);color:var(--n5)">Versión ${escHtml(sp.version)}</div>` : '';
+    panelHtml = `<div style="width:224px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;align-self:stretch;overflow-y:auto">${groupsHtml}${ver}</div>`;
+  }
+
+  const rightSlot = contentHtml != null
+    ? `<div style="flex:1;min-width:0">${contentHtml}</div>`
+    : `<div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start;border-radius:0 0 24px 0"><span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span></div>`;
+
+  return `<div class="sbx-settings" style="border:1px solid var(--n3);border-radius:0 0 24px 0;overflow:hidden;min-height:600px">
+    <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
+    ${panelHtml}
+    ${rightSlot}
+  </div>`;
+}
+
 const renderers = {
 
   /* ── OVERVIEW ── */
@@ -2894,49 +2944,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
     }
 
-    function buildSettingsLayout(p) {
-      // Icon sidebar: identical items to collapsed sidebar above, Settings selected
-      const iconItems = (p.settingsItems || p.items).map(it => {
-        if (it.divider) return `<div style="height:1px;background:#E9ECF2;margin:4px 8px"></div>`;
-        const isSel = it.state === 'selected';
-        return `<div style="display:flex;align-items:center;height:40px;border-left:6px solid ${isSel?'#0052CC':'transparent'}">
-          <div style="display:flex;align-items:center;justify-content:center;flex:1;height:40px;${isSel?'background:rgba(75,130,250,.08)':''}">
-            ${iconSvg(it.icon, 18, isSel?'#0052CC':'#4B82FA')}
-          </div>
-        </div>`;
-      }).join('');
-
-      const sp = p.settingsPanel;
-      let panelHtml = '';
-      if (sp && sp.groups) {
-        const groupsHtml = sp.groups.map(g => {
-          const itemsHtml = (g.items || []).map(it => {
-            const isSel = it.state === 'selected';
-            const badge = it.count != null
-              ? `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 6px;border-radius:10px;background:var(--b2);color:var(--b6);font:600 11px/1 var(--font-sans)">${it.count}</span>`
-              : '';
-            return `<div style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 16px 0 14px;border-left:${isSel?'2px solid #0052CC':'2px solid #E9ECF2'};${isSel?'background:rgba(75,130,250,.08);':''}">
-              <span style="font:${isSel?'700':'400'} 13px/1 var(--font-sans);color:${isSel?'#0052CC':'var(--n6)'}">${escHtml(it.label)}</span>
-              ${badge}
-            </div>`;
-          }).join('');
-          return `<div style="margin-bottom:4px">
-            <div style="padding:12px 16px 6px;font:700 14px/1 var(--font-sans);color:var(--n7)">${escHtml(g.label)}</div>
-            <div style="margin-left:14px">${itemsHtml}</div>
-          </div>`;
-        }).join('');
-        const ver = sp.version ? `<div style="height:1px;background:#E9ECF2;margin:8px 16px"></div><div style="padding:10px 16px;font:400 11px var(--font-sans);color:var(--n5)">Versión ${escHtml(sp.version)}</div>` : '';
-        panelHtml = `<div style="width:224px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;align-self:stretch;border-radius:0 0 24px 0;overflow:hidden">${groupsHtml}${ver}</div>`;
-      }
-
-      return `<div class="sbx-settings" style="border:1px solid var(--n3);border-radius:0 0 24px 0;overflow:hidden;min-height:600px">
-        <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
-        ${panelHtml}
-        <div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start;border-radius:0 0 24px 0">
-          <span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span>
-        </div>
-      </div>`;
-    }
+    // Use module-level buildSettingsSidebar — see top of file
+    function buildSettingsLayout(p) { return buildSettingsSidebar(p, null, null); }
 
     const productSections = products.map(p => {
       const interactiveItems = buildItems(p.items);
@@ -4415,60 +4424,41 @@ async function downloadAllPins() {
         </div>
         ${hint?fpHint(hint):''}`);
 
-    // ── Settings sidebar (expanded + fixed, as used in Settings pages) ───
-    const SETTINGS_NAV = [
-      { group:'Cuentas',    items:['Configuración inicial'] },
-      { group:'Usuarios',   items:['Usuarios web','Usuarios móviles'] },
-      { group:'Gestionar',  items:['Vehículos','Geocercas','Parámetros de planes','Subestados','Pruebas de entrega','Formularios de ruta','Documentos','Centros de despacho','Agrupaciones','Alertas','Notificaciones','App móvil','Operación','Pago contra entrega','Etiquetas de despacho'] },
-      { group:'Configuración avanzada', items:['Personalizar plantillas','Campos personalizados','Llaves API','Webhooks','Seguridad','Módulo de costos'] },
-      { group:'Widget', items:['Beetrack en tu sitio'] },
-    ];
-    const fpSettingsSidebar = (activeItem) => {
-      const rows = SETTINGS_NAV.map(g => {
-        const items = g.items.map(lbl => {
-          const isActive = lbl === activeItem;
-          return `<div style="padding:6px 16px 6px 20px;font:${isActive?'600':'400'} 13px var(--font-sans);color:${isActive?'var(--b6)':'var(--n5)'};cursor:pointer;border-left:${isActive?'2px solid var(--b6)':'2px solid transparent'};${isActive?'background:var(--b1);':''}margin-left:-1px">${escHtml(lbl)}</div>`;
-        }).join('');
-        return `<div style="padding:10px 16px 4px;font:700 13px var(--font-sans);color:var(--n7)">${escHtml(g.group)}</div>${items}`;
-      }).join('');
-      return `<div style="width:220px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto">
-        <div style="flex:1;padding:8px 0">${rows}</div>
-        <div style="padding:10px 16px;border-top:1px solid var(--n3);font:400 11px var(--font-sans);color:var(--n5)">Versión 2.323.431</div>
+    // ── Settings form shell — uses module-level buildSettingsSidebar ─────
+    // Passes actual form content as contentHtml so the panel pushes it right
+    const lmProduct = data.lmProduct || {};  // LM settings data from form-page.json
+    const formShellSettings = (breadcrumb, title, blocks, activeItem) => {
+      const formContent = `<div style="flex:1;padding:20px 24px 24px;min-width:0;display:flex;flex-direction:column;gap:16px;overflow:hidden;background:var(--n2)">
+        <div style="font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:4px">
+          ${breadcrumb.map((b,i)=>`${i>0?`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`:''}
+          <span style="${i===breadcrumb.length-1?'color:var(--n6)':''}">${escHtml(b)}</span>`).join('')}
+        </div>
+        <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px 24px 24px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n6)">${BACK_ARROW}</button>
+              <h2 style="margin:0;font:700 24px/1 var(--font-sans);color:var(--n7)">${escHtml(title)}</h2>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+              <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer">Cancelar</button>
+              <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Guardar</button>
+            </div>
+          </div>
+          <p style="font:400 12px var(--font-sans);color:var(--r6);margin:0"><span>* </span>Indica el campo es obligatorio</p>
+          <div style="display:flex;flex-direction:column;gap:16px">${blocks}</div>
+        </div>
       </div>`;
-    };
-
-    // ── Settings form shell (expanded fixed sidebar, no collapsible) ──────
-    const formShellSettings = (breadcrumb, title, blocks, activeItem) => `
-      <div class="card flush" style="border-radius:8px;overflow:hidden">
+      return `<div class="card flush" style="border-radius:8px;overflow:hidden">
         <div class="tbar" style="border-radius:0;padding:0 0 0 22px">
           <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
           <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
           <div class="slot">ACME CO</div>
         </div>
         <div style="display:flex;min-height:640px">
-          ${fpSettingsSidebar(activeItem)}
-          <div style="flex:1;padding:20px 24px 24px;min-width:0;display:flex;flex-direction:column;gap:16px;overflow:hidden;background:var(--n2)">
-            <div style="font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:4px">
-              ${breadcrumb.map((b,i)=>`${i>0?`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`:''}
-              <span style="${i===breadcrumb.length-1?'color:var(--n6)':''}">${escHtml(b)}</span>`).join('')}
-            </div>
-            <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px 24px 24px;display:flex;flex-direction:column;gap:20px">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-                <div style="display:flex;align-items:center;gap:8px">
-                  <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n6)">${BACK_ARROW}</button>
-                  <h2 style="margin:0;font:700 24px/1 var(--font-sans);color:var(--n7)">${escHtml(title)}</h2>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-                  <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer">Cancelar</button>
-                  <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Guardar</button>
-                </div>
-              </div>
-              <p style="font:400 12px var(--font-sans);color:var(--r6);margin:0"><span>* </span>Indica el campo es obligatorio</p>
-              <div style="display:flex;flex-direction:column;gap:16px">${blocks}</div>
-            </div>
-          </div>
+          ${buildSettingsSidebar(lmProduct, activeItem, formContent)}
         </div>
       </div>`;
+    };
 
     // ── Form page shell ───────────────────────────────────────────────────
     const formShell = (breadcrumb, title, blocks) => `
