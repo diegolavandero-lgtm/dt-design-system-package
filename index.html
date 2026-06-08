@@ -759,7 +759,8 @@ async function navigate(id) {
     if (!fn) throw new Error(`No renderer: ${route.renderer}`);
     view.innerHTML = fn(cache[id]);
     if (id === 'overview') initOverviewDashboard();
-    if (id === 'mappins')  initMapElements();
+    if (id === 'mappins')   initMapElements();
+    if (id === 'pages-form') initFormPageMaps();
     if (window.applyI18n) applyI18n();
   } catch(e) {
     view.innerHTML = `<div class="card"><p style="color:var(--r6)">Error loading section: ${e.message}</p></div>`;
@@ -1156,6 +1157,40 @@ function initMapElements() {
     document.addEventListener('mouseup',meUp,{capture:true});
   };
   function meDraw(close){if(!meKey||mePts.length<2)return;var d='M'+mePts[0][0]+','+mePts[0][1];for(var i=1;i<mePts.length;i++)d+=' L'+mePts[i][0]+','+mePts[i][1];if(close)d+='Z';document.getElementById('me-path-'+meKey).setAttribute('d',d);}
+}
+
+/* ================================================================
+   FORM PAGE MAPS — initialized when pages-form section renders
+================================================================ */
+function initFormPageMaps() {
+  function buildFpMaps() {
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      // Geocerca example map
+      var el = document.getElementById('fp-map-geocerca');
+      if (el && !el._fpInit) {
+        el._fpInit = true;
+        var SCL = [-33.4489, -70.6693];
+        var m = L.map('fp-map-geocerca', { center:SCL, zoom:11, scrollWheelZoom:false, attributionControl:true });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution:'© <a href="https://carto.com/">CARTO</a>', subdomains:'abcd', maxZoom:19
+        }).addTo(m);
+        // Sample geofence polygon (Santiago centro)
+        var pts = [[-33.43,-70.65],[-33.44,-70.60],[-33.47,-70.61],[-33.49,-70.64],[-33.48,-70.68],[-33.45,-70.68]];
+        L.polygon(pts, {color:'#DE350B', fillColor:'#DE350B', fillOpacity:0.1, weight:2}).addTo(m);
+        pts.forEach(function(p){
+          L.circleMarker(p, {radius:5,color:'#DE350B',fillColor:'#DE350B',fillOpacity:1,weight:2}).addTo(m);
+        });
+      }
+    });});
+  }
+  if (typeof L !== 'undefined') { buildFpMaps(); return; }
+  var css = document.createElement('link'); css.rel='stylesheet';
+  css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(css);
+  var s = document.createElement('script');
+  s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.onload = buildFpMaps;
+  document.head.appendChild(s);
 }
 
 /* ================================================================

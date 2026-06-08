@@ -4369,20 +4369,19 @@ async function downloadAllPins() {
     // BLOCK: single
     const blockSingle = (title, content) => fpCard(title, content);
 
-    // BLOCK: input-map (inputs left + map right)
-    const blockInputMap = (formContent) =>
-      `<div style="display:grid;grid-template-columns:1fr 1.4fr;gap:20px">
+    // BLOCK: input-map (inputs left + real Leaflet map right)
+    let _fpMapId = 0;
+    const blockInputMap = (formContent, mapId) => {
+      const mid = mapId || ('fp-map-' + (++_fpMapId));
+      return `<div style="display:grid;grid-template-columns:1fr 1.4fr;gap:20px">
         <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:12px">
           ${formContent}
         </div>
-        <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);overflow:hidden;min-height:280px;position:relative">
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#e8edf3 25%,#dde3eb 100%)"></div>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--n4)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            <span style="font:400 11px var(--font-sans);color:var(--n4)">Map component</span>
-          </div>
+        <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);overflow:hidden;min-height:300px;position:relative">
+          <div id="${mid}" style="width:100%;height:100%;min-height:300px"></div>
         </div>
       </div>`;
+    };
 
     // BLOCK: switches
     const blockSwitches = (title, rows, activateAll=false) =>
@@ -4415,6 +4414,61 @@ async function downloadAllPins() {
           </div>
         </div>
         ${hint?fpHint(hint):''}`);
+
+    // ── Settings sidebar (expanded + fixed, as used in Settings pages) ───
+    const SETTINGS_NAV = [
+      { group:'Cuentas',    items:['Configuración inicial'] },
+      { group:'Usuarios',   items:['Usuarios web','Usuarios móviles'] },
+      { group:'Gestionar',  items:['Vehículos','Geocercas','Parámetros de planes','Subestados','Pruebas de entrega','Formularios de ruta','Documentos','Centros de despacho','Agrupaciones','Alertas','Notificaciones','App móvil','Operación','Pago contra entrega','Etiquetas de despacho'] },
+      { group:'Configuración avanzada', items:['Personalizar plantillas','Campos personalizados','Llaves API','Webhooks','Seguridad','Módulo de costos'] },
+      { group:'Widget', items:['Beetrack en tu sitio'] },
+    ];
+    const fpSettingsSidebar = (activeItem) => {
+      const rows = SETTINGS_NAV.map(g => {
+        const items = g.items.map(lbl => {
+          const isActive = lbl === activeItem;
+          return `<div style="padding:6px 16px 6px 20px;font:${isActive?'600':'400'} 13px var(--font-sans);color:${isActive?'var(--b6)':'var(--n5)'};cursor:pointer;border-left:${isActive?'2px solid var(--b6)':'2px solid transparent'};${isActive?'background:var(--b1);':''}margin-left:-1px">${escHtml(lbl)}</div>`;
+        }).join('');
+        return `<div style="padding:10px 16px 4px;font:700 13px var(--font-sans);color:var(--n7)">${escHtml(g.group)}</div>${items}`;
+      }).join('');
+      return `<div style="width:220px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto">
+        <div style="flex:1;padding:8px 0">${rows}</div>
+        <div style="padding:10px 16px;border-top:1px solid var(--n3);font:400 11px var(--font-sans);color:var(--n5)">Versión 2.323.431</div>
+      </div>`;
+    };
+
+    // ── Settings form shell (expanded fixed sidebar, no collapsible) ──────
+    const formShellSettings = (breadcrumb, title, blocks, activeItem) => `
+      <div class="card flush" style="border-radius:8px;overflow:hidden">
+        <div class="tbar" style="border-radius:0;padding:0 0 0 22px">
+          <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
+          <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
+          <div class="slot">ACME CO</div>
+        </div>
+        <div style="display:flex;min-height:640px">
+          ${fpSettingsSidebar(activeItem)}
+          <div style="flex:1;padding:20px 24px 24px;min-width:0;display:flex;flex-direction:column;gap:16px;overflow:hidden;background:var(--n2)">
+            <div style="font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:4px">
+              ${breadcrumb.map((b,i)=>`${i>0?`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`:''}
+              <span style="${i===breadcrumb.length-1?'color:var(--n6)':''}">${escHtml(b)}</span>`).join('')}
+            </div>
+            <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px 24px 24px;display:flex;flex-direction:column;gap:20px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n6)">${BACK_ARROW}</button>
+                  <h2 style="margin:0;font:700 24px/1 var(--font-sans);color:var(--n7)">${escHtml(title)}</h2>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                  <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer">Cancelar</button>
+                  <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Guardar</button>
+                </div>
+              </div>
+              <p style="font:400 12px var(--font-sans);color:var(--r6);margin:0"><span>* </span>Indica el campo es obligatorio</p>
+              <div style="display:flex;flex-direction:column;gap:16px">${blocks}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
 
     // ── Form page shell ───────────────────────────────────────────────────
     const formShell = (breadcrumb, title, blocks) => `
@@ -4551,7 +4605,7 @@ async function downloadAllPins() {
         {type:'textarea',label:'Cargo',placeholder:''}])
     );
 
-    const ex3 = formShell(
+    const ex3 = formShellSettings(
       ['Configuración','Geocerca','Crear Geocerca'],
       'Crear Geocerca',
       blockInputMap(
@@ -4560,8 +4614,69 @@ async function downloadAllPins() {
         `<div style="margin-bottom:12px">${fpRadio('geocerca-tipo',['Asociativa','Restrictiva'],1)}</div>` +
         fpInp('Nombre','','',true) +
         fpSelect('Seleccionar geocerca pre-definida','') +
-        `<div style="margin-top:4px"><p style="font:400 12px var(--font-sans);color:var(--n7);margin:0 0 8px">Estado</p>${fpRadio('geocerca-estado',['Activa','Inactiva'],0)}</div>`
-      )
+        `<div style="margin-top:4px"><p style="font:400 12px var(--font-sans);color:var(--n7);margin:0 0 8px">Estado</p>${fpRadio('geocerca-estado',['Activa','Inactiva'],0)}</div>`,
+        'fp-map-geocerca'
+      ),
+      'Geocercas'
+    );
+
+    // Settings sidebar examples
+    const ex4 = formShellSettings(
+      ['Usuarios web','Nuevo usuario web'],
+      'Nuevo usuario web',
+      blockTwoCol(
+        'Información de usuario',
+        fpInp('Nombre y apellido','Walter Wallace','',true) +
+        fpInp('Nombre de usuario','walter.wallace','',true) +
+        fpHint('Nombre único para entrar a la plataforma. No debe contener espacios.') +
+        fpInp('Email','walter.wallace@email.com','',true) +
+        fpInp('Contraseña','','',true) +
+        fpInp('Repite contraseña','','',true),
+        'Agrupaciones',
+        `<p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 12px">Al seleccionar una agrupación el usuario pierde los accesos a ajustes.</p>` +
+        fpSelect('Agrupaciones de órdenes','') +
+        fpSelect('Agrupaciones de vehículos','')
+      ) +
+      blockSingle('Permisos',
+        `<p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 12px">Selecciona una agrupación de permisos seleccionando un rol o de manera personalizada.</p>` +
+        `<div style="display:flex;gap:16px;margin-bottom:12px">${fpRadio('perm-type2',['Rol de usuario','Personalizado'],0)}</div>` +
+        fpSelect('Seleccionar rol','')
+      ) +
+      blockCustomFields('Campos personalizados',
+        [{type:'select',label:'Tienda'},{type:'select',label:'Cargo'}]),
+      'Usuarios web'
+    );
+
+    const ex5 = formShellSettings(
+      ['Vehículos','Nuevo vehículo'],
+      'Nuevo vehículo',
+      blockTwoCol(
+        'Información del vehículo',
+        fpInp('Identificador','','',true) +
+        `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">${fpInp('Capacidad 1','')}${fpInp('Capacidad 2','')}${fpInp('Capacidad 3','')}</div>` +
+        fpSelect('Grupos','') +
+        fpSelect('Tipo de camión','',true) +
+        fpSelect('Asociar usuario móvil',''),
+        'Otras configuraciones',
+        `<div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:8px">Horas de trabajo</div>` +
+        fpInp('Turno de trabajo','') +
+        fpInp('Tiempo de descanso','') +
+        `<div style="font:600 13px var(--font-sans);color:var(--n7);margin:8px 0">Origen y destino</div>` +
+        fpSelect('Centro de despacho de origen','',true) +
+        `<div style="display:flex;align-items:center;gap:8px;margin:4px 0"><div class="swt" onclick="this.classList.toggle('on')"></div><span style="font:400 13px var(--font-sans);color:var(--n7)">Auto-iniciar ruta</span></div>` +
+        fpSelect('Centro de despacho de destino','') +
+        `<div style="display:flex;align-items:center;gap:8px;margin:4px 0"><div class="swt" onclick="this.classList.toggle('on')"></div><span style="font:400 13px var(--font-sans);color:var(--n7)">Auto-finalizar ruta</span></div>`
+      ) +
+      blockTwoCol(
+        'Restricciones',
+        fpInp('Límite de dinero','') + fpSelect('Velocidad promedio','') + fpInp('Tiempo de recarga en CD','') + fpInp('Tiempo máximo de conducción','') + fpInp('Distancia máxima por ruta (km)','') + fpInp('Máximas paradas por ruta','') + fpInp('Máximas rutas',''),
+        'Costos',
+        fpInp('Costos de salida','') + fpInp('Costo por kilómetro','') + fpInp('Costo por viaje','') + fpInp('Costo por hora','')
+      ) +
+      blockSingle('Etiquetas',
+        fpSelect('Grupo de etiquetas','') + fpInp('Etiquetas','')
+      ),
+      'Vehículos'
     );
 
     return `
@@ -4579,17 +4694,26 @@ async function downloadAllPins() {
       </p>
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px">${catalogCards}</div>
 
-      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Example — Nuevo usuario web</h3>
-      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 12px">two-col + single + custom-fields</p>
-      <div style="margin-bottom:28px">${ex1}</div>
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 4px">Sidebar estándar</h3>
+      <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 16px">Colapsable — para páginas operativas (órdenes, rutas, flota)</p>
 
-      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Example — Nuevo usuario móvil</h3>
-      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 12px">two-col + switches + custom-fields</p>
+      <h4 style="font:600 13px var(--font-sans);color:var(--n7);margin:0 0 4px">Nuevo usuario web — two-col + single + custom-fields</h4>
+      <div style="margin-bottom:20px">${ex1}</div>
+
+      <h4 style="font:600 13px var(--font-sans);color:var(--n7);margin:0 0 4px">Nuevo usuario móvil — two-col + switches + custom-fields</h4>
       <div style="margin-bottom:28px">${ex2}</div>
 
-      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Example — Crear Geocerca</h3>
-      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 12px">input-map</p>
-      <div style="margin-bottom:28px">${ex3}</div>
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 4px">Sidebar de ajustes</h3>
+      <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 16px">Siempre expandido — para páginas de configuración (usuarios, vehículos, geocercas…)</p>
+
+      <h4 style="font:600 13px var(--font-sans);color:var(--n7);margin:0 0 4px">Crear Geocerca — input-map con mapa Leaflet</h4>
+      <div style="margin-bottom:20px">${ex3}</div>
+
+      <h4 style="font:600 13px var(--font-sans);color:var(--n7);margin:0 0 4px">Nuevo usuario web — two-col + single + custom-fields</h4>
+      <div style="margin-bottom:20px">${ex4}</div>
+
+      <h4 style="font:600 13px var(--font-sans);color:var(--n7);margin:0 0 4px">Nuevo vehículo — two-col × 2 + single</h4>
+      <div style="margin-bottom:28px">${ex5}</div>
     `;
   },
 
