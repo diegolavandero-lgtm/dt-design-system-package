@@ -3956,50 +3956,50 @@ async function downloadAllPins() {
       </button>`;
     };
 
-    // ── Demo table rows ───────────────────────────────────────────────────
-    const DEMO_ROWS = [
-      {name:'Ana López',     status:'Activo',   date:'2025-10-01', label:'etiqueta-1'},
-      {name:'Carlos Ríos',   status:'Pendiente',date:'2025-10-03', label:'etiqueta-2'},
-      {name:'Maya Johnson',  status:'Inactivo', date:'2025-09-28', label:'etiqueta-1'},
-      {name:'Lucas Martínez',status:'Activo',   date:'2025-10-05', label:'etiqueta-3'},
-      {name:'Aisha Patel',   status:'Bloqueado',date:'2025-09-30', label:'etiqueta-2'},
-      {name:'Liam Smith',    status:'Pendiente',date:'2025-10-07', label:'etiqueta-1'},
-    ];
-    const STATUS_COLORS = {Activo:'success',Pendiente:'warning',Inactivo:'neutral',Bloqueado:'danger'};
+    // ── Real table from scrollDemo (table.json) ──────────────────────────
     const tableId = 'flt-demo-tbl', barId = 'flt-demo-bar';
 
-    const demoTableHtml = `<table style="width:100%;border-collapse:collapse" id="${tableId}">
-      <thead><tr style="background:var(--n2)">
-        ${['Nombre','Estado','Fecha','Label'].map(h=>`<th style="padding:10px 12px;font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;text-align:left;white-space:nowrap">${h}</th>`).join('')}
-      </tr></thead>
-      <tbody>
-        ${DEMO_ROWS.map(r=>`<tr style="border-top:1px solid var(--n3)" data-name="${r.name.toLowerCase()}" data-status="${r.status}" data-date="${r.date}" data-label="${r.label.toLowerCase()}">
-          <td style="padding:10px 12px;font:400 13px var(--font-sans);color:var(--n7)">${escHtml(r.name)}</td>
-          <td style="padding:10px 12px">${badgeHtml(r.status, STATUS_COLORS[r.status]||'neutral')}</td>
-          <td style="padding:10px 12px;font:400 13px var(--font-sans);color:var(--n5)">${r.date}</td>
-          <td style="padding:10px 12px"><span style="display:inline-flex;height:20px;padding:0 7px;border-radius:4px;border:1px solid var(--n4);background:var(--n2);font:600 10px/20px var(--font-sans);color:var(--n6)">${escHtml(r.label)}</span></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
+    // Wrap tblDemoTable output with an id we can target for filtering
+    const rawTableHtml = tblDemoTable(data.scrollDemo || {});
+    const demoTableHtml = rawTableHtml.replace('<div class="tbl-outer">', `<div class="tbl-outer" id="${tableId}">`);
+
+    // Build col index map from fields for the IIFE
+    // Each field has colIdx pointing to which <td> to read
+    const colMap = (data.fields||[]).map(f => f.colIdx !== undefined ? f.colIdx : -1);
 
     // ── Filter IIFE (runs on "Filtrar" click) ────────────────────────────
+    // Reads inputs by order, maps to column indices from fields[].colIdx
+    // Status dropdown: exact match; text inputs: partial case-insensitive
     const onFilter = `(function(){
       var bar=document.getElementById('${barId}');
       var tbl=document.getElementById('${tableId}');
       if(!bar||!tbl)return;
       var inps=bar.querySelectorAll('input[type=text]');
-      var nameV=(inps[0]?inps[0].value:'').toLowerCase().trim();
-      var dateV=(inps[1]?inps[1].value:'').toLowerCase().trim();
-      var labelV=(inps[2]?inps[2].value:'').toLowerCase().trim();
-      var statusEl=bar.querySelector('[data-val]');
-      var statusV=statusEl?statusEl.dataset.val:'';
-      tbl.querySelectorAll('tbody tr').forEach(function(r){
+      var statusWrap=bar.querySelector('.dt-drop-wrap[data-val]');
+      var statusV=statusWrap?statusWrap.dataset.val:'';
+      var colMap=${JSON.stringify(colMap)};
+      var textInps=[].slice.call(inps);
+      tbl.querySelectorAll('tbody tr').forEach(function(row){
+        var cells=row.querySelectorAll('td');
         var show=true;
-        if(nameV&&!r.dataset.name.includes(nameV))show=false;
-        if(statusV&&r.dataset.status!==statusV)show=false;
-        if(dateV&&!r.dataset.date.includes(dateV))show=false;
-        if(labelV&&!r.dataset.label.includes(labelV))show=false;
-        r.style.display=show?'':'none';
+        var ti=0;
+        colMap.forEach(function(ci,fi){
+          var f=${JSON.stringify((data.fields||[]).map(f=>f.type))};
+          if(f[fi]==='select'){
+            if(statusV&&ci>=0){
+              var txt=(cells[ci]?cells[ci].textContent:'').trim();
+              if(txt!==statusV)show=false;
+            }
+          } else {
+            var val=(textInps[ti]?textInps[ti].value:'').toLowerCase().trim();
+            ti++;
+            if(val&&ci>=0){
+              var txt2=(cells[ci]?cells[ci].textContent:'').toLowerCase();
+              if(!txt2.includes(val))show=false;
+            }
+          }
+        });
+        row.style.display=show?'':'none';
       });
     })()`.replace(/\s+/g,' ');
 

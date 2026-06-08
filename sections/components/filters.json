@@ -5,28 +5,351 @@
   "fields": [
     {
       "type": "text",
-      "placeholder": "Nombre"
+      "placeholder": "Cliente",
+      "colIdx": 2
     },
     {
       "type": "select",
       "placeholder": "Estado",
+      "colIdx": 3,
       "options": [
-        "Activo",
-        "Inactivo",
+        "Entregado",
+        "En tránsito",
         "Pendiente",
-        "Bloqueado"
+        "Cancelado"
       ]
     },
     {
       "type": "date",
-      "placeholder": "Fecha de creación"
+      "placeholder": "F. Creación",
+      "colIdx": 7
     },
     {
       "type": "text",
-      "placeholder": "Label"
+      "placeholder": "Conductor",
+      "colIdx": 6
     }
   ],
   "filterBtnLabel": "Filtrar",
+  "scrollDemo": {
+    "columns": [
+      {
+        "label": "",
+        "type": "checkbox"
+      },
+      {
+        "label": "# Orden",
+        "type": "link"
+      },
+      {
+        "label": "Cliente",
+        "type": "avatar-text",
+        "sortable": true
+      },
+      {
+        "label": "Estado",
+        "type": "badge"
+      },
+      {
+        "label": "Zona",
+        "type": "chip-sm"
+      },
+      {
+        "label": "Dirección",
+        "type": "icon-text"
+      },
+      {
+        "label": "Conductor",
+        "type": "text"
+      },
+      {
+        "label": "F. Creación",
+        "type": "date",
+        "sortable": true
+      },
+      {
+        "label": "F. Entrega",
+        "type": "date"
+      },
+      {
+        "label": "Progreso",
+        "type": "loading-bar"
+      },
+      {
+        "label": "Calificación",
+        "type": "rating"
+      },
+      {
+        "label": "Activo",
+        "type": "switch"
+      },
+      {
+        "label": "Acciones",
+        "type": "actions"
+      }
+    ],
+    "rows": [
+      {
+        "state": "default",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-4821"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Maya Johnson",
+            "initials": "MJ",
+            "color": "#1F60ED"
+          },
+          {
+            "type": "badge",
+            "value": "Entregado",
+            "variant": "success"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Norte"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Av. Principal 123"
+          },
+          {
+            "type": "text",
+            "value": "Carlos Ríos"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 08:00"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 14:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 100
+          },
+          {
+            "type": "rating",
+            "value": 4
+          },
+          {
+            "type": "switch",
+            "value": true
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
+        ]
+      },
+      {
+        "state": "hover",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-3917"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Lucas Martínez",
+            "initials": "LM",
+            "color": "#8777D9"
+          },
+          {
+            "type": "badge",
+            "value": "En tránsito",
+            "variant": "info"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Sur"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Calle Secundaria 45"
+          },
+          {
+            "type": "text",
+            "value": "Ana López"
+          },
+          {
+            "type": "date",
+            "value": "09-10-25 10:30"
+          },
+          {
+            "type": "text-secondary",
+            "value": "—"
+          },
+          {
+            "type": "loading-bar",
+            "value": 52
+          },
+          {
+            "type": "rating",
+            "value": 3
+          },
+          {
+            "type": "switch",
+            "value": true
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete",
+              "document",
+              "message"
+            ]
+          }
+        ]
+      },
+      {
+        "state": "selected",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": true
+          },
+          {
+            "type": "link",
+            "value": "#ORD-5102"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Aisha Patel",
+            "initials": "AP",
+            "color": "#00B8D9"
+          },
+          {
+            "type": "badge",
+            "value": "Pendiente",
+            "variant": "warning"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Este"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Pasaje Los Álamos 7"
+          },
+          {
+            "type": "text",
+            "value": "Diego Torres"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 09:15"
+          },
+          {
+            "type": "date",
+            "value": "10-10-25 16:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 20
+          },
+          {
+            "type": "rating",
+            "value": 0
+          },
+          {
+            "type": "switch",
+            "value": false
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete"
+            ]
+          }
+        ]
+      },
+      {
+        "state": "default",
+        "cells": [
+          {
+            "type": "checkbox",
+            "value": false
+          },
+          {
+            "type": "link",
+            "value": "#ORD-2856"
+          },
+          {
+            "type": "avatar-text",
+            "value": "Liam Smith",
+            "initials": "LS",
+            "color": "#36B37E"
+          },
+          {
+            "type": "badge",
+            "value": "Cancelado",
+            "variant": "danger"
+          },
+          {
+            "type": "chip-sm",
+            "value": "Zona Centro"
+          },
+          {
+            "type": "icon-text",
+            "icon": "location",
+            "value": "Blvd. Industrial 220"
+          },
+          {
+            "type": "text",
+            "value": "María García"
+          },
+          {
+            "type": "date",
+            "value": "08-10-25 07:00"
+          },
+          {
+            "type": "date",
+            "value": "08-10-25 11:00"
+          },
+          {
+            "type": "loading-bar",
+            "value": 0
+          },
+          {
+            "type": "rating",
+            "value": 1
+          },
+          {
+            "type": "switch",
+            "value": false
+          },
+          {
+            "type": "actions",
+            "value": [
+              "edit",
+              "delete",
+              "document"
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "rules": [
     "Inputs: exact DS input tokens from inputs.json — no label, placeholder only, all flex:1.",
     "Filtrar: secondary pill button — 32px height, body-small-bold font, 1px stroke, 0 16px padding.",
