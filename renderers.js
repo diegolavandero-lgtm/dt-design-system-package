@@ -2826,6 +2826,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     /* Single interactive phone frame: hamburger opens drawer, × closes it */
     function phoneInteractive(product) {
       const items = buildMobileItems(product.items);
+      const gid = 'mob-' + (product.id || Math.random().toString(36).slice(2,7));
       // Use product id to look up the real mobile logo
       const logoSrc = MOBILE_LOGOS[product.id] || product.logoWhite || product.logoDesktop || '';
       const logoEl = logoSrc
