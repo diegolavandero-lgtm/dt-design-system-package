@@ -2942,8 +2942,7 @@ async function downloadAllPins() {
       .me-map{width:100%;height:380px}
       .me-map-form-demo{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-top:24px}
       .me-map-form-col{display:flex;flex-direction:column;gap:8px;width:240px;flex-shrink:0}
-      .me-map-form-lbl{font:600 11px var(--font-sans);color:var(--n6);text-transform:uppercase;letter-spacing:.05em}
-      .me-map-form-input{height:40px;background:#fff;border:1px solid var(--n4);border-radius:4px;padding:0 12px;display:flex;align-items:center;font:400 13px var(--font-sans);color:var(--n5)}
+      /* form inputs now use DS inline styles from inputs.json — no custom classes needed */
       .me-map-in-form-wrap{border-radius:4px;overflow:hidden;border:1px solid var(--n4);position:relative}
       .me-map-in-form{width:240px;min-height:144px;height:200px}
       .leaflet-container{font-family:inherit!important}
@@ -3015,12 +3014,34 @@ async function downloadAllPins() {
         <!-- Form layout + map -->
         <div class="me-map-form-demo">
           <div class="me-map-form-col">
-            <div class="me-map-form-lbl">Dirección</div>
-            <div class="me-map-form-input">Av. Libertador B. O'Higgins…</div>
-            <div class="me-map-form-lbl">Ciudad</div>
-            <div class="me-map-form-input">Santiago</div>
-            <div class="me-map-form-lbl">Referencia</div>
-            <div class="me-map-form-input">Frente al metro Baquedano</div>
+            <!-- DS with-label inputs (inputs.json tokens: h32, r6, label caption 12/400 above) -->
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Dirección</label>
+              <input type="text" value="Av. Libertador B. O'Higgins 1234"
+                style="height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+                onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+                onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Ciudad</label>
+              <input type="text" value="Santiago"
+                style="height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+                onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+                onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Referencia</label>
+              <input type="text" placeholder="Ej: Frente al metro Baquedano"
+                style="height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+                onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+                onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+            </div>
           </div>
           <div>
             <div class="me-map-form-lbl" style="margin-bottom:8px">Ubicación en mapa</div>
@@ -3834,6 +3855,35 @@ async function downloadAllPins() {
       })();
       <\/script>
     `;
+  },
+
+  /* ── BACKLOG ── */
+  backlog(data) {
+    const items = data.items || [];
+    const cards = items.map(item => `
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:#fff;border:1px solid var(--n3);border-radius:8px">
+        <div style="width:32px;height:32px;border-radius:6px;background:var(--n2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="3"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:3px">${escHtml(item.label)}</div>
+          <div style="font:400 12px var(--font-sans);color:var(--n5);line-height:1.5">${escHtml(item.description || '')}</div>
+        </div>
+        <span style="flex-shrink:0;height:20px;padding:0 8px;border-radius:99px;background:var(--n2);border:1px solid var(--n3);font:600 10px/20px var(--font-sans);color:var(--n5);white-space:nowrap">Planned</span>
+      </div>`).join('');
+
+    return `
+      ${sectionHeader(data)}
+      <div style="background:var(--o1);border:1px solid var(--o3);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;margin-bottom:20px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--o7)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <div style="font:700 13px var(--font-sans);color:var(--o7);margin-bottom:2px">Componentes planificados — sin especificación aprobada</div>
+          <div style="font:400 12px var(--font-sans);color:var(--o7);line-height:1.5">Estos items están en el roadmap del DS pero aún no tienen diseño final ni están disponibles para uso en producción. Para proponer un componente nuevo, usá la sección <strong>Drafts</strong>.</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+        ${cards}
+      </div>`;
   },
 
 };

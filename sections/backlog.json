@@ -1,0 +1,18 @@
+{
+  "title": "Backlog",
+  "titleKey": "nav.backlog",
+  "description": "Componentes y secciones planificados para versiones futuras del Design System. Estos items aún no tienen especificación aprobada.",
+  "keywords": ["backlog", "planned", "future", "pending", "calendar", "drawer", "skeleton"],
+  "items": [
+    { "id": "calendar",    "label": "Calendar / Date picker", "description": "Selector de fecha simple y rango de fechas. Integra con el componente de filtros." },
+    { "id": "drawer",      "label": "Drawer / Panel",         "description": "Panel lateral deslizante para formularios de edición, detalles de registro y configuración contextual." },
+    { "id": "pagination",  "label": "Pagination",             "description": "Componente de paginación estándar para tablas y listas largas." },
+    { "id": "skeleton",    "label": "Skeleton / Loading",     "description": "Estados de carga esqueleto para reducir el layout shift percibido." },
+    { "id": "breadcrumbs", "label": "Breadcrumbs",            "description": "Navegación jerárquica para vistas con múltiples niveles de profundidad." },
+    { "id": "stepper",     "label": "Stepper",                "description": "Indicador de progreso paso a paso para flujos de configuración y onboarding." },
+    { "id": "empty",       "label": "Empty states",           "description": "Ilustraciones y copy estándar para vistas sin contenido (primero uso, filtros sin resultados, error de carga)." },
+    { "id": "drag",        "label": "Drag & drop",            "description": "Patrones de arrastrar y soltar para reordenamiento de filas de tabla y listas." },
+    { "id": "overflow",    "label": "Overflow menu",          "description": "Menú contextual de tres puntos para acciones secundarias en filas y tarjetas." },
+    { "id": "upload",      "label": "Upload zone",            "description": "Zona de arrastre para subida de archivos múltiples con vista previa." }
+  ]
+}
