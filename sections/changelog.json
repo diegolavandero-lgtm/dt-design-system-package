@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T20:56:58.291Z",
+  "generated": "2026-06-08T21:08:08.960Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "4031a91",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "feat(form page): real Leaflet map + settings sidebar variant",
+          "author": "Diego"
+        },
         {
           "hash": "9f6c3e3",
           "type": "fix",
