@@ -3405,15 +3405,48 @@ async function downloadAllPins() {
 
             <!-- Left: input column -->
             <div class="me-map-form-col">
+
+              <!-- Address with geocode pin button on right -->
               <div class="me-map-form-field">
                 <label class="me-map-form-lbl2">Dirección</label>
-                <input type="text" value="Av. Libertador B. O'Higgins 1234"
-                  style="height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
-                  onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
-                  onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
-                  onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
-                  onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+                <div style="position:relative;display:flex">
+                  <input type="text" id="me-addr" value="Av. Libertador B. O'Higgins 1234"
+                    style="height:32px;padding:0 36px 0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%;flex:1"
+                    onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                    onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+                    onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+                    onmouseleave="if(document.activeElement!==this)this.style.background='#fff'"
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();meGeocode()}">
+                  <!-- Geocode button -->
+                  <button onclick="meGeocode()" title="Geocodificar dirección"
+                    style="position:absolute;right:0;top:0;bottom:0;width:34px;background:none;border:none;border-left:1px solid var(--n3);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:0 6px 6px 0;color:var(--n5)"
+                    onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b6)';this.style.borderColor='var(--b3)'"
+                    onmouseleave="this.style.background='none';this.style.color='var(--n5)';this.style.borderColor='var(--n3)'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  </button>
+                </div>
               </div>
+
+              <!-- Lat / Lng side by side -->
+              <div style="display:flex;gap:8px">
+                <div class="me-map-form-field" style="flex:1">
+                  <label class="me-map-form-lbl2">Latitud</label>
+                  <input type="text" id="me-lat" placeholder="-33.449700"
+                    style="height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;font:400 13px/20px var(--font-mono);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                    onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                    onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';meUpdateFromLatLng()"
+                    onkeydown="if(event.key==='Enter')meUpdateFromLatLng()">
+                </div>
+                <div class="me-map-form-field" style="flex:1">
+                  <label class="me-map-form-lbl2">Longitud</label>
+                  <input type="text" id="me-lng" placeholder="-70.669300"
+                    style="height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;font:400 13px/20px var(--font-mono);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                    onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                    onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';meUpdateFromLatLng()"
+                    onkeydown="if(event.key==='Enter')meUpdateFromLatLng()">
+                </div>
+              </div>
+
               <div class="me-map-form-field">
                 <label class="me-map-form-lbl2">Ciudad</label>
                 <input type="text" value="Santiago"

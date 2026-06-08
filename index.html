@@ -942,10 +942,88 @@ function initMapElements() {
     meMaps[id]=m; return m;
   }
 
+  /* ── Form map: draggable marker + geocoding ── */
+  var SCL = [-33.4489, -70.6693]; // Santiago Centro default
+  var meFormMarker = null;
+
+  function buildFormMap(id) {
+    var m = L.map(id, {center: SCL, zoom: 14, scrollWheelZoom: false});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {attribution:'© OpenStreetMap', maxZoom:19}).addTo(m);
+
+    // Custom DT-style draggable pin using existing pinSvg
+    var icon = mkIcon(depotPin(), 34);
+    meFormMarker = L.marker(SCL, {icon: icon, draggable: true}).addTo(m);
+
+    meFormMarker.on('dragend', function() {
+      var ll = meFormMarker.getLatLng();
+      var latEl = document.getElementById('me-lat');
+      var lngEl = document.getElementById('me-lng');
+      if (latEl) latEl.value = ll.lat.toFixed(6);
+      if (lngEl) lngEl.value = ll.lng.toFixed(6);
+    });
+
+    meMaps[id] = m;
+    return m;
+  }
+
+  window.meGeocode = function() {
+    var addrEl = document.getElementById('me-addr');
+    if (!addrEl || !addrEl.value.trim()) return;
+    var q = addrEl.value.trim() + ', Chile';
+    var btn = addrEl.nextElementSibling;
+    if (btn) { btn.style.opacity = '0.4'; btn.style.pointerEvents = 'none'; }
+
+    fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) +
+          '&format=json&limit=1&accept-language=es', {
+      headers: {'Accept-Language':'es'}
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+      if (!d || !d.length) {
+        addrEl.style.border = '2px solid var(--r6)';
+        setTimeout(function(){ addrEl.style.border = '1px solid var(--n5)'; }, 2000);
+        return;
+      }
+      var lat = parseFloat(d[0].lat), lng = parseFloat(d[0].lon);
+      var latEl = document.getElementById('me-lat');
+      var lngEl = document.getElementById('me-lng');
+      if (latEl) { latEl.value = lat.toFixed(6); latEl.style.border = '1px solid var(--n5)'; }
+      if (lngEl) { lngEl.value = lng.toFixed(6); lngEl.style.border = '1px solid var(--n5)'; }
+      var m = meMaps['me-map-form'];
+      if (m && meFormMarker) {
+        meFormMarker.setLatLng([lat, lng]);
+        m.setView([lat, lng], 15);
+      }
+      addrEl.style.border = '1px solid var(--g5)';
+      setTimeout(function(){ addrEl.style.border = '1px solid var(--n5)'; }, 2000);
+    })
+    .catch(function() {
+      if (btn) { btn.style.opacity = ''; btn.style.pointerEvents = ''; }
+    });
+  };
+
+  window.meUpdateFromLatLng = function() {
+    var latEl = document.getElementById('me-lat');
+    var lngEl = document.getElementById('me-lng');
+    if (!latEl || !lngEl) return;
+    var lat = parseFloat(latEl.value);
+    var lng = parseFloat(lngEl.value);
+    if (isNaN(lat) || isNaN(lng)) return;
+    lat = Math.max(-90,  Math.min(90,  lat));
+    lng = Math.max(-180, Math.min(180, lng));
+    var m = meMaps['me-map-form'];
+    if (m && meFormMarker) {
+      meFormMarker.setLatLng([lat, lng]);
+      m.setView([lat, lng], 15);
+    }
+  };
+
   function runInit(){
     requestAnimationFrame(function(){requestAnimationFrame(function(){
       if(document.getElementById('me-map-main')) buildMap('me-map-main',11);
-      if(document.getElementById('me-map-form')) buildMap('me-map-form',12);
+      if(document.getElementById('me-map-form')) buildFormMap('me-map-form');
     });});
   }
 
