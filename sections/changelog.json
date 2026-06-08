@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T14:44:58.951Z",
+  "generated": "2026-06-08T14:47:46.065Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "fe268c2",
+          "type": "update",
+          "section": "Tables",
+          "message": "chore(nav): update status labels — WIP for brand/voice/tooltip, Done for table page",
+          "author": "Diego"
+        },
         {
           "hash": "5314f73",
           "type": "feat",
