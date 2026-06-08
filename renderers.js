@@ -2816,18 +2816,25 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const hamburger = `<svg width="22" height="22" viewBox="0 0 32 32" fill="#fff"><path d="M4 8h24v2H4zM4 15h24v2H4zM4 22h24v2H4z"/></svg>`;
     const closeX = `<svg width="22" height="22" viewBox="0 0 32 32" fill="#39414D"><path d="M24 9.4 22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16z"/></svg>`;
 
+    /* Map sidebar product id → mobile logo path */
+    const MOBILE_LOGOS = {
+      lastmile:   'sections/assets/logos/lastmile-mobile-white.svg',
+      plannerpro: 'sections/assets/logos/plannerpro-mobile-white.svg',
+      ondemand:   'sections/assets/logos/ondemand-mobile-white.svg',
+    };
+
     /* Single interactive phone frame: hamburger opens drawer, × closes it */
     function phoneInteractive(product) {
       const items = buildMobileItems(product.items);
-      const gid = 'mob-' + Math.random().toString(36).slice(2, 7);
-      // Logo element for topbar — use img if available, else text
-      const logoSrc = product.logoWhite || product.logoDesktop || '';
+      // Use product id to look up the real mobile logo
+      const logoSrc = MOBILE_LOGOS[product.id] || product.logoWhite || product.logoDesktop || '';
       const logoEl = logoSrc
         ? `<img src="${logoSrc}" height="16" style="display:block;flex-shrink:0" alt="${escHtml(product.name)}">`
         : `<span style="color:#fff;font:700 11px var(--font-sans);white-space:nowrap">${escHtml(product.name)}</span>`;
 
-      const openDrawer  = `(function(b){var f=b.closest('[data-phone]'),c=f.querySelector('[data-state=closed]'),o=f.querySelector('[data-state=open]');c.style.display='none';o.style.display='block'})(this)`;
-      const closeDrawer = `(function(b){var f=b.closest('[data-phone]'),c=f.querySelector('[data-state=closed]'),o=f.querySelector('[data-state=open]');o.style.display='none';c.style.display='block'})(this)`;
+      // Fix: use display='flex' (not 'block') so flex-direction:column works
+      const openDrawer  = `(function(b){var f=b.closest('[data-phone]'),c=f.querySelector('[data-state=closed]'),o=f.querySelector('[data-state=open]');c.style.display='none';o.style.display='flex'})(this)`;
+      const closeDrawer = `(function(b){var f=b.closest('[data-phone]'),c=f.querySelector('[data-state=closed]'),o=f.querySelector('[data-state=open]');o.style.display='none';c.style.display='flex'})(this)`;
 
       return `<div data-phone="${gid}" style="width:240px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.3)">
         <div style="background:var(--n2);border-radius:22px;height:480px;position:relative;overflow:hidden">
@@ -3049,7 +3056,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       const variants = prod.variants || [];
 
       if (variants.length) {
+        const hambSvg = `<svg width="20" height="20" viewBox="0 0 32 32" fill="#fff" style="display:block;flex-shrink:0"><path d="M4 8h24v2H4zM4 15h24v2H4zM4 22h24v2H4z"/></svg>`;
         const variantRows = variants.map(v => {
+          const isMobile = v.breakpoint === 'mobile';
           const varIcons = v.icons.map(name => {
             const isAlert = name === 'alerts';
             const wrap = isAlert ? `<div class="bell">` : '';
@@ -3057,20 +3066,23 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             return `${wrap}${iconSvg(name, 18, '#fff')}${wrapEnd}`;
           }).join('');
 
-          const logoEl = `<img src="${v.logo}" height="18" alt="${escHtml(prod.name)}" style="display:block;flex-shrink:0">`;
-          const slotEl = v.customerSlot.show
+          const logoEl = `<img src="${v.logo}" height="${isMobile ? 16 : 18}" alt="${escHtml(prod.name)}" style="display:block;flex-shrink:0">`;
+          const slotEl = (!isMobile && v.customerSlot && v.customerSlot.show)
             ? `<div class="slot">${escHtml(v.customerSlot.text || '')}</div>`
             : '';
 
           const maxW = v.breakpoint === 'desktop' ? '100%' : v.width;
           const bp = v.breakpoint;
 
+          // Mobile: hamburger LEFT, logo, minimal icons, no slot
+          const inner = isMobile
+            ? `${hambSvg}${logoEl}<div class="acts">${varIcons}</div>`
+            : `${logoEl}<div class="acts">${varIcons}</div>${slotEl}`;
+
           return `<div style="margin-bottom:6px">
             <div style="font:500 9px var(--font-sans);color:var(--n4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">${escHtml(bpLabel[bp] || bp)}</div>
-            <div class="tbar${bp === 'mobile' ? ' tbar--mobile' : ''}" style="max-width:${maxW}">
-              ${logoEl}
-              <div class="acts">${varIcons}</div>
-              ${slotEl}
+            <div class="tbar${isMobile ? ' tbar--mobile' : ''}" style="max-width:${maxW};${isMobile ? 'gap:10px;padding:0 12px' : ''}">
+              ${inner}
             </div>
           </div>`;
         }).join('');

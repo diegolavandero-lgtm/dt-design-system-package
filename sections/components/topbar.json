@@ -260,14 +260,14 @@
       "id": "lastmile-backoffice",
       "name": "Last Mile Backoffice",
       "color": "#F27B42",
-      "logoDesktop": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
+      "logoDesktop": "sections/assets/logos/dt-wordmark-white.svg",
       "logoMobile": null,
       "variants": [
         {
           "breakpoint": "desktop",
           "label": "Desktop",
           "width": "100%",
-          "logo": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
+          "logo": "sections/assets/logos/dt-wordmark-white.svg",
           "icons": [
             "apps",
             "alerts",
@@ -285,7 +285,7 @@
           "breakpoint": "tablet",
           "label": "Tablet",
           "width": "768px",
-          "logo": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
+          "logo": "sections/assets/logos/dt-wordmark-white.svg",
           "icons": [
             "messages",
             "alerts",
@@ -300,7 +300,7 @@
           "breakpoint": "mobile",
           "label": "Mobile",
           "width": "375px",
-          "logo": "sections/assets/logos/lastmile-backoffice-desktop-color.svg",
+          "logo": "sections/assets/logos/dt-wordmark-white.svg",
           "icons": [
             "alerts",
             "user"
