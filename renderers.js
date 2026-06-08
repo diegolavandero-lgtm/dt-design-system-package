@@ -4334,13 +4334,7 @@ async function downloadAllPins() {
         </div>`;
       }
       if (f.type === 'date') {
-        return `<div style="position:relative;flex:1;min-width:0">
-          <input type="text" placeholder="${escHtml(f.placeholder)}"
-            style="${inpBase};padding:0 34px 0 10px"
-            onfocus="${onFocus}" onblur="${onBlur}"
-            onmouseenter="${onMEnter}" onmouseleave="${onMLeave}">
-          <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5)">${CALENDAR}</div>
-        </div>`;
+        return dpFilterField(f.placeholder);
       }
       return `<div style="flex:1;min-width:0">
         <input type="text" placeholder="${escHtml(f.placeholder)}"
@@ -4477,30 +4471,22 @@ async function downloadAllPins() {
 
               <!-- Filter bar (from Filters component) -->
               <div style="display:flex;align-items:center;gap:8px">
+                <!-- Exact same filter bar as Filters · live demo: Cliente, Estado, F.Creación, Conductor -->
                 <div style="flex:1;min-width:0">
-                  <input type="text" placeholder="Código de orden" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+                  <input type="text" placeholder="Cliente" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
                 </div>
-                <div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
-                  <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)" onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'" onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'" style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
-                    <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Tipo de fecha para filtrar</span>
-                    <span style="color:var(--n5);display:flex;flex-shrink:0"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></span>
-                  </div>
-                  <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">
-                    <div onclick="dtPickOpt(this)" data-val="Fecha de creación" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Fecha de creación</div>
-                    <div onclick="dtPickOpt(this)" data-val="Fecha de ruta" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Fecha de ruta</div>
-                  </div>
-                </div>
-                ${dpFilterField('Seleccionar fecha')}
                 <div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
                   <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)" onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'" onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'" style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
                     <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Estado</span>
                     <span style="color:var(--n5);display:flex;flex-shrink:0"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></span>
                   </div>
                   <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">
-                    <div onclick="dtPickOpt(this)" data-val="Entregado" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Entregado</div>
-                    <div onclick="dtPickOpt(this)" data-val="No entregado" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">No entregado</div>
-                    <div onclick="dtPickOpt(this)" data-val="Por entregar" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">Por entregar</div>
+                    ${['Entregado','En tránsito','Pendiente','Cancelado'].map(o=>`<div onclick="dtPickOpt(this)" data-val="${o}" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">${o}</div>`).join('')}
                   </div>
+                </div>
+                ${dpFilterField('F. Creación')}
+                <div style="flex:1;min-width:0">
+                  <input type="text" placeholder="Conductor" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
                 </div>
                 <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'" onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'">Filtrar</button>
                 <button title="Add more filters" style="width:32px;height:32px;border:1px solid var(--b6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
