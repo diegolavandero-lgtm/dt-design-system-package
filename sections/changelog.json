@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T14:08:23.627Z",
+  "generated": "2026-06-08T14:44:58.951Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "5314f73",
+          "type": "feat",
+          "section": "Sidebar",
+          "message": "feat: add status labels to sidebar + Backlog section",
+          "author": "Diego"
+        },
         {
           "hash": "a6a7bc2",
           "type": "update",
