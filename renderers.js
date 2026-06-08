@@ -3918,44 +3918,168 @@ async function downloadAllPins() {
         onmouseup="this.style.background='#EDF5FF'"
       >${escHtml(label)}</button>`;
 
-    // ── icon buttons ────────────────────────────────────────────────────
-    const iconBtn = (icon, borderColor, fillColor, title) =>
-      `<button title="${escHtml(title)}" style="width:32px;height:32px;border:1px solid ${borderColor};border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
-        ${iconSvg(icon, 24, fillColor)}
-      </button>`;
+    // ── Exact SVG buttons from Figma (not recreated, embedded as-is) ────
+    const SVG_ADD_DEFAULT = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#1F60ED"/><g clip-path="url(#flt-add-clip)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="flt-add-clip"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
+    const SVG_ADD_HOVER   = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" fill="#EDF3FF" stroke="#1F60ED"/><g clip-path="url(#flt-addh-clip)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="flt-addh-clip"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
+    const SVG_RES_DEFAULT = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg>`;
+    const SVG_RES_HOVER   = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" fill="#FFEBE6" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg>`;
 
-    // ── filter bar: fills the card content width ───────────────────────
-    const filterBar = `
-      <div class="card" style="margin:0 0 28px">
-        <div style="display:flex;align-items:center;gap:8px">
-          ${fields.map(renderField).join('')}
-          ${secBtn(data.filterBtnLabel || 'Filtrar')}
-          ${iconBtn('filter--add',    'var(--b6)', 'var(--b6)', 'Add more filters')}
-          ${iconBtn('filter--reset',  'var(--r6)', 'var(--r6)', 'Reset filters')}
+    // Add/reset buttons with hover swap (exact SVGs, no recreation)
+    const btnAdd = `<button title="Agregar filtro" style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex"
+        onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+        onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+      <span class="flt-def">${SVG_ADD_DEFAULT}</span>
+      <span class="flt-hov" style="display:none">${SVG_ADD_HOVER}</span>
+    </button>`;
+
+    const btnReset = (tableId, barId) => {
+      const onclick = `(function(btn){
+        var bar=document.getElementById('${barId}');
+        if(!bar)return;
+        bar.querySelectorAll('input[type=text]').forEach(function(inp){inp.value='';inp.style.border='1px solid var(--n3)';inp.style.background='#fff';});
+        bar.querySelectorAll('.dt-dlabel').forEach(function(lbl){lbl.textContent=lbl.dataset.ph||lbl.textContent;lbl.closest('.dt-drop-wrap').dataset.val='';});
+        var tbl=document.getElementById('${tableId}');
+        if(tbl)tbl.querySelectorAll('tbody tr').forEach(function(r){r.style.display='';});
+      })(this)`.replace(/\s+/g,' ');
+      return `<button title="Limpiar filtros" style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex" onclick="${onclick.replace(/"/g,'&quot;')}"
+          onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+          onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+        <span class="flt-def">${SVG_RES_DEFAULT}</span>
+        <span class="flt-hov" style="display:none">${SVG_RES_HOVER}</span>
+      </button>`;
+    };
+
+    // ── Demo table rows ───────────────────────────────────────────────────
+    const DEMO_ROWS = [
+      {name:'Ana López',     status:'Activo',   date:'2025-10-01', label:'etiqueta-1'},
+      {name:'Carlos Ríos',   status:'Pendiente',date:'2025-10-03', label:'etiqueta-2'},
+      {name:'Maya Johnson',  status:'Inactivo', date:'2025-09-28', label:'etiqueta-1'},
+      {name:'Lucas Martínez',status:'Activo',   date:'2025-10-05', label:'etiqueta-3'},
+      {name:'Aisha Patel',   status:'Bloqueado',date:'2025-09-30', label:'etiqueta-2'},
+      {name:'Liam Smith',    status:'Pendiente',date:'2025-10-07', label:'etiqueta-1'},
+    ];
+    const STATUS_COLORS = {Activo:'success',Pendiente:'warning',Inactivo:'neutral',Bloqueado:'danger'};
+    const tableId = 'flt-demo-tbl', barId = 'flt-demo-bar';
+
+    const demoTableHtml = `<table style="width:100%;border-collapse:collapse" id="${tableId}">
+      <thead><tr style="background:var(--n2)">
+        ${['Nombre','Estado','Fecha','Label'].map(h=>`<th style="padding:10px 12px;font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;text-align:left;white-space:nowrap">${h}</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        ${DEMO_ROWS.map(r=>`<tr style="border-top:1px solid var(--n3)" data-name="${r.name.toLowerCase()}" data-status="${r.status}" data-date="${r.date}" data-label="${r.label.toLowerCase()}">
+          <td style="padding:10px 12px;font:400 13px var(--font-sans);color:var(--n7)">${escHtml(r.name)}</td>
+          <td style="padding:10px 12px">${badgeHtml(r.status, STATUS_COLORS[r.status]||'neutral')}</td>
+          <td style="padding:10px 12px;font:400 13px var(--font-sans);color:var(--n5)">${r.date}</td>
+          <td style="padding:10px 12px"><span style="display:inline-flex;height:20px;padding:0 7px;border-radius:4px;border:1px solid var(--n4);background:var(--n2);font:600 10px/20px var(--font-sans);color:var(--n6)">${escHtml(r.label)}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+
+    // ── Filter IIFE (runs on "Filtrar" click) ────────────────────────────
+    const onFilter = `(function(){
+      var bar=document.getElementById('${barId}');
+      var tbl=document.getElementById('${tableId}');
+      if(!bar||!tbl)return;
+      var inps=bar.querySelectorAll('input[type=text]');
+      var nameV=(inps[0]?inps[0].value:'').toLowerCase().trim();
+      var dateV=(inps[1]?inps[1].value:'').toLowerCase().trim();
+      var labelV=(inps[2]?inps[2].value:'').toLowerCase().trim();
+      var statusEl=bar.querySelector('[data-val]');
+      var statusV=statusEl?statusEl.dataset.val:'';
+      tbl.querySelectorAll('tbody tr').forEach(function(r){
+        var show=true;
+        if(nameV&&!r.dataset.name.includes(nameV))show=false;
+        if(statusV&&r.dataset.status!==statusV)show=false;
+        if(dateV&&!r.dataset.date.includes(dateV))show=false;
+        if(labelV&&!r.dataset.label.includes(labelV))show=false;
+        r.style.display=show?'':'none';
+      });
+    })()`.replace(/\s+/g,' ');
+
+    // ── Render filter fields with IDs on text inputs ──────────────────────
+    let inputIdx = 0;
+    const renderFieldFunctional = (f) => {
+      if (f.type === 'select') {
+        // dt-drop-wrap stores selected val in data-val on the wrap
+        const items = (f.options||[]).map(o => {
+          const safe = o.replace(/'/g,"&#39;");
+          return `<div onclick="dtPickOpt(this);this.closest('[data-val]').dataset.val='${safe}'"
+            data-val="${safe}"
+            onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
+            onmouseleave="this.style.background='';this.style.color='var(--n7)'"
+            style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer"
+          >${escHtml(o)}</div>`;
+        }).join('');
+        return `<div class="dt-drop-wrap" data-val="" style="position:relative;flex:1;min-width:0">
+          <div class="dt-dtrigger" data-theme="border"
+            onclick="dtDrop(this.parentElement)"
+            onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+            onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+            style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+            <span class="dt-dlabel" data-ph="${escHtml(f.placeholder)}" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(f.placeholder)}</span>
+            <span style="color:var(--n5);display:flex;flex-shrink:0">${CHEVRON}</span>
+          </div>
+          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">${items}</div>
+        </div>`;
+      }
+      if (f.type === 'date') {
+        return `<div style="position:relative;flex:1;min-width:0">
+          <input type="text" placeholder="${escHtml(f.placeholder)}"
+            style="${inpBase};padding:0 34px 0 10px"
+            onfocus="${onFocus}" onblur="${onBlur}"
+            onmouseenter="${onMEnter}" onmouseleave="${onMLeave}">
+          <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;color:var(--n5)">${CALENDAR}</div>
+        </div>`;
+      }
+      return `<div style="flex:1;min-width:0">
+        <input type="text" placeholder="${escHtml(f.placeholder)}"
+          style="${inpBase};padding:0 10px"
+          onfocus="${onFocus}" onblur="${onBlur}"
+          onmouseenter="${onMEnter}" onmouseleave="${onMLeave}">
+      </div>`;
+    };
+
+    // ── Functional filter bar + demo table in one container ───────────────
+    const filterDemo = `
+      <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:20px;margin-bottom:28px">
+        <div id="${barId}" style="display:flex;align-items:center;gap:8px">
+          ${fields.map(renderFieldFunctional).join('')}
+          <button style="${secBtnStyle}" onclick="${onFilter.replace(/"/g,"'")}"
+            onmouseenter="this.style.background='#EDF5FF'"
+            onmouseleave="this.style.background='#fff'"
+            onmousedown="this.style.background='#D1E0FF'"
+            onmouseup="this.style.background='#EDF5FF'"
+          >${escHtml(data.filterBtnLabel || 'Filtrar')}</button>
+          ${btnAdd}
+          ${btnReset(tableId, barId)}
+        </div>
+        <div style="border:1px solid var(--n3);border-radius:6px;overflow:hidden">
+          ${demoTableHtml}
+        </div>
+      </div>`;
+
+    // ── Icon buttons reference ─────────────────────────────────────────────
+    const iconRef = `
+      <div class="card" style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin-bottom:28px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="display:flex;gap:8px">${SVG_ADD_DEFAULT}${SVG_ADD_HOVER}</div>
+          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--add</span>
+          <span style="font:400 10px var(--font-mono);color:var(--n45)">default · hover</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="display:flex;gap:8px">${SVG_RES_DEFAULT}${SVG_RES_HOVER}</div>
+          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--reset</span>
+          <span style="font:400 10px var(--font-mono);color:var(--n45)">default · hover</span>
         </div>
       </div>`;
 
     return `
       ${sectionHeader(data)}
       ${usageCard(data.pageUsage)}
-      <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Filter bar</h3>
-      ${filterBar}
+      <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Filter bar · live demo</h3>
+      ${filterDemo}
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Icon buttons</h3>
-      <div class="card" style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;margin:0 0 28px">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
-          ${iconBtn('filter--add','var(--b6)','var(--b6)','Add more filters')}
-          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--add</span>
-          <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--b6)</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
-          ${iconBtn('filter--reset','var(--r6)','var(--r6)','Reset filters')}
-          <span style="font:600 11px var(--font-sans);color:var(--n6)">filter--reset</span>
-          <span style="font:400 11px var(--font-mono);color:var(--n45)">var(--r6)</span>
-        </div>
-        <div style="flex:1;min-width:200px;font:400 12px/1.6 var(--font-sans);color:var(--n5)">
-          Carbon Design System icons — registered in Iconography → Filters.
-        </div>
-      </div>
+      ${iconRef}
       <div class="card flush">
         <div class="card-hdr"><span class="ttl">Tokens</span></div>
         <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px">
