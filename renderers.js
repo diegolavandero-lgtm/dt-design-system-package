@@ -1203,6 +1203,130 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${dropTokenRows}</tbody></table>
     </div>`;
 
+    /* ── DATEPICKER HTML ── */
+    const dpCard = (attrs) => `
+      <div ${attrs} style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.12);width:300px;overflow:hidden;font-family:var(--font-sans)">
+        <div style="display:flex;align-items:center;justify-content:center;padding:16px 16px 8px;border-bottom:1px solid var(--n3);position:relative">
+          <span style="font:600 14px var(--font-sans);color:var(--n7)">Fecha</span>
+          <button onclick="_dpClose(this)" style="position:absolute;right:12px;background:none;border:none;cursor:pointer;font-size:18px;color:var(--n5);line-height:1">×</button>
+        </div>
+        <div style="padding:12px 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <button onclick="_dpNav(this,-1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;padding:4px 8px">‹</button>
+            <span data-month-label="1" style="font:700 15px var(--font-sans);color:var(--n7)">Abril 2025</span>
+            <button onclick="_dpNav(this,1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;padding:4px 8px">›</button>
+          </div>
+          <div data-grid="1" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;min-height:180px"></div>
+        </div>
+        <div style="padding:8px 16px 16px">
+          <button data-accept disabled style="width:100%;height:40px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 14px var(--font-sans);cursor:pointer">Aceptar</button>
+        </div>
+      </div>`;
+
+    const dpSingle    = dpCard('data-dp="" data-month="4" data-year="2025" data-selected=""');
+    const dpSingleSel = dpCard('data-dp="" data-month="4" data-year="2025" data-selected="2025-04-01"');
+    const dpRangeSel  = dpCard('data-dp="" data-month="4" data-year="2025" data-selected="" data-start="2025-04-01" data-end="2025-04-10"');
+
+    const dpRangeCard = `
+      <div data-dpr="" data-m1="4" data-y1="2025" data-m2="5" data-y2="2025" data-start="" data-end=""
+        style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.12);overflow:hidden;font-family:var(--font-sans)">
+        <div style="display:flex;align-items:center;justify-content:center;padding:16px 16px 8px;border-bottom:1px solid var(--n3);position:relative">
+          <span style="font:600 14px var(--font-sans);color:var(--n7)">Rango de fechas</span>
+          <button onclick="_dpClose(this)" style="position:absolute;right:12px;background:none;border:none;cursor:pointer;font-size:18px;color:var(--n5);line-height:1">×</button>
+        </div>
+        <div style="display:flex;gap:0;padding:12px 16px">
+          <div style="flex:1;padding-right:12px;border-right:1px solid var(--n3)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <button onclick="_dpNav(this,-1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;padding:4px 8px">‹</button>
+              <span data-month-label="1" style="font:700 14px var(--font-sans);color:var(--n7)">Abril 2025</span>
+              <div style="width:36px"></div>
+            </div>
+            <div data-grid="1" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px"></div>
+          </div>
+          <div style="flex:1;padding-left:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div style="width:36px"></div>
+              <span data-month-label="2" style="font:700 14px var(--font-sans);color:var(--n7)">Mayo 2025</span>
+              <button onclick="_dpNav(this,1)" data-which="2" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;padding:4px 8px">›</button>
+            </div>
+            <div data-grid="2" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px"></div>
+          </div>
+        </div>
+        <div style="padding:8px 16px 16px">
+          <button data-accept disabled style="width:100%;height:40px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 14px var(--font-sans);cursor:pointer">Aceptar</button>
+        </div>
+      </div>`;
+
+    /* ── TIMEPICKER HTML ── */
+    const tpBase = (id, h24, initHour, initAmpm, mode) => {
+      const hStr = String(initHour).padStart(2,'0');
+      return `
+      <div data-tp="${id}" data-hour="${initHour}" data-ampm="${initAmpm}" data-mode="${mode}" data-h24="${h24}"
+        style="background:#F0F2F5;border-radius:12px;padding:16px;width:260px;font-family:var(--font-sans)">
+        <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:12px">${mode==='clock'?'Seleccionar hora':'Ingresar hora'}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="background:#fff;border:2px solid var(--b6);border-radius:8px;width:72px;height:56px;display:flex;align-items:center;justify-content:center;font:700 32px var(--font-sans);color:var(--n7)">
+            <span data-time-h>${hStr}</span>
+          </div>
+          <span style="font:700 28px var(--font-sans);color:var(--n7)">:</span>
+          <div style="background:#fff;border-radius:8px;width:72px;height:56px;display:flex;align-items:center;justify-content:center;font:700 32px var(--font-sans);color:var(--n7)">00</div>
+          ${!h24 ? `<div style="display:flex;flex-direction:column;border-radius:8px;overflow:hidden;border:1px solid var(--n3)">
+            <button data-ampm-btn="AM" onclick="_tpAmPm(this,'AM')" style="padding:4px 10px;font:600 11px var(--font-sans);border:none;cursor:pointer;background:${initAmpm==='AM'?'var(--b6)':'transparent'};color:${initAmpm==='AM'?'#fff':'var(--n6)'}">AM</button>
+            <div style="height:1px;background:var(--n3)"></div>
+            <button data-ampm-btn="PM" onclick="_tpAmPm(this,'PM')" style="padding:4px 10px;font:600 11px var(--font-sans);border:none;cursor:pointer;background:${initAmpm==='PM'?'var(--b6)':'transparent'};color:${initAmpm==='PM'?'#fff':'var(--n6)'}">PM</button>
+          </div>` : ''}
+        </div>
+        <div data-clock-face style="display:${mode==='clock'?'block':'none'}">
+          <svg data-clock-svg width="220" height="220" viewBox="0 0 220 220" style="display:block;margin:0 auto"></svg>
+        </div>
+        <div data-text-face style="display:${mode==='text'?'flex':'none'};gap:8px;margin-bottom:8px">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <input data-time-h-input type="text" value="${hStr}" maxlength="2"
+              style="width:72px;height:56px;text-align:center;font:700 32px var(--font-sans);border:2px solid var(--b6);border-radius:8px;outline:none;background:#fff">
+            <span style="font:400 11px var(--font-sans);color:var(--n5);text-align:center">Hora</span>
+          </div>
+          <div style="font:700 28px var(--font-sans);color:var(--n7);padding-top:14px">:</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <input type="text" value="00" maxlength="2"
+              style="width:72px;height:56px;text-align:center;font:700 32px var(--font-sans);border:1px solid var(--n3);border-radius:8px;outline:none;background:#fff"
+              onfocus="this.style.border='2px solid var(--b6)'" onblur="this.style.border='1px solid var(--n3)'">
+            <span style="font:400 11px var(--font-sans);color:var(--n5);text-align:center">Minuto</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <button data-mode-icon onclick="_tpToggleMode(this)" style="background:none;border:none;cursor:pointer;display:flex;align-items:center">
+            ${mode==='clock'
+              ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`
+              : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`}
+          </button>
+          <div style="display:flex;gap:16px">
+            <button style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
+            <button style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
+          </div>
+        </div>
+      </div>`;
+    };
+
+    const dtSection = `
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:32px 0 6px">Date picker</h3>
+      <p class="desc" style="margin-bottom:16px">Selección de fecha simple. Navega meses con ‹ ›. Aceptar se activa al seleccionar una fecha.</p>
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-bottom:16px">
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Sin selección</span>${dpSingle}</div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Fecha seleccionada</span>${dpSingleSel}</div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Rango seleccionado</span>${dpRangeSel}</div>
+      </div>
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:0 0 6px">Date range picker — dos meses continuos</h3>
+      <p class="desc" style="margin-bottom:16px">Muestra dos meses para facilitar rangos que cruzan fin de mes. Click en inicio → click en fin del rango.</p>
+      <div class="card" style="margin-bottom:16px;overflow-x:auto">${dpRangeCard}</div>
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:0 0 6px">Time picker</h3>
+      <p class="desc" style="margin-bottom:16px">Reloj interactivo o entrada manual. El ícono inferior izquierdo alterna entre modos.</p>
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Reloj 12h</span>${tpBase('tp1',false,7,'AM','clock')}</div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Reloj 24h</span>${tpBase('tp2',true,20,'','clock')}</div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Texto 12h</span>${tpBase('tp3',false,9,'AM','text')}</div>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Texto 24h</span>${tpBase('tp4',true,21,'','text')}</div>
+      </div>`;
+
     return `
       ${sectionHeader(data)}
       ${usageCard(data.pageUsage)}
@@ -1210,7 +1334,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         {label:'Preview', content: previewTab},
         {label:'Code',    content: codeTab},
         {label:'Tokens',  content: tokensTab},
-      ])}`;
+      ])}
+      ${dtSection}`;
   },
 
   /* ── TOOLTIP ── */
