@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T21:58:54.132Z",
+  "generated": "2026-06-08T22:01:26.297Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "b52ab57",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(date range picker): single input same width as datepicker, opens 2-month popover",
+          "author": "Diego"
+        },
         {
           "hash": "55980fa",
           "type": "fix",
