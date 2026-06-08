@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T15:59:24.129Z",
+  "generated": "2026-06-08T16:01:07.656Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "eccc06b",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "feat(map elements): fix form layout — table-page container, flex:1 columns, aligned labels",
+          "author": "Diego"
+        },
         {
           "hash": "7d871e3",
           "type": "update",
