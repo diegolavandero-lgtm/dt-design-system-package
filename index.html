@@ -967,10 +967,81 @@ function initMapElements() {
     return m;
   }
 
+  /* ── Address autocomplete ── */
+  var meAddrTimer = null;
+  var meAddrFocused = -1;
+  var meAddrResults = [];
+  var PIN_ICO = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+  function meCloseDd() {
+    var dd = document.getElementById('me-addr-dd');
+    if (dd) { dd.classList.remove('on'); dd.innerHTML = ''; }
+    meAddrFocused = -1; meAddrResults = [];
+  }
+
+  window.meAddrInput = function(val) {
+    clearTimeout(meAddrTimer);
+    var dd = document.getElementById('me-addr-dd');
+    if (!dd) return;
+    if (!val || val.length < 3) { meCloseDd(); return; }
+    dd.innerHTML = '<div class="me-addr-loading"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Buscando…</div>';
+    dd.classList.add('on');
+    meAddrTimer = setTimeout(function() {
+      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(val) + '&format=json&limit=5&accept-language=es')
+      .then(function(r){ return r.json(); })
+      .then(function(results) {
+        var dd2 = document.getElementById('me-addr-dd');
+        if (!dd2) return;
+        meAddrResults = results || [];
+        meAddrFocused = -1;
+        if (!meAddrResults.length) { dd2.innerHTML = '<div class="me-addr-loading">Sin resultados</div>'; return; }
+        dd2.innerHTML = meAddrResults.map(function(r, i) {
+          var parts = (r.display_name||'').split(', ');
+          var main = parts.slice(0,2).join(', ');
+          var ctx  = parts.slice(2,4).join(', ');
+          return '<div class="me-addr-item" data-idx="'+i+'" onmousedown="meSelectAddr('+i+')">' +
+            PIN_ICO + '<div><div style="font:500 13px var(--font-sans)">'+main+'</div>' +
+            (ctx?'<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:1px">'+ctx+'</div>':'') +
+            '</div></div>';
+        }).join('');
+        dd2.classList.add('on');
+      }).catch(function(){ meCloseDd(); });
+    }, 280);
+  };
+
+  window.meAddrKey = function(e) {
+    var dd = document.getElementById('me-addr-dd');
+    var items = dd ? dd.querySelectorAll('.me-addr-item') : [];
+    if (e.key==='ArrowDown') { e.preventDefault(); meAddrFocused=Math.min(meAddrFocused+1,items.length-1); }
+    else if (e.key==='ArrowUp') { e.preventDefault(); meAddrFocused=Math.max(meAddrFocused-1,0); }
+    else if (e.key==='Enter') { e.preventDefault(); meAddrFocused>=0&&meAddrResults[meAddrFocused]?meSelectAddr(meAddrFocused):meGeocode(); return; }
+    else if (e.key==='Escape') { meCloseDd(); return; }
+    else { return; }
+    items.forEach(function(el,i){ el.classList.toggle('focused',i===meAddrFocused); });
+    if (items[meAddrFocused]) items[meAddrFocused].scrollIntoView({block:'nearest'});
+  };
+
+  window.meSelectAddr = function(idx) {
+    var r = meAddrResults[idx]; if (!r) return;
+    var addrEl=document.getElementById('me-addr'), latEl=document.getElementById('me-lat'), lngEl=document.getElementById('me-lng');
+    if (addrEl) { addrEl.value=(r.display_name||'').split(', ').slice(0,2).join(', '); addrEl.style.border='1px solid var(--g5)'; setTimeout(function(){addrEl.style.border='1px solid var(--n5)';},2000); }
+    var lat=parseFloat(r.lat), lng=parseFloat(r.lon);
+    if (latEl) latEl.value=lat.toFixed(6);
+    if (lngEl) lngEl.value=lng.toFixed(6);
+    var m=meMaps['me-map-form'];
+    if (m&&meFormMarker){ meFormMarker.setLatLng([lat,lng]); m.setView([lat,lng],15); }
+    meCloseDd();
+  };
+
+  document.addEventListener('click', function(ev) {
+    var dd=document.getElementById('me-addr-dd'), inp=document.getElementById('me-addr');
+    if (dd&&inp&&!inp.parentElement.contains(ev.target)) meCloseDd();
+  });
+
   window.meGeocode = function() {
     var addrEl = document.getElementById('me-addr');
     if (!addrEl || !addrEl.value.trim()) return;
-    var q = addrEl.value.trim() + ', Chile';
+    var q = addrEl.value.trim();
     var btn = addrEl.nextElementSibling;
     if (btn) { btn.style.opacity = '0.4'; btn.style.pointerEvents = 'none'; }
 

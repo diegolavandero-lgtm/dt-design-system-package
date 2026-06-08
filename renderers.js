@@ -3333,6 +3333,15 @@ async function downloadAllPins() {
       .me-map-form-lbl2{font:400 12px/16px var(--font-sans);color:var(--n7)}
       .me-map-in-form-wrap{border-radius:6px;overflow:hidden;border:1px solid var(--n4);position:relative;flex:1}
       .me-map-in-form{width:100%;min-height:144px;height:100%}
+      /* Address autocomplete dropdown */
+      .me-addr-dd{display:none;position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1px solid var(--n4);border-radius:6px;box-shadow:0 6px 20px rgba(19,32,69,.12);z-index:2000;overflow:hidden}
+      .me-addr-dd.on{display:block}
+      .me-addr-item{padding:8px 12px;font:400 13px/1.4 var(--font-sans);color:var(--n7);cursor:pointer;border-bottom:1px solid var(--n3);display:flex;align-items:flex-start;gap:8px}
+      .me-addr-item:last-child{border-bottom:none}
+      .me-addr-item:hover,.me-addr-item.focused{background:var(--b1);color:var(--b7)}
+      .me-addr-item svg{flex-shrink:0;margin-top:1px;color:var(--n5)}
+      .me-addr-item:hover svg,.me-addr-item.focused svg{color:var(--b6)}
+      .me-addr-loading{padding:10px 12px;font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:8px}
       .leaflet-container{font-family:inherit!important}
       /* Map controls overlay */
       .me-ctrls{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:1000;align-items:center}
@@ -3409,14 +3418,16 @@ async function downloadAllPins() {
               <!-- Address with geocode pin button on right -->
               <div class="me-map-form-field">
                 <label class="me-map-form-lbl2">Dirección</label>
-                <div style="position:relative;display:flex">
+                <div style="position:relative">
                   <input type="text" id="me-addr" value="Av. Libertador B. O'Higgins 1234"
-                    style="height:32px;padding:0 36px 0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%;flex:1"
+                    autocomplete="off"
+                    style="height:32px;padding:0 36px 0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
                     onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
                     onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
                     onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
                     onmouseleave="if(document.activeElement!==this)this.style.background='#fff'"
-                    onkeydown="if(event.key==='Enter'){event.preventDefault();meGeocode()}">
+                    oninput="meAddrInput(this.value)"
+                    onkeydown="meAddrKey(event)">
                   <!-- Geocode button -->
                   <button onclick="meGeocode()" title="Geocodificar dirección"
                     style="position:absolute;right:0;top:0;bottom:0;width:34px;background:none;border:none;border-left:1px solid var(--n3);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:0 6px 6px 0;color:var(--n5)"
@@ -3424,6 +3435,8 @@ async function downloadAllPins() {
                     onmouseleave="this.style.background='none';this.style.color='var(--n5)';this.style.borderColor='var(--n3)'">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   </button>
+                  <!-- Autocomplete dropdown -->
+                  <div id="me-addr-dd" class="me-addr-dd"></div>
                 </div>
               </div>
 
