@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T21:30:57.398Z",
+  "generated": "2026-06-08T21:46:31.790Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "605ef90",
+          "type": "feat",
+          "section": "Inputs",
+          "message": "feat(inputs): add functional datepicker + timepicker components",
+          "author": "Diego"
+        },
         {
           "hash": "a5fa026",
           "type": "feat",
