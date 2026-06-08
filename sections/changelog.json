@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T15:13:00.204Z",
+  "generated": "2026-06-08T15:15:09.253Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "248e150",
+          "type": "fix",
+          "section": "Sidebar",
+          "message": "fix(sidebar): restore missing gid variable in phoneInteractive — caused 'gid is not defined' error",
+          "author": "Diego"
+        },
         {
           "hash": "3a8849f",
           "type": "fix",
