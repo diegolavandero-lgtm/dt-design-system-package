@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T22:01:26.297Z",
+  "generated": "2026-06-08T22:04:27.894Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "b8deee5",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(pickers): popovers not opening — empty data-popover attr is falsy",
+          "author": "Diego"
+        },
         {
           "hash": "b52ab57",
           "type": "fix",
