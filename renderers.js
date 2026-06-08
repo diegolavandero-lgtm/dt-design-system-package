@@ -1207,10 +1207,19 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const CAL_ICO = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
     const CLK_ICO = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
 
-    // DS-style input trigger (matches exact DS input tokens from inputs.json)
-    const triggerInp = (placeholder, icon, popoverId) =>
-      `<div style="position:relative;display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;min-width:220px"
-        onclick="(function(el){var pop=el.nextElementSibling;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open)pop.style.display='block';})(this)"
+    // DS-style input trigger — popover is the immediate nextElementSibling of this div
+    const triggerInp = (placeholder, icon) =>
+      `<div style="position:relative;display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;width:100%"
+        onclick="(function(el){var pop=el.nextElementSibling;if(!pop||!pop.dataset.popover)return;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open)pop.style.display='block';})(this)"
+        onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
+        <span style="flex:1;font:400 14px/1 var(--font-sans);color:var(--n5)">${escHtml(placeholder)}</span>
+        <span style="color:var(--n5);display:flex">${icon}</span>
+      </div>`;
+
+    // Range trigger — popover lives in the data-dp-wrap ancestor, not as nextElementSibling
+    const rangeInp = (placeholder, icon) =>
+      `<div style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;width:100%"
+        onclick="(function(el){var wrap=el.closest('[data-dp-wrap]');var pop=wrap&&wrap.querySelector('[data-popover]');if(!pop)return;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open)pop.style.display='block';})(this)"
         onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
         <span style="flex:1;font:400 14px/1 var(--font-sans);color:var(--n5)">${escHtml(placeholder)}</span>
         <span style="color:var(--n5);display:flex">${icon}</span>
@@ -1340,7 +1349,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     // Compact range picker popover (fits width of 2 inputs ≈ 460px)
     const dpRangePopover = `
       <div data-dpr="" data-m1="4" data-y1="2025" data-m2="5" data-y2="2025" data-start="" data-end=""
-        data-popover style="display:none;position:absolute;top:calc(100%+4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);overflow:hidden;font-family:var(--font-sans);width:460px">
+        data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);overflow:hidden;font-family:var(--font-sans);width:600px">
         <div style="display:flex">
           <!-- Month 1 -->
           <div style="flex:1;padding:10px 10px 0;border-right:1px solid var(--n3)">
@@ -1436,15 +1445,15 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
       <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:24px 0 6px">Date range picker</h3>
       <p class="desc" style="margin-bottom:16px">Dos inputs (Desde/Hasta) que abren un popover con dos meses continuos — exactamente el ancho de ambos inputs juntos.</p>
-      <div class="card" style="padding-bottom:320px;margin-bottom:0">
+      <div class="card" style="padding-bottom:340px;margin-bottom:0">
         <div style="display:flex;gap:8px;position:relative" data-dp-wrap>
           <div style="flex:1;display:flex;flex-direction:column;gap:4px">
             <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Desde</span>
-            ${triggerInp('Fecha inicio', CAL_ICO, '')}
+            ${rangeInp('Fecha inicio', CAL_ICO)}
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:4px">
             <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Hasta</span>
-            ${triggerInp('Fecha fin', CAL_ICO, '')}
+            ${rangeInp('Fecha fin', CAL_ICO)}
           </div>
           ${dpRangePopover}
         </div>
