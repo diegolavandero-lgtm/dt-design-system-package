@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T22:10:06.031Z",
+  "generated": "2026-06-08T22:17:47.875Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "39f2c2b",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(filters+tablepage): replace remaining old date inputs with datepicker",
+          "author": "Diego"
+        },
         {
           "hash": "f906ec9",
           "type": "fix",
