@@ -1203,6 +1203,36 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${dropTokenRows}</tbody></table>
     </div>`;
 
+    /* ── SHARED ICON SVGs ── */
+    const CAL_ICO = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+    const CLK_ICO = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+
+    // DS-style input trigger (matches exact DS input tokens from inputs.json)
+    const triggerInp = (placeholder, icon, popoverId) =>
+      `<div style="position:relative;display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;min-width:220px"
+        onclick="(function(el){var pop=el.nextElementSibling;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open)pop.style.display='block';})(this)"
+        onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
+        <span style="flex:1;font:400 14px/1 var(--font-sans);color:var(--n5)">${escHtml(placeholder)}</span>
+        <span style="color:var(--n5);display:flex">${icon}</span>
+      </div>`;
+
+    // Calendar card (single)
+    const dpCalCard = (attrs) =>
+      `<div ${attrs} data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);width:300px;overflow:hidden;font-family:var(--font-sans)">
+        <div style="padding:10px 12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <button onclick="_dpNav(this,-1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;line-height:1;padding:2px 6px">‹</button>
+            <span data-month-label="1" style="font:700 14px var(--font-sans);color:var(--n7)">Abril 2025</span>
+            <button onclick="_dpNav(this,1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;line-height:1;padding:2px 6px">›</button>
+          </div>
+          <div data-grid="1" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px"></div>
+        </div>
+        <div style="padding:4px 12px 12px">
+          <button data-accept disabled onclick="(function(btn){var w=btn.closest('[data-dp-wrap]');if(w){var inp=w.querySelector('[data-dp-input]');var dp=btn.closest('[data-dp]');var sel=dp.dataset.selected||dp.dataset.start;if(sel&&inp)inp.textContent=sel.slice(5).split('-').reverse().join('/');}btn.closest('[data-popover]').style.display='none';})(this)"
+            style="width:100%;height:36px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 13px var(--font-sans);cursor:pointer">Aceptar</button>
+        </div>
+      </div>`;
+
     /* ── DATEPICKER HTML ── */
     const dpCard = (attrs) => `
       <div ${attrs} style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.12);width:300px;overflow:hidden;font-family:var(--font-sans)">
@@ -1307,24 +1337,132 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
     };
 
+    // Compact range picker popover (fits width of 2 inputs ≈ 460px)
+    const dpRangePopover = `
+      <div data-dpr="" data-m1="4" data-y1="2025" data-m2="5" data-y2="2025" data-start="" data-end=""
+        data-popover style="display:none;position:absolute;top:calc(100%+4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);overflow:hidden;font-family:var(--font-sans);width:460px">
+        <div style="display:flex">
+          <!-- Month 1 -->
+          <div style="flex:1;padding:10px 10px 0;border-right:1px solid var(--n3)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <button onclick="_dpNav(this,-1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:16px;line-height:1;padding:2px 4px">‹</button>
+              <span data-month-label="1" style="font:700 12px var(--font-sans);color:var(--n7)">Abril 2025</span>
+              <div style="width:22px"></div>
+            </div>
+            <div data-grid="1" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px"></div>
+          </div>
+          <!-- Month 2 -->
+          <div style="flex:1;padding:10px 10px 0">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <div style="width:22px"></div>
+              <span data-month-label="2" style="font:700 12px var(--font-sans);color:var(--n7)">Mayo 2025</span>
+              <button onclick="_dpNav(this,1)" data-which="2" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:16px;line-height:1;padding:2px 4px">›</button>
+            </div>
+            <div data-grid="2" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px"></div>
+          </div>
+        </div>
+        <div style="padding:8px 10px 10px">
+          <button data-accept disabled onclick="this.closest('[data-popover]').style.display='none'"
+            style="width:100%;height:34px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 13px var(--font-sans);cursor:pointer">Aceptar</button>
+        </div>
+      </div>`;
+
+    // Timepicker popover (triggered from a time input)
+    const tpPopover = (id, h24, initHour, initAmpm) => {
+      const hStr = String(initHour).padStart(2,'0');
+      return `<div data-tp="${id}" data-hour="${initHour}" data-ampm="${initAmpm}" data-mode="clock" data-h24="${h24}"
+        data-popover style="display:none;position:absolute;top:calc(100%+4px);left:0;z-index:200;background:#F0F2F5;border-radius:12px;padding:14px;width:260px;box-shadow:0 4px 24px rgba(19,32,69,.14);font-family:var(--font-sans)">
+        <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:10px">Seleccionar hora</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="background:#fff;border:2px solid var(--b6);border-radius:8px;width:64px;height:50px;display:flex;align-items:center;justify-content:center;font:700 28px var(--font-sans);color:var(--n7)">
+            <span data-time-h>${hStr}</span></div>
+          <span style="font:700 24px var(--font-sans);color:var(--n7)">:</span>
+          <div style="background:#fff;border-radius:8px;width:64px;height:50px;display:flex;align-items:center;justify-content:center;font:700 28px var(--font-sans);color:var(--n7)">00</div>
+          ${!h24?`<div style="display:flex;flex-direction:column;border-radius:8px;overflow:hidden;border:1px solid var(--n3)">
+            <button data-ampm-btn="AM" onclick="_tpAmPm(this,'AM')" style="padding:3px 9px;font:600 10px var(--font-sans);border:none;cursor:pointer;background:${initAmpm==='AM'?'var(--b6)':'transparent'};color:${initAmpm==='AM'?'#fff':'var(--n6)'}">AM</button>
+            <div style="height:1px;background:var(--n3)"></div>
+            <button data-ampm-btn="PM" onclick="_tpAmPm(this,'PM')" style="padding:3px 9px;font:600 10px var(--font-sans);border:none;cursor:pointer;background:${initAmpm==='PM'?'var(--b6)':'transparent'};color:${initAmpm==='PM'?'#fff':'var(--n6)'}">PM</button>
+          </div>`:''}
+        </div>
+        <div data-clock-face>
+          <svg data-clock-svg width="210" height="210" viewBox="0 0 220 220" style="display:block;margin:0 auto"></svg>
+        </div>
+        <div data-text-face style="display:none;gap:8px;margin-bottom:8px">
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <input data-time-h-input type="text" value="${hStr}" maxlength="2"
+              style="width:64px;height:50px;text-align:center;font:700 28px var(--font-sans);border:2px solid var(--b6);border-radius:8px;outline:none;background:#fff">
+            <span style="font:400 10px var(--font-sans);color:var(--n5);text-align:center">Hora</span>
+          </div>
+          <div style="font:700 24px var(--font-sans);color:var(--n7);padding-top:12px">:</div>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <input type="text" value="00" maxlength="2"
+              style="width:64px;height:50px;text-align:center;font:700 28px var(--font-sans);border:1px solid var(--n3);border-radius:8px;outline:none;background:#fff"
+              onfocus="this.style.border='2px solid var(--b6)'" onblur="this.style.border='1px solid var(--n3)'">
+            <span style="font:400 10px var(--font-sans);color:var(--n5);text-align:center">Minuto</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
+          <button data-mode-icon onclick="_tpToggleMode(this)" style="background:none;border:none;cursor:pointer;display:flex">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </button>
+          <div style="display:flex;gap:14px">
+            <button onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
+            <button onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
+          </div>
+        </div>
+      </div>`;
+    };
+
     const dtSection = `
       <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:32px 0 6px">Date picker</h3>
-      <p class="desc" style="margin-bottom:16px">Selección de fecha simple. Navega meses con ‹ ›. Aceptar se activa al seleccionar una fecha.</p>
-      <div class="card" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;margin-bottom:16px">
-        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Sin selección</span>${dpSingle}</div>
-        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Fecha seleccionada</span>${dpSingleSel}</div>
-        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Rango seleccionado</span>${dpRangeSel}</div>
+      <p class="desc" style="margin-bottom:16px">Click en el input para abrir el calendario. Navega con ‹ ›. Aceptar se activa al seleccionar.</p>
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;padding-bottom:320px;margin-bottom:0">
+        <div data-dp-wrap style="display:flex;flex-direction:column;gap:4px;position:relative">
+          <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Fecha de creación</span>
+          ${triggerInp('F. Creación', CAL_ICO, 'dp-a')}
+          ${dpCalCard('data-dp="" data-month="4" data-year="2025" data-selected=""')}
+        </div>
+        <div data-dp-wrap style="display:flex;flex-direction:column;gap:4px;position:relative">
+          <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Con fecha seleccionada</span>
+          ${triggerInp('01/04/2025', CAL_ICO, 'dp-b')}
+          ${dpCalCard('data-dp="" data-month="4" data-year="2025" data-selected="2025-04-01"')}
+        </div>
+        <div data-dp-wrap style="display:flex;flex-direction:column;gap:4px;position:relative">
+          <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Con rango seleccionado</span>
+          ${triggerInp('01/04 – 10/04', CAL_ICO, 'dp-c')}
+          ${dpCalCard('data-dp="" data-month="4" data-year="2025" data-start="2025-04-01" data-end="2025-04-10"')}
+        </div>
       </div>
-      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:0 0 6px">Date range picker — dos meses continuos</h3>
-      <p class="desc" style="margin-bottom:16px">Muestra dos meses para facilitar rangos que cruzan fin de mes. Click en inicio → click en fin del rango.</p>
-      <div class="card" style="margin-bottom:16px;overflow-x:auto">${dpRangeCard}</div>
-      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:0 0 6px">Time picker</h3>
-      <p class="desc" style="margin-bottom:16px">Reloj interactivo o entrada manual. El ícono inferior izquierdo alterna entre modos.</p>
-      <div class="card" style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
-        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Reloj 12h</span>${tpBase('tp1',false,7,'AM','clock')}</div>
-        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Reloj 24h</span>${tpBase('tp2',true,20,'','clock')}</div>
-        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Texto 12h</span>${tpBase('tp3',false,9,'AM','text')}</div>
-        <div style="display:flex;flex-direction:column;gap:6px"><span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Texto 24h</span>${tpBase('tp4',true,21,'','text')}</div>
+
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:24px 0 6px">Date range picker</h3>
+      <p class="desc" style="margin-bottom:16px">Dos inputs (Desde/Hasta) que abren un popover con dos meses continuos — exactamente el ancho de ambos inputs juntos.</p>
+      <div class="card" style="padding-bottom:320px;margin-bottom:0">
+        <div style="display:flex;gap:8px;position:relative" data-dp-wrap>
+          <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+            <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Desde</span>
+            ${triggerInp('Fecha inicio', CAL_ICO, '')}
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+            <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Hasta</span>
+            ${triggerInp('Fecha fin', CAL_ICO, '')}
+          </div>
+          ${dpRangePopover}
+        </div>
+      </div>
+
+      <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:24px 0 6px">Time picker</h3>
+      <p class="desc" style="margin-bottom:16px">Click en el input de hora para abrir el reloj. El ícono inferior alterna entre reloj y texto.</p>
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;padding-bottom:380px">
+        <div style="display:flex;flex-direction:column;gap:4px;position:relative">
+          <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">12h — AM/PM</span>
+          ${triggerInp('--:-- AM', CLK_ICO, '')}
+          ${tpPopover('tp1',false,7,'AM')}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;position:relative">
+          <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">24h</span>
+          ${triggerInp('--:--', CLK_ICO, '')}
+          ${tpPopover('tp2',true,20,'')}
+        </div>
       </div>`;
 
     return `

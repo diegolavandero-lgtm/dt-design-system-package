@@ -1263,6 +1263,19 @@ function initDateTimePickers() {
     });
   };
 
+  /* ── CLICK OUTSIDE to close all popovers ── */
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('[data-popover]') && !e.target.closest('[data-dp-wrap]') &&
+        !e.target.closest('[data-tp-wrap]') && !e.target.closest('[onclick*="_dpNav"]') &&
+        !e.target.closest('[onclick*="_dpClose"]') && !e.target.closest('[onclick*="_dp"]')) {
+      var isInsideTrigger = e.target.closest('[onclick*="data-popover"]') ||
+                            e.target.closest('[style*="position:relative"]');
+      if (!isInsideTrigger) {
+        document.querySelectorAll('[data-popover]').forEach(function(p){ p.style.display='none'; });
+      }
+    }
+  });
+
   /* ── INIT ALL CALENDARS ── */
   document.querySelectorAll('[data-dp],[data-dpr]').forEach(function(dp) {
     dp.querySelectorAll('[data-grid]').forEach(function(g) {
