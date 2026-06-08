@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T21:08:08.960Z",
+  "generated": "2026-06-08T21:18:01.980Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "a973e5c",
+          "type": "fix",
+          "section": "Sidebar",
+          "message": "fix(form page): use existing LM settings sidebar — no recreation",
+          "author": "Diego"
+        },
         {
           "hash": "4031a91",
           "type": "update",
