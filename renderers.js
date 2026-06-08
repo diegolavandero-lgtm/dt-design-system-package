@@ -4256,6 +4256,334 @@ async function downloadAllPins() {
     `;
   },
 
+  /* ── FORM PAGE ── */
+  formpage(data) {
+    // ── Reuse sidebar CSS from tablepage ──────────────────────────────────
+    const sbStyle = `<style>
+      .fp-sbx{width:52px;overflow:hidden;transition:width .25s cubic-bezier(.4,0,.2,1);background:#fff;border-radius:0;box-shadow:none;border-right:1px solid var(--n3);padding:8px 0;flex-shrink:0;cursor:default}
+      .fp-sbx:hover{width:240px}
+      .fp-sbx .sbx-row{display:flex;align-items:center;height:40px;cursor:pointer}
+      .fp-sbx .sbx-row:hover .sbx-bg{background:rgba(75,130,250,.04)}
+      .fp-sbx .sbx-row.sel .sbx-bg{background:rgba(75,130,250,.08)}
+      .fp-sbx .sbx-bar{width:6px;height:40px;flex-shrink:0;background:transparent}
+      .fp-sbx .sbx-row.sel .sbx-bar{background:#0052CC}
+      .fp-sbx .sbx-bg{display:flex;align-items:center;height:40px;flex:1;transition:background .12s;overflow:hidden}
+      .fp-sbx .sbx-ico{width:46px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+      .fp-sbx .sbx-ico svg{display:block;fill:#4B82FA}
+      .fp-sbx .sbx-row.sel .sbx-ico svg{fill:#0052CC}
+      .fp-sbx .sbx-lbl{font:400 13px/1 DM Sans,sans-serif;color:#39414D;white-space:nowrap;opacity:0;transition:opacity .18s .06s;flex:1}
+      .fp-sbx:hover .sbx-lbl{opacity:1}
+      .fp-sbx .sbx-row.sel .sbx-lbl{font-weight:600;color:#0052CC}
+      .fp-sbx .sbx-sep{height:1px;background:#E9ECF2;margin:4px 14px}
+    </style>`;
+
+    const activeNav = data.activeNav || 'settings';
+    const sbItems = [
+      {icon:'report-data',label:'Resumen'},{icon:'dashboard',label:'Actividad'},
+      {icon:'network-3',label:'Rutas'},{icon:'document-multiple',label:'Órdenes'},
+      {icon:'delivery',label:'Flota'},{icon:'chart-column',label:'Estadísticas'},
+      {icon:'notification',label:'Alertas'},{icon:'events',label:'Clientes'},
+      {icon:'file-system',label:'Documentos'},{icon:'currency',label:'Módulo de Costos'},
+      {divider:true},{icon:'settings',label:'Ajustes'},
+    ];
+    const sidebarHtml = sbItems.map(it => {
+      if (it.divider) return `<div class="sbx-sep"></div>`;
+      const sel = it.icon === activeNav;
+      return `<div class="sbx-row${sel?' sel':''}"><div class="sbx-bar"></div><div class="sbx-bg"><div class="sbx-ico">${iconSvg(it.icon,18)}</div><span class="sbx-lbl">${escHtml(it.label)}</span></div></div>`;
+    }).join('');
+
+    // ── Common input token shorthand ──────────────────────────────────────
+    const INP = `height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%`;
+    const INP_FILLED = `height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%`;
+    const CHEVRON_SM = `<svg viewBox="0 0 32 32" width="12" height="12" fill="var(--n5)"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>`;
+    const INFO_ICO = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--n4)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>`;
+    const BACK_ARROW = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`;
+
+    // ── Labeled input ─────────────────────────────────────────────────────
+    const fpInp = (label, value='', placeholder='', required=false) => `
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">${required?'<span style="color:var(--r6)">*</span>':''}${escHtml(label)}</label>
+        <input type="text" ${value?`value="${escHtml(value)}"`:`placeholder="${escHtml(placeholder||label)}"`}
+          style="${value?INP_FILLED:INP}"
+          onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+          onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'">
+      </div>`;
+
+    const fpSelect = (label, placeholder='', required=false) => `
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">${required?'<span style="color:var(--r6)">*</span>':''}${escHtml(label)}</label>
+        <div class="dt-drop-wrap" style="position:relative">
+          <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)"
+            onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+            onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+            style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+            <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(placeholder)}</span>
+            <span style="display:flex;flex-shrink:0">${CHEVRON_SM}</span>
+          </div>
+          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0"></div>
+        </div>
+      </div>`;
+
+    const fpRadio = (name, options, selected=0) => `
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        ${options.map((opt,i)=>`<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font:400 14px var(--font-sans);color:var(--n7)">
+          <div style="width:16px;height:16px;border-radius:50%;border:2px solid ${i===selected?'var(--b6)':'var(--n4)'};background:${i===selected?'var(--b6)':'#fff'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            ${i===selected?'<div style="width:6px;height:6px;border-radius:50%;background:#fff"></div>':''}
+          </div>${escHtml(opt)}
+        </label>`).join('')}
+      </div>`;
+
+    const fpSwitch = (label, on=false, info=false, indent=false) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:${indent?'0 0 0 20px':'0'}">
+        <span style="flex:1;font:400 14px var(--font-sans);color:var(--n7)">${escHtml(label)}</span>
+        ${info?`<span style="display:flex;align-items:center">${INFO_ICO}</span>`:''}
+        <div class="swt${on?' on':''}" onclick="this.classList.toggle('on')" style="flex-shrink:0"></div>
+      </div>`;
+
+    const fpHint = (text) => `<p style="margin:2px 0 0;font:400 12px var(--font-sans);color:var(--n5)">${escHtml(text)}</p>`;
+
+    const fpTextarea = (label, placeholder='') => `
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label style="font:400 12px/16px var(--font-sans);color:var(--n5)">${escHtml(label)}</label>
+        <textarea placeholder="${escHtml(placeholder)}" rows="2"
+          style="padding:8px 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px/1.5 var(--font-sans);background:var(--n2);color:var(--n7);box-sizing:border-box;outline:none;width:100%;resize:vertical"
+          onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+          onblur="this.style.border='1px solid var(--n3)';this.style.background='var(--n2)'"></textarea>
+      </div>`;
+
+    // ── Block renderers ───────────────────────────────────────────────────
+    // White card wrapper
+    const fpCard = (title, content, style='') =>
+      `<div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:16px;${style}">
+        ${title?`<div style="font:700 15px var(--font-sans);color:var(--n7);padding-bottom:12px;border-bottom:1px solid var(--n3)">${escHtml(title)}</div>`:''}
+        ${content}
+      </div>`;
+
+    // BLOCK: two-col
+    const blockTwoCol = (leftTitle, leftContent, rightTitle, rightContent) =>
+      `<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        ${fpCard(leftTitle, leftContent)}
+        ${fpCard(rightTitle, rightContent)}
+      </div>`;
+
+    // BLOCK: single
+    const blockSingle = (title, content) => fpCard(title, content);
+
+    // BLOCK: input-map (inputs left + map right)
+    const blockInputMap = (formContent) =>
+      `<div style="display:grid;grid-template-columns:1fr 1.4fr;gap:20px">
+        <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:12px">
+          ${formContent}
+        </div>
+        <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);overflow:hidden;min-height:280px;position:relative">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#e8edf3 25%,#dde3eb 100%)"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--n4)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span style="font:400 11px var(--font-sans);color:var(--n4)">Map component</span>
+          </div>
+        </div>
+      </div>`;
+
+    // BLOCK: switches
+    const blockSwitches = (title, rows, activateAll=false) =>
+      fpCard(title, `
+        ${activateAll?`<div style="display:flex;justify-content:flex-end;margin-top:-8px"><span style="font:700 13px var(--font-sans);color:var(--b7);cursor:pointer">Activar todo</span></div>`:''}
+        <div style="display:flex;flex-direction:column;gap:0">
+          ${rows.map((r,i)=>`<div style="padding:10px 0;${i>0?'border-top:1px solid var(--n3)':''}">${fpSwitch(r.label,r.on||false,r.info||false,r.indent||false)}</div>`).join('')}
+        </div>`);
+
+    // BLOCK: custom fields
+    const blockCustomFields = (title, fieldGroups, addGroupBtn=false) =>
+      fpCard(title, `
+        <div style="display:flex;flex-direction:column;gap:12px">
+          ${fieldGroups.map(f=>f.type==='textarea'?fpTextarea(f.label,f.placeholder):fpSelect(f.label,f.label)).join('')}
+        </div>
+        ${addGroupBtn?`<div style="padding-top:4px"><button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px var(--font-sans);background:#fff;color:var(--n6);border:1px solid var(--n3);cursor:pointer">Agregar grupo</button></div>`:''}`);
+
+    // BLOCK: file upload
+    const blockFileUpload = (label, hint='') =>
+      fpCard('', `
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="swt on"></div>
+          <label style="font:500 13px var(--font-sans);color:var(--n7)">${escHtml(label)}</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button style="height:32px;padding:0 14px;border-radius:50px;font:700 13px var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              Choose File
+            </button>
+            <span style="font:400 12px var(--font-sans);color:var(--n5)">No file chosen</span>
+          </div>
+        </div>
+        ${hint?fpHint(hint):''}`);
+
+    // ── Form page shell ───────────────────────────────────────────────────
+    const formShell = (breadcrumb, title, blocks) => `
+      <div class="card flush" style="border-radius:8px;overflow:hidden">
+        <div class="tbar" style="border-radius:0;padding:0 0 0 22px">
+          <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
+          <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
+          <div class="slot">ACME CO</div>
+        </div>
+        <div style="display:flex;min-height:600px">
+          <div class="fp-sbx">${sidebarHtml}</div>
+          <div style="flex:1;padding:20px 24px 24px;min-width:0;display:flex;flex-direction:column;gap:0;overflow:hidden;background:var(--n2)">
+            <!-- Breadcrumb -->
+            <div style="font:400 12px var(--font-sans);color:var(--n5);margin-bottom:12px;display:flex;align-items:center;gap:4px">
+              ${breadcrumb.map((b,i)=>`${i>0?`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`:''}
+              <span style="${i===breadcrumb.length-1?'color:var(--n6)':''}">${escHtml(b)}</span>`).join('')}
+            </div>
+            <!-- Page header -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n6)">${BACK_ARROW}</button>
+                <h2 style="margin:0;font:700 24px/1 var(--font-sans);color:var(--n7)">${escHtml(title)}</h2>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer">Cancelar</button>
+                <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Guardar</button>
+              </div>
+            </div>
+            <p style="font:400 12px var(--font-sans);color:var(--r6);margin:0 0 16px"><span>* </span>Indica el campo es obligatorio</p>
+            <!-- Blocks -->
+            <div style="display:flex;flex-direction:column;gap:16px">
+              ${blocks}
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    // ── Block catalog ─────────────────────────────────────────────────────
+    const blockTypes = data.blocks || [];
+    const catalogCards = blockTypes.map(bt => {
+      let preview = '';
+      if (bt.id === 'two-col') preview = blockTwoCol('Bloque A',
+        fpInp('Campo 1','','',true) + fpInp('Campo 2','',''),
+        'Bloque B',
+        fpInp('Campo 3','','',true) + fpSelect('Campo 4','Seleccionar'));
+      else if (bt.id === 'single') preview = blockSingle('Bloque completo',
+        `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">${fpInp('Campo 1','','',true)}${fpInp('Campo 2','','',false)}${fpSelect('Campo 3','Seleccionar')}</div>`);
+      else if (bt.id === 'input-map') preview = blockInputMap(
+        fpInp('Nombre','','',true) + fpSelect('Tipo','Seleccionar tipo',true) + fpRadio('estado',['Activa','Inactiva'],0));
+      else if (bt.id === 'switches') preview = blockSwitches('Permisos',[
+        {label:'Crear nuevos registros',on:true,info:true},
+        {label:'Editar registros',on:true,info:true},
+        {label:'Solo dentro de geocerca',on:false,info:true,indent:true},
+        {label:'Eliminar registros',on:false,info:true},
+      ], true);
+      else if (bt.id === 'custom-fields') preview = blockCustomFields('Campos personalizados',[
+        {type:'select',label:'Tienda'},{type:'textarea',label:'Cargo',placeholder:''}],true);
+      else if (bt.id === 'file-upload') preview = blockFileUpload('Foto de perfil','Tamaño sugerido 224×224px (PNG o JPG)');
+
+      return `<div style="background:#fff;border:1px solid var(--n3);border-radius:10px;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--n3);display:flex;align-items:center;gap:10px">
+          ${bt.icon?`<div style="width:28px;height:28px;border-radius:6px;background:var(--b1);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--b7)" stroke-width="2"><path d="${escHtml(bt.icon)}"/></svg></div>`:''}
+          <div>
+            <div style="font:700 13px var(--font-sans);color:var(--n7)">${escHtml(bt.label)}</div>
+            <div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:1px">${escHtml(bt.description)}</div>
+          </div>
+          <code style="margin-left:auto;font:600 11px var(--font-mono);background:var(--n2);padding:2px 7px;border-radius:4px;color:var(--b7);flex-shrink:0">${escHtml(bt.id)}</code>
+        </div>
+        <div style="padding:16px;background:var(--n2)">${preview}</div>
+      </div>`;
+    }).join('');
+
+    // ── Assembled examples ────────────────────────────────────────────────
+    const ex1 = formShell(
+      ['Usuarios web','Nuevo usuario web'],
+      'Nuevo usuario web',
+      blockTwoCol(
+        'Información de usuario',
+        fpInp('Nombre y apellido','Walter Wallace','',true) +
+        fpInp('Nombre de usuario','walter.wallace','',true) +
+        fpHint('Nombre único para entrar a la plataforma. No debe contener espacios.') +
+        fpInp('Email','walter.wallace@email.com','',true) +
+        fpInp('Contraseña','','',true) +
+        fpInp('Repite contraseña','','',true),
+        'Agrupaciones',
+        `<p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 12px">Al seleccionar una agrupación el usuario pierde los accesos a ajustes.</p>` +
+        fpSelect('Agrupaciones de órdenes','') +
+        fpSelect('Agrupaciones de vehículos','')
+      ) +
+      blockSingle('Permisos',
+        `<p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 12px">Selecciona una agrupación de permisos seleccionando un rol o de manera personalizada.</p>` +
+        `<div style="display:flex;gap:16px;margin-bottom:12px">${fpRadio('perm-type',['Rol de usuario','Personalizado'],0)}</div>` +
+        fpSelect('Seleccionar rol','')
+      ) +
+      blockCustomFields('Campos personalizados',
+        [{type:'select',label:'Tienda'},{type:'select',label:'Cargo'}])
+    );
+
+    const ex2 = formShell(
+      ['Usuarios móviles','Nuevo usuario móvil'],
+      'Nuevo usuario móvil',
+      blockTwoCol(
+        'Información de usuario',
+        fpInp('Nombre y apellido','','example',true) +
+        fpInp('Teléfono','','example',true) +
+        fpInp('ID','','',false),
+        'Datos de acceso a la plataforma',
+        fpInp('Usuario','','example',true) +
+        fpHint('No se permiten espacios.') +
+        fpInp('Contraseña','','example',true) +
+        fpHint('Mínimo 4 caracteres.') +
+        blockFileUpload('Foto de perfil','Tamaño sugerido de 224×224 (PNG o JPG)')
+      ) +
+      blockSwitches('Permisos',[
+        {label:'Crear órdenes nuevas',on:true,info:true},
+        {label:'Agregar órdenes del sistema',on:true,info:true},
+        {label:'Solo dentro de geocerca del CD',on:false,info:true,indent:true},
+        {label:'Eliminar órdenes',on:true,info:true},
+        {label:'Compartir ruta a copiloto',on:true,info:true},
+        {label:'Reordenar ruta no iniciada',on:true,info:true},
+        {label:'Notificaciones automáticas (pre-entrega)',on:false,info:true},
+      ], true) +
+      blockCustomFields('Campos personalizados',[
+        {type:'textarea',label:'Tienda',placeholder:''},
+        {type:'textarea',label:'Cargo',placeholder:''}])
+    );
+
+    const ex3 = formShell(
+      ['Configuración','Geocerca','Crear Geocerca'],
+      'Crear Geocerca',
+      blockInputMap(
+        `<p style="font:700 13px var(--font-sans);color:var(--n7);margin:0 0 4px">Tipo de geocerca</p>
+        <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 10px">Asociativa: define la zona de despacho de un vehículo.<br>Restrictiva: impide el tránsito por una zona.</p>` +
+        `<div style="margin-bottom:12px">${fpRadio('geocerca-tipo',['Asociativa','Restrictiva'],1)}</div>` +
+        fpInp('Nombre','','',true) +
+        fpSelect('Seleccionar geocerca pre-definida','') +
+        `<div style="margin-top:4px"><p style="font:400 12px var(--font-sans);color:var(--n7);margin:0 0 8px">Estado</p>${fpRadio('geocerca-estado',['Activa','Inactiva'],0)}</div>`
+      )
+    );
+
+    return `
+      ${sbStyle}
+      ${sectionHeader(data)}
+
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Page shell</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6">
+        Every form page uses the same shell: <strong>Topbar</strong> → <strong>Sidebar</strong> → content area with breadcrumb, ← back + title + <em>Cancelar/Guardar</em> buttons, required field note, and a vertical stack of blocks.
+      </p>
+
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:24px 0 6px">Block catalog</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6">
+        Compose any form by stacking blocks. Every block is a white card with <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">border-radius:8px · border:1px solid var(--n4) · padding:20px</code>. Blocks stack with <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">gap:16px</code>.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px">${catalogCards}</div>
+
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Example — Nuevo usuario web</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 12px">two-col + single + custom-fields</p>
+      <div style="margin-bottom:28px">${ex1}</div>
+
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Example — Nuevo usuario móvil</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 12px">two-col + switches + custom-fields</p>
+      <div style="margin-bottom:28px">${ex2}</div>
+
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Example — Crear Geocerca</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 12px">input-map</p>
+      <div style="margin-bottom:28px">${ex3}</div>
+    `;
+  },
+
   /* ── DRAFTS ── */
   drafts(data) {
     const STORAGE_KEY = 'dt-ds-drafts-v1';

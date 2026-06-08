@@ -1,0 +1,45 @@
+{
+  "title": "Form page",
+  "titleKey": "nav.pages.form",
+  "description": "Template for create/edit forms. Composed from reusable blocks arranged vertically inside the page shell. Add as many blocks as needed — all share the same padding, gap, and card tokens.",
+  "keywords": ["form", "create", "edit", "page", "block", "inputs", "map", "switches", "permissions"],
+  "activeNav": "settings",
+  "blocks": [
+    {
+      "id": "two-col",
+      "label": "Two columns",
+      "description": "Two white cards side by side. Use for grouping related fields in separate logical sections (e.g. User info + Platform access). Default proportions are equal (50/50) but can be adjusted.",
+      "icon": "M3 3h8v18H3zM13 3h8v18h-8z"
+    },
+    {
+      "id": "single",
+      "label": "Single column",
+      "description": "One full-width white card. Use for sections that need all available horizontal space: long switch lists, rich text, custom fields, or any block that benefits from more room.",
+      "icon": "M3 3h18v18H3z"
+    },
+    {
+      "id": "input-map",
+      "label": "Inputs + Map",
+      "description": "Left: labeled form inputs. Right: interactive map for geocoding or drawing geofences. Uses the DS Map component from Map Elements.",
+      "icon": "M3 3h9v18H3zM12 3h9v18h-9z"
+    },
+    {
+      "id": "switches",
+      "label": "Permission switches",
+      "description": "Full-width card with a list of toggle rows. Each row has a label, optional info icon, and a switch. Supports nested rows (indented sub-permissions) and an Activate all link.",
+      "icon": "M5 12h14M12 5l7 7-7 7"
+    },
+    {
+      "id": "custom-fields",
+      "label": "Custom fields",
+      "description": "Full-width card for user-defined fields (dropdowns, textareas). Fields can be grouped. Supports an Add group button at the bottom.",
+      "icon": "M12 5v14M5 12h14"
+    },
+    {
+      "id": "file-upload",
+      "label": "File upload",
+      "description": "Single or multiple file upload block. Uses the DS File uploader component from Selection controls.",
+      "icon": "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"
+    }
+  ]
+}
