@@ -3936,8 +3936,15 @@ async function downloadAllPins() {
       const onclick = `(function(btn){
         var bar=document.getElementById('${barId}');
         if(!bar)return;
-        bar.querySelectorAll('input[type=text]').forEach(function(inp){inp.value='';inp.style.border='1px solid var(--n3)';inp.style.background='#fff';});
-        bar.querySelectorAll('.dt-dlabel').forEach(function(lbl){lbl.textContent=lbl.dataset.ph||lbl.textContent;lbl.closest('.dt-drop-wrap').dataset.val='';});
+        bar.querySelectorAll('input[type=text]').forEach(function(inp){
+          inp.value='';inp.style.border='1px solid var(--n3)';inp.style.background='#fff';
+        });
+        bar.querySelectorAll('.dt-drop-wrap').forEach(function(wrap){
+          var lbl=wrap.querySelector('.dt-dlabel');
+          if(lbl){lbl.textContent=lbl.dataset.ph||lbl.textContent;lbl.style.color='var(--n6)';lbl.dataset.filled='';}
+          wrap.dataset.val='';
+          if(typeof dtDropClose==='function')dtDropClose(wrap);
+        });
         var tbl=document.getElementById('${tableId}');
         if(tbl)tbl.querySelectorAll('tbody tr').forEach(function(r){r.style.display='';});
       })(this)`.replace(/\s+/g,' ');
@@ -4003,7 +4010,7 @@ async function downloadAllPins() {
         // dt-drop-wrap stores selected val in data-val on the wrap
         const items = (f.options||[]).map(o => {
           const safe = o.replace(/'/g,"&#39;");
-          return `<div onclick="dtPickOpt(this);this.closest('[data-val]').dataset.val='${safe}'"
+          return `<div onclick="dtPickOpt(this);this.closest('.dt-drop-wrap').dataset.val='${safe}'"
             data-val="${safe}"
             onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
             onmouseleave="this.style.background='';this.style.color='var(--n7)'"
