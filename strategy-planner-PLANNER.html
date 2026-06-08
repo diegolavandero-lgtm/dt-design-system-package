@@ -223,11 +223,97 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 /* Tab panels */
 .tp{display:none;flex-direction:column;flex:1;min-height:0;}
 .tp.on{display:flex;}
-/* Empty state for Territorios */
+/* Empty state */
 .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:48px;background:var(--n2);}
 .empty-state svg{color:var(--n4);}
 .empty-state h3{font:700 18px var(--font-sans);color:var(--n7);}
 .empty-state p{font:400 14px var(--font-sans);color:var(--n5);text-align:center;max-width:360px;line-height:1.5;}
+
+/* ============ TERRITORY PLANNER — screens 10–15 ============ */
+/* Sub-view system within #tp-territories */
+.tview{display:none;flex-direction:column;flex:1;min-height:0;}
+.tview.on{display:flex;}
+
+/* Screen 10 — Territory list table */
+.tlist-header{padding:18px 28px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.tlist-title{font:700 22px/1 var(--font-sans);color:var(--n7);}
+
+/* Screen 11 — Territory canvas */
+.tcanvas{display:flex;flex:1;min-height:0;}
+.tcfg{width:320px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;padding-bottom:16px;}
+.tcfg .sec{padding:14px 16px;border-bottom:1px solid var(--n3);}
+.tcfg .sec-title{font:700 12px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;}
+.tcfg .frow{margin-bottom:12px;}
+.tcfg .flbl{font:400 12px var(--font-sans);color:var(--n7);margin-bottom:5px;}
+.tcfg .stepper-num{display:flex;align-items:center;gap:0;border:1px solid var(--n3);border-radius:6px;overflow:hidden;height:32px;background:#fff;}
+.tcfg .stepper-num button{width:32px;height:32px;border:0;background:#fff;font:700 16px var(--font-sans);color:var(--n5);cursor:pointer;flex-shrink:0;}
+.tcfg .stepper-num button:hover{background:var(--n2);}
+.tcfg .stepper-num span{flex:1;text-align:center;font:700 14px var(--font-sans);color:var(--n7);}
+.tcfg .tdays{display:flex;gap:4px;}
+.tcfg .tday{flex:1;height:32px;border:1px solid var(--n3);border-radius:6px;background:#fff;font:700 11px var(--font-sans);color:var(--n6);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.tcfg .tday.on{background:var(--b5);border-color:var(--b5);color:#fff;}
+.tmap{flex:1;position:relative;overflow:hidden;}
+#tmap-leaflet{position:absolute;inset:0;}
+/* Territory zone colors */
+.tzone-legend{position:absolute;bottom:20px;left:16px;background:#fff;border:1px solid var(--n3);border-radius:8px;padding:10px 14px;z-index:1000;box-shadow:var(--shadow-sm);}
+.tzone-legend .zl-title{font:700 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+.tzone-legend .zl-item{display:flex;align-items:center;gap:8px;font:400 12px var(--font-sans);color:var(--n7);margin-bottom:5px;}
+.tzone-legend .zl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+/* Screen 12 — Balance panel */
+.tresult{display:flex;flex:1;min-height:0;}
+.tbalance{width:300px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;}
+.tbalance .bh{padding:14px 16px;border-bottom:1px solid var(--n3);display:flex;align-items:center;justify-content:space-between;}
+.tbalance .bh .bt{font:700 14px var(--font-sans);color:var(--n7);}
+.bscore{display:flex;align-items:center;gap:6px;padding:12px 16px;border-bottom:1px solid var(--n3);}
+.bscore .bsc-val{font:700 22px var(--font-sans);color:var(--g6);}
+.bscore .bsc-lbl{font:400 11px var(--font-sans);color:var(--n5);}
+.seller-row{padding:10px 16px;border-bottom:1px solid var(--n3);cursor:pointer;}
+.seller-row:hover{background:var(--n1);}
+.seller-row.sel{background:var(--b1);}
+.seller-row .sr-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.seller-row .sr-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.seller-row .sr-name{font:700 13px var(--font-sans);color:var(--n7);}
+.seller-row .sr-count{font:400 11px var(--font-sans);color:var(--n5);margin-left:auto;}
+.load-bar{height:5px;background:var(--n3);border-radius:3px;overflow:hidden;}
+.load-bar-fill{height:100%;border-radius:3px;}
+.load-stats{display:flex;justify-content:space-between;margin-top:5px;font:400 10px var(--font-sans);color:var(--n5);}
+/* Screen 13 — Rebalanceo */
+.trebal{display:flex;flex:1;min-height:0;}
+.trebal-cfg{width:320px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;padding:16px;}
+.trebal-title{font:700 15px var(--font-sans);color:var(--n7);margin-bottom:4px;}
+.trebal-sub{font:400 12px var(--font-sans);color:var(--n5);margin-bottom:16px;line-height:1.5;}
+.vendor-ck{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--n3);border-radius:8px;cursor:pointer;margin-bottom:8px;}
+.vendor-ck.sel{border-color:var(--b5);background:var(--b1);}
+.vendor-ck .vdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.vendor-ck .vname{font:600 13px var(--font-sans);color:var(--n7);flex:1;}
+.vendor-ck .vcount{font:400 11px var(--font-sans);color:var(--n5);}
+/* Screen 14 — Edit zone */
+.tedit-bar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--n3);border-radius:50px;padding:4px 6px;display:flex;gap:4px;z-index:1000;box-shadow:var(--shadow-md);}
+.tedit-tool{height:32px;padding:0 14px;border-radius:50px;border:none;background:transparent;font:700 13px var(--font-sans);color:var(--n6);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.tedit-tool:hover{background:var(--n2);}
+.tedit-tool.on{background:var(--b5);color:#fff;}
+/* Territory error panel */
+.terr-panel{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(240,242,245,.7);z-index:8;padding:24px;}
+.terr-panel.on{display:flex;}
+/* Territory header action bar */
+.tact-bar{background:#fff;border-bottom:1px solid var(--n3);padding:0 20px;height:48px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tact-bar .plan-title{font:700 15px var(--font-sans);color:var(--n7);}
+.tact-bar .bdg{margin-right:4px;}
+/* Map controls (same subtle style) */
+.tmap-ctrls{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:1100;}
+.tmap-ctrl{height:32px;padding:0 14px;border-radius:50px;font:700 13px/1 var(--font-sans);background:rgba(255,255,255,.96);color:var(--n7);border:1px solid var(--n3);cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 1px 4px rgba(19,32,69,.12);white-space:nowrap;position:relative;}
+.tmap-ctrl:hover{background:#fff;border-color:var(--n4);}
+.tmap-ctrl.on{background:var(--b1);border-color:var(--b5);color:var(--b7);}
+/* Controls dropdown */
+.tctrl-menu{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;padding:4px 0;min-width:200px;display:none;}
+.tctrl-menu.on{display:block;}
+.tctrl-item{height:36px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font:400 13px var(--font-sans);color:var(--n7);cursor:pointer;}
+.tctrl-item:hover{background:var(--b1);color:var(--b7);}
+.tctrl-item .ton{font:700 13px var(--font-sans);color:var(--b6);}
+.tctrl-item .toff{font:700 13px var(--font-sans);color:var(--n45);}
+/* Loading state */
+.tloading{position:absolute;inset:0;background:rgba(255,255,255,.55);display:none;align-items:center;justify-content:center;z-index:20;}
+.tloading.on{display:flex;}
 
 /* ============ CANVAS — single-row plan metrics bar ============ */
 /* badge · plan name | divider | metric: value • … | avatars */
@@ -892,14 +978,313 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 
       </div><!-- /tp-planes -->
 
-      <!-- ══ TAB PANEL: TERRITORIOS ══ -->
+      <!-- ══ TAB PANEL: TERRITORIOS (screens 10–15) ══ -->
       <div class="tp" id="tp-territories">
-        <div class="empty-state">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 6l9-4 9 4v12l-9 4-9-4V6z"/><path d="M12 2v20M3 6l9 4 9-4"/></svg>
-          <h3>Territorios</h3>
-          <p>La planificación de territorios aún no está configurada. Define las zonas geográficas y asigna vendedores con carga balanceada.</p>
-          <button class="btn pri">Planificar territorios</button>
+
+        <!-- ── Screen 10: Lista de Territorios ── -->
+        <div class="tview on" id="tv10">
+          <div class="tlist-header">
+            <div class="tlist-title">Territorios</div>
+            <div class="pacts">
+              <button class="btn ter">Importar</button>
+              <button class="btn pri" onclick="goTerritoryCanvas()">+ Planificar</button>
+            </div>
+          </div>
+          <div style="padding:18px 28px 28px;flex:1;overflow:auto;">
+            <div class="tcard" style="border-radius:8px;border:1px solid var(--n4);background:#fff;padding:20px;display:flex;flex-direction:column;gap:20px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="inp" style="flex:1.5;max-width:300px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input placeholder="Buscar por nombre">
+                </div>
+                <div class="ddl" style="width:170px">Estado: <b>Todos</b> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+              </div>
+              <div style="border:1px solid var(--n4);border-radius:4px;overflow:hidden;">
+                <div class="twrap">
+                  <table class="t">
+                    <thead><tr>
+                      <th>Nombre <span class="sort">&#9650;&#9660;</span></th>
+                      <th>Estado</th><th>Vendedores</th><th style="text-align:right">Clientes</th><th>Creado</th><th>Vigencia</th>
+                      <th class="actcol">Acciones</th>
+                    </tr></thead>
+                    <tbody>
+                      <tr data-r onmouseenter="this.classList.add('hov')" onmouseleave="this.classList.remove('hov')">
+                        <td><span class="lnk" onclick="goTerritoryResult()">Territorio Estándar 2026</span></td>
+                        <td><span class="bdg g"><span class="d"></span>Activo</span></td>
+                        <td class="num">5</td><td class="num">223</td>
+                        <td class="muted">01-03-26</td><td class="muted">01-06-26</td>
+                        <td class="actcol"><div class="acts">
+                          <button class="act" title="Editar" onclick="goTerritoryCanvas()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                          <button class="act" onclick="tMenu(this,'active')" title="Más"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                        </div></td>
+                      </tr>
+                      <tr data-r onmouseenter="this.classList.add('hov')" onmouseleave="this.classList.remove('hov')">
+                        <td><span class="lnk" onclick="goTerritoryCanvas()">Territorio Piloto Norte</span><span class="pill-new">Nuevo</span></td>
+                        <td><span class="bdg b">Borrador</span></td>
+                        <td class="num">3</td><td class="num">87</td>
+                        <td class="muted">28-05-26</td><td class="muted">—</td>
+                        <td class="actcol"><div class="acts">
+                          <button class="act" title="Editar" onclick="goTerritoryCanvas()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                          <button class="act" onclick="tMenu(this,'draft')" title="Más"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                        </div></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- ── Screen 11: Configuración + Canvas ── -->
+        <div class="tview" id="tv11">
+          <div class="tact-bar">
+            <button class="btn txt" onclick="goTV(10)">← Territorios</button>
+            <span class="plan-title">Nuevo plan de territorios</span>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <button class="btn ter" id="tBtnChanges" style="display:none" onclick="goTV(13)">Cambios</button>
+              <button class="btn pri" id="tBtnPlan" onclick="tRunPlan()">Planificar territorios</button>
+              <button class="btn sec" id="tBtnActivate" style="display:none" onclick="goTV(12)">Ver resultado</button>
+            </div>
+          </div>
+          <div class="tcanvas">
+            <!-- Config panel -->
+            <div class="tcfg">
+              <div class="sec">
+                <div class="sec-title">Flota</div>
+                <div class="frow">
+                  <div class="flbl">Motor de optimización</div>
+                  <div class="ddl">TP Mark III (anchor-grow + DayAssigner) <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                </div>
+                <div class="frow">
+                  <div class="flbl">Número de vendedores</div>
+                  <div class="tcfg stepper-num">
+                    <button onclick="tAdj('tNSellers',-1)">−</button>
+                    <span id="tNSellers">5</span>
+                    <button onclick="tAdj('tNSellers',1)">+</button>
+                  </div>
+                </div>
+                <div class="frow" style="display:flex;gap:10px;">
+                  <div style="flex:1">
+                    <div class="flbl">Inicio turno</div>
+                    <div class="inp" style="height:32px"><input type="text" value="09:00"></div>
+                  </div>
+                  <div style="flex:1">
+                    <div class="flbl">Fin turno</div>
+                    <div class="inp" style="height:32px"><input type="text" value="18:00"></div>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="flbl">Días permitidos</div>
+                  <div class="tdays">
+                    <div class="tday on">L</div><div class="tday on">M</div><div class="tday on">X</div>
+                    <div class="tday on">J</div><div class="tday on">V</div><div class="tday">S</div><div class="tday">D</div>
+                  </div>
+                </div>
+              </div>
+              <div class="sec">
+                <div class="sec-title">Cadencia de visitas</div>
+                <div class="frow" style="display:flex;gap:10px;">
+                  <div style="flex:1">
+                    <div class="flbl">Visitas / semana</div>
+                    <div class="tcfg stepper-num"><button onclick="tAdj('tVisits',-1)">−</button><span id="tVisits">1</span><button onclick="tAdj('tVisits',1)">+</button></div>
+                  </div>
+                  <div style="flex:1">
+                    <div class="flbl">Días entre</div>
+                    <div class="tcfg stepper-num"><button onclick="tAdj('tGap',-1)">−</button><span id="tGap">0</span><button onclick="tAdj('tGap',1)">+</button></div>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="flbl">Recurrencia</div>
+                  <div class="ddl">Cada 2 semanas (quincenal) <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                </div>
+                <label class="ck"><span class="chk"></span>Usar días de ciclo por cliente (vendedor)</label>
+              </div>
+              <div class="sec">
+                <div class="sec-title">Servicio</div>
+                <div class="frow">
+                  <div class="flbl">Tiempo de servicio (min)</div>
+                  <div class="ddl">catálogo (default 20) <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                </div>
+                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Respetar depot legs</label>
+                <label class="ck"><span class="chk"></span>Ocultar paradas sin rutear</label>
+              </div>
+              <div style="padding:14px 16px;">
+                <button class="btn pri full" onclick="tRunPlan()">Planificar territorios</button>
+              </div>
+            </div>
+            <!-- Territory map -->
+            <div class="tmap" id="tmapCanvas">
+              <div id="tmap-leaflet"></div>
+              <!-- Info band -->
+              <div class="band" id="tBandInfo">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+                <span>Configura la flota y los parámetros, luego haz clic en <b>Planificar territorios</b>. Los parámetros de paradas se toman de <span class="lnk">Clientes / Config</span> si no se especifican.</span>
+              </div>
+              <!-- Map controls -->
+              <div class="tmap-ctrls">
+                <div style="position:relative">
+                  <button class="tmap-ctrl" onclick="tToggleCtrl(event,this)">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    Controles
+                  </button>
+                  <div class="tctrl-menu" id="tCtrlMenu">
+                    <div class="tctrl-item"><span>Rutas</span><span class="ton">Líneas</span></div>
+                    <div class="tctrl-item"><span>Depot Legs</span><span class="ton">ON</span></div>
+                    <div class="tctrl-item"><span>Ocultar sin rutear</span><span class="toff">OFF</span></div>
+                    <div class="tctrl-item" onclick="tMapRef()"><span>+ Recentrar</span></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Loading -->
+              <div class="tloading" id="tLoading">
+                <div class="loadcard"><div class="spin"></div><div class="lt">Planificando territorios…</div></div>
+              </div>
+              <!-- Error panel -->
+              <div class="terr-panel" id="tErrPanel"><div class="errbox" id="tErrBox"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Screen 12: Resultado — zonas + balance + diff ── -->
+        <div class="tview" id="tv12">
+          <div class="tact-bar">
+            <button class="btn txt" onclick="goTV(11)">← Configuración</button>
+            <span class="bdg g" style="flex-shrink:0"><span class="d"></span>Planificado</span>
+            <span class="plan-title">Territorio Estándar 2026</span>
+            <div style="flex:1;display:flex;align-items:center;gap:12px;padding-left:14px;border-left:1px solid var(--n3);margin-left:4px;flex-wrap:wrap;">
+              <span style="font:400 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Vendedores: <b style="color:var(--n7);font-weight:700">5</b></span>
+              <span style="font:400 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Clientes: <b style="color:var(--n7);font-weight:700">223</b></span>
+              <span style="font:400 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Balance: <b style="color:var(--g6);font-weight:700">94%</b></span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn ter" onclick="goTV(13)">Rebalanceo parcial</button>
+              <button class="btn ter" onclick="goTV(14)">Editar zona</button>
+              <button class="btn sec" onclick="openActivate()">Activar territorios</button>
+            </div>
+          </div>
+          <div class="tresult">
+            <!-- Balance sidebar -->
+            <div class="tbalance">
+              <div class="bh"><div class="bt">Balance de carga</div><button class="btn txt" style="font-size:12px;height:28px" onclick="goTV(13)">Rebalancear →</button></div>
+              <div class="bscore">
+                <div>
+                  <div class="bsc-val">94%</div>
+                  <div class="bsc-lbl">Índice de balance</div>
+                </div>
+                <div style="flex:1;margin-left:12px">
+                  <div class="bn ok" style="padding:6px 10px;font-size:11px">Distribución equitativa. Variación máxima entre vendedores: 4 clientes.</div>
+                </div>
+              </div>
+              <!-- Seller rows -->
+              <div id="tSellerList"></div>
+            </div>
+            <!-- Map -->
+            <div class="tmap" style="flex:1;position:relative;overflow:hidden;" id="tmapResult">
+              <div id="tmap-result-leaflet" style="position:absolute;inset:0;z-index:0;"></div>
+              <div class="tzone-legend" id="tZoneLegend"></div>
+              <div class="tmap-ctrls">
+                <button class="tmap-ctrl on" onclick="tToggleAll(this)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Todas las zonas
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Screen 13: Rebalanceo parcial ── -->
+        <div class="tview" id="tv13">
+          <div class="tact-bar">
+            <button class="btn txt" onclick="goTV(12)">← Resultado</button>
+            <span class="plan-title">Rebalanceo parcial</span>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <button class="btn ter" onclick="goTV(12)">Cancelar</button>
+              <button class="btn pri" onclick="tRebalance()">Rebalancear seleccionados</button>
+            </div>
+          </div>
+          <div class="trebal">
+            <div class="trebal-cfg">
+              <div class="trebal-title">Selecciona vendedores</div>
+              <div class="trebal-sub">Elige qué vendedores incluir en el rebalanceo. El resto de las zonas se mantiene fija.</div>
+              <div id="tRebalList"></div>
+              <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--n3);">
+                <div class="flbl" style="margin-bottom:8px">Parámetros de rebalanceo</div>
+                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Respetar límites de zona actuales</label>
+                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Minimizar cambio de clientes</label>
+                <label class="ck"><span class="chk"></span>Permitir mover clientes a otros vendedores</label>
+              </div>
+            </div>
+            <div class="tmap" style="flex:1;position:relative;overflow:hidden;" id="tmapRebal">
+              <div id="tmap-rebal-leaflet" style="position:absolute;inset:0;z-index:0;"></div>
+              <div class="tloading" id="tRebalLoading">
+                <div class="loadcard"><div class="spin"></div><div class="lt">Rebalanceando zonas seleccionadas…</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Screen 14: Edición manual de zona ── -->
+        <div class="tview" id="tv14">
+          <div class="tact-bar">
+            <button class="btn txt" onclick="goTV(12)">← Resultado</button>
+            <span class="plan-title">Edición manual — Vendedor 2</span>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <button class="btn ter" onclick="goTV(12)">Descartar cambios</button>
+              <button class="btn pri" onclick="goTV(12)">Guardar zona</button>
+            </div>
+          </div>
+          <div style="display:flex;flex:1;min-height:0;">
+            <div class="tmap" style="flex:1;position:relative;overflow:hidden;" id="tmapEdit">
+              <div id="tmap-edit-leaflet" style="position:absolute;inset:0;z-index:0;"></div>
+              <!-- Edit toolbar -->
+              <div class="tedit-bar">
+                <button class="tedit-tool on" id="tToolSelect">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-7 1-3 7z"/></svg>
+                  Seleccionar
+                </button>
+                <button class="tedit-tool" id="tToolDraw" onclick="tSwitchTool('draw')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  Dibujar límite
+                </button>
+                <button class="tedit-tool" id="tToolMove" onclick="tSwitchTool('move')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9"/></svg>
+                  Mover clientes
+                </button>
+              </div>
+              <!-- Info panel -->
+              <div style="position:absolute;bottom:16px;left:16px;background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px 14px;z-index:1000;box-shadow:var(--shadow-sm);min-width:200px;">
+                <div style="font:700 12px var(--font-sans);color:var(--n7);margin-bottom:8px;">Vendedor 2 — Zona Oriente</div>
+                <div style="font:400 11px var(--font-sans);color:var(--n5);">Clientes: <b style="color:var(--n7)">44</b></div>
+                <div style="font:400 11px var(--font-sans);color:var(--n5);">Visitas/sem: <b style="color:var(--n7)">44</b></div>
+                <div style="font:400 11px var(--font-sans);color:var(--n5);">Carga: <b style="color:var(--g6)">93%</b></div>
+              </div>
+            </div>
+            <!-- Right panel: client list -->
+            <div style="width:280px;background:#fff;border-left:1px solid var(--n3);display:flex;flex-direction:column;flex-shrink:0;">
+              <div style="padding:12px 14px;border-bottom:1px solid var(--n3);font:700 13px var(--font-sans);color:var(--n7);">Clientes en esta zona (44)</div>
+              <div style="flex:1;overflow-y:auto;">
+                ${[['Supermercado Las Condes','Lun·Jue','#1F60ED'],['Farmacia Vitacura','Mar·Vie','#1F60ED'],['Bodega El Golf','Mié','#1F60ED'],['Comercial La Reina','Lun·Jue','#1F60ED'],['Distribuidora Ñuñoa','Mar','#1F60ED']].map(function(c){return '<div style="padding:10px 14px;border-bottom:1px solid var(--n3);display:flex;align-items:center;gap:8px;cursor:pointer;" onmouseenter="this.style.background=\'var(--n1)\'" onmouseleave="this.style.background=\'\'"><div style="width:7px;height:7px;border-radius:50%;background:'+c[2]+';flex-shrink:0"></div><div style="flex:1"><div style="font:600 12px var(--font-sans);color:var(--n7)">'+c[0]+'</div><div style="font:400 11px var(--font-sans);color:var(--n5)">'+c[1]+'</div></div><button class="act" title="Mover a otra zona"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3M2 12h13"/></svg></button></div>';}).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Screen 15: Error states ── -->
+        <div class="tview" id="tv15">
+          <div class="tact-bar">
+            <button class="btn txt" onclick="goTV(11)">← Configuración</button>
+            <span class="plan-title">Error al planificar</span>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <button class="btn ter" onclick="goTV(11)">Ajustar parámetros</button>
+              <button class="btn pri" onclick="tRunPlan()">Reintentar</button>
+            </div>
+          </div>
+          <div style="flex:1;background:var(--n2);display:flex;align-items:center;justify-content:center;padding:32px;">
+            <div class="errbox" style="max-width:500px;" id="tErrBoxMain"></div>
+          </div>
+        </div>
+
       </div><!-- /tp-territories -->
 
     </div><!-- /view-main -->
@@ -1141,6 +1526,13 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
   <button data-n="activate" onclick="openCanvas(true);openActivate()">7 · Activar</button>
   <button data-n="customer" onclick="openCanvas(true);openCustomer()">8 · Cliente</button>
   <button data-n="errors" onclick="openCanvas(false);showErrPicker(event)">9 · Errores</button>
+  <span style="width:1px;background:rgba(255,255,255,.2);margin:4px 2px;"></span>
+  <button data-n="tv10" onclick="switchMainTab(1);goTV(10)">10 · T.Lista</button>
+  <button data-n="tv11" onclick="switchMainTab(1);goTV(11)">11 · T.Canvas</button>
+  <button data-n="tv12" onclick="switchMainTab(1);goTV(12)">12 · T.Resultado</button>
+  <button data-n="tv13" onclick="switchMainTab(1);goTV(13)">13 · T.Rebalanceo</button>
+  <button data-n="tv14" onclick="switchMainTab(1);goTV(14)">14 · T.Edición</button>
+  <button data-n="tv15" onclick="switchMainTab(1);goTV(15)">15 · T.Error</button>
 </div>
 
 <script>
@@ -1773,6 +2165,204 @@ function mapCtrlsHtml(compact,cellId){
     }
   };
 })();
+
+/* ══════════════════════════════════════════════════
+   TERRITORY PLANNER — screens 10–15
+══════════════════════════════════════════════════ */
+var TCOLORS=['#36B37E','#1F60ED','#FFAB00','#8777D9','#00B8D9'];
+var TNAMES=['Vendedor 1 — Norte','Vendedor 2 — Oriente','Vendedor 3 — Poniente','Vendedor 4 — Sur','Vendedor 5 — Centro'];
+var TCLIENTS=[45,44,45,45,44]; // clientes por vendedor
+// Territory zone polygon vertices (rough Santiago communes per seller)
+var TZONES=[
+  [[-33.32,-70.78],[-33.32,-70.62],[-33.42,-70.62],[-33.42,-70.78]], // Norte: Quilicura/Conchalí
+  [[-33.38,-70.62],[-33.38,-70.50],[-33.52,-70.50],[-33.52,-70.62]], // Oriente: Las Condes/Vitacura
+  [[-33.42,-70.88],[-33.42,-70.76],[-33.58,-70.76],[-33.58,-70.88]], // Poniente: Maipú/Pudahuel
+  [[-33.52,-70.68],[-33.52,-70.50],[-33.68,-70.50],[-33.68,-70.68]], // Sur: Puente Alto/La Florida
+  [[-33.42,-70.76],[-33.42,-70.62],[-33.52,-70.62],[-33.52,-70.76]], // Centro: Santiago/Providencia
+];
+// Pin clusters per seller (lat/lng)
+var TPINS=[
+  [[-33.37,-70.74],[-33.38,-70.70],[-33.40,-70.68],[-33.39,-70.72]],
+  [[-33.41,-70.57],[-33.43,-70.55],[-33.44,-70.58],[-33.46,-70.55]],
+  [[-33.51,-70.83],[-33.52,-70.80],[-33.50,-70.79],[-33.53,-70.82]],
+  [[-33.59,-70.60],[-33.61,-70.58],[-33.57,-70.57],[-33.60,-70.62]],
+  [[-33.45,-70.67],[-33.47,-70.66],[-33.46,-70.70],[-33.48,-70.68]]
+];
+
+var tmapCanvas=null, tmapResult=null, tmapRebal=null, tmapEdit=null;
+
+/* Navigation between territory screens */
+function goTV(n){
+  [10,11,12,13,14,15].forEach(function(i){
+    var el=document.getElementById('tv'+i);
+    if(el)el.classList.toggle('on',i===n);
+  });
+  setProto('tv'+n);
+  // Init maps when entering screens that need them
+  if(n===11&&!tmapCanvas){setTimeout(function(){initTMapCanvas();},80);}
+  if(n===12&&!tmapResult){setTimeout(function(){initTMapResult();},80);}
+  if(n===13&&!tmapRebal){setTimeout(function(){initTMapRebal();},80);}
+  if(n===14&&!tmapEdit){setTimeout(function(){initTMapEdit();},80);}
+  if(n===12){buildBalancePanel();}
+  if(n===13){buildRebalPanel();}
+  if(n===15){buildTError();}
+}
+function goTerritoryCanvas(){switchMainTab(1);goTV(11);}
+function goTerritoryResult(){switchMainTab(1);goTV(12);}
+
+/* Stepper helper */
+function tAdj(id,delta){
+  var el=document.getElementById(id);
+  var v=parseInt(el.textContent)+delta;
+  if(v<1)v=1;if(v>20)v=20;
+  el.textContent=v;
+}
+
+/* Row menu for territory list */
+function tMenu(btn,st){
+  var ex=document.querySelector('.drop');if(ex){var s=ex._s;ex.remove();if(s===btn)return;}
+  var items=[['Editar',0],['Duplicar',0],['sep'],['Eliminar',st==='draft'?0:1,1]];
+  var d=document.createElement('div');d.className='drop';d._s=btn;
+  d.innerHTML=items.map(function(i){return i[0]==='sep'?'<div class="dsep"></div>':'<div class="di'+(i[1]?' dis':'')+(i[2]?' dng':'')+'">'+i[0]+'</div>';}).join('');
+  var td=btn.closest('td');td.style.position='relative';td.appendChild(d);d.style.top='36px';d.style.right='8px';
+  setTimeout(function(){document.addEventListener('click',function h(e){if(!d.contains(e.target)){d.remove();document.removeEventListener('click',h);}});},0);
+}
+
+/* Controls toggle */
+function tToggleCtrl(e,btn){
+  e.stopPropagation();
+  var m=document.getElementById('tCtrlMenu');
+  var open=m.classList.contains('on');
+  m.classList.toggle('on',!open);
+  if(!open){setTimeout(function(){document.addEventListener('click',function h(ev){if(!btn.parentElement.contains(ev.target)){m.classList.remove('on');document.removeEventListener('click',h);}});},0);}
+}
+function tMapRef(){if(tmapCanvas)tmapCanvas.setView([-33.472,-70.762],11);}
+function tToggleAll(btn){btn.classList.toggle('on');}
+
+/* Run territory planning */
+function tRunPlan(){
+  var ld=document.getElementById('tLoading');ld.classList.add('on');
+  setTimeout(function(){ld.classList.remove('on');goTV(12);},1800);
+}
+/* Rebalance */
+function tRebalance(){
+  var ld=document.getElementById('tRebalLoading');ld.classList.add('on');
+  setTimeout(function(){ld.classList.remove('on');goTV(12);},1400);
+}
+
+/* Edit tool switcher */
+function tSwitchTool(t){
+  ['Select','Draw','Move'].forEach(function(n){
+    document.getElementById('tTool'+n).classList.remove('on');
+  });
+  document.getElementById('tTool'+(t.charAt(0).toUpperCase()+t.slice(1))).classList.add('on');
+}
+
+/* ── Territory Leaflet map builders ── */
+function _tileLayer(map){
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
+}
+function _tZonePolygons(map,selectedIdx){
+  TZONES.forEach(function(coords,i){
+    var fill=TCOLORS[i];
+    var isSelected=(selectedIdx===undefined||selectedIdx===null||selectedIdx===i);
+    L.polygon(coords,{color:fill,fillColor:fill,fillOpacity:isSelected?0.22:0.08,weight:isSelected?2:1,opacity:isSelected?0.7:0.3}).addTo(map);
+    // Cluster pins
+    TPINS[i].forEach(function(p){
+      L.circleMarker(p,{radius:7,color:'#fff',fillColor:fill,fillOpacity:1,weight:2}).addTo(map);
+    });
+  });
+}
+function _tDepot(map){
+  var ds=28,dh=Math.round(ds*49/33);
+  var PB='M16.5 1.5C24.78 1.5 31.5 8.22 31.5 16.5C31.5 21.44 29.11 25.82 25.43 28.55C22.61 30.67 18.58 34.04 17.66 39.48C17.56 40.05 17.08 40.5 16.5 40.5C15.92 40.5 15.44 40.05 15.34 39.48C14.42 34.04 10.39 30.67 7.56 28.55C3.88 25.82 1.5 21.44 1.5 16.5C1.5 8.22 8.22 1.5 16.5 1.5Z';
+  var html='<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.3))"><svg width="'+ds+'" height="'+dh+'" viewBox="0 0 33 49"><path d="'+PB+'" fill="#132045" stroke="#fff" stroke-width="2"/><path d="M24 18.17V16.5L22.75 10.67H9.83L9 16.5V18.17H9.83V23.17H18.17V18.17H21.5V23.17H23.17V18.17H24ZM16.5 21.5H11.5V18.17H16.5V21.5Z" fill="#fff"/></svg></div>';
+  L.marker([-33.472,-70.762],{icon:L.divIcon({html:html,className:'',iconSize:[ds,dh],iconAnchor:[ds/2,dh]}),zIndexOffset:100}).addTo(map);
+}
+
+function initTMapCanvas(){
+  var el=document.getElementById('tmap-leaflet');if(!el||tmapCanvas)return;
+  tmapCanvas=L.map(el,{center:[-33.47,-70.69],zoom:10,zoomControl:true,scrollWheelZoom:true});
+  _tileLayer(tmapCanvas);_tDepot(tmapCanvas);
+  // Show all stops as grey unrouted pins
+  TPINS.forEach(function(pins){
+    pins.forEach(function(p){
+      L.circleMarker(p,{radius:6,color:'#fff',fillColor:'#8FA0BA',fillOpacity:1,weight:1.5}).addTo(tmapCanvas);
+    });
+  });
+}
+function initTMapResult(){
+  var el=document.getElementById('tmap-result-leaflet');if(!el||tmapResult)return;
+  tmapResult=L.map(el,{center:[-33.47,-70.69],zoom:10,zoomControl:true,scrollWheelZoom:true});
+  _tileLayer(tmapResult);_tDepot(tmapResult);
+  _tZonePolygons(tmapResult,null);
+  buildZoneLegend();
+}
+function initTMapRebal(){
+  var el=document.getElementById('tmap-rebal-leaflet');if(!el||tmapRebal)return;
+  tmapRebal=L.map(el,{center:[-33.47,-70.69],zoom:10,zoomControl:false,scrollWheelZoom:true});
+  _tileLayer(tmapRebal);_tDepot(tmapRebal);
+  _tZonePolygons(tmapRebal,null);
+}
+function initTMapEdit(){
+  var el=document.getElementById('tmap-edit-leaflet');if(!el||tmapEdit)return;
+  tmapEdit=L.map(el,{center:[-33.44,-70.58],zoom:12,zoomControl:true,scrollWheelZoom:true});
+  _tileLayer(tmapEdit);
+  // Show seller 1 (index 1 = Oriente) highlighted, rest dimmed
+  _tZonePolygons(tmapEdit,1);
+}
+
+/* Balance panel */
+function buildBalancePanel(){
+  var html='';
+  TNAMES.forEach(function(name,i){
+    var pct=Math.round(75+Math.random()*20);
+    var col=TCOLORS[i];
+    html+='<div class="seller-row" onclick="goTV(14)">'+
+      '<div class="sr-top"><div class="sr-dot" style="background:'+col+'"></div>'+
+      '<div class="sr-name">'+name+'</div>'+
+      '<div class="sr-count">'+TCLIENTS[i]+' clientes</div></div>'+
+      '<div class="load-bar"><div class="load-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'+
+      '<div class="load-stats"><span>Carga: <b>'+pct+'%</b></span><span>'+Math.round(27+Math.random()*2)+'h/sem</span></div>'+
+    '</div>';
+  });
+  var el=document.getElementById('tSellerList');if(el)el.innerHTML=html;
+}
+function buildZoneLegend(){
+  var html='<div class="zl-title">Vendedores</div>';
+  TNAMES.forEach(function(name,i){
+    html+='<div class="zl-item"><div class="zl-dot" style="background:'+TCOLORS[i]+'"></div>'+
+      name.split('—')[0].trim()+'</div>';
+  });
+  var el=document.getElementById('tZoneLegend');if(el)el.innerHTML=html;
+}
+function buildRebalPanel(){
+  var html='';
+  TNAMES.forEach(function(name,i){
+    html+='<div class="vendor-ck sel" onclick="this.classList.toggle(\'sel\')">'+
+      '<div class="vdot" style="background:'+TCOLORS[i]+'"></div>'+
+      '<div class="vname">'+name+'</div>'+
+      '<div class="vcount">'+TCLIENTS[i]+'</div>'+
+    '</div>';
+  });
+  var el=document.getElementById('tRebalList');if(el)el.innerHTML=html;
+}
+function buildTError(){
+  var box=document.getElementById('tErrBoxMain');if(!box)return;
+  box.innerHTML='<div class="erricon" style="background:var(--o1)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg></div>'+
+    '<h3>No se pudo generar un plan factible de territorios</h3>'+
+    '<div class="em">El optimizador no encontró una distribución que cumpla los parámetros configurados. Revisa las siguientes causas:</div>'+
+    '<div class="errlist">'+
+      '<div class="el"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h0"/></svg><span>Con 5 vendedores y 1 visita/semana, la carga es de 45 clientes por vendedor, lo que excede la capacidad disponible en 2 de los sectores.</span></div>'+
+      '<div class="el"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h0"/></svg><span>12 clientes no tienen geocodificación válida y no pueden asignarse a ninguna zona.</span></div>'+
+      '<div class="el"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF8B00" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h0"/></svg><span>Los parámetros de turno (09:00–18:00) no permiten cubrir el sector sur en una sola jornada.</span></div>'+
+    '</div>'+
+    '<div class="erract">'+
+      '<button class="btn ter" onclick="goTV(11)">Ajustar parámetros</button>'+
+      '<button class="btn pri" onclick="tRunPlan()">Reintentar</button>'+
+    '</div>';
+}
 
 /* init */
 renderPins(false);setOptimized(false);setProto('list');
