@@ -1210,7 +1210,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     // DS-style input trigger — popover is the immediate nextElementSibling of this div
     const triggerInp = (placeholder, icon) =>
       `<div style="position:relative;display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;width:220px"
-        onclick="(function(el){var pop=el.nextElementSibling;if(!pop||!pop.dataset.popover)return;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open)pop.style.display='block';})(this)"
+        onclick="(function(el){var pop=el.nextElementSibling;if(!pop||!pop.hasAttribute('data-popover'))return;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open){pop.style.display='block';if(typeof initDateTimePickers==='function'&&!pop._init){pop._init=1;initDateTimePickers();}};})(this)"
         onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
         <span style="flex:1;font:400 14px/1 var(--font-sans);color:var(--n5)">${escHtml(placeholder)}</span>
         <span style="color:var(--n5);display:flex">${icon}</span>
@@ -1426,19 +1426,19 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:32px 0 6px">Date picker</h3>
       <p class="desc" style="margin-bottom:16px">Click en el input para abrir el calendario. Navega con ‹ ›. Aceptar se activa al seleccionar.</p>
       <div class="card" style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;padding-bottom:320px;margin-bottom:0">
-        <div data-dp-wrap style="display:flex;flex-direction:column;gap:4px;position:relative">
+        <div data-dp-wrap style="display:inline-flex;flex-direction:column;gap:4px;position:relative">
           <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Fecha de creación</span>
-          ${triggerInp('F. Creación', CAL_ICO, 'dp-a')}
+          ${triggerInp('F. Creación', CAL_ICO)}
           ${dpCalCard('data-dp="" data-month="4" data-year="2025" data-selected=""')}
         </div>
-        <div data-dp-wrap style="display:flex;flex-direction:column;gap:4px;position:relative">
+        <div data-dp-wrap style="display:inline-flex;flex-direction:column;gap:4px;position:relative">
           <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Con fecha seleccionada</span>
-          ${triggerInp('01/04/2025', CAL_ICO, 'dp-b')}
+          ${triggerInp('01/04/2025', CAL_ICO)}
           ${dpCalCard('data-dp="" data-month="4" data-year="2025" data-selected="2025-04-01"')}
         </div>
-        <div data-dp-wrap style="display:flex;flex-direction:column;gap:4px;position:relative">
+        <div data-dp-wrap style="display:inline-flex;flex-direction:column;gap:4px;position:relative">
           <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Con rango seleccionado</span>
-          ${triggerInp('01/04 – 10/04', CAL_ICO, 'dp-c')}
+          ${triggerInp('01/04 – 10/04', CAL_ICO)}
           ${dpCalCard('data-dp="" data-month="4" data-year="2025" data-start="2025-04-01" data-end="2025-04-10"')}
         </div>
       </div>
@@ -1455,15 +1455,15 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
       <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:24px 0 6px">Time picker</h3>
       <p class="desc" style="margin-bottom:16px">Click en el input de hora para abrir el reloj. El ícono inferior alterna entre reloj y texto.</p>
-      <div class="card" style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;padding-bottom:380px">
-        <div style="display:flex;flex-direction:column;gap:4px;position:relative">
+      <div class="card" style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;padding-bottom:420px">
+        <div style="display:inline-flex;flex-direction:column;gap:4px;position:relative">
           <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">12h — AM/PM</span>
-          ${triggerInp('--:-- AM', CLK_ICO, '')}
+          ${triggerInp('--:-- AM', CLK_ICO)}
           ${tpPopover('tp1',false,7,'AM')}
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;position:relative">
+        <div style="display:inline-flex;flex-direction:column;gap:4px;position:relative">
           <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">24h</span>
-          ${triggerInp('--:--', CLK_ICO, '')}
+          ${triggerInp('--:--', CLK_ICO)}
           ${tpPopover('tp2',true,20,'')}
         </div>
       </div>`;
