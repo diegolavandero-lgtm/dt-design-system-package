@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T21:18:01.980Z",
+  "generated": "2026-06-08T21:25:52.675Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "54d05ac",
+          "type": "fix",
+          "section": "Sidebar",
+          "message": "fix(form page): settings sidebar displays as single flex row",
+          "author": "Diego"
+        },
         {
           "hash": "a973e5c",
           "type": "fix",
