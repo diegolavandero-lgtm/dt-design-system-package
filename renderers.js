@@ -2475,7 +2475,279 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             <tbody>${tokRows}</tbody>
           </table>
         </div>
-      </div>`;
+      </div>
+
+      ${(function(){
+        /* ─ MOBILE RESPONSIVE PATTERNS ─ */
+        // We use the scrollDemo data to build real mobile previews
+        const sd = data.scrollDemo || {};
+        const allCols = sd.columns || [];
+        const allRows = sd.rows || [];
+
+        // Subset: cols 1-6 (skip checkbox col 0), rows 0-3
+        // Labels for card view
+        const cardCols = allCols.slice(1); // skip checkbox
+        const cardRows = allRows.slice(0, 4);
+
+        // ── helper: render a simple cell value as plain text for card view
+        function cellText(cell) {
+          if (!cell) return '—';
+          if (typeof cell !== 'object') return escHtml(String(cell));
+          if (cell.type === 'badge') return `<span style="display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:3px;font:600 10px/1 var(--font-sans);${cell.variant==='success'?'background:#E3FCEF;color:#006844':cell.variant==='info'?'background:var(--b1);color:var(--b7)':cell.variant==='warning'?'background:var(--o1);color:var(--o7)':cell.variant==='danger'?'background:var(--r1);color:var(--r6)':'background:var(--n2);color:var(--n6)'}">${escHtml(cell.value||'')}</span>`;
+          if (cell.type === 'avatar-text') return `<span style="font:500 12px var(--font-sans);color:var(--n7)">${escHtml(cell.value||'')}</span>`;
+          if (cell.type === 'chip-sm') return `<span style="display:inline-flex;height:18px;padding:0 6px;border-radius:3px;border:1px solid var(--n4);background:var(--n2);font:600 10px/18px var(--font-sans);color:var(--n6)">${escHtml(cell.value||'')}</span>`;
+          if (cell.type === 'loading-bar') return `<div style="display:flex;align-items:center;gap:6px"><div style="flex:1;height:4px;background:var(--n3);border-radius:2px;overflow:hidden"><div style="width:${cell.value||0}%;height:100%;background:var(--b5);border-radius:2px"></div></div><span style="font:400 11px var(--font-sans);color:var(--n5)">${cell.value||0}%</span></div>`;
+          if (cell.type === 'actions') return null; // handled separately
+          if (cell.type === 'checkbox') return null;
+          return escHtml(String(cell.value !== undefined ? cell.value : ''));
+        }
+
+        // ── Card view renderer ──
+        function renderCards(rows, cols) {
+          return rows.map(row => {
+            const cells = row.cells || [];
+            // col indices (after skipping checkbox col 0)
+            // cells[0]=checkbox, cells[1]=link(#ORD), cells[2]=avatar-text(cliente), cells[3]=badge(estado)
+            // cells[4]=chip(zona), cells[5]=icon-text(dir), cells[6]=text(conductor), cells[12]=actions
+            const orderId   = cells[1]  ? escHtml(String(cells[1].value||'')) : '—';
+            const clientTxt = cells[2]  ? cellText(cells[2]) : '—';
+            const stateBadge= cells[3]  ? cellText(cells[3]) : '';
+            const zona      = cells[4]  ? cellText(cells[4]) : '—';
+            const dir       = cells[5]  ? escHtml((cells[5].value||'')) : '—';
+            const driver    = cells[6]  ? escHtml(String(cells[6].value||'')) : '—';
+            const actCell   = cells[12];
+            const acts      = actCell && actCell.type === 'actions'
+              ? (actCell.value||[]).slice(0,2).map(a => `<button style="width:28px;height:28px;border-radius:4px;border:none;background:var(--n2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--n6)">${iconSvg(a,13,'currentColor')}</button>`).join('')
+              : '';
+            const initials = cells[2] ? (cells[2].initials || (cells[2].value||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()) : '?';
+            const avatarColor = cells[2] ? (cells[2].color||'var(--b6)') : 'var(--b6)';
+            return `<div style="background:#fff;border-radius:8px;border:1px solid var(--n3);overflow:hidden;margin-bottom:8px">
+              <div style="padding:10px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--n3)">
+                <div style="width:28px;height:28px;border-radius:50%;background:${avatarColor};display:flex;align-items:center;justify-content:center;font:700 10px/1 var(--font-sans);color:#fff;flex-shrink:0">${escHtml(initials)}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font:700 12px/1 var(--font-sans);color:var(--b7)">${orderId}</div>
+                  <div style="font:500 11px/1 var(--font-sans);color:var(--n7);margin-top:2px">${clientTxt}</div>
+                </div>
+                ${stateBadge}
+              </div>
+              <div style="padding:8px 12px;display:flex;flex-direction:column;gap:5px">
+                <div style="display:flex;gap:6px;align-items:center"><span style="font:400 10px var(--font-sans);color:var(--n5);width:64px;flex-shrink:0">Zona</span><span style="font:400 12px var(--font-sans);color:var(--n7)">${zona}</span></div>
+                <div style="display:flex;gap:6px;align-items:flex-start"><span style="font:400 10px var(--font-sans);color:var(--n5);width:64px;flex-shrink:0">Dirección</span><span style="font:400 12px var(--font-sans);color:var(--n7);flex:1">${dir}</span></div>
+                <div style="display:flex;gap:6px;align-items:center"><span style="font:400 10px var(--font-sans);color:var(--n5);width:64px;flex-shrink:0">Conductor</span><span style="font:400 12px var(--font-sans);color:var(--n7)">${driver}</span></div>
+              </div>
+              ${acts ? `<div style="padding:8px 12px;border-top:1px solid var(--n3);display:flex;justify-content:flex-end;gap:4px">${acts}</div>` : ''}
+            </div>`;
+          }).join('');
+        }
+
+        // ── Priority-columns table (3 key cols visible on mobile) ──
+        const priorityCols = [allCols[1], allCols[2], allCols[3]]; // #Orden, Cliente, Estado
+        const priorityHead = priorityCols.map(c =>
+          `<th style="padding:8px 10px;font:600 11px/1 var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;text-align:left;white-space:nowrap">${escHtml(c.label||'')}</th>`
+        ).join('');
+        const priorityBody = cardRows.map(row => {
+          const cells = row.cells || [];
+          const c1 = cells[1] ? `<td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--b7);white-space:nowrap">${escHtml(String(cells[1].value||''))}</td>` : '<td></td>';
+          const c2 = cells[2] ? `<td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--n7);white-space:nowrap">${escHtml(cells[2].value||'')}</td>` : '<td></td>';
+          const c3 = cells[3] ? `<td style="padding:8px 10px">${cellText(cells[3])}</td>` : '<td></td>';
+          return `<tr style="border-top:1px solid var(--n3)">${c1}${c2}${c3}</tr>`;
+        }).join('');
+
+        // ── Phone frame helper ──
+        function phoneFrame(content, label) {
+          return `<div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px">
+            <div style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              ${label}
+            </div>
+            <div style="width:375px;max-width:100%;border:1.5px solid var(--n4);border-radius:12px;overflow:hidden;background:var(--n2);box-shadow:0 2px 12px rgba(19,32,69,.08)">
+              <div style="height:6px;background:var(--n3);display:flex;align-items:center;justify-content:center">
+                <div style="width:32px;height:3px;border-radius:2px;background:var(--n4)"></div>
+              </div>
+              <div style="padding:8px">${content}</div>
+            </div>
+          </div>`;
+        }
+
+        // Scroll pattern content
+        const scrollMobileContent = `<div style="overflow-x:auto;border-radius:6px;border:1px solid var(--n3);background:#fff">
+          <table style="min-width:580px;width:100%;border-collapse:collapse">
+            <thead style="background:var(--n2)"><tr>
+              ${priorityCols.concat([allCols[4],allCols[5]]).map(c=>`<th style="padding:8px 10px;font:600 11px/1 var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;text-align:left;white-space:nowrap">${escHtml(c.label||'')}</th>`).join('')}
+            </tr></thead>
+            <tbody>
+              ${cardRows.map(row=>{
+                const cells=row.cells||[];
+                return `<tr style="border-top:1px solid var(--n3)">
+                  <td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--b7);white-space:nowrap">${escHtml(String((cells[1]||{}).value||''))}</td>
+                  <td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--n7);white-space:nowrap">${escHtml((cells[2]||{}).value||'')}</td>
+                  <td style="padding:8px 10px">${cellText(cells[3])}</td>
+                  <td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--n7);white-space:nowrap">${cellText(cells[4])}</td>
+                  <td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--n7);white-space:nowrap">${escHtml((cells[5]||{}).value||'')}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>`;
+
+        const cardContent = renderCards(cardRows, cardCols);
+
+        const priorityContent = `<div style="border-radius:6px;border:1px solid var(--n3);background:#fff;overflow:hidden">
+          <table style="width:100%;border-collapse:collapse">
+            <thead style="background:var(--n2)"><tr>${priorityHead}</tr></thead>
+            <tbody>${priorityBody}</tbody>
+          </table>
+          <div style="padding:8px 10px;border-top:1px solid var(--n3);font:400 11px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:4px">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            4 columnas ocultas en mobile
+          </div>
+        </div>`;
+
+        const snippets = {
+          scroll: `/* ── Pattern 1: Horizontal scroll (default) ── */
+.tbl-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* No extra CSS needed — .tbl-wrap already handles this */`,
+          card: `/* ── Pattern 2: Card view ── */
+@media (max-width: 639px) {
+  .tbl-wrap table { display: none; }          /* hide desktop table */
+  .tbl-cards      { display: flex; flex-direction: column; gap: 8px; }
+}
+.tbl-cards { display: none; }                 /* hidden on desktop */
+
+/* Each card */
+.tbl-card { background:#fff; border:1px solid var(--n3);
+            border-radius:8px; overflow:hidden; }
+.tbl-card-head { padding:10px 12px; display:flex; align-items:center;
+                 gap:8px; border-bottom:1px solid var(--n3); }
+.tbl-card-body { padding:8px 12px; }
+.tbl-card-row  { display:flex; gap:6px; padding:3px 0;
+                 font:400 12px var(--font-sans); }
+.tbl-card-lbl  { width:64px; flex-shrink:0; color:var(--n5);
+                 font-size:10px; padding-top:1px; }`,
+          priority: `/* ── Pattern 3: Priority columns ── */
+/* Mark columns as low priority in your column definitions */
+/* data-priority="low" → hidden below 640px                 */
+
+@media (max-width: 639px) {
+  th[data-priority="low"],
+  td[data-priority="low"] { display: none; }
+}
+
+/* Usage in tblDemoTable columns: */
+{ label: 'Conductor', type: 'text', priority: 'low' }
+{ label: 'Fecha',     type: 'date', priority: 'low' }
+/* Core columns (always visible): # Orden, Cliente, Estado */`
+        };
+
+        return `<div style="margin-top:32px">
+          <div class="tbl-stitle">Mobile responsive patterns</div>
+          <p style="font:400 13px var(--font-sans);color:var(--n5);margin-bottom:20px;line-height:1.6">
+            Three patterns depending on table density and use case. All previews are at 375px (iPhone 14 width).
+          </p>
+
+          <style>
+            .mob-pattern { background:#fff; border:1px solid var(--n3); border-radius:10px; overflow:hidden; margin-bottom:16px; }
+            .mob-pattern-head { padding:14px 16px; border-bottom:1px solid var(--n3); display:flex; align-items:center; gap:10px; }
+            .mob-pattern-badge { height:20px; padding:0 8px; border-radius:99px; font:700 10px/20px var(--font-sans); }
+            .mob-pattern-body { padding:20px 16px; display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; }
+            .mob-pattern-desc { flex:1; min-width:220px; }
+            .mob-pattern-code { flex:1; min-width:260px; background:var(--n1); border:1px solid var(--n3); border-radius:6px; padding:12px 14px; font:400 11px/1.7 var(--font-mono); color:var(--n6); overflow-x:auto; white-space:pre; margin-top:12px; }
+            .mob-when { font:600 11px var(--font-sans); color:var(--n5); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
+            .mob-pros { list-style:none; margin:0; padding:0; }
+            .mob-pros li { font:400 12px var(--font-sans); color:var(--n6); padding:2px 0; display:flex; gap:6px; }
+            .mob-pros li:before { content:'✓'; color:var(--g6); font-weight:700; flex-shrink:0; }
+          </style>
+
+          <!-- Pattern 1: Scroll -->
+          <div class="mob-pattern">
+            <div class="mob-pattern-head">
+              <span style="font:700 13px var(--font-sans);color:var(--n7)">1 · Horizontal scroll</span>
+              <span class="mob-pattern-badge" style="background:var(--g1);color:var(--g7)">Default</span>
+              <span style="font:400 12px var(--font-sans);color:var(--n5);margin-left:4px">No extra CSS needed — built into .tbl-wrap</span>
+            </div>
+            <div class="mob-pattern-body">
+              <div class="mob-pattern-desc">
+                <div class="mob-when">When to use</div>
+                <ul class="mob-pros">
+                  <li>All columns are equally important</li>
+                  <li>Users need to compare values across columns</li>
+                  <li>Table has fewer than 7 columns</li>
+                </ul>
+                <div style="margin-top:14px">${phoneFrame(scrollMobileContent, 'Mobile · 375px — scrolls horizontally')}</div>
+              </div>
+              <div style="flex:1;min-width:260px">
+                <div class="mob-when">CSS</div>
+                <pre class="mob-pattern-code">${escHtml(snippets.scroll)}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pattern 2: Card view -->
+          <div class="mob-pattern">
+            <div class="mob-pattern-head">
+              <span style="font:700 13px var(--font-sans);color:var(--n7)">2 · Card view</span>
+              <span class="mob-pattern-badge" style="background:var(--b1);color:var(--b7)">Recommended for dense tables</span>
+            </div>
+            <div class="mob-pattern-body">
+              <div class="mob-pattern-desc">
+                <div class="mob-when">When to use</div>
+                <ul class="mob-pros">
+                  <li>Table has 6+ columns</li>
+                  <li>Row identity is key (orders, deliveries, clients)</li>
+                  <li>Users scan per-record rather than compare columns</li>
+                </ul>
+                <div style="margin-top:14px">${phoneFrame(cardContent, 'Mobile · 375px — card per row')}</div>
+              </div>
+              <div style="flex:1;min-width:260px">
+                <div class="mob-when">CSS + HTML structure</div>
+                <pre class="mob-pattern-code">${escHtml(snippets.card)}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pattern 3: Priority columns -->
+          <div class="mob-pattern">
+            <div class="mob-pattern-head">
+              <span style="font:700 13px var(--font-sans);color:var(--n7)">3 · Priority columns</span>
+              <span class="mob-pattern-badge" style="background:var(--o1);color:var(--o7)">Balanced</span>
+            </div>
+            <div class="mob-pattern-body">
+              <div class="mob-pattern-desc">
+                <div class="mob-when">When to use</div>
+                <ul class="mob-pros">
+                  <li>Table has 4–6 columns</li>
+                  <li>2–3 columns are critical, others are secondary</li>
+                  <li>Actions need to remain visible at all times</li>
+                </ul>
+                <div style="margin-top:14px">${phoneFrame(priorityContent, 'Mobile · 375px — 3 key columns only')}</div>
+              </div>
+              <div style="flex:1;min-width:260px">
+                <div class="mob-when">CSS</div>
+                <pre class="mob-pattern-code">${escHtml(snippets.priority)}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breakpoints reference -->
+          <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px;margin-top:4px">
+            <div style="font:600 12px var(--font-sans);color:var(--n7);margin-bottom:10px">Breakpoints reference</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+              ${[
+                ['Mobile','< 640px','Card view or priority cols'],
+                ['Tablet','640–1023px','Scroll or reduced cols'],
+                ['Desktop','≥ 1024px','Full table with all columns'],
+              ].map(([label,bp,rec])=>`<div style="border:1px solid var(--n3);border-radius:6px;padding:10px 12px">
+                <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:2px">${label}</div>
+                <div style="font:600 11px var(--font-mono);color:var(--b6);margin-bottom:4px">${bp}</div>
+                <div style="font:400 11px var(--font-sans);color:var(--n5)">${rec}</div>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>`;
+      })()}`;
   },
 
   /* ── SIDEBAR ── */
