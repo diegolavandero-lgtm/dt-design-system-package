@@ -2777,14 +2777,14 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       .sbx-static .sbx-lbl{opacity:1}
       .sbx-settings{display:inline-flex;box-shadow:0 6px 12px rgba(0,0,0,.15)}
 
-      /* mobile drawer rows — bigger touch targets */
-      .mob-row{display:flex;align-items:center;height:48px;cursor:pointer;padding:0 16px;gap:14px}
+      /* mobile drawer rows — compact touch targets */
+      .mob-row{display:flex;align-items:center;height:40px;cursor:pointer;padding:0 14px;gap:12px}
       .mob-row svg{fill:#4B82FA;flex-shrink:0;display:block}
-      .mob-row .mob-lbl{font:400 15px/1 'DM Sans',sans-serif;color:#39414D}
-      .mob-row.sel{background:rgba(75,130,250,.08);border-left:4px solid #0052CC;padding-left:12px}
+      .mob-row .mob-lbl{font:400 13px/1 'DM Sans',sans-serif;color:#39414D}
+      .mob-row.sel{background:rgba(75,130,250,.08);border-left:3px solid #0052CC;padding-left:11px}
       .mob-row.sel svg{fill:#0052CC}
       .mob-row.sel .mob-lbl{font-weight:600;color:#0052CC}
-      .mob-sep{height:1px;background:#E9ECF2;margin:6px 16px}
+      .mob-sep{height:1px;background:#E9ECF2;margin:3px 12px}
     </style>`;
 
     function buildItems(items) {
@@ -2816,50 +2816,74 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const hamburger = `<svg width="22" height="22" viewBox="0 0 32 32" fill="#fff"><path d="M4 8h24v2H4zM4 15h24v2H4zM4 22h24v2H4z"/></svg>`;
     const closeX = `<svg width="22" height="22" viewBox="0 0 32 32" fill="#39414D"><path d="M24 9.4 22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16z"/></svg>`;
 
-    /* Phone frame with closed state (hamburger visible) */
-    function phoneClosed(product) {
-      return `
-        <div style="width:240px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
-          <div style="background:#F0F2F5;border-radius:22px;height:440px;position:relative;overflow:hidden">
-            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#1a1a1a;border-radius:2px"></div>
-            <div style="position:absolute;inset:30px 0 0 0;background:#fff">
-              <div style="height:52px;background:#132045;display:flex;align-items:center;padding:0 14px;gap:12px">
-                ${hamburger}
-                <span style="color:#fff;font:700 12px var(--font-sans)">DispatchTrack</span>
-                <div style="margin-left:auto;width:8px;height:8px;border-radius:50%;background:${product.color}"></div>
-              </div>
-              <div style="padding:14px;font:400 11px var(--font-sans);color:var(--n5);text-align:center;margin-top:30px">
-                <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:4px">${escHtml(product.name)}</div>
-                Tap hamburger to open menu
-              </div>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    /* Phone frame with drawer open */
-    function phoneOpen(product) {
+    /* Single interactive phone frame: hamburger opens drawer, × closes it */
+    function phoneInteractive(product) {
       const items = buildMobileItems(product.items);
-      return `
-        <div style="width:240px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
-          <div style="background:#F0F2F5;border-radius:22px;height:440px;position:relative;overflow:hidden">
-            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#1a1a1a;border-radius:2px;z-index:3"></div>
-            <div style="position:absolute;inset:30px 0 0 0;background:#fff">
-              <div style="height:52px;background:#132045"></div>
-            </div>
-            <div style="position:absolute;inset:30px 0 0 0;background:rgba(19,32,69,.5);z-index:1"></div>
-            <div style="position:absolute;top:30px;left:0;bottom:0;width:200px;background:#fff;z-index:2;display:flex;flex-direction:column;box-shadow:2px 0 12px rgba(0,0,0,.15)">
-              <div style="height:56px;display:flex;align-items:center;padding:0 14px;gap:10px;border-bottom:1px solid #E9ECF2">
-                <div style="width:6px;height:6px;border-radius:50%;background:${product.color}"></div>
-                <span style="font:700 13px var(--font-sans);color:var(--n7);flex:1">${escHtml(product.name)}</span>
-                ${closeX}
+      const gid = 'mob-' + Math.random().toString(36).slice(2, 7);
+      // Logo element for topbar — use img if available, else text
+      const logoSrc = product.logoWhite || product.logoDesktop || '';
+      const logoEl = logoSrc
+        ? `<img src="${logoSrc}" height="16" style="display:block;flex-shrink:0" alt="${escHtml(product.name)}">`
+        : `<span style="color:#fff;font:700 11px var(--font-sans);white-space:nowrap">${escHtml(product.name)}</span>`;
+
+      const openDrawer  = `(function(b){var f=b.closest('[data-phone]'),c=f.querySelector('[data-state=closed]'),o=f.querySelector('[data-state=open]');c.style.display='none';o.style.display='block'})(this)`;
+      const closeDrawer = `(function(b){var f=b.closest('[data-phone]'),c=f.querySelector('[data-state=closed]'),o=f.querySelector('[data-state=open]');o.style.display='none';c.style.display='block'})(this)`;
+
+      return `<div data-phone="${gid}" style="width:240px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.3)">
+        <div style="background:var(--n2);border-radius:22px;height:480px;position:relative;overflow:hidden">
+          <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#1a1a1a;border-radius:2px;z-index:5"></div>
+
+          <!-- CLOSED STATE -->
+          <div data-state="closed" style="position:absolute;inset:0;display:flex;flex-direction:column">
+            <div style="height:22px"></div>
+            <div style="flex:1;background:#fff;display:flex;flex-direction:column">
+              <!-- Topbar: hamburger LEFT · logo · icons RIGHT -->
+              <div style="height:52px;background:#132045;display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0">
+                <button onclick="${openDrawer}" style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;flex-shrink:0">${hamburger}</button>
+                ${logoEl}
+                <div style="margin-left:auto;display:flex;align-items:center;gap:14px">
+                  <div style="position:relative">${iconSvg('alerts',16,'#fff')}<div style="position:absolute;top:-2px;right:-2px;width:5px;height:5px;border-radius:50%;background:#FF5630"></div></div>
+                  ${iconSvg('user',16,'#fff')}
+                </div>
               </div>
-              <div style="flex:1;overflow-y:auto;padding:8px 0">
-                ${items}
+              <!-- Page content placeholder -->
+              <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+                <div style="height:14px;background:var(--n2);border-radius:4px;width:40%"></div>
+                <div style="height:10px;background:var(--n2);border-radius:3px;width:70%"></div>
+                <div style="height:10px;background:var(--n2);border-radius:3px;width:55%"></div>
+                <div style="margin-top:6px;height:80px;background:var(--n2);border-radius:6px"></div>
+                <div style="height:10px;background:var(--n2);border-radius:3px;width:80%"></div>
+                <div style="height:10px;background:var(--n2);border-radius:3px;width:60%"></div>
               </div>
             </div>
           </div>
-        </div>`;
+
+          <!-- OPEN STATE (drawer) -->
+          <div data-state="open" style="position:absolute;inset:0;display:none;flex-direction:column">
+            <div style="height:22px"></div>
+            <div style="flex:1;background:#fff;position:relative">
+              <!-- Topbar dimmed -->
+              <div style="height:52px;background:#132045;display:flex;align-items:center;padding:0 12px;flex-shrink:0">
+                ${logoEl}
+              </div>
+              <!-- Overlay -->
+              <div onclick="${closeDrawer}" style="position:absolute;inset:52px 0 0 0;background:rgba(19,32,69,.45);z-index:1;cursor:pointer"></div>
+              <!-- Drawer -->
+              <div style="position:absolute;top:0;left:0;bottom:0;width:208px;background:#fff;z-index:2;display:flex;flex-direction:column;box-shadow:3px 0 16px rgba(0,0,0,.18)">
+                <!-- Drawer header -->
+                <div style="height:52px;display:flex;align-items:center;padding:0 12px;gap:10px;background:#132045;flex-shrink:0">
+                  <button onclick="${closeDrawer}" style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center">${closeX}</button>
+                  ${logoEl}
+                </div>
+                <!-- Nav items -->
+                <div style="flex:1;overflow-y:auto;padding:6px 0">
+                  ${items}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
     }
 
     function buildSettingsLayout(p) {
@@ -2933,16 +2957,34 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
           <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:10px;display:flex;align-items:center;gap:6px">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-            Mobile
+            Mobile · interactive
           </div>
           <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
             <div style="display:flex;flex-direction:column;gap:7px">
-              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Closed · hamburger visible</div>
-              ${phoneClosed(p)}
+              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">
+                Tap <strong style="color:var(--n7)">☰</strong> to open · tap overlay or <strong style="color:var(--n7)">×</strong> to close
+              </div>
+              ${phoneInteractive(p)}
             </div>
-            <div style="display:flex;flex-direction:column;gap:7px">
-              <div style="font:500 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">Open · drawer with overlay</div>
-              ${phoneOpen(p)}
+            <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:10px;padding-top:24px">
+              <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px 14px">
+                <div style="font:700 12px var(--font-sans);color:var(--n7);margin-bottom:8px">Mobile topbar anatomy</div>
+                <div style="display:flex;flex-direction:column;gap:5px;font:400 12px var(--font-sans);color:var(--n5)">
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b6);flex-shrink:0;display:inline-block"></span>Hamburger icon — leftmost, 44×44px touch target</div>
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b6);flex-shrink:0;display:inline-block"></span>Product logo — after hamburger, height 16px white</div>
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b6);flex-shrink:0;display:inline-block"></span>Right icons — only Alerts + User (no apps/help/gear)</div>
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b5);flex-shrink:0;display:inline-block"></span>Company slot — hidden on mobile</div>
+                </div>
+              </div>
+              <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px 14px">
+                <div style="font:700 12px var(--font-sans);color:var(--n7);margin-bottom:8px">Mobile drawer anatomy</div>
+                <div style="display:flex;flex-direction:column;gap:5px;font:400 12px var(--font-sans);color:var(--n5)">
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b6);flex-shrink:0;display:inline-block"></span>Slides in from left, width 208px</div>
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b6);flex-shrink:0;display:inline-block"></span>Header: indigo bg · × close icon + logo</div>
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b6);flex-shrink:0;display:inline-block"></span>Nav rows: 40px height (compact), 13px font</div>
+                  <div style="display:flex;gap:8px;align-items:center"><span style="width:6px;height:6px;border-radius:50%;background:var(--b6);flex-shrink:0;display:inline-block"></span>Overlay: rgba(19,32,69,.45) — tap to close</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>`;
@@ -3083,6 +3125,63 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         </div>` : ''}
         ${productColors ? `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">${productColors}</div>` : ''}
       </div>
+      <!-- Mobile topbar section -->
+      <div style="margin-top:24px">
+        <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:4px;display:flex;align-items:center;gap:8px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Mobile topbar
+        </div>
+        <p style="font:400 13px var(--font-sans);color:var(--n5);margin-bottom:16px;line-height:1.6">
+          On mobile the topbar removes the company slot and most action icons.
+          A <strong style="color:var(--n7)">hamburger icon (☰)</strong> appears at the far left — before the product logo.
+          Tapping it slides in the sidebar as a full-height drawer with a dark overlay behind it.
+        </p>
+        <div class="card" style="background:var(--n2)">
+          <!-- Topbar anatomy comparison -->
+          <div style="margin-bottom:20px">
+            <div style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Desktop topbar</div>
+            <div style="background:#132045;height:52px;display:flex;align-items:center;padding:0 20px;border-radius:6px;gap:12px">
+              <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" style="display:block" alt="logo" onerror="this.style.display='none'">
+              <div style="margin-left:auto;display:flex;align-items:center;gap:22px">
+                ${(data.iconOrder || ['apps','alerts','messages','help','user']).map(n => n === 'alerts'
+                  ? `<div style="position:relative">${iconSvg(n,18,'#fff')}<div style="position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045"></div></div>`
+                  : iconSvg(n,18,'#fff')).join('')}
+              </div>
+              <div style="width:88px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;font:700 11px var(--font-sans);color:#132045;flex-shrink:0">ACME CO</div>
+            </div>
+          </div>
+          <div>
+            <div style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Mobile topbar — hamburger left · logo · minimal icons</div>
+            <div style="max-width:375px;background:#132045;height:52px;display:flex;align-items:center;padding:0 14px;border-radius:6px;gap:10px">
+              <!-- Hamburger: leftmost -->
+              <div style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;flex-shrink:0">
+                <svg width="20" height="20" viewBox="0 0 32 32" fill="#fff"><path d="M4 8h24v2H4zM4 15h24v2H4zM4 22h24v2H4z"/></svg>
+              </div>
+              <img src="sections/assets/logos/lastmile-desktop-white.svg" height="16" style="display:block;flex-shrink:0" alt="logo" onerror="this.style.display='none'">
+              <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+                <div style="position:relative">${iconSvg('alerts',18,'#fff')}<div style="position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045"></div></div>
+                ${iconSvg('user',18,'#fff')}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Diff table -->
+        <div class="card" style="margin-top:10px;padding:0;overflow:hidden">
+          <table class="ttbl">
+            <thead><tr><th>Element</th><th>Desktop</th><th>Mobile</th></tr></thead>
+            <tbody>
+              <tr><td>Hamburger</td><td>—</td><td style="color:var(--g6);font-weight:600">Far left, before logo</td></tr>
+              <tr><td>Product logo</td><td>Left, after icon strip</td><td>After hamburger</td></tr>
+              <tr><td>Action icons</td><td>Apps · Alerts · Messages · Help · User</td><td>Alerts · User only</td></tr>
+              <tr><td>Company slot</td><td>Right edge, 88px</td><td style="color:var(--r6)">Hidden</td></tr>
+              <tr><td>Height</td><td>52px</td><td>52px (unchanged)</td></tr>
+              <tr><td>Background</td><td>#132045</td><td>#132045 (unchanged)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <h3 style="font:700 15px/1.4 var(--font-sans);margin:20px 0 10px;color:var(--n7)">Design tokens</h3>
       <div class="card">
         <table class="ttbl">
