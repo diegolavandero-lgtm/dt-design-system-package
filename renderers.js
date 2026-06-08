@@ -3324,11 +3324,15 @@ async function downloadAllPins() {
       .me-map-desc{font:400 12px var(--font-sans);color:var(--n5);margin-bottom:14px}
       .me-map-wrap{width:100%;border-radius:8px;overflow:hidden;border:1px solid var(--n3);position:relative}
       .me-map{width:100%;height:380px}
-      .me-map-form-demo{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-top:24px}
-      .me-map-form-col{display:flex;flex-direction:column;gap:8px;width:240px;flex-shrink:0}
-      /* form inputs now use DS inline styles from inputs.json — no custom classes needed */
-      .me-map-in-form-wrap{border-radius:4px;overflow:hidden;border:1px solid var(--n4);position:relative}
-      .me-map-in-form{width:240px;min-height:144px;height:200px}
+      /* form container — same as table-page white card */
+      .me-map-form-container{background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;margin-top:16px}
+      .me-map-form-demo{display:flex;gap:24px;align-items:flex-start}
+      .me-map-form-col{display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+      .me-map-form-field{display:flex;flex-direction:column;gap:4px}
+      /* label — same font/color as input labels in DS */
+      .me-map-form-lbl2{font:400 12px/16px var(--font-sans);color:var(--n7)}
+      .me-map-in-form-wrap{border-radius:6px;overflow:hidden;border:1px solid var(--n4);position:relative;flex:1}
+      .me-map-in-form{width:100%;min-height:144px;height:100%}
       .leaflet-container{font-family:inherit!important}
       /* Map controls overlay */
       .me-ctrls{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:1000;align-items:center}
@@ -3395,41 +3399,45 @@ async function downloadAllPins() {
           <div class="me-lasso-layer" id="me-layer-main" onmousedown="meLassoStart(event,'main')"></div>
         </div>
 
-        <!-- Form layout + map -->
-        <div class="me-map-form-demo">
-          <div class="me-map-form-col">
-            <!-- DS with-label inputs (inputs.json tokens: h32, r6, label caption 12/400 above) -->
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Dirección</label>
-              <input type="text" value="Av. Libertador B. O'Higgins 1234"
-                style="height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
-                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
-                onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
-                onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
-                onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+        <!-- Form layout + map — white container matching table-page card -->
+        <div class="me-map-form-container">
+          <div class="me-map-form-demo">
+
+            <!-- Left: input column -->
+            <div class="me-map-form-col">
+              <div class="me-map-form-field">
+                <label class="me-map-form-lbl2">Dirección</label>
+                <input type="text" value="Av. Libertador B. O'Higgins 1234"
+                  style="height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                  onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                  onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+                  onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+                  onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+              </div>
+              <div class="me-map-form-field">
+                <label class="me-map-form-lbl2">Ciudad</label>
+                <input type="text" value="Santiago"
+                  style="height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                  onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                  onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+                  onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+                  onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+              </div>
+              <div class="me-map-form-field">
+                <label class="me-map-form-lbl2">Referencia</label>
+                <input type="text" placeholder="Ej: Frente al metro Baquedano"
+                  style="height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                  onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                  onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+                  onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+                  onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+              </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Ciudad</label>
-              <input type="text" value="Santiago"
-                style="height:32px;padding:0 10px;border:1px solid var(--n5);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
-                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
-                onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
-                onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
-                onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
-            </div>
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Referencia</label>
-              <input type="text" placeholder="Ej: Frente al metro Baquedano"
-                style="height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
-                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
-                onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
-                onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
-                onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
-            </div>
-          </div>
-          <div>
-            <div class="me-map-form-lbl" style="margin-bottom:8px">Ubicación en mapa</div>
-            <div class="me-map-in-form-wrap">
+
+            <!-- Right: map column — same flex:1, label identical to input labels -->
+            <div class="me-map-form-col" style="display:flex;flex-direction:column;gap:4px">
+              <label class="me-map-form-lbl2">Ubicación en el mapa</label>
+              <div class="me-map-in-form-wrap" style="flex:1;min-height:144px;height:200px">
               <div id="me-map-form" class="me-map-in-form"></div>
               <div class="me-ctrls" style="top:6px;right:6px">
                 <button class="me-btn" onclick="meToggleVer(event,this,'me-ver-form')">
@@ -3455,8 +3463,10 @@ async function downloadAllPins() {
               </svg>
               <div class="me-lasso-layer" id="me-layer-form" onmousedown="meLassoStart(event,'form')"></div>
             </div>
-          </div>
-        </div>
+          </div><!-- end map col -->
+
+          </div><!-- end me-map-form-demo -->
+        </div><!-- end me-map-form-container -->
       </div>
       ${mapScript}`;
 
