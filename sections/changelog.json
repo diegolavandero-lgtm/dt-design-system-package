@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T16:01:07.656Z",
+  "generated": "2026-06-08T16:09:34.570Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "ef79600",
+          "type": "update",
+          "section": "Inputs",
+          "message": "feat(map elements): geocoding + lat/lng inputs + draggable pin",
+          "author": "Diego"
+        },
         {
           "hash": "eccc06b",
           "type": "fix",
