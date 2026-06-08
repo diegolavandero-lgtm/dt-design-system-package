@@ -4165,34 +4165,9 @@ async function downloadAllPins() {
     }).join('');
 
 
-    return `
-      ${sbStyle}
-      <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">${escHtml(data.title)}</h1>
-      <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px">${escHtml(data.description)}</p>
-
-      <div class="card flush" style="border-radius:8px;overflow:hidden">
-
-        <!-- Topbar: exact DS LM desktop component -->
-        <div class="tbar" style="border-radius:0;padding:0 0 0 22px">
-          <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
-          <div class="acts">
-            ${iconSvg('apps',18,'#fff')}
-            ${iconSvg('help',18,'#fff')}
-            ${iconSvg('messages',18,'#fff')}
-            <div class="bell">${iconSvg('alerts',18,'#fff')}</div>
-            ${iconSvg('user',18,'#fff')}
-          </div>
-          <div class="slot">ACME CO</div>
-        </div>
-
-        <!-- Body -->
-        <div style="display:flex;min-height:540px">
-
-          <!-- Sidebar: exact DS sidebar desktop component -->
-          <div class="sbx">${sidebarHtml}</div>
-
-          <!-- Main content -->
-          <div style="flex:1;padding:20px 24px 16px;min-width:0;display:flex;flex-direction:column;gap:20px;overflow:hidden;background:var(--n2)">
+    // ── Shared main content (used in both sidebar variants) ───────────────
+    const mainContent = `
+      <div style="flex:1;padding:20px 24px 16px;min-width:0;display:flex;flex-direction:column;gap:20px;overflow:hidden;background:var(--n2)">
 
             <!-- Page header -->
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
@@ -4261,9 +4236,34 @@ async function downloadAllPins() {
               <button style="width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n6)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
             </div>
 
-          </div><!-- end main -->
-        </div><!-- end body -->
-      </div><!-- end card -->
+      </div>`; // end mainContent
+
+    const tbar = `<div class="tbar" style="border-radius:0;padding:0 0 0 22px">
+      <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
+      <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
+      <div class="slot">ACME CO</div>
+    </div>`;
+
+    return `
+      ${sbStyle}
+      <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">${escHtml(data.title)}</h1>
+      <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 20px;max-width:660px">${escHtml(data.description)}</p>
+
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 8px">Sidebar estándar</h3>
+      <div class="card flush" style="border-radius:8px;overflow:hidden;margin-bottom:28px">
+        ${tbar}
+        <div style="display:flex;min-height:540px">
+          <div class="sbx">${sidebarHtml}</div>
+          ${mainContent}
+        </div>
+      </div>
+
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 8px">Sidebar de ajustes</h3>
+      <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 12px">Misma tabla — panel de ajustes empuja el contenido a la derecha.</p>
+      <div class="card flush" style="border-radius:8px;overflow:hidden;margin-bottom:28px">
+        ${tbar}
+        ${buildSettingsSidebar(data.lmProduct || {}, null, mainContent)}
+      </div>
     `;
   },
 

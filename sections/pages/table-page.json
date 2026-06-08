@@ -415,5 +415,177 @@
   },
   "_template": "Table page — use as basis for all list/table screens. See CLAUDE.md → Page templates for the full layout spec. Only change: pageTitle, buttons, filter labels, scrollDemo data.",
   "product": "lastmile",
-  "activeNav": "document-multiple"
+  "activeNav": "document-multiple",
+  "lmProduct": {
+    "settingsItems": [
+      {
+        "icon": "report-data",
+        "label": "Resumen",
+        "state": "default"
+      },
+      {
+        "icon": "dashboard",
+        "label": "Actividad",
+        "state": "default"
+      },
+      {
+        "icon": "network-3",
+        "label": "Rutas",
+        "state": "default"
+      },
+      {
+        "icon": "document-multiple",
+        "label": "Órdenes",
+        "state": "default"
+      },
+      {
+        "icon": "delivery",
+        "label": "Flota",
+        "state": "default"
+      },
+      {
+        "icon": "chart-column",
+        "label": "Estadísticas",
+        "state": "default"
+      },
+      {
+        "icon": "notification",
+        "label": "Alertas",
+        "state": "default"
+      },
+      {
+        "icon": "events",
+        "label": "Clientes",
+        "state": "default"
+      },
+      {
+        "icon": "file-system",
+        "label": "Documentos",
+        "state": "default"
+      },
+      {
+        "icon": "currency",
+        "label": "Módulo de Costos",
+        "state": "default"
+      },
+      {
+        "icon": "return",
+        "label": "Logística inversa",
+        "state": "default"
+      },
+      {
+        "icon": "white-paper",
+        "label": "Rendición de Documentos",
+        "state": "default"
+      },
+      {
+        "icon": "store",
+        "label": "Retiro en tienda",
+        "state": "default"
+      },
+      {
+        "icon": "document-import",
+        "label": "Importar",
+        "state": "default"
+      },
+      {
+        "icon": "currency",
+        "label": "Módulo de Costos (nuevo)",
+        "state": "default"
+      }
+    ],
+    "settingsPanel": {
+      "groups": [
+        {
+          "label": "Cuentas",
+          "items": [
+            {
+              "label": "Configuración de cuenta",
+              "state": "selected"
+            }
+          ]
+        },
+        {
+          "label": "Usuarios",
+          "items": [
+            {
+              "label": "Usuarios web",
+              "count": 18
+            },
+            {
+              "label": "Usuarios móviles",
+              "count": 59
+            }
+          ]
+        },
+        {
+          "label": "Gestionar",
+          "items": [
+            {
+              "label": "Vehículos"
+            },
+            {
+              "label": "Subestados"
+            },
+            {
+              "label": "Pruebas de entrega"
+            },
+            {
+              "label": "Formularios de ruta"
+            },
+            {
+              "label": "Centros de distribución"
+            },
+            {
+              "label": "Agrupaciones"
+            },
+            {
+              "label": "Alertas"
+            },
+            {
+              "label": "Notificaciones"
+            },
+            {
+              "label": "Configuración de Operación"
+            }
+          ]
+        },
+        {
+          "label": "Configuración avanzada",
+          "items": [
+            {
+              "label": "Importar Órdenes"
+            },
+            {
+              "label": "Campos personalizados"
+            },
+            {
+              "label": "Llaves API"
+            },
+            {
+              "label": "Webhooks"
+            },
+            {
+              "label": "Etiquetas de órdenes"
+            },
+            {
+              "label": "Seguridad"
+            },
+            {
+              "label": "Módulo de costo"
+            }
+          ]
+        },
+        {
+          "label": "Widget",
+          "items": [
+            {
+              "label": "Seguimiento de pedidos"
+            }
+          ]
+        }
+      ],
+      "version": "20.25.10"
+    }
+  }
 }
