@@ -373,19 +373,22 @@ function dpFilterField(placeholder) {
       <span style="flex:1;font:400 14px/1 DM Sans,sans-serif;color:var(--n5)">${escHtml(placeholder)}</span>
       <span style="color:var(--n5);display:flex">${cal}</span>
     </div>
-    <div id="${id}-pop" data-dp="" data-month="4" data-year="2025" data-selected=""
+    <div id="${id}-pop" data-dp="" data-month="4" data-year="2025" data-selected="" data-view="day"
       data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);width:300px;overflow:hidden;font-family:DM Sans,sans-serif">
       <div style="padding:10px 12px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <button onclick="_dpNav(this,-1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6,#1F60ED);font-size:18px;line-height:1;padding:2px 6px">‹</button>
-          <span data-month-label="1" style="font:700 14px/1 DM Sans,sans-serif;color:var(--n7,#39414D)">Abril 2025</span>
+          <button onclick="_dpViewToggle(this)" data-which="1" style="background:none;border:none;cursor:pointer;font:700 14px/1 DM Sans,sans-serif;color:var(--n7,#39414D);padding:2px 8px;border-radius:4px" onmouseenter="this.style.background='var(--n2,#F0F2F5)'" onmouseleave="this.style.background='none'">
+            <span data-month-label="1">Abril 2025</span>
+          </button>
           <button onclick="_dpNav(this,1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6,#1F60ED);font-size:18px;line-height:1;padding:2px 6px">›</button>
         </div>
         <div data-grid="1" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px"></div>
+        <div data-month-grid="1" style="display:none;grid-template-columns:repeat(3,1fr);gap:4px"></div>
       </div>
       <div style="padding:4px 12px 12px">
         <button data-accept disabled
-          onclick="(function(btn){var inp=btn.closest('[style*=relative]').querySelector('[id$=-inp] span');var dp=btn.closest('[data-dp]');var d=dp.dataset.selected||dp.dataset.start;if(d&&inp)inp.textContent=d.slice(5).split('-').reverse().join('/');btn.closest('[data-popover]').style.display='none';})(this)"
+          onclick="(function(btn){var inp=document.getElementById('${id}-inp').querySelector('span');var dp=btn.closest('[data-dp]');var d=dp.dataset.selected||dp.dataset.start;if(d&&inp){inp.textContent=d.split('-').reverse().join('/');inp.style.color='var(--n7,#39414D)';}btn.closest('[data-popover]').style.display='none';})(this)"
           style="width:100%;height:36px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 13px/1 DM Sans,sans-serif;cursor:pointer">Aceptar</button>
       </div>
     </div>
@@ -1258,19 +1261,22 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         <span style="color:var(--n5);display:flex">${icon}</span>
       </div>`;
 
-    // Calendar card (single)
+    // Calendar card (single) — with month/year selector
     const dpCalCard = (attrs) =>
-      `<div ${attrs} data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);width:300px;overflow:hidden;font-family:var(--font-sans)">
+      `<div ${attrs} data-view="day" data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(19,32,69,.14);width:300px;overflow:hidden;font-family:var(--font-sans)">
         <div style="padding:10px 12px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
             <button onclick="_dpNav(this,-1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;line-height:1;padding:2px 6px">‹</button>
-            <span data-month-label="1" style="font:700 14px var(--font-sans);color:var(--n7)">Abril 2025</span>
+            <button onclick="_dpViewToggle(this)" data-which="1" style="background:none;border:none;cursor:pointer;font:700 14px var(--font-sans);color:var(--n7);padding:2px 8px;border-radius:4px" onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='none'">
+              <span data-month-label="1">Abril 2025</span>
+            </button>
             <button onclick="_dpNav(this,1)" data-which="1" style="background:none;border:none;cursor:pointer;color:var(--b6);font-size:18px;line-height:1;padding:2px 6px">›</button>
           </div>
           <div data-grid="1" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px"></div>
+          <div data-month-grid="1" style="display:none;grid-template-columns:repeat(3,1fr);gap:4px"></div>
         </div>
         <div style="padding:4px 12px 12px">
-          <button data-accept disabled onclick="(function(btn){var w=btn.closest('[data-dp-wrap]');if(w){var inp=w.querySelector('[data-dp-input]');var dp=btn.closest('[data-dp]');var sel=dp.dataset.selected||dp.dataset.start;if(sel&&inp)inp.textContent=sel.slice(5).split('-').reverse().join('/');}btn.closest('[data-popover]').style.display='none';})(this)"
+          <button data-accept disabled onclick="(function(btn){var w=btn.closest('[data-dp-wrap]');if(w){var inp=w.querySelector('[style*=relative] span:first-child');var dp=btn.closest('[data-dp]');var sel=dp.dataset.selected||dp.dataset.start;if(sel&&inp)inp.textContent=sel.split('-').reverse().join('/');}btn.closest('[data-popover]').style.display='none';})(this)"
             style="width:100%;height:36px;border-radius:20px;border:none;background:#C5D2E7;color:#fff;font:700 13px var(--font-sans);cursor:pointer">Aceptar</button>
         </div>
       </div>`;

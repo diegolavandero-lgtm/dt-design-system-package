@@ -1232,7 +1232,72 @@ function initDateTimePickers() {
     refreshDayStyles(dp);
   };
 
-  /* ── MONTH NAV ── */
+  /* ── MONTH NAMES (ES) ── */
+  var MONTHS_SHORT = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+  /* ── MONTH VIEW ── */
+  function showMonthView(dp, which) {
+    var yKey = 'y'+which, mKey = 'm'+which;
+    var y = parseInt(dp.dataset[yKey]||dp.dataset.year||2025);
+    var curM = parseInt(dp.dataset[mKey]||dp.dataset.month||4);
+    var label = dp.querySelector('[data-month-label="'+which+'"]');
+    if (label) label.textContent = y;
+    var dayGrid = dp.querySelector('[data-grid="'+which+'"]');
+    var monGrid = dp.querySelector('[data-month-grid="'+which+'"]');
+    if (dayGrid) dayGrid.style.display = 'none';
+    if (monGrid) {
+      monGrid.style.display = 'grid';
+      monGrid.innerHTML = MONTHS_SHORT.map(function(name,i) {
+        var isSel = (i+1)===curM;
+        return '<button onclick="_dpSelectMonth(this,'+(i+1)+')" data-which="'+which+'" style="padding:8px 4px;border:none;border-radius:6px;font:'+
+          (isSel?'700':'400')+' 12px var(--font-sans,DM Sans);cursor:pointer;background:'+(isSel?'var(--b6,#1F60ED)':'transparent')+
+          ';color:'+(isSel?'#fff':'var(--n7,#39414D)')+';" '+
+          'onmouseenter="if(!this.style.background.includes(\'1F60ED\'))this.style.background=\'var(--n2,#F0F2F5)\'"'+
+          ' onmouseleave="if(!this.style.background.includes(\'1F60ED\'))this.style.background=\'transparent\'">'+name+'</button>';
+      }).join('');
+    }
+  }
+
+  /* ── SELECT MONTH → back to day view ── */
+  window._dpSelectMonth = function(btn, monthNum) {
+    var dp = btn.closest('[data-dp]') || btn.closest('[data-dpr]');
+    if (!dp) return;
+    var which = btn.dataset.which || '1';
+    var yKey = 'y'+which;
+    var y = parseInt(dp.dataset[yKey]||dp.dataset.year||2025);
+    dp.dataset['m'+which] = monthNum;
+    dp.dataset.view = 'day';
+    var dayGrid = dp.querySelector('[data-grid="'+which+'"]');
+    var monGrid = dp.querySelector('[data-month-grid="'+which+'"]');
+    var label   = dp.querySelector('[data-month-label="'+which+'"]');
+    if (monGrid) monGrid.style.display = 'none';
+    if (dayGrid) { dayGrid.style.display = 'grid'; }
+    if (dayGrid && label) buildGrid(dayGrid, label, y, monthNum);
+  };
+
+  /* ── TOGGLE DAY ↔ MONTH VIEW (click on month/year label) ── */
+  window._dpViewToggle = function(btn) {
+    var dp = btn.closest('[data-dp]') || btn.closest('[data-dpr]');
+    if (!dp) return;
+    var which = btn.dataset.which || '1';
+    var view = dp.dataset.view || 'day';
+    if (view === 'day') {
+      dp.dataset.view = 'month';
+      showMonthView(dp, which);
+    } else {
+      dp.dataset.view = 'day';
+      var m = parseInt(dp.dataset['m'+which]||dp.dataset.month||4);
+      var y = parseInt(dp.dataset['y'+which]||dp.dataset.year||2025);
+      var dayGrid = dp.querySelector('[data-grid="'+which+'"]');
+      var monGrid = dp.querySelector('[data-month-grid="'+which+'"]');
+      var label   = dp.querySelector('[data-month-label="'+which+'"]');
+      if (monGrid) monGrid.style.display = 'none';
+      if (dayGrid) dayGrid.style.display = 'grid';
+      if (dayGrid && label) buildGrid(dayGrid, label, y, m);
+    }
+  };
+
+  /* ── MONTH / YEAR NAV (view-aware) ── */
   window._dpNav = function(btn, dir) {
     var dp = btn.closest('[data-dp]') || btn.closest('[data-dpr]');
     if (!dp) return;
@@ -1240,11 +1305,18 @@ function initDateTimePickers() {
     var mKey = 'm'+which, yKey = 'y'+which;
     if (!dp.dataset[mKey]) { dp.dataset[mKey]=dp.dataset.month||'4'; dp.dataset[yKey]=dp.dataset.year||'2025'; }
     var m=parseInt(dp.dataset[mKey]||4), y=parseInt(dp.dataset[yKey]||2025);
-    m+=dir; if(m<1){m=12;y--;} if(m>12){m=1;y++;}
-    dp.dataset[mKey]=m; dp.dataset[yKey]=y;
-    var grid = dp.querySelector('[data-grid="'+which+'"]');
-    var label = dp.querySelector('[data-month-label="'+which+'"]');
-    if (grid && label) buildGrid(grid, label, y, m);
+    var view = dp.dataset.view || 'day';
+    if (view === 'month') {
+      // Navigate years while in month view
+      y += dir; dp.dataset[yKey]=y;
+      showMonthView(dp, which);
+    } else {
+      m+=dir; if(m<1){m=12;y--;} if(m>12){m=1;y++;}
+      dp.dataset[mKey]=m; dp.dataset[yKey]=y;
+      var grid = dp.querySelector('[data-grid="'+which+'"]');
+      var label = dp.querySelector('[data-month-label="'+which+'"]');
+      if (grid && label) buildGrid(grid, label, y, m);
+    }
   };
 
   /* ── CLOSE / RESET ── */
