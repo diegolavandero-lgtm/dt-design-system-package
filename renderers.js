@@ -1209,7 +1209,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
     // DS-style input trigger — popover is the immediate nextElementSibling of this div
     const triggerInp = (placeholder, icon) =>
-      `<div style="position:relative;display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;width:100%"
+      `<div style="position:relative;display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box;width:220px"
         onclick="(function(el){var pop=el.nextElementSibling;if(!pop||!pop.dataset.popover)return;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open)pop.style.display='block';})(this)"
         onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
         <span style="flex:1;font:400 14px/1 var(--font-sans);color:var(--n5)">${escHtml(placeholder)}</span>
@@ -1446,15 +1446,9 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <h3 style="font:700 18px var(--font-sans);color:var(--n7);margin:24px 0 6px">Date range picker</h3>
       <p class="desc" style="margin-bottom:16px">Dos inputs (Desde/Hasta) que abren un popover con dos meses continuos — exactamente el ancho de ambos inputs juntos.</p>
       <div class="card" style="padding-bottom:340px;margin-bottom:0">
-        <div style="display:flex;gap:8px;position:relative" data-dp-wrap>
-          <div style="flex:1;display:flex;flex-direction:column;gap:4px">
-            <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Desde</span>
-            ${rangeInp('Fecha inicio', CAL_ICO)}
-          </div>
-          <div style="flex:1;display:flex;flex-direction:column;gap:4px">
-            <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Hasta</span>
-            ${rangeInp('Fecha fin', CAL_ICO)}
-          </div>
+        <div style="display:inline-flex;flex-direction:column;gap:4px;position:relative">
+          <span style="font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em">Rango de fechas</span>
+          ${triggerInp('Seleccionar rango', CAL_ICO)}
           ${dpRangePopover}
         </div>
       </div>
