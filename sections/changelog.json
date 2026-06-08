@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T14:54:11.598Z",
+  "generated": "2026-06-08T15:02:45.690Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "1791956",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "feat(sidebar+topbar): mobile hamburger, interactive drawer, compact nav rows",
+          "author": "Diego"
+        },
         {
           "hash": "6fc883a",
           "type": "feat",
