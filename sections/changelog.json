@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T15:15:09.253Z",
+  "generated": "2026-06-08T15:59:24.129Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "7d871e3",
+          "type": "update",
+          "section": "General",
+          "message": "chore: bump renderers.js to v2.4.2 to bust browser cache",
+          "author": "Diego"
+        },
         {
           "hash": "248e150",
           "type": "fix",
