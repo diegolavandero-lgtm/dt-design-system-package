@@ -399,11 +399,13 @@ function buildSettingsSidebar(product, activeItem, contentHtml) {
   }
 
   const rightSlot = contentHtml != null
-    ? `<div style="flex:1;min-width:0">${contentHtml}</div>`
+    ? `<div style="flex:1;min-width:0;overflow:hidden">${contentHtml}</div>`
     : `<div style="width:180px;background:var(--n1);padding:20px;display:flex;align-items:flex-start;border-radius:0 0 24px 0"><span style="font:400 12px var(--font-sans);color:var(--n4)">Content pushed right</span></div>`;
 
-  return `<div class="sbx-settings" style="border:1px solid var(--n3);border-radius:0 0 24px 0;overflow:hidden;min-height:600px">
-    <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0">${iconItems}</div>
+  // Use inline display:flex so this works with OR without the .sbx-settings CSS class
+  // (SB_STYLE is only injected in sidebar() — not in other renderers like formpage)
+  return `<div class="sbx-settings" style="display:flex;width:100%;border:1px solid var(--n3);border-radius:0 0 24px 0;overflow:hidden;min-height:600px">
+    <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid #E9ECF2;padding:8px 0;overflow-y:auto">${iconItems}</div>
     ${panelHtml}
     ${rightSlot}
   </div>`;
@@ -4454,9 +4456,8 @@ async function downloadAllPins() {
           <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
           <div class="slot">ACME CO</div>
         </div>
-        <div style="display:flex;min-height:640px">
-          ${buildSettingsSidebar(lmProduct, activeItem, formContent)}
-        </div>
+        <!-- buildSettingsSidebar is width:100% flex row: icon(52) + panel(224) + content(flex:1) -->
+        ${buildSettingsSidebar(lmProduct, activeItem, formContent)}
       </div>`;
     };
 
