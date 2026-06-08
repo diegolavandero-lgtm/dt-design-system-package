@@ -4426,28 +4426,37 @@ async function downloadAllPins() {
         </div>
         <div style="display:flex;min-height:600px">
           <div class="fp-sbx">${sidebarHtml}</div>
-          <div style="flex:1;padding:20px 24px 24px;min-width:0;display:flex;flex-direction:column;gap:0;overflow:hidden;background:var(--n2)">
-            <!-- Breadcrumb -->
-            <div style="font:400 12px var(--font-sans);color:var(--n5);margin-bottom:12px;display:flex;align-items:center;gap:4px">
+          <div style="flex:1;padding:20px 24px 24px;min-width:0;display:flex;flex-direction:column;gap:16px;overflow:hidden;background:var(--n2)">
+
+            <!-- Breadcrumb — outside the white container, top-left -->
+            <div style="font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:4px">
               ${breadcrumb.map((b,i)=>`${i>0?`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>`:''}
               <span style="${i===breadcrumb.length-1?'color:var(--n6)':''}">${escHtml(b)}</span>`).join('')}
             </div>
-            <!-- Page header -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px">
-              <div style="display:flex;align-items:center;gap:8px">
-                <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n6)">${BACK_ARROW}</button>
-                <h2 style="margin:0;font:700 24px/1 var(--font-sans);color:var(--n7)">${escHtml(title)}</h2>
+
+            <!-- White form container — same tokens as table-page container -->
+            <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px 24px 24px;display:flex;flex-direction:column;gap:20px">
+
+              <!-- Page header inside container -->
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n6)">${BACK_ARROW}</button>
+                  <h2 style="margin:0;font:700 24px/1 var(--font-sans);color:var(--n7)">${escHtml(title)}</h2>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                  <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer">Cancelar</button>
+                  <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Guardar</button>
+                </div>
               </div>
-              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-                <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer">Cancelar</button>
-                <button style="height:32px;padding:0 16px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Guardar</button>
+
+              <p style="font:400 12px var(--font-sans);color:var(--r6);margin:0"><span>* </span>Indica el campo es obligatorio</p>
+
+              <!-- Form blocks — gap:16px between them -->
+              <div style="display:flex;flex-direction:column;gap:16px">
+                ${blocks}
               </div>
-            </div>
-            <p style="font:400 12px var(--font-sans);color:var(--r6);margin:0 0 16px"><span>* </span>Indica el campo es obligatorio</p>
-            <!-- Blocks -->
-            <div style="display:flex;flex-direction:column;gap:16px">
-              ${blocks}
-            </div>
+
+            </div><!-- end white form container -->
           </div>
         </div>
       </div>`;
