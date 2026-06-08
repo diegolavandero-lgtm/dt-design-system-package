@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T21:25:52.675Z",
+  "generated": "2026-06-08T21:30:57.398Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "a5fa026",
+          "type": "feat",
+          "section": "Sidebar",
+          "message": "feat(table page): add settings sidebar variant",
+          "author": "Diego"
+        },
         {
           "hash": "54d05ac",
           "type": "fix",
