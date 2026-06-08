@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-08T17:25:47.144Z",
+  "generated": "2026-06-08T17:33:11.572Z",
   "days": [
     {
       "date": "2026-06-08",
       "entries": [
+        {
+          "hash": "2983d5c",
+          "type": "feat",
+          "section": "Inputs",
+          "message": "feat(pages): add Form page with 6 composable block types + 3 assembled examples",
+          "author": "Diego"
+        },
         {
           "hash": "e061e22",
           "type": "update",
