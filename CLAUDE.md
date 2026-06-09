@@ -13,10 +13,31 @@ and auto-deployed via Cloudflare Pages to `https://dt-design-system-package.page
 
 ---
 
+## ⚠️ MANDATORY SESSION START PROTOCOL — DO THIS BEFORE ANYTHING ELSE
+
+**STOP. Before reading any file, writing any code, or making any suggestion:**
+
+```bash
+cd /Users/carloslagos/dt-design-system-package
+git fetch origin
+git status
+git log HEAD..origin/main --oneline
+```
+
+- If there are **remote commits ahead**: run `git pull` immediately and report what changed.
+- If **local is ahead of remote** (unpushed commits): warn the user before proceeding.
+- If **merge conflicts exist**: resolve them before any work begins.
+
+**Never skip this step.** Working from a stale local clone wastes the entire session.
+Report the sync result to the user in one line before continuing.
+
+---
+
 ## Established workflow (follow this every ticket)
 
 ```
-1. READ    → ALL sections/*.json specs + dt-design-system.html + colors_and_type.css (see "Files to read" table below)
+0. SYNC    → SEE MANDATORY PROTOCOL ABOVE — git fetch + pull if needed
+1. READ    → ALL sections/*.json specs + colors_and_type.css (see "Files to read" table below)
 2. REVIEW  → navigate the live Jira ticket and the production page (if it exists)
 3. AUDIT   → use /ux-design-expert to identify layout and flow improvements
 4. CONFIRM → propose improvements, wait for user to choose directions
