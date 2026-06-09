@@ -2,11 +2,25 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T14:52:33.281Z",
+  "generated": "2026-06-09T15:17:42.889Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "a51f882",
+          "type": "update",
+          "section": "General",
+          "message": "feat(maps): switch all map tiles to CartoDB Positron",
+          "author": "Diego"
+        },
+        {
+          "hash": "20f4b86",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(form page): initialize all fp-map-* divs with geofence map",
+          "author": "Diego"
+        },
         {
           "hash": "862b117",
           "type": "fix",
