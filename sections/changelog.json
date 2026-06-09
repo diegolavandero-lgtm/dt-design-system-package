@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T21:37:28.225Z",
+  "generated": "2026-06-09T21:40:41.550Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "6f1f23f",
+          "type": "update",
+          "section": "General",
+          "message": "chore: move PLANNER prototype out of Charlie_Designs — authored by Diego",
+          "author": "Carlos"
+        },
         {
           "hash": "d96a15e",
           "type": "update",
