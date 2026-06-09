@@ -1623,7 +1623,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         onmouseenter="var t=this.querySelector('.tt-live');t.style.opacity='1';t.style.visibility='visible';var o=this.querySelector('.ico-out'),f=this.querySelector('.ico-fil');if(o)o.style.display='none';if(f)f.style.display='inline-flex';"
         onmouseleave="var t=this.querySelector('.tt-live');t.style.opacity='0';t.style.visibility='hidden';var o=this.querySelector('.ico-out'),f=this.querySelector('.ico-fil');if(o)o.style.display='inline-flex';if(f)f.style.display='none';">
         ${trigger}
-        <div class="tt-live" style="position:absolute;${({'top':'bottom:calc(100%+8px);left:50%;transform:translateX(-50%)','bottom':'top:calc(100%+8px);left:50%;transform:translateX(-50%)','left':'right:calc(100%+8px);top:50%;transform:translateY(-50%)','right':'left:calc(100%+8px);top:50%;transform:translateY(-50%)'})[dir]};background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">
+        <div class="tt-live" style="position:absolute;${({'top':'bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)','bottom':'top:calc(100% + 8px);left:50%;transform:translateX(-50%)','left':'right:calc(100% + 8px);top:50%;transform:translateY(-50%)','right':'left:calc(100% + 8px);top:50%;transform:translateY(-50%)'})[dir]};background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">
           ${escHtml(text)}<div style="position:absolute;${({'top':'top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)','bottom':'bottom:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid var(--n7)','left':'left:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid var(--n7)','right':'right:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:5px solid var(--n7)'})[dir]};width:0;height:0"></div>
         </div>
       </span>`;
@@ -1695,20 +1695,21 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     // ─── Section 3: Persistent (with close button) ───────────────────────────
     const persistentSection = `<div style="margin-bottom:40px">
       ${subHead('Persistent (with close)')}
-      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 20px">Tooltip stays visible until the user closes it manually.</p>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 20px">Click the icon to open. Tooltip stays visible until the user closes it with ×.</p>
       <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;display:inline-flex">
         <div style="position:relative;padding-top:74px">
           <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
             Label
-            <div class="tt-persist-wrap" style="position:relative;display:inline-flex;align-items:center">
+            <div class="tt-persist-wrap" style="position:relative;display:inline-flex;align-items:center;cursor:pointer"
+              onclick="(function(wrap){var tt=wrap.querySelector('.tt-persist');tt.style.display=tt.style.display==='none'?'block':'none';})(this)">
               <div class="tt-persist" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 28px 10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;z-index:2">
                 ${escHtml(text)}
-                <button onclick="this.closest('.tt-persist-wrap').querySelector('.tt-persist').style.display='none'"
+                <button onclick="event.stopPropagation();this.closest('.tt-persist').style.display='none'"
                   style="position:absolute;top:8px;right:8px;background:transparent;border:none;color:#fff;cursor:pointer;padding:2px;display:flex;align-items:center;opacity:.6;line-height:1"
                   onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.6'">${X_CLOSE}</button>
                 <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
               </div>
-              ${icoFil}
+              ${icoOutCls}${icoFilCls}
             </div>
           </div>
         </div>
@@ -1807,9 +1808,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
                 ? `<div style="font:700 12px/16px var(--font-sans);margin-bottom:4px">Sin asignar</div><div style="color:rgba(255,255,255,.75)">Sin conductor</div>`
                 : `<div style="font:700 12px/16px var(--font-sans);margin-bottom:4px">#ORD-${3900+parseInt(num)*11} · Parada ${num}</div><div style="color:rgba(255,255,255,.75)">Av. Secundaria ${num}${num}5</div>`;
               return `<span style="position:relative;display:inline-flex;cursor:pointer"
-                onmouseenter="this.querySelector('.pin-tt').style.opacity='1';this.querySelector('.pin-tt').style.visibility='visible'"
-                onmouseleave="this.querySelector('.pin-tt').style.opacity='0';this.querySelector('.pin-tt').style.visibility='hidden'">
-                <div class="pin-tt" style="position:absolute;bottom:calc(100%+8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:180px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">
+                onclick="(function(el){var tt=el.querySelector('.pin-tt');var vis=tt.style.visibility==='visible';document.querySelectorAll('.pin-tt').forEach(function(t){t.style.opacity='0';t.style.visibility='hidden';});if(!vis){tt.style.opacity='1';tt.style.visibility='visible';}})(this)">
+                <div class="pin-tt" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:180px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">
                   ${tipHtml}<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
                 </div>
                 ${pinSvg(fill,'',num)}
