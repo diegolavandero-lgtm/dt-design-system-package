@@ -587,5 +587,34 @@
       ],
       "version": "20.25.10"
     }
-  }
+  },
+  "filterFields": [
+    {
+      "type": "text",
+      "placeholder": "Cliente",
+      "colIdx": 2
+    },
+    {
+      "type": "select",
+      "placeholder": "Estado",
+      "colIdx": 3,
+      "options": [
+        "Entregado",
+        "En tránsito",
+        "Pendiente",
+        "Cancelado"
+      ]
+    },
+    {
+      "type": "date",
+      "placeholder": "F. Creación",
+      "colIdx": 7
+    },
+    {
+      "type": "text",
+      "placeholder": "Conductor",
+      "colIdx": 6
+    }
+  ],
+  "filterBtnLabel": "Filtrar"
 }

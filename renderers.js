@@ -447,6 +447,49 @@ function buildSettingsSidebar(product, activeItem, contentHtml) {
   </div>`;
 }
 
+/* ── MODULE-LEVEL: filter field renderer (shared by filters + tablepage) ─────
+   Renders one filter field by type: text → DS input, select → dt-drop-wrap,
+   date → dpFilterField (input + datepicker popover).
+   Used by both filters() and tablepage() so the bar is identical everywhere. */
+const _FILTER_CHEVRON = `<svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>`;
+const _FILTER_INP_BASE = `width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none`;
+
+function renderFilterField(f) {
+  if (f.type === 'date') {
+    return dpFilterField(f.placeholder);
+  }
+  if (f.type === 'select') {
+    const items = (f.options||[]).map(o => {
+      const safe = escHtml(o);
+      return `<div onclick="dtPickOpt(this);this.closest('.dt-drop-wrap').dataset.val='${escHtml(o)}'"
+        data-val="${safe}"
+        onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
+        onmouseleave="this.style.background='';this.style.color='var(--n7)'"
+        style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer"
+      >${safe}</div>`;
+    }).join('');
+    return `<div class="dt-drop-wrap" data-val="" style="position:relative;flex:1;min-width:0">
+      <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)"
+        onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+        onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+        style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+        <span class="dt-dlabel" data-ph="${escHtml(f.placeholder)}" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(f.placeholder)}</span>
+        <span style="color:var(--n5);display:flex;flex-shrink:0">${_FILTER_CHEVRON}</span>
+      </div>
+      <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">${items}</div>
+    </div>`;
+  }
+  // text
+  return `<div style="flex:1;min-width:0">
+    <input type="text" placeholder="${escHtml(f.placeholder)}"
+      style="${_FILTER_INP_BASE};padding:0 10px"
+      onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+      onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+      onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+      onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+  </div>`;
+}
+
 const renderers = {
 
   /* ── OVERVIEW ── */
@@ -4313,42 +4356,8 @@ async function downloadAllPins() {
       });
     })()`.replace(/\s+/g,' ');
 
-    // ── Render filter fields with IDs on text inputs ──────────────────────
-    let inputIdx = 0;
-    const renderFieldFunctional = (f) => {
-      if (f.type === 'select') {
-        // dt-drop-wrap stores selected val in data-val on the wrap
-        const items = (f.options||[]).map(o => {
-          const safe = o.replace(/'/g,"&#39;");
-          return `<div onclick="dtPickOpt(this);this.closest('.dt-drop-wrap').dataset.val='${safe}'"
-            data-val="${safe}"
-            onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
-            onmouseleave="this.style.background='';this.style.color='var(--n7)'"
-            style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer"
-          >${escHtml(o)}</div>`;
-        }).join('');
-        return `<div class="dt-drop-wrap" data-val="" style="position:relative;flex:1;min-width:0">
-          <div class="dt-dtrigger" data-theme="border"
-            onclick="dtDrop(this.parentElement)"
-            onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
-            onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
-            style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
-            <span class="dt-dlabel" data-ph="${escHtml(f.placeholder)}" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(f.placeholder)}</span>
-            <span style="color:var(--n5);display:flex;flex-shrink:0">${CHEVRON}</span>
-          </div>
-          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">${items}</div>
-        </div>`;
-      }
-      if (f.type === 'date') {
-        return dpFilterField(f.placeholder);
-      }
-      return `<div style="flex:1;min-width:0">
-        <input type="text" placeholder="${escHtml(f.placeholder)}"
-          style="${inpBase};padding:0 10px"
-          onfocus="${onFocus}" onblur="${onBlur}"
-          onmouseenter="${onMEnter}" onmouseleave="${onMLeave}">
-      </div>`;
-    };
+    // ── Render filter fields — delegates to module-level renderFilterField ──
+    const renderFieldFunctional = (f) => renderFilterField(f);
 
     // ── Functional filter bar + demo table in one container ───────────────
     const filterDemo = `
@@ -4475,30 +4484,14 @@ async function downloadAllPins() {
             <!-- Container: filter bar + table -->
             <div style="border-radius:8px;border:1px solid var(--n4);background:#fff;padding:20px;display:flex;flex-direction:column;gap:20px">
 
-              <!-- Filter bar (from Filters component) -->
+              <!-- Filter bar — exact same fields as filters.json via renderFilterField() -->
               <div style="display:flex;align-items:center;gap:8px">
-                <!-- Exact same filter bar as Filters · live demo: Cliente, Estado, F.Creación, Conductor -->
-                <div style="flex:1;min-width:0">
-                  <input type="text" placeholder="Cliente" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
-                </div>
-                <div class="dt-drop-wrap" style="position:relative;flex:1;min-width:0">
-                  <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)" onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'" onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'" style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
-                    <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">Estado</span>
-                    <span style="color:var(--n5);display:flex;flex-shrink:0"><svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></span>
-                  </div>
-                  <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0">
-                    ${['Entregado','En tránsito','Pendiente','Cancelado'].map(o=>`<div onclick="dtPickOpt(this)" data-val="${o}" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'" onmouseleave="this.style.background='';this.style.color='var(--n7)'" style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">${o}</div>`).join('')}
-                  </div>
-                </div>
-                ${dpFilterField('F. Creación')}
-                <div style="flex:1;min-width:0">
-                  <input type="text" placeholder="Conductor" style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;padding:0 10px" onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'" onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'" onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'" onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
-                </div>
-                <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'" onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'">Filtrar</button>
-                <button title="Add more filters" style="width:32px;height:32px;border:1px solid var(--b6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
+                ${(data.filterFields||[]).map(renderFilterField).join('')}
+                <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'" onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'">${escHtml(data.filterBtnLabel||'Filtrar')}</button>
+                <button title="Agregar filtro" style="width:32px;height:32px;border:1px solid var(--b6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
                   ${iconSvg('filter--add', 24, 'var(--b6)')}
                 </button>
-                <button title="Reset filters" style="width:32px;height:32px;border:1px solid var(--r6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
+                <button title="Limpiar filtros" style="width:32px;height:32px;border:1px solid var(--r6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
                   ${iconSvg('filter--reset', 24, 'var(--r6)')}
                 </button>
               </div>
