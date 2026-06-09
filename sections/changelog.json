@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T19:15:56.755Z",
+  "generated": "2026-06-09T19:27:52.839Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "db6e361",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): Hallazgos y Cambios sobre toda la UI",
+          "author": "Diego"
+        },
         {
           "hash": "86dfa33",
           "type": "update",
