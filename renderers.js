@@ -4835,7 +4835,7 @@ async function downloadAllPins() {
             <span class="dt-dlabel" data-ph="${escHtml(f.placeholder)}" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(f.placeholder)}</span>
             <span style="color:var(--n5);display:flex;flex-shrink:0">${_FILTER_CHEVRON}</span>
           </div>
-          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:110;padding:4px 0">${items}</div>
+          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;z-index:110;padding:4px 0">${items}</div>
         </div>`;
       }
       return `<div style="flex:1;min-width:0">
@@ -4903,7 +4903,7 @@ async function downloadAllPins() {
             <span class="dt-dlabel" data-ph="${escHtml(f.placeholder)}" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(f.placeholder)}</span>
             <span style="color:var(--n5);display:flex;flex-shrink:0">${_FILTER_CHEVRON}</span>
           </div>
-          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:110;padding:4px 0">${items}</div>
+          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;z-index:110;padding:4px 0">${items}</div>
         </div>`;
       }
       return `<div style="flex:1;min-width:0">
