@@ -2630,66 +2630,117 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const t  = data.tokens || {};
     const mt = data.mobileTokens || {};
 
-    function renderFields(fields, isMobile) {
-      return fields.map(f => {
-        const focusCls = f.state === 'focus' ? 'foc' : '';
-        const selectArrow = f.type === 'select' ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>` : '';
-        return `<div class="fld" style="margin-bottom:10px">
-          <label style="font-size:${isMobile ? '12px' : '13px'}">${escHtml(f.label)}${f.required ? ' <span class="req">*</span>' : ''}</label>
-          <div class="inp ${focusCls}" style="${f.type === 'select' ? 'justify-content:space-between;' : ''}height:${isMobile ? '44px' : '40px'}">
-            <input value="${escHtml(f.value || '')}" style="width:100%;font-size:13px">${selectArrow}
-          </div>
-          ${f.helper ? `<div class="hlp" style="font-size:${isMobile ? '10px' : '11px'}">${escHtml(f.helper)}</div>` : ''}
-        </div>`;
-      }).join('');
+    const MOD_CHEVRON = `<svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0;pointer-events:none;color:var(--n5)"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>`;
+    const WARN_ICO = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--o7,#FF8B00)" stroke-width="2" style="flex-shrink:0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+
+    // ── DS input tokens (exact from inputs.json) ──────────────────────────
+    function dsInput(f) {
+      const isFocused = f.state === 'focus';
+      const border = isFocused ? '2px solid var(--b6)' : (f.value ? '1px solid var(--n5)' : '1px solid var(--n3)');
+      const bg     = isFocused ? 'var(--b1)' : '#fff';
+      return `<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px">
+        <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">${escHtml(f.label)}${f.required ? `<span style="color:var(--r6);margin-left:2px">*</span>` : ''}</label>
+        <input type="text" value="${escHtml(f.value||'')}" placeholder="${escHtml(f.label)}"
+          style="height:32px;padding:0 10px;border:${border};border-radius:6px;font:400 14px/20px var(--font-sans);background:${bg};color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+          onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+          onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'"
+          onmouseenter="if(document.activeElement!==this)this.style.background='var(--n2)'"
+          onmouseleave="if(document.activeElement!==this)this.style.background='#fff'">
+        ${f.helper ? `<p style="font:400 11px var(--font-sans);color:var(--n5);margin:2px 0 0">${escHtml(f.helper)}</p>` : ''}
+      </div>`;
     }
+
+    // ── dt-drop-wrap (exact from inputs.json) ─────────────────────────────
+    function dsSelect(f) {
+      return `<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px">
+        <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">${escHtml(f.label)}${f.required ? `<span style="color:var(--r6);margin-left:2px">*</span>` : ''}</label>
+        <div class="dt-drop-wrap" style="position:relative">
+          <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)"
+            onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+            onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+            style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+            <span class="dt-dlabel" style="flex:1;font:400 14px/20px var(--font-sans);color:${f.value ? 'var(--n7)' : 'var(--n6)'}">${escHtml(f.value || f.label)}</span>
+            <span style="display:flex;flex-shrink:0">${MOD_CHEVRON}</span>
+          </div>
+          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100%+4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0"></div>
+        </div>
+        ${f.helper ? `<p style="font:400 11px var(--font-sans);color:var(--n5);margin:2px 0 0">${escHtml(f.helper)}</p>` : ''}
+      </div>`;
+    }
+
+    function renderFields(fields) {
+      return fields.map(f => f.type === 'select' ? dsSelect(f) : dsInput(f)).join('');
+    }
+
+    // ── Warning banner (bn wr from banners.json) ──────────────────────────
+    const warning = p.warning ? `<div class="bn wr" style="margin-bottom:16px">
+      ${WARN_ICO}<span>${escHtml(p.warning)}</span>
+    </div>` : '';
+
+    // ── Buttons (pill DS tokens) ──────────────────────────────────────────
+    // Desktop: right-aligned inline
+    // Mobile: inline side-by-side (flex:1 each); if labels are long → full-width stacked
+    const PRI_BTN = (label, full='') =>
+      `<button style="height:40px;padding:0 24px;border-radius:50px;font:700 14px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;${full}display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box"
+        onmouseenter="this.style.background='var(--b7)'" onmouseleave="this.style.background='var(--b6)'">${escHtml(label)}</button>`;
+    const SEC_BTN = (label, full='') =>
+      `<button style="height:40px;padding:0 24px;border-radius:50px;font:700 14px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;${full}display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box"
+        onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'">${escHtml(label)}</button>`;
 
     function renderActions(actions, isMobile) {
-      const layout = isMobile
-        ? 'display:flex;flex-direction:column-reverse;gap:8px;border-top:1px solid var(--n3);padding-top:14px;margin-top:4px'
-        : 'display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--n3);padding-top:14px;margin-top:4px';
-      return `<div style="${layout}">${actions.map(a => {
-        const cls = a.type === 'primary' ? 'btn pri' : 'btn sec';
-        const style = isMobile ? 'width:100%;justify-content:center;height:48px' : '';
-        return `<button class="${cls}" style="${style}">${escHtml(a.label)}</button>`;
-      }).join('')}</div>`;
+      const divider = 'border-top:1px solid var(--n3);padding-top:16px;margin-top:8px';
+      if (!isMobile) {
+        // Desktop: inline, right-aligned
+        const btns = actions.map(a => a.type === 'primary' ? PRI_BTN(a.label) : SEC_BTN(a.label)).join('');
+        return `<div style="${divider};display:flex;justify-content:flex-end;gap:8px">${btns}</div>`;
+      }
+      // Mobile: inline side-by-side (flex:1 each) — fits for short labels like Cancel/Save
+      const btns = actions.map(a =>
+        a.type === 'primary' ? PRI_BTN(a.label,'flex:1;') : SEC_BTN(a.label,'flex:1;')
+      ).join('');
+      return `<div style="${divider};display:flex;gap:8px">${btns}</div>`;
     }
-
-    const warning = p.warning ? `<div class="bn wr" style="margin-bottom:14px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFAB00" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
-      <span>${escHtml(p.warning)}</span>
-    </div>` : '';
 
     const desktopModal = `
       <div style="background:rgba(19,32,69,.45);padding:32px 24px;border-radius:8px;display:flex;justify-content:center;align-items:center;min-height:520px">
-        <div style="width:440px;max-width:100%;background:#fff;border-radius:4px;padding:24px;border:1px solid #A3B5D1;box-shadow:0 8px 16px rgba(0,0,0,.15)">
-          <div style="display:flex;align-items:flex-start;margin-bottom:4px">
-            <h1 style="font:700 22px/1.3 var(--font-sans);color:#546884;flex:1;margin:0">${escHtml(p.title || '')}</h1>
-            <svg style="width:22px;height:22px;color:var(--n5);cursor:pointer;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        <div style="width:440px;max-width:100%;background:#fff;border-radius:8px;padding:24px;box-shadow:0 8px 24px rgba(0,0,0,.18)">
+          <div style="display:flex;align-items:flex-start;margin-bottom:6px">
+            <div style="flex:1">
+              <h1 style="font:700 22px/1.3 var(--font-sans);color:var(--n7);margin:0 0 4px">${escHtml(p.title || '')}</h1>
+              <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0">${escHtml(p.subtitle || '')}</p>
+            </div>
+            <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n5);flex-shrink:0;margin-top:2px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
           </div>
-          <div style="font:400 12px var(--font-sans);color:var(--n5);margin:4px 0 16px">${escHtml(p.subtitle || '')}</div>
-          ${renderFields(p.fields || [], false)}
-          ${warning}
-          ${renderActions(p.actions || [], false)}
+          <div style="margin-top:16px">
+            ${renderFields(p.fields || [])}
+            ${warning}
+            ${renderActions(p.actions || [], false)}
+          </div>
         </div>
       </div>`;
 
     const mobileModal = `
-      <div style="background:rgba(19,32,69,.45);padding:24px 16px;border-radius:8px;display:flex;justify-content:center;align-items:center;min-height:520px">
-        <div style="width:288px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
-          <div style="background:#F0F2F5;border-radius:22px;height:480px;position:relative;overflow:hidden">
-            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#1a1a1a;border-radius:2px"></div>
-            <div style="position:absolute;inset:32px 16px 16px;background:#fff;border-radius:8px;padding:16px;box-shadow:0 8px 16px rgba(0,0,0,.15);display:flex;flex-direction:column">
-              <div style="display:flex;align-items:flex-start;margin-bottom:4px">
-                <h1 style="font:700 18px/1.3 var(--font-sans);color:#546884;flex:1;margin:0">${escHtml(p.title || '')}</h1>
-                <svg style="width:20px;height:20px;color:var(--n5);cursor:pointer;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <div style="background:rgba(19,32,69,.45);padding:24px 16px;border-radius:8px;display:flex;justify-content:center;align-items:center;min-height:560px">
+        <div style="width:296px;background:#1a1a1a;border-radius:28px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)">
+          <div style="background:#F0F2F5;border-radius:22px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);width:60px;height:4px;background:#1a1a1a;border-radius:2px;z-index:2"></div>
+            <div style="margin:28px 14px 14px;background:#fff;border-radius:10px;padding:18px 16px;box-shadow:0 4px 12px rgba(0,0,0,.1)">
+              <div style="display:flex;align-items:flex-start;margin-bottom:6px">
+                <div style="flex:1">
+                  <h1 style="font:700 18px/1.3 var(--font-sans);color:var(--n7);margin:0 0 4px">${escHtml(p.title || '')}</h1>
+                  <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0">${escHtml(p.subtitle || '')}</p>
+                </div>
+                <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n5);flex-shrink:0;margin-top:2px">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
               </div>
-              <div style="font:400 11px var(--font-sans);color:var(--n5);margin:4px 0 12px">${escHtml(p.subtitle || '')}</div>
-              <div style="flex:1;overflow:auto;min-height:0">
-                ${renderFields(p.fields || [], true)}
+              <div style="margin-top:14px">
+                ${renderFields(p.fields || [])}
                 ${warning}
+                ${renderActions(p.actions || [], true)}
               </div>
-              ${renderActions(p.actions || [], true)}
             </div>
           </div>
         </div>
@@ -2713,7 +2764,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:8px;display:flex;align-items:center;gap:6px">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
             Mobile
-            <span style="font-weight:400;color:var(--n5);margin-left:auto">full-width · stacked actions</span>
+            <span style="font-weight:400;color:var(--n5);margin-left:auto">inline actions · stacked if labels are long</span>
           </div>
           <div class="card flush">${mobileModal}</div>
         </div>
