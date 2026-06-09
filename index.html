@@ -43,8 +43,8 @@ button,input,select{font-family:inherit}
 .subnav-tab .count{font:600 10px var(--font-sans);background:var(--n2);color:var(--n5);padding:1px 6px;border-radius:999px}
 
 /* ── LAYOUT ── */
-.layout{display:flex;min-height:calc(100vh - 97px)}
-.sidebar{width:256px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);padding:14px 0;position:sticky;top:97px;align-self:start;max-height:calc(100vh - 97px);overflow-y:auto}
+.layout{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:256px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);padding:14px 0;position:sticky;top:52px;align-self:start;max-height:calc(100vh - 52px);overflow-y:auto}
 .sidebar::-webkit-scrollbar{width:6px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--n3);border-radius:3px}
 .sidebar .grp-lbl{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);padding:10px 20px 5px}
@@ -555,29 +555,7 @@ input.dt-inp:focus::placeholder{color:var(--n8)}
   </div>
 </header>
 
-<!-- ── REPO SUBNAV ── -->
-<div class="subnav">
-  <div class="subnav-tab active">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-    <span data-i18n="subnav.code">Code</span>
-  </div>
-  <div class="subnav-tab">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
-    <span data-i18n="subnav.issues">Issues</span> <span class="count">3</span>
-  </div>
-  <div class="subnav-tab">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11.7 12 14l3-2.3M6 15V7l6-4 6 4v8l-6 4z"/></svg>
-    <span data-i18n="subnav.pullRequests">Pull requests</span> <span class="count">2</span>
-  </div>
-  <div class="subnav-tab">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-    <span data-i18n="subnav.actions">Actions</span>
-  </div>
-  <div class="subnav-tab">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-    <span data-i18n="subnav.releases">Releases</span> <span class="count">v2.4</span>
-  </div>
-</div>
+<!-- subnav removed -->
 
 <!-- ╔══════════════════════════════════════════════════════════
      ║  LAYOUT
@@ -617,19 +595,19 @@ const NAV = [
       path: 'sections/voice.json', renderer: 'voice' },
   ]},
   { group: 'Foundations', i18n: 'nav.foundations', items: [
-    { id: 'colors', label: 'Colors', i18n: 'nav.colors', status: 'complete',
+    { id: 'colors', label: 'Colors', i18n: 'nav.colors', status: 'ready',
       icon: 'M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.8 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.4-4.5-8-10-8z',
       path: 'sections/foundations/colors.json', renderer: 'colors' },
-    { id: 'typography', label: 'Typography', i18n: 'nav.typography', status: 'complete',
+    { id: 'typography', label: 'Typography', i18n: 'nav.typography', status: 'ready',
       icon: 'M4 7V4h16v3M9 20h6M12 4v16',
       path: 'sections/foundations/typography.json', renderer: 'typography' },
-    { id: 'spacing', label: 'Spacing', i18n: 'nav.spacing', status: 'complete',
+    { id: 'spacing', label: 'Spacing', i18n: 'nav.spacing', status: 'ready',
       icon: 'M3 6h18M3 12h18M3 18h18',
       path: 'sections/foundations/spacing.json', renderer: 'spacing' },
-    { id: 'radii', label: 'Radii', i18n: 'nav.radii', status: 'complete',
+    { id: 'radii', label: 'Radii', i18n: 'nav.radii', status: 'ready',
       icon: 'M3 8a5 5 0 0 1 5-5h13v18H8a5 5 0 0 1-5-5z',
       path: 'sections/foundations/radii.json', renderer: 'radii' },
-    { id: 'shadows', label: 'Shadows', i18n: 'nav.shadows', status: 'complete',
+    { id: 'shadows', label: 'Shadows', i18n: 'nav.shadows', status: 'ready',
       icon: 'M3 3h14v14H3zM7 17v4h14V7h-4',
       path: 'sections/foundations/shadows.json', renderer: 'shadows' },
     { id: 'iconography', label: 'Iconography', i18n: 'nav.iconography', status: 'in-progress',
@@ -637,34 +615,34 @@ const NAV = [
       path: 'sections/foundations/iconography.json', renderer: 'iconography' },
   ]},
   { group: 'Components', i18n: 'nav.components', items: [
-    { id: 'buttons', label: 'Buttons', i18n: 'nav.buttons', status: 'complete',
+    { id: 'buttons', label: 'Buttons', i18n: 'nav.buttons', status: 'ready',
       icon: 'M3 9h18v6H3z',
       path: 'sections/components/buttons.json', renderer: 'buttons' },
-    { id: 'inputs', label: 'Inputs & Dropdowns', i18n: 'nav.inputs', status: 'complete',
+    { id: 'inputs', label: 'Inputs & Dropdowns', i18n: 'nav.inputs', status: 'ready',
       icon: 'M3 7h18v10H3zM7 12h4',
       path: 'sections/components/inputs.json', renderer: 'inputs' },
     { id: 'tooltip', label: 'Tooltip', i18n: 'nav.tooltip', status: 'in-progress',
       icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z',
       path: 'sections/components/tooltip.json', renderer: 'tooltip' },
-    { id: 'selection', label: 'Selection controls', i18n: 'nav.selection', status: 'complete',
+    { id: 'selection', label: 'Selection controls', i18n: 'nav.selection', status: 'ready',
       icon: 'M9 11 12 14 22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
       path: 'sections/components/selection.json', renderer: 'selection' },
-    { id: 'chips', label: 'Pills / Tags', i18n: 'nav.chips', status: 'complete',
+    { id: 'chips', label: 'Pills / Tags', i18n: 'nav.chips', status: 'ready',
       icon: 'M12 2 15 8 22 9 17 14 18 21 12 17 6 21 7 14 2 9 9 8 12 2',
       path: 'sections/components/chips.json', renderer: 'chips' },
-    { id: 'alerts', label: 'Alerts / Toasts', i18n: 'nav.alerts', status: 'complete',
+    { id: 'alerts', label: 'Alerts / Toasts', i18n: 'nav.alerts', status: 'ready',
       icon: 'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0',
       path: 'sections/components/alerts.json', renderer: 'alerts' },
     { id: 'modal', label: 'Modal', i18n: 'nav.modal', status: 'in-progress',
       icon: 'M2 4h20v16H2zM2 9h20',
       path: 'sections/components/modal.json', renderer: 'modal' },
-    { id: 'table', label: 'Tables', i18n: 'nav.table', status: 'complete',
+    { id: 'table', label: 'Tables', i18n: 'nav.table', status: 'ready',
       icon: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18',
       path: 'sections/components/table.json', renderer: 'table' },
     { id: 'sidebar-comp', label: 'Sidebar', i18n: 'nav.sidebar', status: 'in-progress',
       icon: 'M3 3h18v18H3zM9 3v18',
       path: 'sections/components/sidebar.json', renderer: 'sidebar' },
-    { id: 'topbar-comp', label: 'Topbar', i18n: 'nav.topbar', status: 'complete',
+    { id: 'topbar-comp', label: 'Topbar', i18n: 'nav.topbar', status: 'ready',
       icon: 'M3 3h18v18H3zM3 9h18',
       path: 'sections/components/topbar.json', renderer: 'topbar' },
     { id: 'filters', label: 'Filters', i18n: 'nav.filters', status: 'in-progress',
@@ -675,10 +653,10 @@ const NAV = [
       path: 'sections/components/mappins.json', renderer: 'mappins' },
   ]},
   { group: 'Pages', i18n: 'nav.pages', items: [
-    { id: 'pages-table', label: 'Table page', i18n: 'nav.pages.table', status: 'complete',
+    { id: 'pages-table', label: 'Table page', i18n: 'nav.pages.table', status: 'ready',
       icon: 'M2 3h20v14H2zM8 21h8M12 17v4',
       path: 'sections/pages/table-page.json', renderer: 'tablepage' },
-    { id: 'pages-form', label: 'Form page', i18n: 'nav.pages.form', status: 'complete',
+    { id: 'pages-form', label: 'Form page', i18n: 'nav.pages.form', status: 'ready',
       icon: 'M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M12 12h4M12 16h4M8 12h.01M8 16h.01',
       path: 'sections/pages/form-page.json', renderer: 'formpage' },
   ]},
@@ -774,16 +752,7 @@ async function navigate(id) {
 ================================================================ */
 function buildNav() {
   const sidebar = document.getElementById('sidebar');
-  let html = `
-    <div class="sb-search">
-      <div class="sb-search-inp" id="sb-search-wrap">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="sb-search" type="search" placeholder="Filtrar menú…" autocomplete="off" oninput="filterNav(this.value)">
-        <button class="clr" onclick="clearNavFilter()" aria-label="Clear" title="Clear">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-    </div>`;
+  let html = ``;
   NAV.forEach((group, gi) => {
     html += `<div class="grp-lbl"${gi > 0 ? ' style="margin-top:8px"' : ''} data-i18n="${group.i18n}" data-grp="${group.group}">${group.group}</div>`;
     group.items.forEach(item => {
