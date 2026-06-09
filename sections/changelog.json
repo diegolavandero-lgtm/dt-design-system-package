@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T19:54:25.878Z",
+  "generated": "2026-06-09T20:08:29.277Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "c5cf22a",
+          "type": "feat",
+          "section": "General",
+          "message": "feat(ds): add Image uploader component — DES-827",
+          "author": "Carlos"
+        },
         {
           "hash": "d37caf6",
           "type": "fix",
