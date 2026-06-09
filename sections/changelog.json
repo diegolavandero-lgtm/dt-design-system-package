@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T21:25:43.870Z",
+  "generated": "2026-06-09T21:28:12.639Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "fa3172e",
+          "type": "update",
+          "section": "General",
+          "message": "chore: enforce mandatory git sync protocol at session start",
+          "author": "Carlos"
+        },
         {
           "hash": "553c2d3",
           "type": "update",
