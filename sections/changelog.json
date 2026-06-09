@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T20:08:29.277Z",
+  "generated": "2026-06-09T20:27:35.919Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "1b86516",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(ds): wire Image uploader into live NAV + add renderer — DES-827",
+          "author": "Carlos"
+        },
         {
           "hash": "c5cf22a",
           "type": "feat",
