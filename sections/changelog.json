@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T21:35:56.889Z",
+  "generated": "2026-06-09T21:37:28.225Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "d96a15e",
+          "type": "update",
+          "section": "General",
+          "message": "chore: organize prototypes into Charlie_Designs/ with unified naming",
+          "author": "Carlos"
+        },
         {
           "hash": "191a6db",
           "type": "fix",
