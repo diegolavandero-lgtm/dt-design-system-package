@@ -897,24 +897,15 @@ function doSearch(q) {
     return;
   }
 
-  // If exactly 1 result → navigate immediately, close dropdown
-  if (totalHits === 1) {
-    const item = groups[0].hits[0];
-    navigate(item.id);
-    document.getElementById('gsearch').value = '';
-    drop.classList.remove('open');
-    drop.innerHTML = '';
-    if (kbd) kbd.style.display = '';
-    return;
-  }
-
-  // Multiple results → render grouped dropdown
+  // Always render dropdown — never auto-navigate while typing
+  // Navigate only on click or Enter key
   let html = '';
   for (const { group, hits } of groups) {
     const grpLabel = typeof group.group === 'string' ? group.group : (group.group || '');
     html += `<div class="sd-grp">${grpLabel}</div>`;
     for (const item of hits) {
-      html += `<div class="sd-item" onclick="(function(){navigate('${item.id}');var inp=document.getElementById('gsearch');inp.value='';var d=document.getElementById('gsearch-drop');d.classList.remove('open');d.innerHTML='';var k=document.getElementById('gsearch-kbd');if(k)k.style.display='';inp.blur();})()" >
+      // onmousedown preventDefault keeps focus on the input while clicking results
+      html += `<div class="sd-item" onmousedown="event.preventDefault()" onclick="navigate('${item.id}');closeSearch()">
         ${itemIco(item)}
         <span class="sd-lbl">${hl(item.label)}</span>
         <span class="sd-grp-tag">${grpLabel}</span>
@@ -925,6 +916,16 @@ function doSearch(q) {
   drop.innerHTML = html;
   drop.classList.add('open');
 }
+
+// Shared close helper — called from dropdown item onclick and keyboard handler
+window.closeSearch = function() {
+  var inp = document.getElementById('gsearch');
+  var d   = document.getElementById('gsearch-drop');
+  var k   = document.getElementById('gsearch-kbd');
+  if (inp) inp.value = '';
+  if (d)   { d.classList.remove('open'); d.innerHTML = ''; }
+  if (k)   k.style.display = '';
+};
 
 // Close search dropdown when clicking outside
 document.addEventListener('mousedown', function(e) {
@@ -1742,13 +1743,9 @@ document.addEventListener('keydown', e => {
     document.getElementById('gsearch').focus();
   }
   if (e.key === 'Escape') {
+    closeSearch();
     const gsearch = document.getElementById('gsearch');
-    const drop = document.getElementById('gsearch-drop');
-    const kbd  = document.getElementById('gsearch-kbd');
-    if (gsearch.value) { gsearch.value = ''; }
-    if (drop) { drop.classList.remove('open'); drop.innerHTML = ''; }
-    if (kbd)  { kbd.style.display = ''; }
-    gsearch.blur();
+    if (gsearch) gsearch.blur();
   }
 });
 
