@@ -1437,7 +1437,7 @@ function initDateTimePickers() {
         var px = cx + ring.r*Math.cos(angle);
         var py = cy + ring.r*Math.sin(angle);
         var isSel = v===selH;
-        circles += '<circle cx="'+px+'" cy="'+py+'" r="18" fill="'+(isSel?'var(--b6)':'transparent')+'" style="cursor:pointer" onclick="window._tpHour(this,'+v+')"/>';
+        circles += '<circle cx="'+px+'" cy="'+py+'" r="18" fill="'+(isSel?'var(--b6)':'transparent')+'" style="cursor:pointer" onclick="event.stopPropagation();window._tpHour(this,'+v+')"/>';
         texts += '<text x="'+px+'" y="'+py+'" text-anchor="middle" dominant-baseline="central" font-size="13" fill="'+(isSel?'#fff':'var(--n7)')+'" font-family="DM Sans,sans-serif" style="pointer-events:none">'+v+'</text>';
         if (isSel) hand = '<line x1="'+cx+'" y1="'+cy+'" x2="'+px+'" y2="'+py+'" stroke="var(--b6)" stroke-width="2"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="var(--b6)"/>';
       });
@@ -1454,7 +1454,7 @@ function initDateTimePickers() {
       var px = cx + R*Math.cos(angle);
       var py = cy + R*Math.sin(angle);
       var isSel = v===selM;
-      circles += '<circle cx="'+px+'" cy="'+py+'" r="18" fill="'+(isSel?'var(--b6)':'transparent')+'" style="cursor:pointer" onclick="window._tpMinute(this,'+v+')"/>';
+      circles += '<circle cx="'+px+'" cy="'+py+'" r="18" fill="'+(isSel?'var(--b6)':'transparent')+'" style="cursor:pointer" onclick="event.stopPropagation();window._tpMinute(this,'+v+')"/>';
       texts += '<text x="'+px+'" y="'+py+'" text-anchor="middle" dominant-baseline="central" font-size="12" fill="'+(isSel?'#fff':'var(--n7)')+'" font-family="DM Sans,sans-serif" style="pointer-events:none">'+(v<10?'0':'')+v+'</text>';
       if (isSel) hand = '<line x1="'+cx+'" y1="'+cy+'" x2="'+px+'" y2="'+py+'" stroke="var(--b6)" stroke-width="2"/><circle cx="'+cx+'" cy="'+cy+'" r="5" fill="var(--b6)"/>';
     });
