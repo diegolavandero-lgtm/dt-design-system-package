@@ -955,7 +955,10 @@ function initMapElements() {
 
   function mkIcon(html,sz){
     var h=Math.round(sz*49/33);
-    return L.divIcon({html:html,className:'',iconSize:[sz,h],iconAnchor:[sz/2,h]});
+    // The pin tip is at y≈40.5 in the 0 0 33 49 viewBox, not at the div bottom (49).
+    // Anchor at the actual tip so polylines meet exactly at the pin point.
+    var tipY = Math.round(h * 40.5 / 49);
+    return L.divIcon({html:html,className:'',iconSize:[sz,h],iconAnchor:[Math.round(sz/2), tipY]});
   }
 
   function buildMap(id, zoom) {
