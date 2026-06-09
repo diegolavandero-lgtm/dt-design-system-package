@@ -447,6 +447,23 @@ function buildSettingsSidebar(product, activeItem, contentHtml) {
   </div>`;
 }
 
+/* ── MODULE-LEVEL: Carbon DS close icon — default close for ALL components ──
+   Use dsCloseBtn(size, color) everywhere a close/dismiss action is needed.
+   Never recreate a custom × — always use this Carbon icon.
+   Carbon icon path: 32×32 viewBox, same family as all DS icons. */
+function dsCloseIcon(size, color) {
+  size  = size  || 16;
+  color = color || 'currentColor';
+  return `<svg viewBox="0 0 32 32" width="${size}" height="${size}" fill="${color}"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6z"/></svg>`;
+}
+function dsCloseBtn(size, color, extra) {
+  size  = size  || 16;
+  color = color || 'var(--n5)';
+  extra = extra || '';
+  return `<button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:4px;color:${color};flex-shrink:0;${extra}"
+    onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='none'">${dsCloseIcon(size, color)}</button>`;
+}
+
 /* ── MODULE-LEVEL: DS alert/banner — shared by alerts(), modal(), and anywhere
    an alert or banner is needed. Use dsAlert(text, type) everywhere.
    type: 'info' | 'neutral' | 'warning' | 'error' | 'success'
@@ -4707,12 +4724,182 @@ async function downloadAllPins() {
 
       </div>`;
 
+    /* ── LIVE 5+ DEMO ────────────────────────────────────────────────────
+       Functional demo: 4 main fields + 3 overflow fields.
+       Add-more opens the overflow panel. Reset clears everything.
+       Red dot appears when overflow has active inputs. */
+    const live5Id = 'flt5-bar', live5OvId = 'flt5-ov', live5TblId = 'flt5-tbl', live5BtnId = 'flt5-addbtn', live5BadgeId = 'flt5-badge';
+
+    // Overflow fields (extra beyond the 4 in main bar)
+    const ovFields = [
+      {type:'select', placeholder:'Zona', colIdx:4,
+        options:['Zona Norte','Zona Sur','Zona Este','Zona Centro']},
+      {type:'select', placeholder:'Calificación', colIdx:10,
+        options:['5 estrellas','4 estrellas','3 estrellas','1-2 estrellas']},
+      {type:'text',   placeholder:'Código de orden', colIdx:1},
+    ];
+
+    // Combine main + overflow for filter IIFE
+    const allFields5 = [...(data.fields||[]), ...ovFields];
+    const colMap5 = allFields5.map(f => f.colIdx !== undefined ? f.colIdx : -1);
+    const types5  = allFields5.map(f => f.type);
+
+    // Filter IIFE — reads main bar + overflow panel
+    const onFilter5 = `(function(){
+      var bar=document.getElementById('${live5Id}');
+      var ov=document.getElementById('${live5OvId}');
+      var tbl=document.getElementById('${live5TblId}');
+      if(!bar||!tbl)return;
+      var colMap=${JSON.stringify(colMap5)};
+      var types=${JSON.stringify(types5)};
+      var allInps=[].slice.call(bar.querySelectorAll('input[type=text]')).concat(ov?[].slice.call(ov.querySelectorAll('input[type=text]')):[]);
+      var allWraps=[].slice.call(bar.querySelectorAll('.dt-drop-wrap[data-val]')).concat(ov?[].slice.call(ov.querySelectorAll('.dt-drop-wrap[data-val]')):[]);
+      var ti=0,si=0;
+      tbl.querySelectorAll('tbody tr').forEach(function(row){
+        var cells=row.querySelectorAll('td');
+        var show=true;
+        colMap.forEach(function(ci,fi){
+          if(types[fi]==='select'){
+            var v=allWraps[si]?allWraps[si].dataset.val:''; si++;
+            if(v&&ci>=0&&(cells[ci]?cells[ci].textContent:'').trim()!==v)show=false;
+          } else if(types[fi]==='text'){
+            var v2=(allInps[ti]?allInps[ti].value:'').toLowerCase().trim(); ti++;
+            if(v2&&ci>=0&&!(cells[ci]?cells[ci].textContent:'').toLowerCase().includes(v2))show=false;
+          } else { if(types[fi]!=='date'&&types[fi]!=='select'){ti++;} }
+        });
+        row.style.display=show?'':'none';
+      });
+    })()`.replace(/\s+/g,' ');
+
+    // Check if overflow has any active input → update badge
+    const checkBadge5 = `(function(){
+      var ov=document.getElementById('${live5OvId}');
+      var badge=document.getElementById('${live5BadgeId}');
+      if(!badge)return;
+      var hasActive=ov&&([].slice.call(ov.querySelectorAll('input[type=text]')).some(function(i){return i.value.trim();})||[].slice.call(ov.querySelectorAll('.dt-drop-wrap')).some(function(w){return w.dataset.val;}));
+      badge.style.display=hasActive?'block':'none';
+    })()`;
+
+    // Reset IIFE — clears main + overflow + table
+    const onReset5 = `(function(){
+      var bar=document.getElementById('${live5Id}');
+      var ov=document.getElementById('${live5OvId}');
+      var tbl=document.getElementById('${live5TblId}');
+      [bar,ov].forEach(function(el){if(!el)return;
+        el.querySelectorAll('input[type=text]').forEach(function(i){i.value='';i.style.border='1px solid var(--n3)';i.style.background='#fff';});
+        el.querySelectorAll('.dt-drop-wrap').forEach(function(w){var l=w.querySelector('.dt-dlabel');if(l){l.textContent=l.dataset.ph||l.textContent;l.style.color='var(--n6)';l.dataset.filled='';}w.dataset.val='';if(typeof dtDropClose==='function')dtDropClose(w);});
+      });
+      if(tbl)tbl.querySelectorAll('tbody tr').forEach(function(r){r.style.display='';});
+      document.getElementById('${live5BadgeId}').style.display='none';
+    })()`.replace(/\s+/g,' ');
+
+    // Toggle overflow panel
+    const toggleOv5 = `(function(btn){
+      var ov=document.getElementById('${live5OvId}');
+      if(!ov)return;
+      ov.style.display=ov.style.display==='none'?'block':'none';
+    })(this)`;
+
+    // Add-more btn with badge
+    const addMore5 = `<button id="${live5BtnId}" style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex;position:relative" onclick="${toggleOv5}"
+        onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+        onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+      <span class="flt-def">${FLT_SVG_ADD_DEF}</span>
+      <span class="flt-hov" style="display:none">${FLT_SVG_ADD_HOV}</span>
+      <span id="${live5BadgeId}" style="display:none;position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:var(--r6);border:2px solid #fff;pointer-events:none"></span>
+    </button>`;
+
+    // Reset btn (triggers reset + hides overflow)
+    const reset5Btn = `<button style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex" onclick="${onReset5};document.getElementById('${live5OvId}').style.display='none'"
+        onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+        onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+      <span class="flt-def">${FLT_SVG_RES_DEF}</span>
+      <span class="flt-hov" style="display:none">${FLT_SVG_RES_HOV}</span>
+    </button>`;
+
+    // Overflow panel fields (rendered with onchange → badge update)
+    const ovFieldsHtml = ovFields.map(f => {
+      if (f.type === 'select') {
+        const items = (f.options||[]).map(o => {
+          const safe = escHtml(o);
+          return `<div onclick="dtPickOpt(this);this.closest('.dt-drop-wrap').dataset.val='${safe}';${checkBadge5}"
+            data-val="${safe}" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
+            onmouseleave="this.style.background='';this.style.color='var(--n7)'"
+            style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">${safe}</div>`;
+        }).join('');
+        return `<div class="dt-drop-wrap" data-val="" style="position:relative;flex:1;min-width:0">
+          <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)"
+            onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+            onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+            style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+            <span class="dt-dlabel" data-ph="${escHtml(f.placeholder)}" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(f.placeholder)}</span>
+            <span style="color:var(--n5);display:flex;flex-shrink:0">${_FILTER_CHEVRON}</span>
+          </div>
+          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:110;padding:4px 0">${items}</div>
+        </div>`;
+      }
+      return `<div style="flex:1;min-width:0">
+        <input type="text" placeholder="${escHtml(f.placeholder)}"
+          style="${_FILTER_INP_BASE};padding:0 10px"
+          onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+          onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';${checkBadge5}"
+          oninput="${checkBadge5}">
+      </div>`;
+    }).join('');
+
+    const rawTable5 = tblDemoTable(data.scrollDemo || {});
+    const demoTable5 = rawTable5.replace('<div class="tbl-outer">', `<div class="tbl-outer" id="${live5TblId}">`);
+
+    const live5Section = `
+      <h3 style="font:700 15px var(--font-sans);margin:24px 0 6px;color:var(--n7)">5+ filtros · live preview</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6">
+        4 filtros principales en la barra + 3 filtros en el panel de overflow. El punto rojo aparece cuando el panel tiene filtros activos.
+        Todos los inputs son funcionales y filtran la tabla en tiempo real al presionar Filtrar.
+      </p>
+      <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:16px">
+        <!-- Main filter bar (4 fields) -->
+        <div id="${live5Id}" style="display:flex;align-items:center;gap:8px">
+          ${(data.fields||[]).map(renderFieldFunctional).join('')}
+          <button style="${secBtnStyle}" onclick="${onFilter5.replace(/"/g,"'")}"
+            onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'"
+            onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'"
+          >${escHtml(data.filterBtnLabel||'Filtrar')}</button>
+          ${addMore5}
+          ${reset5Btn}
+        </div>
+
+        <!-- Overflow panel (hidden by default) -->
+        <div id="${live5OvId}" style="display:none;background:var(--n2);border-radius:8px;padding:16px;border:1px solid var(--n3)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span style="font:700 11px var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.06em">Otros filtros (${ovFields.length})</span>
+            ${dsCloseBtn(16, 'var(--n5)', '')} <!-- Carbon close icon -->
+          </div>
+          <div style="display:flex;gap:8px">${ovFieldsHtml}</div>
+        </div>
+
+        <!-- Demo table -->
+        <div style="border:1px solid var(--n4);border-radius:4px;overflow:hidden">
+          ${demoTable5}
+        </div>
+      </div>`;
+
+    // Wire the × inside overflow panel to close it
+    // (done via onclick on the dsCloseBtn, but we need to patch it after render)
+    // We use an IIFE in the button itself:
+    const live5SectionFixed = live5Section.replace(
+      `${dsCloseBtn(16, 'var(--n5)', '')} <!-- Carbon close icon -->`,
+      `<button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:4px;color:var(--n5);flex-shrink:0"
+        onclick="document.getElementById('${live5OvId}').style.display='none'"
+        onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='none'">${dsCloseIcon(16,'var(--n5)')}</button>`
+    );
+
     return `
       ${sectionHeader(data)}
       ${usageCard(data.pageUsage)}
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Filter bar · live demo</h3>
       ${filterDemo}
       ${variantSection}
+      ${live5SectionFixed}
       <h3 style="font:700 15px var(--font-sans);margin:24px 0 10px;color:var(--n7)">Icon buttons</h3>
       ${iconRef}
       <div class="card flush">
