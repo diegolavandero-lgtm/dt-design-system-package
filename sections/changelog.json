@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T15:53:21.143Z",
+  "generated": "2026-06-09T15:55:54.432Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "c2424fd",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(timepicker): stop event propagation on clock circle clicks",
+          "author": "Diego"
+        },
         {
           "hash": "5ed9a1b",
           "type": "update",
