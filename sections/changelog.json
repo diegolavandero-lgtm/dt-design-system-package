@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T20:27:35.919Z",
+  "generated": "2026-06-09T21:17:48.580Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "70508e9",
+          "type": "update",
+          "section": "Topbar",
+          "message": "feat(topbar): remove Star/Fork buttons, make search dropdown functional",
+          "author": "Diego"
+        },
         {
           "hash": "1b86516",
           "type": "fix",
