@@ -180,7 +180,8 @@
        .form-row = field wrapper (.fld en DS)
        .form-grid = two-column grid
     ════════════════════════ */
-    .form-row{display:flex;flex-direction:column;gap:5px}
+    .form-row{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
+    .form-row:last-of-type{margin-bottom:0}
     /* Two-column grid — patrón DS: grid-template-columns:1fr 1fr, gap:14px 20px */
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
     .form-grid .form-row.full{grid-column:1/-1}
