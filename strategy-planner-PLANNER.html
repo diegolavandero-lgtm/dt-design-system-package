@@ -497,7 +497,8 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .loadcard .lt{font:600 13px var(--font-sans);color:var(--n7);}
 
 /* ============ [NUEVO] Hallazgos panel ============ */
-.findings{position:absolute;top:0;right:0;bottom:0;width:360px;background:#fff;border-left:1px solid var(--n3);box-shadow:var(--shadow-lg);z-index:10;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .2s;}
+/* Hallazgos — position:fixed so it layers above everything (map, toolbar, grid) */
+.findings{position:fixed;top:52px;right:0;bottom:0;width:360px;background:#fff;border-left:1px solid var(--n3);box-shadow:var(--shadow-lg);z-index:25000;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .2s;}
 .findings.on{transform:none;}
 .fh{padding:16px 18px;border-bottom:1px solid var(--n3);display:flex;align-items:center;gap:10px;}
 .fh .ft{font:700 16px var(--font-sans);color:var(--n7);flex:1;}
@@ -514,9 +515,10 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .finding .fact{margin-left:21px;}
 
 /* ============ [NUEVO] Right drawer (Changes / Customer) ============ */
-.drawer{position:fixed;top:0;right:0;bottom:0;width:480px;max-width:92vw;background:#fff;box-shadow:var(--shadow-lg);z-index:110;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s;}
+/* Drawers (Cambios, Cliente) — fixed above everything */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:480px;max-width:92vw;background:#fff;box-shadow:var(--shadow-lg);z-index:25001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s;}
 .drawer.on{transform:none;}
-.dwrap{position:fixed;inset:0;background:rgba(19,32,69,.35);z-index:105;display:none;}.dwrap.on{display:block;}
+.dwrap{position:fixed;inset:0;background:rgba(19,32,69,.35);z-index:25000;display:none;}.dwrap.on{display:block;}
 .dh{padding:18px 22px;border-bottom:1px solid var(--n3);display:flex;align-items:flex-start;gap:10px;}
 .dh h2{font:700 18px var(--font-sans);color:var(--n7);flex:1;}
 .dh .sub{font:400 12px var(--font-sans);color:var(--n5);margin-top:3px;}
