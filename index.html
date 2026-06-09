@@ -797,17 +797,24 @@ function buildNav() {
       const draftsBadge = item.id === 'drafts'
         ? `<span id="draft-nav-badge" style="display:none;background:#FFAB00;color:#fff;font:700 9px var(--font-sans);border-radius:99px;padding:1px 6px;line-height:16px;margin-left:auto"></span>`
         : '';
+      // 3 status states — badge defined as static HTML, not touched by i18n
+      const DOT = '<svg width="7" height="7" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg>';
+      const BADGE_BASE = 'margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:3px;height:16px;padding:0 5px;border-radius:99px;font:700 9px/1 var(--font-sans);letter-spacing:.02em';
       let statusBadge = '';
-      if (item.status === 'complete') {
-        statusBadge = `<span style="margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:3px;height:16px;padding:0 5px;border-radius:99px;background:#E3FCEF;color:#006844;font:700 9px/1 var(--font-sans);letter-spacing:.02em">
-          <svg width="7" height="7" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg>Done</span>`;
+      if (item.status === 'complete' || item.status === 'production') {
+        // In production — green
+        statusBadge = `<span style="${BADGE_BASE};background:#E3FCEF;color:#006844">${DOT}Live</span>`;
+      } else if (item.status === 'ready') {
+        // Ready for Dev — blue
+        statusBadge = `<span style="${BADGE_BASE};background:var(--b1,#EDF5FF);color:var(--b7,#0052CC)">${DOT}Dev ready</span>`;
       } else if (item.status === 'in-progress') {
-        statusBadge = `<span style="margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:3px;height:16px;padding:0 5px;border-radius:99px;background:#FFFAE6;color:#7A4A00;font:700 9px/1 var(--font-sans);letter-spacing:.02em">
-          <svg width="7" height="7" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg>WIP</span>`;
+        // WIP — amber
+        statusBadge = `<span style="${BADGE_BASE};background:#FFFAE6;color:#7A4A00">${DOT}WIP</span>`;
       }
-      html += `<a href="#${item.id}" class="snav" data-sec="${item.id}" data-i18n="${item.i18n || ''}" data-label="${item.label.toLowerCase()}" onclick="navigate('${item.id}');return false;">
+      // FIX: data-i18n on inner <span> only — NOT on <a> — prevents i18n wiping icon + badge
+      html += `<a href="#${item.id}" class="snav" data-sec="${item.id}" data-label="${item.label.toLowerCase()}" onclick="navigate('${item.id}');return false;">
         ${iconHtml}
-        <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.label}</span>
+        <span data-i18n="${item.i18n || ''}" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.label}</span>
         ${statusBadge}${draftsBadge}
       </a>`;
     });
