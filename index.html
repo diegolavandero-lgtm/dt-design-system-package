@@ -920,31 +920,69 @@ function doSearch(q) {
    (inline <script> tags in innerHTML don't execute — must use this hook)
 ================================================================ */
 function initMapElements() {
-  var DEPOT=[-33.472,-70.762];
-  var PINS=[
-    [-33.37,-70.74,17,'#36B37E'],[-33.43,-70.61,12,'#1F60ED'],
-    [-33.61,-70.58, 5,'#00B8D9'],[-33.51,-70.77,11,'#FFAB00'],
-    [-33.52,-70.59, 4,'#00B8D9'],[-33.59,-70.70, 2,'#FE4EC4'],
-    [-33.46,-70.60, 1,'#FF5630'],[-33.41,-70.57, 8,'#8777D9'],
-    [-33.50,-70.65, 7,'#8777D9'],[-33.45,-70.73, 9,'#1F60ED']
+  var DEPOT = [-33.472, -70.762];
+
+  // Multiple routes — each has a color and ordered stops (lat, lng)
+  // Stop number = position in route (1 = first stop, 2 = second, etc.)
+  var ROUTES = [
+    { color:'#1F60ED', stops:[[-33.43,-70.61],[-33.44,-70.58],[-33.46,-70.55]] },        // Blue · 3 stops
+    { color:'#8777D9', stops:[[-33.51,-70.77],[-33.50,-70.68],[-33.52,-70.64],[-33.54,-70.60]] }, // Purple · 4 stops
+    { color:'#FFAB00', stops:[[-33.56,-70.57],[-33.55,-70.62],[-33.53,-70.67]] },         // Orange · 3 stops
+    { color:'#FF5630', stops:[[-33.41,-70.57],[-33.43,-70.53]] },                         // Red · 2 stops
+    { color:'#00B8D9', stops:[[-33.61,-70.58],[-33.59,-70.65],[-33.57,-70.71]] },         // Teal · 3 stops
+    { color:'#36B37E', stops:[[-33.37,-70.74],[-33.39,-70.68],[-33.40,-70.63],[-33.42,-70.59]] }, // Green · 4 stops
   ];
+
   var PB='M16.5 1.5C24.78 1.5 31.5 8.22 31.5 16.5C31.5 21.44 29.11 25.82 25.43 28.55C22.61 30.67 18.58 34.04 17.66 39.48C17.56 40.05 17.08 40.5 16.5 40.5C15.92 40.5 15.44 40.05 15.34 39.48C14.42 34.04 10.39 30.67 7.56 28.55C3.88 25.82 1.5 21.44 1.5 16.5C1.5 8.22 8.22 1.5 16.5 1.5Z';
-  var meMaps={};
+  var meMaps = {};
 
-  function pinSvg(fill,inner,sz){var h=Math.round(sz*49/33);return '<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.3))"><svg width="'+sz+'" height="'+h+'" viewBox="0 0 33 49"><path d="'+PB+'" fill="'+fill+'" stroke="#fff" stroke-width="2"/>'+inner+'</svg></div>';}
-  function routePin(n,c){return pinSvg(c,'<text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#fff">'+n+'</text>',30);}
-  function depotPin(){return pinSvg('#132045','<path d="M24 18.17V16.5L22.75 10.67H9.83L9 16.5V18.17H9.83V23.17H18.17V18.17H21.5V23.17H23.17V18.17H24ZM16.5 21.5H11.5V18.17H16.5V21.5Z" fill="#fff"/>',34);}
-  function mkIcon(html,sz){var h=Math.round(sz*49/33);return L.divIcon({html:html,className:'',iconSize:[sz,h],iconAnchor:[sz/2,h]});}
+  function pinSvg(fill,inner,sz){
+    var h=Math.round(sz*49/33);
+    return '<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.3))"><svg width="'+sz+'" height="'+h+'" viewBox="0 0 33 49"><path d="'+PB+'" fill="'+fill+'" stroke="#fff" stroke-width="2"/>'+inner+'</svg></div>';
+  }
 
-  function buildMap(id,zoom){
-    var m=L.map(id,{center:DEPOT,zoom:zoom,scrollWheelZoom:false});
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(m);
-    L.marker(DEPOT,{icon:mkIcon(depotPin(),34),zIndexOffset:100}).addTo(m);
-    PINS.forEach(function(p){
-      L.polyline([DEPOT,[p[0],p[1]]],{color:p[3],weight:2,opacity:0.55}).addTo(m);
-      L.marker([p[0],p[1]],{icon:mkIcon(routePin(p[2],p[3]),30)}).addTo(m);
+  // Order pin: white circle + stop number in route color (default DS pin for stops with orders)
+  function orderPin(stopNum, routeColor) {
+    var inner = '<circle cx="16.5" cy="16.5" r="10.5" fill="#fff"/>' +
+      '<text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" ' +
+      'font-family="DM Sans,sans-serif" font-weight="700" font-size="11" fill="' + routeColor + '">' + stopNum + '</text>';
+    return pinSvg(routeColor, inner, 30);
+  }
+
+  function depotPin(){
+    return pinSvg('#132045','<path d="M24 18.17V16.5L22.75 10.67H9.83L9 16.5V18.17H9.83V23.17H18.17V18.17H21.5V23.17H23.17V18.17H24ZM16.5 21.5H11.5V18.17H16.5V21.5Z" fill="#fff"/>',34);
+  }
+
+  function mkIcon(html,sz){
+    var h=Math.round(sz*49/33);
+    return L.divIcon({html:html,className:'',iconSize:[sz,h],iconAnchor:[sz/2,h]});
+  }
+
+  function buildMap(id, zoom) {
+    var m = L.map(id, {center:DEPOT, zoom:zoom, scrollWheelZoom:false});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {attribution:'© OpenStreetMap', maxZoom:18}).addTo(m);
+
+    // Depot pin
+    L.marker(DEPOT, {icon:mkIcon(depotPin(),34), zIndexOffset:200}).addTo(m);
+
+    // Render each route: polyline (50% opacity) + ordered stop pins
+    ROUTES.forEach(function(route) {
+      // Polyline connecting all stops of this route
+      L.polyline(route.stops, {
+        color: route.color,
+        weight: 2.5,
+        opacity: 0.5
+      }).addTo(m);
+
+      // Stop pins — stop number = index + 1
+      route.stops.forEach(function(pos, i) {
+        L.marker(pos, {icon: mkIcon(orderPin(i+1, route.color), 30)}).addTo(m);
+      });
     });
-    meMaps[id]=m; return m;
+
+    meMaps[id] = m;
+    return m;
   }
 
   /* ── Form map: draggable marker + geocoding ── */
