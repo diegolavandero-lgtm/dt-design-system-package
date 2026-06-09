@@ -186,41 +186,52 @@
     .form-grid .form-row.full{grid-column:1/-1}
     .lbl{font:700 13px var(--font-sans);color:var(--n7)}
     .lbl .req,.req{color:var(--r5);margin-left:2px}
-    /* .inp: div wrapper (patrón DS) */
+    /* inputs — DS tokens: h:32px · radius:6px · font:14px · focus: 2px solid var(--b6) */
     .inp-wrap{
       display:flex;align-items:center;gap:8px;
-      border:1px solid var(--n3);border-radius:4px;
-      background:#fff;padding:0 10px;height:38px;
+      border:1px solid var(--n3);border-radius:6px;
+      background:#fff;padding:0 10px;height:32px;
     }
-    .inp-wrap:focus-within{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
-    .inp-wrap input,.inp-wrap select{
+    .inp-wrap:focus-within{border:2px solid var(--b6);padding:0 9px}
+    .inp-wrap input{
       border:0;outline:0;flex:1;min-width:0;
-      font:400 13px var(--font-sans);color:var(--n7);background:transparent;
+      font:400 14px var(--font-sans);color:var(--n7);background:transparent;
     }
     .inp-wrap input::placeholder{color:var(--n45)}
     .inp-wrap input:disabled{color:var(--n5);cursor:not-allowed}
     /* input directo (contraseñas, etc.) */
     .inp{
-      width:100%;height:38px;
-      border:1px solid var(--n3);border-radius:4px;
+      width:100%;height:32px;
+      border:1px solid var(--n3);border-radius:6px;
       background:#fff;padding:0 10px;
-      font:400 13px var(--font-sans);color:var(--n7);
-      outline:none;transition:border-color .12s,box-shadow .12s;
+      font:400 14px var(--font-sans);color:var(--n7);
+      outline:none;box-sizing:border-box;
     }
-    .inp:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
+    .inp:focus{border:2px solid var(--b6)}
     .inp::placeholder{color:var(--n45)}
     .inp:disabled{background:var(--n1);color:var(--n5);cursor:not-allowed}
-    .sel{
-      width:100%;height:38px;
-      border:1px solid var(--n3);border-radius:4px;
-      background:#fff;padding:0 32px 0 10px;
-      font:400 13px var(--font-sans);color:var(--n7);
-      outline:none;cursor:pointer;appearance:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-      background-repeat:no-repeat;background-position:right 8px center;
-      transition:border-color .12s;
+    /* dt-drop-wrap — DS dropdown (reemplaza <select>) */
+    .dt-drop-wrap{position:relative}
+    .dt-dtrigger{
+      display:flex;align-items:center;height:32px;padding:0 10px;
+      border:1px solid var(--n3);border-radius:6px;background:#fff;
+      cursor:pointer;gap:6px;font:400 14px var(--font-sans);color:var(--n7);
     }
-    .sel:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
+    .dt-dtrigger:hover{background:var(--n2)}
+    .dt-drop-wrap.open .dt-dtrigger{border:2px solid var(--b6);padding:0 9px}
+    .dt-dlabel{flex:1}
+    .dt-dmenu{
+      display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;
+      background:#fff;border:1px solid var(--n3);border-radius:6px;
+      box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0;
+    }
+    .dt-drop-wrap.open .dt-dmenu{display:block}
+    .dt-dopt{
+      height:36px;padding:0 12px;display:flex;align-items:center;
+      font:400 14px var(--font-sans);color:var(--n7);cursor:pointer;
+    }
+    .dt-dopt:hover{background:var(--b1);color:var(--b7)}
+    .dt-dopt.selected{font-weight:700;color:var(--b7)}
     .helper{font:400 11px var(--font-sans);color:var(--n5)}
     .form-actions{
       display:flex;gap:8px;justify-content:flex-end;
@@ -239,12 +250,11 @@
       gap:6px;white-space:nowrap;line-height:1;
     }
     .btn:hover{background:#EDF5FF}
-    .btn.primary{background:#1F60ED;color:#fff;border-color:#1F60ED}
-    .btn.primary:hover{background:#0052CC;border-color:#0052CC}
+    .btn.primary{background:#4B82FA;color:#fff;border-color:#4B82FA}
+    .btn.primary:hover{background:#1F60ED;border-color:#1F60ED}
+    .btn.primary:active{background:#0052CC;border-color:#0052CC}
     .btn.danger{background:#fff;color:var(--r6);border-color:var(--r6)}
     .btn.danger:hover{background:var(--r1)}
-    .btn svg{width:14px;height:14px;flex-shrink:0}
-    .btn.sm{height:28px;font-size:12px;padding:0 12px}
 
     /* ════════════════════════
        BADGES
@@ -538,9 +548,9 @@
               </div>
               <div class="form-row full">
                 <label class="lbl">Correo electrónico <span class="req">*</span></label>
-                <div class="inp-wrap">
-                  <input type="email" value="soporte+arsa@beettrack.com">
-                  <button class="btn sm" style="flex-shrink:0">Verificar email</button>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <div class="inp-wrap" style="flex:1"><input type="email" value="soporte+arsa@beettrack.com"></div>
+                  <button class="btn" style="flex-shrink:0">Verificar email</button>
                 </div>
                 <p class="helper">Tu correo se usa para notificaciones y recuperación de cuenta.</p>
               </div>
@@ -557,11 +567,17 @@
           <div class="card-body">
             <div class="form-row">
               <label class="lbl">Tema de la interfaz</label>
-              <select class="sel">
-                <option selected>Claro</option>
-                <option>Oscuro</option>
-                <option>Automático (según el sistema)</option>
-              </select>
+              <div class="dt-drop-wrap" id="theme-drop">
+                <div class="dt-dtrigger" onclick="dtToggle('theme-drop')">
+                  <span class="dt-dlabel" id="theme-label">Claro</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="dt-dmenu">
+                  <div class="dt-dopt selected" onclick="dtPick('theme-drop','theme-label',this)">Claro</div>
+                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this)">Oscuro</div>
+                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this)">Automático (según el sistema)</div>
+                </div>
+              </div>
             </div>
             <div class="toggle-row">
               <div class="swt on" onclick="this.classList.toggle('on')"></div>
@@ -652,7 +668,7 @@
         <div class="card">
           <div class="card-hdr">
             <span class="card-ttl">Usuarios con acceso compartido</span>
-            <button class="btn primary sm" onclick="toggleAddUser()">Agregar usuario</button>
+            <button class="btn primary" onclick="toggleAddUser()">Agregar usuario</button>
           </div>
           <div class="card-body flush">
             <div class="empty-state">
@@ -661,7 +677,7 @@
               </div>
               <p class="empty-title">Sin usuarios asociados</p>
               <p class="empty-desc">Comparte el acceso a tu cuenta con otros usuarios de tu organización.</p>
-              <button class="btn sm" onclick="toggleAddUser()">Agregar primer usuario</button>
+              <button class="btn" onclick="toggleAddUser()">Agregar primer usuario</button>
             </div>
           </div>
         </div>
@@ -723,7 +739,7 @@
         <div class="card">
           <div class="card-hdr">
             <span class="card-ttl">Reportes programados</span>
-            <button class="btn primary sm">Nuevo reporte</button>
+            <button class="btn primary">Nuevo reporte</button>
           </div>
           <div class="card-body flush">
             <div class="empty-state">
@@ -732,7 +748,7 @@
               </div>
               <p class="empty-title">Sin reportes programados</p>
               <p class="empty-desc">Crea un reporte programado para recibirlo automáticamente por correo según la frecuencia que elijas.</p>
-              <button class="btn primary sm">Crear primer reporte</button>
+              <button class="btn primary">Crear primer reporte</button>
             </div>
           </div>
         </div>
@@ -815,6 +831,24 @@
     if (v.length >= 6) bars[1].classList.add('med');
     if (v.length >= 10 && /[0-9!@#$]/.test(v)) bars[2].classList.add('strong');
   }
+  // dt-drop-wrap helpers
+  function dtToggle(id) {
+    const wrap = document.getElementById(id);
+    const isOpen = wrap.classList.contains('open');
+    document.querySelectorAll('.dt-drop-wrap.open').forEach(w => w.classList.remove('open'));
+    if (!isOpen) wrap.classList.add('open');
+  }
+  function dtPick(dropId, labelId, el) {
+    document.getElementById(labelId).textContent = el.textContent.trim();
+    el.closest('.dt-dmenu').querySelectorAll('.dt-dopt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(dropId).classList.remove('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.dt-drop-wrap')) {
+      document.querySelectorAll('.dt-drop-wrap.open').forEach(w => w.classList.remove('open'));
+    }
+  });
 </script>
 
 </body>
