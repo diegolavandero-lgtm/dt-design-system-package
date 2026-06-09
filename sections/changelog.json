@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T14:46:00.158Z",
+  "generated": "2026-06-09T14:49:36.714Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "6b69b2d",
+          "type": "fix",
+          "section": "Colors",
+          "message": "fix(map): number color → var(--n7) always, polyline weight → 3px",
+          "author": "Diego"
+        },
         {
           "hash": "00b6d5d",
           "type": "update",
