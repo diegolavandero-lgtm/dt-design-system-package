@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T21:52:13.554Z",
+  "generated": "2026-06-09T22:00:20.297Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "4c48af8",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(DES-827): add 16px gap between form rows for visual separation",
+          "author": "Carlos"
+        },
         {
           "hash": "ac1b702",
           "type": "fix",
