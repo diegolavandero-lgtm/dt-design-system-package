@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T21:28:12.639Z",
+  "generated": "2026-06-09T21:28:34.677Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "7bf4942",
+          "type": "update",
+          "section": "General",
+          "message": "feat(search): pre-index all section blocks at startup for instant deep search",
+          "author": "Diego"
+        },
         {
           "hash": "fa3172e",
           "type": "update",
