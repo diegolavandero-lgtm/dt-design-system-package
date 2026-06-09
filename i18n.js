@@ -60,6 +60,13 @@
     "ui.blocks.group":      { "es": "Bloques",                 "en": "Blocks" },
     "ui.confirm.approval":  { "es": "Confirmar aprobación",    "en": "Confirm approval" },
     "ui.howToCall":         { "es": "Cómo llamar en páginas",  "en": "How to call in pages" },
+    "ui.standardSidebar":   { "es": "Sidebar estándar",        "en": "Standard sidebar" },
+    "ui.settingsSidebar":   { "es": "Sidebar de ajustes",      "en": "Settings sidebar" },
+    "ui.settingsSidebarDesc":{ "es": "Misma tabla — panel de ajustes empuja el contenido a la derecha.", "en": "Same table — settings panel pushes content to the right." },
+    "ui.pageShell":         { "es": "Estructura de página",    "en": "Page shell" },
+    "ui.pageShellDesc":     { "es": "Cada página de formulario usa la misma estructura: <strong>Topbar</strong> → <strong>Sidebar</strong> → área de contenido con breadcrumb, ← atrás + título + botones <em>Cancelar/Guardar</em>, nota de campo requerido y bloques apilados.", "en": "Every form page uses the same shell: <strong>Topbar</strong> → <strong>Sidebar</strong> → content area with breadcrumb, ← back + title + <em>Cancel/Save</em> buttons, required field note, and a vertical stack of blocks." },
+    "ui.blockCatalog":      { "es": "Catálogo de bloques",     "en": "Block catalog" },
+    "ui.blockCatalogDesc":  { "es": "Compone cualquier formulario apilando bloques. Cada bloque es una tarjeta blanca.", "en": "Compose any form by stacking blocks. Every block is a white card." },
     "ui.drafts.empty.title":{ "es": "Sin borradores",          "en": "No draft components" },
     "ui.drafts.empty.desc": { "es": "Cuando se proponga un nuevo componente, aparecerá aquí para revisión.", "en": "When a new component is proposed, it will appear here for review." },
     "ui.settings.mode":     { "es": "Modo ajustes — el panel empuja el contenido a la derecha", "en": "Settings mode — panel pushes content right" },
@@ -145,6 +152,8 @@
     "section.serviceunits.desc": { "es": "10 colores de identificación ordenados para Unidades de Servicio de flota. Ciclar cuando el conteo supera 10.", "en": "10 ordered identification colors for fleet Service Units. Cycle when count exceeds 10." },
     "section.logos.desc":        { "es": "Cada producto tiene versiones de escritorio y móvil, en color y blanca. Haz clic en Descargar para copiar el SVG.", "en": "Each product has desktop and mobile lockups, in color and white. Click Download to copy the SVG." },
     "section.figma.desc":        { "es": "La fuente de diseño canónica mantenida por el equipo UX de DispatchTrack. Todas las decisiones anteriores a este repositorio se originan aquí.", "en": "The canonical design source maintained by the DispatchTrack UX team. All decisions upstream of this repo originate here." },
+    "section.pages.table.desc":  { "es": "Plantilla de página completa para vistas de lista. Construida con Topbar LM, Sidebar colapsado de 52px, barra de filtros, tabla de datos y paginación. Solo usa componentes y tokens del DS.", "en": "Full-page template for list views. Built with LM Topbar, collapsed 52px Sidebar, filter bar, data table, and pagination. Use only DS components and tokens." },
+    "section.pages.form.desc":   { "es": "Plantilla para formularios de creación y edición. Compuesta por bloques reutilizables apilados verticalmente dentro del shell de página.", "en": "Template for create and edit forms. Composed from reusable blocks arranged vertically inside the page shell." },
     "section.serviceunits.title":{ "es": "Paleta de unidades de servicio", "en": "Service units palette" }
   };
 

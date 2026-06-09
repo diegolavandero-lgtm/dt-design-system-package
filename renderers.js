@@ -5277,10 +5277,9 @@ async function downloadAllPins() {
 
     return `
       ${sbStyle}
-      <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">${escHtml(data.title)}</h1>
-      <p style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 20px;max-width:660px">${escHtml(data.description)}</p>
+      ${sectionHeader(data)}
 
-      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 8px">Sidebar estándar</h3>
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 8px" data-i18n="ui.standardSidebar">Sidebar estándar</h3>
       <div class="card flush" style="border-radius:8px;overflow:hidden;margin-bottom:28px">
         ${tbar}
         <div style="display:flex;min-height:540px">
@@ -5289,8 +5288,8 @@ async function downloadAllPins() {
         </div>
       </div>
 
-      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 8px">Sidebar de ajustes</h3>
-      <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 12px">Misma tabla — panel de ajustes empuja el contenido a la derecha.</p>
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 8px" data-i18n="ui.settingsSidebar">Sidebar de ajustes</h3>
+      <p style="font:400 12px var(--font-sans);color:var(--n5);margin:0 0 12px" data-i18n="ui.settingsSidebarDesc">Misma tabla — panel de ajustes empuja el contenido a la derecha.</p>
       <div class="card flush" style="border-radius:8px;overflow:hidden;margin-bottom:28px">
         ${tbar}
         ${buildSettingsSidebar(data.lmProduct || {}, null, mainContent)}
@@ -5705,13 +5704,13 @@ async function downloadAllPins() {
       ${sbStyle}
       ${sectionHeader(data)}
 
-      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px">Page shell</h3>
-      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6">
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 6px" data-i18n="ui.pageShell">Page shell</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6" data-i18n="ui.pageShellDesc">
         Every form page uses the same shell: <strong>Topbar</strong> → <strong>Sidebar</strong> → content area with breadcrumb, ← back + title + <em>Cancelar/Guardar</em> buttons, required field note, and a vertical stack of blocks.
       </p>
 
-      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:24px 0 6px">Block catalog</h3>
-      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6">
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:24px 0 6px" data-i18n="ui.blockCatalog">Block catalog</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6" data-i18n="ui.blockCatalogDesc">
         Compose any form by stacking blocks. Every block is a white card with <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">border-radius:8px · border:1px solid var(--n4) · padding:20px</code>. Blocks stack with <code style="font:500 11px var(--font-mono);background:var(--n2);padding:1px 5px;border-radius:3px">gap:16px</code>.
       </p>
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px">${catalogCards}</div>
