@@ -29,10 +29,21 @@ button,input,select{font-family:inherit}
 .gh-top .crumbs .sep{opacity:.4}
 .gh-top .crumbs .repo{font-weight:700;color:#fff}
 .gh-top .crumbs .branch{font:700 10px var(--font-sans);background:rgba(255,255,255,.1);padding:2px 8px;border-radius:999px;color:rgba(255,255,255,.8)}
-.gh-search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 10px;color:#fff;width:280px}
+.gh-search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 10px;color:#fff;width:300px;position:relative}
 .gh-search input{flex:1;background:transparent;border:0;outline:0;color:#fff;font:400 12px var(--font-sans)}
 .gh-search input::placeholder{color:rgba(255,255,255,.4)}
 .gh-search kbd{font:600 10px var(--font-mono);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:1px 5px;border-radius:3px;color:rgba(255,255,255,.6)}
+/* search dropdown */
+#gsearch-drop{display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 8px 32px rgba(19,32,69,.18);z-index:9999;max-height:380px;overflow-y:auto;min-width:340px}
+#gsearch-drop.open{display:block}
+#gsearch-drop .sd-grp{font:700 10px var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--n5);padding:8px 12px 4px}
+#gsearch-drop .sd-item{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;border-radius:0;transition:background .08s}
+#gsearch-drop .sd-item:hover,#gsearch-drop .sd-item.sel{background:var(--b1)}
+#gsearch-drop .sd-item .sd-ico{width:16px;height:16px;flex-shrink:0;color:var(--n5)}
+#gsearch-drop .sd-item .sd-lbl{font:500 13px var(--font-sans);color:var(--n7);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#gsearch-drop .sd-item .sd-grp-tag{font:400 11px var(--font-sans);color:var(--n5);flex-shrink:0}
+#gsearch-drop .sd-item mark{background:var(--b2);color:var(--b7);border-radius:2px;padding:0 1px;font-style:normal}
+#gsearch-drop .sd-empty{font:400 13px var(--font-sans);color:var(--n5);padding:16px 12px;text-align:center}
 .gh-action{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);padding:5px 12px;border-radius:6px;font:600 11px var(--font-sans);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .gh-action:hover{background:rgba(255,255,255,.18)}
 
@@ -529,23 +540,16 @@ input.dt-inp:focus::placeholder{color:var(--n8)}
     <span class="repo">design-system</span>
     <span class="branch">main · v2.4</span>
   </nav>
-  <div class="gh-search">
+  <div class="gh-search" id="gsearch-wrap">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-    <input id="gsearch" placeholder="Buscar tokens, componentes…" data-i18n-attr="placeholder:search.placeholder" autocomplete="off" oninput="doSearch(this.value)">
-    <kbd>⌘K</kbd>
+    <input id="gsearch" placeholder="Buscar tokens, componentes…" data-i18n-attr="placeholder:search.placeholder" autocomplete="off" oninput="doSearch(this.value)" onfocus="doSearch(this.value)">
+    <kbd id="gsearch-kbd">⌘K</kbd>
+    <div id="gsearch-drop"></div>
   </div>
   <div class="lang-switch" role="group" aria-label="Language">
     <button data-lang="es" class="active" aria-pressed="true">ES</button>
     <button data-lang="en" aria-pressed="false">EN</button>
   </div>
-  <button class="gh-action">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-    Star <span style="opacity:.6">·</span> 128
-  </button>
-  <button class="gh-action" style="display:flex;align-items:center;gap:5px">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3 2 7l4 4M2 7h13a4 4 0 0 1 4 4v2M18 21l4-4-4-4M22 17H9a4 4 0 0 1-4-4v-2"/></svg>
-    Fork · 24
-  </button>
   <div style="display:flex;align-items:center;gap:8px;margin-left:4px;padding-left:12px;border-left:1px solid rgba(255,255,255,.15)">
     <span id="topbar-user-email" style="font:400 11px var(--font-sans);color:rgba(255,255,255,.6);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
     <button id="topbar-logout" class="gh-action" style="gap:5px" title="Sign out">
@@ -842,57 +846,96 @@ function clearNavFilter() {
 // Collects all keywords from all sections (from NAV ids and cached data)
 function doSearch(q) {
   const term = q.trim().toLowerCase();
-  const view = document.getElementById('section-view');
+  const drop = document.getElementById('gsearch-drop');
+  const kbd  = document.getElementById('gsearch-kbd');
 
   if (!term) {
-    // Restore current section
-    const hash = location.hash.replace('#', '') || 'overview';
-    navigate(hash);
+    drop.classList.remove('open');
+    drop.innerHTML = '';
+    if (kbd) kbd.style.display = '';
     return;
   }
 
-  // Search nav items by label and id
-  const matches = [];
+  if (kbd) kbd.style.display = 'none';
+
+  // Highlight matching substring
+  function hl(text) {
+    const idx = text.toLowerCase().indexOf(term);
+    if (idx === -1) return text;
+    return text.slice(0, idx) + '<mark>' + text.slice(idx, idx + term.length) + '</mark>' + text.slice(idx + term.length);
+  }
+
+  // Build icon SVG for result rows (same HOME_ICON used in nav)
+  function itemIco(item) {
+    const d = item.icon || HOME_ICON;
+    return `<svg class="sd-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="${d}"/></svg>`;
+  }
+
+  // Gather matches grouped by NAV group
+  const groups = [];
   for (const group of NAV) {
+    const hits = [];
     for (const item of group.items) {
       const label = item.label.toLowerCase();
-      const id = item.id.toLowerCase();
-      // Check against cached data keywords if available
+      const id    = item.id.toLowerCase();
       let keywords = [label, id];
       if (cache[item.id] && cache[item.id].keywords) {
-        keywords = keywords.concat(cache[item.id].keywords);
+        keywords = keywords.concat(cache[item.id].keywords.map(k => k.toLowerCase()));
       }
       if (keywords.some(k => k.includes(term))) {
-        matches.push(item);
+        hits.push(item);
       }
+    }
+    if (hits.length) groups.push({ group, hits });
+  }
+
+  const totalHits = groups.reduce((n, g) => n + g.hits.length, 0);
+
+  if (totalHits === 0) {
+    drop.innerHTML = `<div class="sd-empty">Sin resultados para "<strong>${q.trim()}</strong>"</div>`;
+    drop.classList.add('open');
+    return;
+  }
+
+  // If exactly 1 result → navigate immediately, close dropdown
+  if (totalHits === 1) {
+    const item = groups[0].hits[0];
+    navigate(item.id);
+    document.getElementById('gsearch').value = '';
+    drop.classList.remove('open');
+    drop.innerHTML = '';
+    if (kbd) kbd.style.display = '';
+    return;
+  }
+
+  // Multiple results → render grouped dropdown
+  let html = '';
+  for (const { group, hits } of groups) {
+    const grpLabel = typeof group.group === 'string' ? group.group : (group.group || '');
+    html += `<div class="sd-grp">${grpLabel}</div>`;
+    for (const item of hits) {
+      html += `<div class="sd-item" onclick="(function(){navigate('${item.id}');var inp=document.getElementById('gsearch');inp.value='';var d=document.getElementById('gsearch-drop');d.classList.remove('open');d.innerHTML='';var k=document.getElementById('gsearch-kbd');if(k)k.style.display='';inp.blur();})()" >
+        ${itemIco(item)}
+        <span class="sd-lbl">${hl(item.label)}</span>
+        <span class="sd-grp-tag">${grpLabel}</span>
+      </div>`;
     }
   }
 
-  if (matches.length === 0) {
-    view.innerHTML = `<div class="no-results">
-      <div class="no-results-ttl">No results for "${term}"</div>
-      <div class="no-results-sub">Try a different term or browse the sidebar.</div>
-    </div>`;
-    return;
-  }
-
-  if (matches.length === 1) {
-    navigate(matches[0].id);
-    return;
-  }
-
-  // Show a results list
-  const items = matches.map(m => `
-    <div class="card" style="cursor:pointer;margin-bottom:8px" onclick="navigate('${m.id}');document.getElementById('gsearch').value=''">
-      <strong style="font:700 13px var(--font-sans);color:var(--n7)">${m.label}</strong>
-      <span style="font:400 11px var(--font-sans);color:var(--n5);margin-left:8px">#${m.id}</span>
-    </div>`).join('');
-
-  view.innerHTML = `
-    <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">Search results</h1>
-    <p class="sub" style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 20px">${matches.length} results for "${term}"</p>
-    ${items}`;
+  drop.innerHTML = html;
+  drop.classList.add('open');
 }
+
+// Close search dropdown when clicking outside
+document.addEventListener('mousedown', function(e) {
+  const wrap = document.getElementById('gsearch-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    const drop = document.getElementById('gsearch-drop');
+    if (drop) { drop.classList.remove('open'); drop.innerHTML = ''; }
+    const kbd = document.getElementById('gsearch-kbd');
+    if (kbd) kbd.style.display = '';
+  }
+});
 
 /* ================================================================
    MAP ELEMENTS — called after mappins section renders via innerHTML
@@ -1700,10 +1743,11 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Escape') {
     const gsearch = document.getElementById('gsearch');
-    if (gsearch.value) {
-      gsearch.value = '';
-      doSearch('');
-    }
+    const drop = document.getElementById('gsearch-drop');
+    const kbd  = document.getElementById('gsearch-kbd');
+    if (gsearch.value) { gsearch.value = ''; }
+    if (drop) { drop.classList.remove('open'); drop.innerHTML = ''; }
+    if (kbd)  { kbd.style.display = ''; }
     gsearch.blur();
   }
 });
