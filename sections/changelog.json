@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T16:32:43.561Z",
+  "generated": "2026-06-09T16:35:16.987Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "04d058a",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(filters): remove shadow from dropdowns inside overflow panel",
+          "author": "Diego"
+        },
         {
           "hash": "e6b4922",
           "type": "fix",
