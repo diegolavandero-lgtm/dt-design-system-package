@@ -62,8 +62,9 @@
     "nav.figma": { "es": "Figma source", "en": "Figma source" },
     "nav.changelog": { "es": "Cambios", "en": "Changelog" },
     "nav.selection": { "es": "Controles de selección", "en": "Selection controls" },
-    "nav.iconography": { "es": "Iconografía", "en": "Iconography" }
-,
+    "nav.iconography": { "es": "Iconografía", "en": "Iconography" },
+    "nav.imageUploader": { "es": "Image uploader", "en": "Image uploader" },
+    "section.imageUploader.desc": { "es": "Componente centrado de carga de foto de perfil. Avatar circular con overlay de cámara en hover. Soporta click y drag & drop. Acepta JPG/PNG hasta 2 MB.", "en": "Centered profile photo upload component. Circular avatar with hover camera overlay. Supports click and drag & drop. Accepts JPG/PNG up to 2 MB." },
     "nav.patterns": { "es": "Patterns", "en": "Patterns" },
     "nav.screenExamples": { "es": "Screen examples", "en": "Screen examples" },
     "section.screenExamples.desc": { "es": "Pantallas de ejemplo construidas con los componentes del Design System.", "en": "Example screens built with Design System components." },

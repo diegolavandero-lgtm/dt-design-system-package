@@ -1,0 +1,46 @@
+{
+  "title": "Image uploader",
+  "titleKey": "nav.imageUploader",
+  "description": "Centered photo upload component with circular avatar, hover camera overlay, click-to-upload and drag & drop. Used in profile settings and user configuration forms.",
+  "keywords": ["upload", "image", "photo", "profile", "drag", "drop", "file", "avatar", "picture", "cambiar", "reemplazar"],
+  "tokens": {
+    "containerBg": "var(--n2) · #F5F6FA",
+    "containerBorder": "var(--n3) · #E1E6ED",
+    "containerBorderRadius": "8px",
+    "containerPadding": "24px 20px",
+    "avatarSize": "88px",
+    "avatarBg": "var(--n3) · #E1E6ED",
+    "avatarBorderRadius": "50%",
+    "overlayBg": "rgba(19,32,69,0.60)",
+    "dragOverBorder": "var(--b5) · #4B82FA",
+    "dragOverBg": "var(--b1) · #EDF5FF",
+    "actionColor": "var(--b6) · #1F60ED",
+    "actionFont": "600 13px var(--font-sans)",
+    "hintColor": "var(--n5) · #67768D",
+    "hintFont": "400 11px var(--font-sans)",
+    "overlayFont": "600 10px var(--font-sans)",
+    "overlayTransition": "opacity .18s"
+  },
+  "variants": [
+    {
+      "id": "empty",
+      "label": "Empty",
+      "state": "default",
+      "description": "No photo loaded. Shows IBM Carbon person icon as placeholder."
+    },
+    {
+      "id": "filled",
+      "label": "Filled",
+      "state": "filled",
+      "description": "Photo loaded. Avatar shows preview via background-image. Hover reveals camera overlay."
+    },
+    {
+      "id": "drag-over",
+      "label": "Drag over",
+      "state": "drag-over",
+      "description": "User drags a file over the container. Border turns blue, background turns var(--b1)."
+    }
+  ],
+  "code": "<!-- ── Image uploader ── -->\n<div class=\"dt-img-upload\" id=\"img-upload-zone\"\n     ondragover=\"imgDragOver(event)\"\n     ondragleave=\"imgDragLeave(event)\"\n     ondrop=\"imgDrop(event)\">\n\n  <!-- Circular avatar with hover overlay -->\n  <div class=\"dt-img-circle\" onclick=\"document.getElementById('img-input').click()\">\n    <div class=\"dt-img-av\" id=\"img-av\">\n      <!-- IBM Carbon User 32px -->\n      <svg viewBox=\"0 0 32 32\" fill=\"currentColor\" width=\"40\" height=\"40\">\n        <path d=\"M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z\"/>\n        <path d=\"M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z\"/>\n      </svg>\n    </div>\n    <div class=\"dt-img-overlay\">\n      <!-- IBM Carbon Camera 32px -->\n      <svg viewBox=\"0 0 32 32\" fill=\"currentColor\" width=\"18\" height=\"18\">\n        <path d=\"M26,24H6a2,2,0,0,1-2-2V10A2,2,0,0,1,6,8h4l2-3h8l2,3h4a2,2,0,0,1,2,2V22A2,2,0,0,1,26,24ZM6,10V22H26V10ZM16,20a4,4,0,1,1,4-4A4,4,0,0,1,16,20Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,16,14Z\"/>\n      </svg>\n      <span>Cambiar</span>\n    </div>\n  </div>\n\n  <!-- Action link -->\n  <button class=\"dt-img-replace\" onclick=\"document.getElementById('img-input').click()\">\n    <!-- IBM Carbon Renew 32px -->\n    <svg viewBox=\"0 0 32 32\" fill=\"currentColor\" width=\"14\" height=\"14\">\n      <path d=\"M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z\"/>\n      <path d=\"M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z\"/>\n    </svg>\n    Reemplazar imagen\n  </button>\n  <p class=\"dt-img-hint\">Tamaño sugerido 224×224 px (PNG o JPG)</p>\n  <input type=\"file\" id=\"img-input\" accept=\"image/jpeg,image/png\" style=\"display:none\" onchange=\"imgSelected(event)\">\n</div>\n\n/* ── CSS ── */\n.dt-img-upload {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 12px;\n  padding: 24px 20px;\n  background: var(--n2);\n  border-radius: 8px;\n  border: 1px solid var(--n3);\n  transition: border-color .15s, background .15s;\n}\n.dt-img-upload.drag-over {\n  border-color: var(--b5);\n  background: var(--b1);\n}\n.dt-img-circle {\n  position: relative;\n  width: 88px;\n  height: 88px;\n  border-radius: 50%;\n  cursor: pointer;\n}\n.dt-img-av {\n  width: 88px;\n  height: 88px;\n  border-radius: 50%;\n  background: var(--n3);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: var(--n5);\n  overflow: hidden;\n  background-size: cover;\n  background-position: center;\n}\n.dt-img-overlay {\n  position: absolute;\n  inset: 0;\n  border-radius: 50%;\n  background: rgba(19,32,69,.60);\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 3px;\n  color: #fff;\n  font: 600 10px var(--font-sans);\n  letter-spacing: .03em;\n  opacity: 0;\n  transition: opacity .18s;\n  pointer-events: none;\n}\n.dt-img-circle:hover .dt-img-overlay { opacity: 1; }\n.dt-img-replace {\n  display: inline-flex;\n  align-items: center;\n  gap: 5px;\n  background: none;\n  border: none;\n  cursor: pointer;\n  padding: 0;\n  font: 600 13px var(--font-sans);\n  color: var(--b6);\n  transition: color .12s;\n}\n.dt-img-replace:hover { color: var(--b7); }\n.dt-img-hint {\n  font: 400 11px var(--font-sans);\n  color: var(--n5);\n  margin: 0;\n}\n\n/* ── JS ── */\nfunction imgDragOver(e) {\n  e.preventDefault();\n  document.getElementById('img-upload-zone').classList.add('drag-over');\n}\nfunction imgDragLeave(e) {\n  document.getElementById('img-upload-zone').classList.remove('drag-over');\n}\nfunction imgDrop(e) {\n  e.preventDefault();\n  document.getElementById('img-upload-zone').classList.remove('drag-over');\n  const file = e.dataTransfer.files[0];\n  if (file) applyImg(file);\n}\nfunction imgSelected(e) {\n  const file = e.target.files[0];\n  if (file) applyImg(file);\n}\nfunction applyImg(file) {\n  if (!file.type.match(/image\\/(jpeg|png)/)) return;\n  if (file.size > 2 * 1024 * 1024) return;\n  const reader = new FileReader();\n  reader.onload = ev => {\n    const av = document.getElementById('img-av');\n    av.innerHTML = '';\n    av.style.backgroundImage = `url(${ev.target.result})`;\n  };\n  reader.readAsDataURL(file);\n}",
+  "pageUsage": "Source: sections/components/image-uploader.json\nUsed in: DES-827 Profile Settings, user creation forms\n\nBehavior:\n- Click avatar or 'Reemplazar imagen' → OS file picker\n- Drag file onto container → same upload flow\n- Accepts: image/jpeg, image/png, max 2 MB\n- On load: .dt-img-av gets background-image with preview\n- Hover avatar → camera overlay transitions in (opacity 0→1)\n- Drag over → .drag-over class on container (blue border + bg)"
+}

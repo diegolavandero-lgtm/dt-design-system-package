@@ -583,6 +583,10 @@ button,input,select{font-family:inherit}
     <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
     <span data-i18n="nav.selection">Selection controls</span>
   </a>
+  <a href="#image-uploader" class="snav" data-sec="image-uploader" onclick="setActive(this)">
+    <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/><path d="M12 14v4m-2-2h4"/></svg>
+    <span data-i18n="nav.imageUploader">Image uploader</span>
+  </a>
   <a href="#badges" class="snav" data-sec="badges" onclick="setActive(this)">
     <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
     <span data-i18n="nav.badges">Badges &amp; tags</span>
@@ -1032,6 +1036,156 @@ button,input,select{font-family:inherit}
       <div style="display:flex;align-items:center;gap:6px;font:400 13px var(--font-sans)"><div class="swt on" onclick="this.classList.toggle('on')"></div>On</div>
     </div>
   </div>
+</section>
+
+<!-- ══ IMAGE UPLOADER ══ -->
+<section class="sec" id="image-uploader" data-keywords="upload image photo profile drag drop avatar picture reemplazar cambiar">
+  <h2><span data-i18n="nav.imageUploader">Image uploader</span> <span class="anch">#image-uploader</span></h2>
+  <p class="desc" data-i18n="section.imageUploader.desc">Centered profile photo upload component. Circular avatar with hover camera overlay. Supports click and drag & drop. Accepts JPG/PNG up to 2 MB.</p>
+
+  <!-- Tokens table -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hdr"><span class="ttl">Tokens</span></div>
+    <table style="width:100%;border-collapse:collapse;font:400 12px var(--font-sans)">
+      <thead><tr style="border-bottom:1px solid var(--n3)">
+        <th style="text-align:left;padding:6px 10px;background:var(--n2);font-weight:700;color:var(--n5);text-transform:uppercase;font-size:10px;letter-spacing:.05em">Token</th>
+        <th style="text-align:left;padding:6px 10px;background:var(--n2);font-weight:700;color:var(--n5);text-transform:uppercase;font-size:10px;letter-spacing:.05em">Value</th>
+      </tr></thead>
+      <tbody style="color:var(--n7)">
+        <tr style="border-bottom:1px solid var(--n3)"><td style="padding:6px 10px;font-weight:600">Container bg</td><td style="padding:6px 10px;font-family:var(--font-mono);font-size:11px">var(--n2) · #F5F6FA</td></tr>
+        <tr style="border-bottom:1px solid var(--n3)"><td style="padding:6px 10px;font-weight:600">Container border</td><td style="padding:6px 10px;font-family:var(--font-mono);font-size:11px">var(--n3) · #E1E6ED</td></tr>
+        <tr style="border-bottom:1px solid var(--n3)"><td style="padding:6px 10px;font-weight:600">Avatar size</td><td style="padding:6px 10px;font-family:var(--font-mono);font-size:11px">88px × 88px</td></tr>
+        <tr style="border-bottom:1px solid var(--n3)"><td style="padding:6px 10px;font-weight:600">Avatar bg</td><td style="padding:6px 10px;font-family:var(--font-mono);font-size:11px">var(--n3) · #E1E6ED</td></tr>
+        <tr style="border-bottom:1px solid var(--n3)"><td style="padding:6px 10px;font-weight:600">Overlay bg</td><td style="padding:6px 10px;font-family:var(--font-mono);font-size:11px">rgba(19,32,69, 0.60)</td></tr>
+        <tr style="border-bottom:1px solid var(--n3)"><td style="padding:6px 10px;font-weight:600">Drag-over border</td><td style="padding:6px 10px;font-family:var(--font-mono);font-size:11px">var(--b5) · #4B82FA</td></tr>
+        <tr><td style="padding:6px 10px;font-weight:600">Action color</td><td style="padding:6px 10px;font-family:var(--font-mono);font-size:11px">var(--b6) · #1F60ED</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Live variants -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:12px">
+
+    <!-- Empty state -->
+    <div class="card">
+      <div class="card-hdr"><span class="ttl">Empty</span></div>
+      <div style="padding:16px;background:var(--n2)">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 20px;background:var(--n2);border-radius:8px;border:1px solid var(--n3)">
+          <div style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer" class="img-up-demo-circle">
+            <div style="width:88px;height:88px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n5);overflow:hidden">
+              <svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>
+            </div>
+          </div>
+          <button style="display:inline-flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:0;font:600 13px var(--font-sans);color:var(--b6)">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>
+            Reemplazar imagen
+          </button>
+          <p style="font:400 11px var(--font-sans);color:var(--n5);margin:0">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drag-over state -->
+    <div class="card">
+      <div class="card-hdr"><span class="ttl">Drag over</span></div>
+      <div style="padding:16px;background:var(--n2)">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 20px;background:var(--b1);border-radius:8px;border:1px solid var(--b5);transition:border-color .15s,background .15s">
+          <div style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer">
+            <div style="width:88px;height:88px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n5);overflow:hidden">
+              <svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>
+            </div>
+          </div>
+          <button style="display:inline-flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:0;font:600 13px var(--font-sans);color:var(--b6)">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>
+            Reemplazar imagen
+          </button>
+          <p style="font:400 11px var(--font-sans);color:var(--n5);margin:0">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hover overlay state -->
+    <div class="card">
+      <div class="card-hdr"><span class="ttl">Hover (avatar)</span></div>
+      <div style="padding:16px;background:var(--n2)">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 20px;background:var(--n2);border-radius:8px;border:1px solid var(--n3)">
+          <div style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer">
+            <div style="width:88px;height:88px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n5);overflow:hidden">
+              <svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>
+            </div>
+            <!-- Overlay visible (simulating hover) -->
+            <div style="position:absolute;inset:0;border-radius:50%;background:rgba(19,32,69,.60);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#fff;font:600 10px var(--font-sans);letter-spacing:.03em">
+              <svg viewBox="0 0 32 32" fill="currentColor" width="18" height="18"><path d="M26,24H6a2,2,0,0,1-2-2V10A2,2,0,0,1,6,8h4l2-3h8l2,3h4a2,2,0,0,1,2,2V22A2,2,0,0,1,26,24ZM6,10V22H26V10ZM16,20a4,4,0,1,1,4-4A4,4,0,0,1,16,20Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,16,14Z"/></svg>
+              <span>Cambiar</span>
+            </div>
+          </div>
+          <button style="display:inline-flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:0;font:600 13px var(--font-sans);color:var(--b6)">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>
+            Reemplazar imagen
+          </button>
+          <p style="font:400 11px var(--font-sans);color:var(--n5);margin:0">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive demo -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-hdr"><span class="ttl">Interactive demo</span></div>
+    <div style="padding:16px;background:var(--n2);display:flex;justify-content:center">
+      <div style="width:260px">
+        <div id="ds-img-upload" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 20px;background:var(--n2);border-radius:8px;border:1px solid var(--n3);transition:border-color .15s,background .15s;cursor:default"
+             ondragover="event.preventDefault();document.getElementById('ds-img-upload').style.borderColor='var(--b5)';document.getElementById('ds-img-upload').style.background='var(--b1)'"
+             ondragleave="document.getElementById('ds-img-upload').style.borderColor='var(--n3)';document.getElementById('ds-img-upload').style.background='var(--n2)'"
+             ondrop="event.preventDefault();document.getElementById('ds-img-upload').style.borderColor='var(--n3)';document.getElementById('ds-img-upload').style.background='var(--n2)';const f=event.dataTransfer.files[0];if(f)dsApplyImg(f)">
+          <div style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer" onclick="document.getElementById('ds-img-input').click()" onmouseenter="document.getElementById('ds-img-ov').style.opacity='1'" onmouseleave="document.getElementById('ds-img-ov').style.opacity='0'">
+            <div id="ds-img-av" style="width:88px;height:88px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n5);overflow:hidden;background-size:cover;background-position:center">
+              <svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>
+            </div>
+            <div id="ds-img-ov" style="position:absolute;inset:0;border-radius:50%;background:rgba(19,32,69,.60);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#fff;font:600 10px var(--font-sans);letter-spacing:.03em;opacity:0;transition:opacity .18s;pointer-events:none">
+              <svg viewBox="0 0 32 32" fill="currentColor" width="18" height="18"><path d="M26,24H6a2,2,0,0,1-2-2V10A2,2,0,0,1,6,8h4l2-3h8l2,3h4a2,2,0,0,1,2,2V22A2,2,0,0,1,26,24ZM6,10V22H26V10ZM16,20a4,4,0,1,1,4-4A4,4,0,0,1,16,20Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,16,14Z"/></svg>
+              <span>Cambiar</span>
+            </div>
+          </div>
+          <button style="display:inline-flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:0;font:600 13px var(--font-sans);color:var(--b6)" onclick="document.getElementById('ds-img-input').click()">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>
+            Reemplazar imagen
+          </button>
+          <p style="font:400 11px var(--font-sans);color:var(--n5);margin:0">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+          <input type="file" id="ds-img-input" accept="image/jpeg,image/png" style="display:none" onchange="dsImgSelected(event)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code snippet -->
+  <div class="card flush">
+    <div class="card-hdr"><span class="ttl">Snippet</span></div>
+    <div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button>
+<pre><span class="cm">&lt;!-- Image uploader — DT Design System --&gt;</span>
+<span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"dt-img-upload"</span> <span class="kw">id</span>=<span class="str">"img-upload-zone"</span>
+     <span class="kw">ondragover</span>=<span class="str">"imgDragOver(event)"</span>
+     <span class="kw">ondragleave</span>=<span class="str">"imgDragLeave(event)"</span>
+     <span class="kw">ondrop</span>=<span class="str">"imgDrop(event)"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"dt-img-circle"</span> <span class="kw">onclick</span>=<span class="str">"document.getElementById('img-input').click()"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"dt-img-av"</span> <span class="kw">id</span>=<span class="str">"img-av"</span><span class="tg">&gt;</span><span class="cm">&lt;!-- person icon --&gt;</span><span class="tg">&lt;/div&gt;</span>
+    <span class="tg">&lt;div</span> <span class="kw">class</span>=<span class="str">"dt-img-overlay"</span><span class="tg">&gt;</span><span class="cm">&lt;!-- camera icon + label --&gt;</span><span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;button</span> <span class="kw">class</span>=<span class="str">"dt-img-replace"</span><span class="tg">&gt;</span>Reemplazar imagen<span class="tg">&lt;/button&gt;</span>
+  <span class="tg">&lt;p</span> <span class="kw">class</span>=<span class="str">"dt-img-hint"</span><span class="tg">&gt;</span>Tamaño sugerido 224×224 px (PNG o JPG)<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;input</span> <span class="kw">type</span>=<span class="str">"file"</span> <span class="kw">id</span>=<span class="str">"img-input"</span> <span class="kw">accept</span>=<span class="str">"image/jpeg,image/png"</span> <span class="kw">style</span>=<span class="str">"display:none"</span> <span class="kw">onchange</span>=<span class="str">"imgSelected(event)"</span><span class="tg">&gt;</span>
+<span class="tg">&lt;/div&gt;</span>
+
+<span class="cm">/* CSS classes */</span>
+<span class="tg">.dt-img-upload</span> { <span class="kw">display</span>:<span class="nb">flex</span>; <span class="kw">flex-direction</span>:<span class="nb">column</span>; <span class="kw">align-items</span>:<span class="nb">center</span>; <span class="kw">gap</span>:<span class="nb">12px</span>;
+  <span class="kw">padding</span>:<span class="nb">24px 20px</span>; <span class="kw">background</span>:<span class="nb">var(--n2)</span>; <span class="kw">border-radius</span>:<span class="nb">8px</span>; <span class="kw">border</span>:<span class="nb">1px solid var(--n3)</span>; }
+<span class="tg">.dt-img-upload.drag-over</span> { <span class="kw">border-color</span>:<span class="nb">var(--b5)</span>; <span class="kw">background</span>:<span class="nb">var(--b1)</span>; }
+<span class="tg">.dt-img-circle</span> { <span class="kw">position</span>:<span class="nb">relative</span>; <span class="kw">width</span>:<span class="nb">88px</span>; <span class="kw">height</span>:<span class="nb">88px</span>; <span class="kw">border-radius</span>:<span class="nb">50%</span>; <span class="kw">cursor</span>:<span class="nb">pointer</span>; }
+<span class="tg">.dt-img-overlay</span> { <span class="kw">position</span>:<span class="nb">absolute</span>; <span class="kw">inset</span>:<span class="nb">0</span>; <span class="kw">border-radius</span>:<span class="nb">50%</span>; <span class="kw">opacity</span>:<span class="nb">0</span>; <span class="kw">transition</span>:<span class="nb">opacity .18s</span>; }
+<span class="tg">.dt-img-circle:hover .dt-img-overlay</span> { <span class="kw">opacity</span>:<span class="nb">1</span>; }</pre>
+    </div>
+  </div>
+
 </section>
 
 <!-- ══ BADGES ══ -->
@@ -2525,6 +2679,14 @@ document.addEventListener('keydown', e => {
     document.getElementById('gsearch').blur();
   }
 });
+function dsImgSelected(e) { const f = e.target.files[0]; if(f) dsApplyImg(f); }
+function dsApplyImg(f) {
+  if (!f.type.match(/image\/(jpeg|png)/)) return;
+  if (f.size > 2*1024*1024) return;
+  const r = new FileReader();
+  r.onload = ev => { const av = document.getElementById('ds-img-av'); av.innerHTML=''; av.style.backgroundImage=`url(${ev.target.result})`; };
+  r.readAsDataURL(f);
+}
 </script>
 
 <!-- ── i18n + Changelog system ── -->
