@@ -1461,21 +1461,13 @@ function initDateTimePickers() {
     svg.innerHTML = '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="#E8ECF4"/>'+circles+hand+texts;
   }
 
-  // ── After selecting hour → switch to minute mode (don't close) ──
+  // ── Hour selected — update display, stay in hour mode ──
   window._tpHour = function(el, h) {
     var tp = el.closest('[data-tp]');
     if (!tp) return;
     tp.dataset.hour = h;
     var disp = tp.querySelector('[data-time-h]');
     if (disp) disp.textContent = String(h).padStart(2,'0');
-    // Switch to minute step
-    tp.dataset.step = 'minute';
-    var lbl = tp.querySelector('[data-tp-step-label]');
-    if (lbl) lbl.textContent = 'Seleccionar minutos';
-    var hBox = tp.querySelector('[data-time-h-box]');
-    var mBox = tp.querySelector('[data-time-m-box]');
-    if (hBox) { hBox.style.border='1px solid var(--n3)'; hBox.querySelector('[data-time-h]').style.color='var(--n7)'; }
-    if (mBox) { mBox.style.border='2px solid var(--b6)'; mBox.querySelector('[data-time-m]').style.color='var(--n7)'; }
     buildClockFace(tp);
   };
 
