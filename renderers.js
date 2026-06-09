@@ -2619,6 +2619,153 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </div>`;
   },
 
+  /* ── IMAGE UPLOADER ── */
+  imageUploader(data) {
+    const tokens = data.tokens || {};
+    const tokenRows = Object.entries(tokens).map(([k,v]) => `
+      <tr style="border-bottom:1px solid var(--n3)">
+        <td style="padding:8px 12px;font:600 12px var(--font-sans);color:var(--n7)">${escHtml(k)}</td>
+        <td style="padding:8px 12px;font:400 12px var(--font-mono);color:var(--b6)">${escHtml(v)}</td>
+      </tr>`).join('');
+
+    const USER_ICON = `<svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>`;
+    const CAM_ICON  = `<svg viewBox="0 0 32 32" fill="currentColor" width="18" height="18"><path d="M26,24H6a2,2,0,0,1-2-2V10A2,2,0,0,1,6,8h4l2-3h8l2,3h4a2,2,0,0,1,2,2V22A2,2,0,0,1,26,24ZM6,10V22H26V10ZM16,20a4,4,0,1,1,4-4A4,4,0,0,1,16,20Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,16,14Z"/></svg>`;
+    const RENEW_ICON = `<svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>`;
+
+    function avatarWidget({ dragOver = false, overlayVisible = false, hasPhoto = false } = {}) {
+      const containerBorder = dragOver ? 'var(--b5)' : 'var(--n3)';
+      const containerBg     = dragOver ? 'var(--b1)' : 'var(--n2)';
+      const overlayOpacity  = overlayVisible ? '1' : '0';
+      const avContent = hasPhoto
+        ? `style="width:88px;height:88px;border-radius:50%;background:var(--n3);overflow:hidden;background-image:url('https://i.pravatar.cc/88');background-size:cover;background-position:center"`
+        : `style="width:88px;height:88px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n5);overflow:hidden"`;
+      return `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 20px;background:${containerBg};border-radius:8px;border:1px solid ${containerBorder};transition:border-color .15s,background .15s">
+          <div style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer">
+            <div ${avContent}>${hasPhoto ? '' : USER_ICON}</div>
+            <div style="position:absolute;inset:0;border-radius:50%;background:rgba(19,32,69,.60);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#fff;font:600 10px var(--font-sans);letter-spacing:.03em;opacity:${overlayOpacity};transition:opacity .18s;pointer-events:none">
+              ${CAM_ICON}<span>Cambiar</span>
+            </div>
+          </div>
+          <button style="display:inline-flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:0;font:600 13px var(--font-sans);color:var(--b6)">${RENEW_ICON}Reemplazar imagen</button>
+          <p style="font:400 11px var(--font-sans);color:var(--n5);margin:0">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+        </div>`;
+    }
+
+    const DEMO_ID = `img-up-demo-${Math.floor(Date.now()/1000)}`;
+
+    return `
+      <div style="margin-bottom:24px">
+        <p style="font:400 14px/1.5 var(--font-sans);color:var(--n6);margin:0 0 24px">${escHtml(data.description||'')}</p>
+
+        <!-- Tokens -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--n3)">
+            <span style="font:600 13px var(--font-sans);color:var(--n7)">Design tokens</span>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font:400 12px var(--font-sans)">
+            <thead><tr style="background:var(--n2);border-bottom:1px solid var(--n3)">
+              <th style="text-align:left;padding:8px 12px;font:700 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Token</th>
+              <th style="text-align:left;padding:8px 12px;font:700 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Value</th>
+            </tr></thead>
+            <tbody>${tokenRows}</tbody>
+          </table>
+        </div>
+
+        <!-- 3 Variant cards -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+          <div class="card" style="padding:0;overflow:hidden">
+            <div style="padding:10px 14px;border-bottom:1px solid var(--n3)"><span style="font:600 12px var(--font-sans);color:var(--n7)">Empty</span></div>
+            <div style="padding:16px">${avatarWidget()}</div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden">
+            <div style="padding:10px 14px;border-bottom:1px solid var(--n3)"><span style="font:600 12px var(--font-sans);color:var(--n7)">Drag over</span></div>
+            <div style="padding:16px">${avatarWidget({ dragOver: true })}</div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden">
+            <div style="padding:10px 14px;border-bottom:1px solid var(--n3)"><span style="font:600 12px var(--font-sans);color:var(--n7)">Hover overlay</span></div>
+            <div style="padding:16px">${avatarWidget({ overlayVisible: true })}</div>
+          </div>
+        </div>
+
+        <!-- Interactive demo -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--n3)">
+            <span style="font:600 13px var(--font-sans);color:var(--n7)">Interactive demo</span>
+            <span style="font:400 12px var(--font-sans);color:var(--n5);margin-left:8px">Click the avatar or drag an image onto the container</span>
+          </div>
+          <div style="padding:24px;background:var(--n2);display:flex;justify-content:center">
+            <div style="width:280px">
+              <div id="${DEMO_ID}"
+                style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 20px;background:var(--n2);border-radius:8px;border:1px solid var(--n3);transition:border-color .15s,background .15s"
+                ondragover="event.preventDefault();this.style.borderColor='var(--b5)';this.style.background='var(--b1)'"
+                ondragleave="this.style.borderColor='var(--n3)';this.style.background='var(--n2)'"
+                ondrop="event.preventDefault();this.style.borderColor='var(--n3)';this.style.background='var(--n2)';const f=event.dataTransfer.files[0];if(f)window.__applyDsImg('${DEMO_ID}',f)">
+                <div style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer"
+                  onclick="document.getElementById('${DEMO_ID}-inp').click()"
+                  onmouseenter="this.querySelector('.ov').style.opacity='1'"
+                  onmouseleave="this.querySelector('.ov').style.opacity='0'">
+                  <div id="${DEMO_ID}-av" style="width:88px;height:88px;border-radius:50%;background:var(--n3);display:flex;align-items:center;justify-content:center;color:var(--n5);overflow:hidden;background-size:cover;background-position:center">
+                    ${USER_ICON}
+                  </div>
+                  <div class="ov" style="position:absolute;inset:0;border-radius:50%;background:rgba(19,32,69,.60);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#fff;font:600 10px var(--font-sans);letter-spacing:.03em;opacity:0;transition:opacity .18s;pointer-events:none">
+                    ${CAM_ICON}<span>Cambiar</span>
+                  </div>
+                </div>
+                <button style="display:inline-flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;padding:0;font:600 13px var(--font-sans);color:var(--b6)"
+                  onclick="document.getElementById('${DEMO_ID}-inp').click()">${RENEW_ICON}Reemplazar imagen</button>
+                <p style="font:400 11px var(--font-sans);color:var(--n5);margin:0">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+                <input type="file" id="${DEMO_ID}-inp" accept="image/jpeg,image/png" style="display:none"
+                  onchange="const f=this.files[0];if(f)window.__applyDsImg('${DEMO_ID}',f)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Code snippet -->
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--n3)">
+            <span style="font:600 13px var(--font-sans);color:var(--n7)">Code</span>
+          </div>
+          <div style="padding:16px;background:#1e1e2e;border-radius:0 0 8px 8px;font:400 12px var(--font-mono);color:#cdd6f4;white-space:pre;overflow-x:auto;line-height:1.6">&lt;<span style="color:#89b4fa">div</span> <span style="color:#a6e3a1">class</span>=<span style="color:#f38ba8">"dt-img-upload"</span> <span style="color:#a6e3a1">id</span>=<span style="color:#f38ba8">"img-upload-zone"</span>
+     <span style="color:#a6e3a1">ondragover</span>=<span style="color:#f38ba8">"imgDragOver(event)"</span>
+     <span style="color:#a6e3a1">ondragleave</span>=<span style="color:#f38ba8">"imgDragLeave(event)"</span>
+     <span style="color:#a6e3a1">ondrop</span>=<span style="color:#f38ba8">"imgDrop(event)"</span>&gt;
+  &lt;<span style="color:#89b4fa">div</span> <span style="color:#a6e3a1">class</span>=<span style="color:#f38ba8">"dt-img-circle"</span>&gt;
+    &lt;<span style="color:#89b4fa">div</span> <span style="color:#a6e3a1">class</span>=<span style="color:#f38ba8">"dt-img-av"</span> <span style="color:#a6e3a1">id</span>=<span style="color:#f38ba8">"img-av"</span>&gt;&lt;!-- IBM Carbon User 32px --&gt;&lt;/<span style="color:#89b4fa">div</span>&gt;
+    &lt;<span style="color:#89b4fa">div</span> <span style="color:#a6e3a1">class</span>=<span style="color:#f38ba8">"dt-img-overlay"</span>&gt;&lt;!-- IBM Carbon Camera --&gt;&lt;/<span style="color:#89b4fa">div</span>&gt;
+  &lt;/<span style="color:#89b4fa">div</span>&gt;
+  &lt;<span style="color:#89b4fa">button</span> <span style="color:#a6e3a1">class</span>=<span style="color:#f38ba8">"dt-img-replace"</span>&gt;Reemplazar imagen&lt;/<span style="color:#89b4fa">button</span>&gt;
+  &lt;<span style="color:#89b4fa">p</span> <span style="color:#a6e3a1">class</span>=<span style="color:#f38ba8">"dt-img-hint"</span>&gt;Tamaño sugerido 224×224 px&lt;/<span style="color:#89b4fa">p</span>&gt;
+  &lt;<span style="color:#89b4fa">input</span> <span style="color:#a6e3a1">type</span>=<span style="color:#f38ba8">"file"</span> <span style="color:#a6e3a1">id</span>=<span style="color:#f38ba8">"img-input"</span> <span style="color:#a6e3a1">accept</span>=<span style="color:#f38ba8">"image/jpeg,image/png"</span> <span style="color:#a6e3a1">style</span>=<span style="color:#f38ba8">"display:none"</span>&gt;
+&lt;/<span style="color:#89b4fa">div</span>&gt;
+
+<span style="color:#6c7086">/* CSS */</span>
+<span style="color:#89b4fa">.dt-img-upload</span> { display:flex; flex-direction:column; align-items:center; gap:12px;
+  padding:24px 20px; background:var(--n2); border-radius:8px; border:1px solid var(--n3); }
+<span style="color:#89b4fa">.dt-img-upload.drag-over</span> { border-color:var(--b5); background:var(--b1); }
+<span style="color:#89b4fa">.dt-img-circle</span> { position:relative; width:88px; height:88px; border-radius:50%; cursor:pointer; }
+<span style="color:#89b4fa">.dt-img-overlay</span> { position:absolute; inset:0; border-radius:50%; opacity:0; transition:opacity .18s; }
+<span style="color:#89b4fa">.dt-img-circle:hover .dt-img-overlay</span> { opacity:1; }</div>
+        </div>
+      </div>
+
+      <script>
+        window.__applyDsImg = function(id, file) {
+          if (!file.type.match(/image\\/(jpeg|png)/)) return;
+          if (file.size > 2*1024*1024) return;
+          const r = new FileReader();
+          r.onload = ev => {
+            const av = document.getElementById(id + '-av');
+            if (!av) return;
+            av.innerHTML = '';
+            av.style.backgroundImage = 'url(' + ev.target.result + ')';
+          };
+          r.readAsDataURL(file);
+        };
+      </script>`;
+  },
+
   /* ── ALERTS / TOASTS ── */
   alerts(data) {
     const TYPES = data.types || ['info', 'neutral', 'warning', 'error', 'success'];
