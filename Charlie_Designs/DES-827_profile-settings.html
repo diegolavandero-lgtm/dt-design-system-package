@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DES-827 — Profile Settings · Lastmile</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo:#132045;
+      --n1:#F5F6FA; --n2:#F0F2F5; --n3:#E1E6ED; --n4:#C5D2E7; --n45:#8FA0BA;
+      --n5:#67768D; --n6:#4B5564; --n7:#39414D;
+      --b1:#EDF5FF; --b2:#D1E0FF; --b5:#4B82FA; --b6:#306EF2; --b7:#0052CC;
+      --g1:#E3FCEF; --g5:#36B37E; --g6:#00875A;
+      --r1:#FFEBE6; --r5:#FF5630; --r6:#DE350B;
+      --o1:#FFFAE6; --o5:#FFAB00; --o7:#FF8B00;
+      --font-sans:'DM Sans',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:var(--font-sans);color:var(--n7);background:var(--n2);font-size:14px;line-height:1.5}
+
+    /* ════════════════════════
+       TOPBAR — identical to DES-824
+    ════════════════════════ */
+    .topbar{
+      position:sticky;top:0;z-index:200;
+      height:52px;background:#132045;
+      display:flex;align-items:center;
+      padding:0 0 0 16px;
+      flex-shrink:0;
+    }
+    .topbar-logo{
+      display:flex;align-items:center;height:20px;text-decoration:none;
+    }
+    .topbar-logo img{height:20px;width:auto;display:block}
+    .topbar-logo-text{
+      font:700 15px/1 var(--font-sans);color:#fff;letter-spacing:-.02em;
+      display:flex;align-items:center;gap:8px;
+    }
+    .topbar-logo-text span{
+      font-size:12px;font-weight:600;color:#FF6A1F;
+      padding:2px 8px;border-radius:999px;background:rgba(255,106,31,.18);
+    }
+    .topbar-icons{
+      margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px;
+    }
+    .topbar-icons svg{
+      width:18px;height:18px;color:rgba(255,255,255,.85);
+      display:block;cursor:pointer;transition:color .12s;flex-shrink:0;
+    }
+    .topbar-icons svg:hover{color:#fff}
+    .bell-wrap{position:relative}
+    .bell-wrap::after{
+      content:'';position:absolute;top:-2px;right:-2px;
+      width:7px;height:7px;border-radius:50%;
+      background:#FF5630;border:1.5px solid #132045;
+    }
+    .topbar-slot{
+      height:52px;width:100px;
+      background:#fff;border-radius:25px 0 0 0;
+      display:flex;align-items:center;justify-content:center;
+      color:#132045;font-size:13px;font-weight:700;
+      flex-shrink:0;margin-left:8px;
+      gap:6px;
+    }
+    .topbar-slot-avatar{
+      width:24px;height:24px;border-radius:50%;
+      background:linear-gradient(135deg,var(--b5),var(--b7));
+      display:flex;align-items:center;justify-content:center;
+      font:700 9px var(--font-sans);color:#fff;
+    }
+
+    /* ════════════════════════
+       LAYOUT SHELL
+    ════════════════════════ */
+    .shell{display:flex;min-height:calc(100vh - 52px)}
+
+    /* ════════════════════════
+       SIDEBAR — two-part (identical to DES-824)
+    ════════════════════════ */
+    .sidebar{display:flex;flex-shrink:0}
+
+    .pg-sidenav{
+      width:52px;background:#fff;border-right:1px solid #E1E6ED;
+      display:flex;flex-direction:column;align-items:center;
+      padding:10px 0 8px;flex-shrink:0;
+      position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden;
+    }
+    .pg-sidenav .psn-it{
+      width:36px;height:36px;border-radius:30px;
+      display:flex;align-items:center;justify-content:center;
+      color:#0052CC;cursor:pointer;position:relative;flex-shrink:0;
+    }
+    .pg-sidenav .psn-it:hover{background:#EDF5FF}
+    .pg-sidenav .psn-it.psn-sel{
+      background:#EDF5FF;border-radius:0 30px 30px 0;
+      width:47px;align-self:flex-end;
+    }
+    .pg-sidenav .psn-it.psn-sel::before{
+      content:"";position:absolute;left:0;top:5px;bottom:5px;
+      width:3px;background:#4B82FA;border-radius:0 3px 3px 0;
+    }
+    .pg-sidenav .psn-it svg{width:16px;height:16px;fill:currentColor;stroke:none;flex-shrink:0}
+    .pg-sidenav .psn-sep{width:26px;border-top:1px solid #E1E6ED;margin:5px 0;flex-shrink:0}
+    .pg-sidenav .psn-bot{margin-top:auto}
+
+    .sb-nav{
+      width:212px;flex-shrink:0;
+      background:#fff;border-right:1px solid #E1E6ED;
+      overflow-y:auto;padding-bottom:24px;
+    }
+    .sb-nav::-webkit-scrollbar{width:4px}
+    .sb-nav::-webkit-scrollbar-thumb{background:#E1E6ED;border-radius:2px}
+    .sb-group{padding:16px 0 4px 16px;font-size:13px;font-weight:700;color:#39414D}
+    .sb-item{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:7px 12px 7px 24px;font-size:13px;color:#4B5564;
+      cursor:pointer;border-left:2px solid transparent;
+      transition:color .1s,background .1s;line-height:1.3;
+    }
+    .sb-item:hover{color:#0052CC;background:#F5F6FA}
+    .sb-item.active{color:#0052CC;font-weight:700;background:#EDF5FF;border-left-color:#0052CC}
+
+    /* ════════════════════════
+       MAIN
+    ════════════════════════ */
+    .main{flex:1;min-width:0;overflow:auto;display:flex;flex-direction:column}
+
+    /* page header */
+    .page-header{
+      background:#fff;border-bottom:1px solid #E1E6ED;
+      padding:14px 24px;display:flex;align-items:center;gap:12px;
+    }
+    .page-header-avatar{
+      width:40px;height:40px;border-radius:50%;
+      background:linear-gradient(135deg,var(--b5),var(--b7));
+      display:flex;align-items:center;justify-content:center;
+      font:700 15px var(--font-sans);color:#fff;flex-shrink:0;
+    }
+    .page-header-info{flex:1}
+    .page-header-name{font:700 18px var(--font-sans);color:var(--n7)}
+    .page-header-email{font:400 12px var(--font-sans);color:var(--n5);margin-top:1px}
+
+    /* tabs */
+    .tabs-bar{
+      background:#fff;border-bottom:1px solid #E1E6ED;
+      padding:0 24px;display:flex;
+    }
+    .tab-item{
+      padding:10px 16px;font:500 14px var(--font-sans);color:var(--n5);
+      cursor:pointer;border:none;border-bottom:2px solid transparent;
+      background:transparent;transition:color .12s,border-color .12s;
+      white-space:nowrap;
+    }
+    .tab-item:hover{color:var(--n7)}
+    .tab-item.active{color:var(--b7);border-bottom-color:var(--b7);font-weight:700}
+
+    /* content */
+    .content{padding:20px 24px;max-width:820px}
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* ════════════════════════
+       CARDS
+    ════════════════════════ */
+    .card{
+      background:#fff;border:1px solid #E1E6ED;
+      border-radius:8px;margin-bottom:16px;overflow:hidden;
+    }
+    .card-hdr{
+      padding:10px 20px;border-bottom:1px solid #E1E6ED;
+      background:#FAFBFD;display:flex;align-items:center;justify-content:space-between;
+    }
+    .card-ttl{font:700 13px var(--font-sans);color:var(--n7)}
+    .card-body{padding:20px}
+    .card-body.flush{padding:0}
+
+    /* ════════════════════════
+       FORM — alineado DS
+       .form-row = field wrapper (.fld en DS)
+       .form-grid = two-column grid
+    ════════════════════════ */
+    .form-row{display:flex;flex-direction:column;gap:5px}
+    /* Two-column grid — patrón DS: grid-template-columns:1fr 1fr, gap:14px 20px */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+    .form-grid .form-row.full{grid-column:1/-1}
+    .lbl{font:700 13px var(--font-sans);color:var(--n7)}
+    .lbl .req,.req{color:var(--r5);margin-left:2px}
+    /* .inp: div wrapper (patrón DS) */
+    .inp-wrap{
+      display:flex;align-items:center;gap:8px;
+      border:1px solid var(--n3);border-radius:4px;
+      background:#fff;padding:0 10px;height:38px;
+    }
+    .inp-wrap:focus-within{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
+    .inp-wrap input,.inp-wrap select{
+      border:0;outline:0;flex:1;min-width:0;
+      font:400 13px var(--font-sans);color:var(--n7);background:transparent;
+    }
+    .inp-wrap input::placeholder{color:var(--n45)}
+    .inp-wrap input:disabled{color:var(--n5);cursor:not-allowed}
+    /* input directo (contraseñas, etc.) */
+    .inp{
+      width:100%;height:38px;
+      border:1px solid var(--n3);border-radius:4px;
+      background:#fff;padding:0 10px;
+      font:400 13px var(--font-sans);color:var(--n7);
+      outline:none;transition:border-color .12s,box-shadow .12s;
+    }
+    .inp:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
+    .inp::placeholder{color:var(--n45)}
+    .inp:disabled{background:var(--n1);color:var(--n5);cursor:not-allowed}
+    .sel{
+      width:100%;height:38px;
+      border:1px solid var(--n3);border-radius:4px;
+      background:#fff;padding:0 32px 0 10px;
+      font:400 13px var(--font-sans);color:var(--n7);
+      outline:none;cursor:pointer;appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2367768D' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:right 8px center;
+      transition:border-color .12s;
+    }
+    .sel:focus{border-color:var(--b5);box-shadow:0 0 0 3px rgba(75,130,250,.22)}
+    .helper{font:400 11px var(--font-sans);color:var(--n5)}
+    .form-actions{
+      display:flex;gap:8px;justify-content:flex-end;
+      padding-top:16px;border-top:1px solid #E1E6ED;margin-top:16px;
+    }
+
+    /* ════════════════════════
+       BUTTONS — from DES-824
+    ════════════════════════ */
+    .btn{
+      font-size:14px;font-weight:700;font-family:inherit;
+      padding:0 16px;border-radius:50px;height:32px;
+      border:1px solid #1F60ED;background:#fff;color:#1F60ED;
+      cursor:pointer;transition:background .12s,color .12s,border-color .12s;
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:6px;white-space:nowrap;line-height:1;
+    }
+    .btn:hover{background:#EDF5FF}
+    .btn.primary{background:#1F60ED;color:#fff;border-color:#1F60ED}
+    .btn.primary:hover{background:#0052CC;border-color:#0052CC}
+    .btn.danger{background:#fff;color:var(--r6);border-color:var(--r6)}
+    .btn.danger:hover{background:var(--r1)}
+    .btn svg{width:14px;height:14px;flex-shrink:0}
+    .btn.sm{height:28px;font-size:12px;padding:0 12px}
+
+    /* ════════════════════════
+       BADGES
+    ════════════════════════ */
+    .badge{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:2px 9px;border-radius:999px;
+      font:600 11px var(--font-sans);
+    }
+    .badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+    .badge.success{background:var(--g1);color:var(--g6)}
+    .badge.neutral{background:var(--n2);color:var(--n6)}
+
+    /* ════════════════════════
+       SWITCH — from DES-824
+    ════════════════════════ */
+    .swt{
+      width:34px;height:20px;border-radius:999px;background:#C5D2E7;
+      position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;
+    }
+    .swt.on{background:#0052CC}
+    .swt::after{
+      content:'';position:absolute;top:2px;left:2px;
+      width:16px;height:16px;border-radius:50%;
+      background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2);
+    }
+    .swt.on::after{left:16px}
+    .toggle-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0}
+    .toggle-row+.toggle-row{border-top:1px solid #E1E6ED}
+    .toggle-lbl{font:600 13px var(--font-sans);color:var(--n7)}
+    .toggle-desc{font:400 12px var(--font-sans);color:var(--n5);margin-top:2px}
+
+    /* ════════════════════════
+       PHOTO
+    ════════════════════════ */
+    /* ════════════════════════
+       PHOTO UPLOAD — centrado moderno
+    ════════════════════════ */
+    .photo-upload{
+      display:flex;flex-direction:column;align-items:center;
+      gap:12px;padding:24px 20px;background:var(--n2);
+      border-radius:8px;border:1px solid var(--n3);
+      transition:border-color .15s,background .15s;
+    }
+    .photo-upload.drag-over{border-color:var(--b5);background:var(--b1)}
+    .photo-circle-wrap{
+      position:relative;width:88px;height:88px;
+      border-radius:50%;cursor:pointer;flex-shrink:0;
+    }
+    .photo-circle{
+      width:88px;height:88px;border-radius:50%;
+      background:var(--n3);display:flex;align-items:center;
+      justify-content:center;color:var(--n5);overflow:hidden;
+      background-size:cover;background-position:center;
+    }
+    .photo-circle-overlay{
+      position:absolute;inset:0;border-radius:50%;
+      background:rgba(19,32,69,.6);
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:center;gap:3px;color:#fff;
+      font:600 10px var(--font-sans);letter-spacing:.03em;
+      opacity:0;transition:opacity .18s;pointer-events:none;
+    }
+    .photo-circle-wrap:hover .photo-circle-overlay{opacity:1}
+    .photo-av{
+      width:88px;height:88px;border-radius:50%;
+      background:var(--n3);display:flex;align-items:center;
+      justify-content:center;color:var(--n5);flex-shrink:0;
+      font:700 26px var(--font-sans);
+    }
+    .photo-replace-btn{
+      display:inline-flex;align-items:center;gap:5px;
+      background:none;border:none;cursor:pointer;padding:0;
+      font:600 13px var(--font-sans);color:var(--b6);
+      transition:color .12s;
+    }
+    .photo-replace-btn:hover{color:var(--b7)}
+    .photo-hint-txt{font:400 11px var(--font-sans);color:var(--n5)}
+    .photo-preview-wrap{position:relative;flex-shrink:0}
+
+    /* ════════════════════════
+       PW STRENGTH
+    ════════════════════════ */
+    .pw-bars{display:flex;gap:4px;margin-top:6px}
+    .pw-bar{height:3px;flex:1;border-radius:2px;background:#E1E6ED;transition:background .2s}
+    .pw-bar.weak{background:var(--r5)}
+    .pw-bar.med{background:var(--o5)}
+    .pw-bar.strong{background:var(--g5)}
+
+    /* ════════════════════════
+       INFO BANNER
+    ════════════════════════ */
+    .info-banner{
+      display:flex;align-items:flex-start;gap:10px;
+      padding:12px 14px;border-radius:6px;
+      background:var(--n1);border:1px solid #E1E6ED;
+      font:400 13px var(--font-sans);color:var(--n6);
+      margin-bottom:16px;line-height:1.5;
+    }
+    .info-banner svg{width:15px;height:15px;color:var(--n45);flex-shrink:0;margin-top:1px}
+
+    /* 2FA info card */
+    .twofa-card{
+      display:flex;align-items:flex-start;gap:14px;
+      padding:16px;border-radius:6px;
+      background:var(--b1);border:1px solid var(--b2);margin-bottom:16px;
+    }
+    .twofa-icon{
+      width:36px;height:36px;border-radius:6px;background:#1F60ED;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .twofa-icon svg{width:18px;height:18px;stroke:#fff;fill:none}
+    .twofa-card h3{font:700 13px var(--font-sans);color:var(--n7);margin-bottom:4px}
+    .twofa-card p{font:400 12px var(--font-sans);color:var(--n5);line-height:1.5}
+
+    /* ════════════════════════
+       TABLE
+    ════════════════════════ */
+    .dt-table{width:100%;border-collapse:collapse}
+    .dt-table th{
+      font:700 10px var(--font-sans);color:var(--n5);
+      text-align:left;padding:8px 16px;
+      border-bottom:1px solid #E1E6ED;
+      text-transform:uppercase;letter-spacing:.05em;
+    }
+    .dt-table td{
+      font:400 13px var(--font-sans);color:var(--n7);
+      padding:10px 16px;border-bottom:1px solid #F0F2F5;
+    }
+    .dt-table tr:last-child td{border-bottom:none}
+    .dt-table tbody tr:hover td{background:var(--n1)}
+    .user-cell{display:flex;align-items:center;gap:8px}
+    .user-av-sm{
+      width:26px;height:26px;border-radius:50%;
+      background:var(--b1);display:flex;align-items:center;justify-content:center;
+      font:700 10px var(--font-sans);color:var(--b7);flex-shrink:0;
+    }
+    .tbl-footer{
+      padding:10px 16px;border-top:1px solid #E1E6ED;
+      font:400 12px var(--font-sans);color:var(--n5);
+    }
+
+    /* ════════════════════════
+       EMPTY STATE
+    ════════════════════════ */
+    .empty-state{
+      padding:48px 24px;text-align:center;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+    }
+    .empty-icon{
+      width:44px;height:44px;border-radius:8px;background:var(--n2);
+      display:flex;align-items:center;justify-content:center;color:var(--n45);
+    }
+    .empty-icon svg{width:22px;height:22px;fill:currentColor;stroke:none}
+    .empty-title{font:700 14px var(--font-sans);color:var(--n7)}
+    .empty-desc{font:400 13px var(--font-sans);color:var(--n5);max-width:260px;line-height:1.5}
+
+    /* divider */
+    .divider{height:1px;background:#E1E6ED;margin:16px 0}
+
+    /* ════════════════════════
+       TOAST
+    ════════════════════════ */
+    .toast{
+      position:fixed;bottom:24px;right:24px;
+      background:var(--n7);color:#fff;
+      padding:10px 18px;border-radius:6px;
+      font:500 13px var(--font-sans);
+      display:flex;align-items:center;gap:8px;
+      box-shadow:0 4px 12px rgba(19,32,69,.18);
+      opacity:0;transform:translateY(8px);
+      transition:opacity .2s,transform .2s;
+      pointer-events:none;z-index:999;
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast svg{width:15px;height:15px;stroke:var(--g5);fill:none;flex-shrink:0}
+  </style>
+</head>
+<body>
+
+<!-- ══ TOPBAR — copiado literal de DES-824 ══ -->
+<header class="topbar">
+  <a class="topbar-logo" href="#" aria-label="DispatchTrack Last Mile">
+    <img src="https://dt-design-system-package.pages.dev/sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <div class="bell-wrap" style="cursor:pointer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<!-- ══ SHELL ══ -->
+<div class="shell">
+
+<!-- ══ SIDEBAR — copiado literal de DES-824 ══ -->
+<aside class="sidebar">
+  <div class="pg-sidenav">
+  <div class="psn-it" title="Resumen"><svg viewBox="0 0 32 32" fill="currentColor"><rect x="15" y="20" width="2" height="4"/><rect x="20" y="18" width="2" height="6"/><rect x="10" y="14" width="2" height="10"/><path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"/></svg></div>
+  <div class="psn-it" title="Actividad"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></div>
+  <div class="psn-it" title="Rutas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M30,30H22V22h8Zm-6-2h4V24H24Z"/><path d="M20,27H8A6,6,0,0,1,8,15h2v2H8a4,4,0,0,0,0,8H20Z"/><path d="M20,20H12V12h8Zm-6-2h4V14H14Z"/><path d="M24,17H22V15h2a4,4,0,0,0,0-8H12V5H24a6,6,0,0,1,0,12Z"/><path d="M10,10H2V2h8ZM4,8H8V4H4Z"/></svg></div>
+  <div class="psn-it" title="Órdenes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,6H20V4H6A2,2,0,0,0,4,6V22H6V6H20V8h2V6ZM26,10H10A2,2,0,0,0,8,12V28A2,2,0,0,0,10,30H26A2,2,0,0,0,28,28V12A2,2,0,0,0,26,10Zm0,18H10V12H26Z"/></svg></div>
+  <div class="psn-it" title="Flota"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4 16H16V18H4z"/><path d="M2 11H12V13H2z"/><path d="M29.9189,16.6064l-3-7A.9985.9985,0,0,0,26,9H23V7a1,1,0,0,0-1-1H6V8H21V20.5562A3.9924,3.9924,0,0,0,19.1421,23H12.8579a4,4,0,1,0,0,2h6.2842a3.9806,3.9806,0,0,0,7.7158,0H29a1,1,0,0,0,1-1V17A.9965.9965,0,0,0,29.9189,16.6064ZM9,26a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,9,26ZM23,11h2.3408l2.1431,5H23Zm0,15a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,23,26Zm5-3H26.8579A3.9954,3.9954,0,0,0,23,20V18h5Z"/></svg></div>
+  <div class="psn-it" title="Estadísticas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg></div>
+  <div class="psn-it" title="Alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+  <div class="psn-it" title="Clientes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></div>
+  <div class="psn-it" title="Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-it" title="Logística inversa"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,8v2c2.2061,0,4,1.7944,4,4s-1.7939,4-4,4H10v-5l-6,6,6,6v-5H22c3.3086,0,6-2.6914,6-6S25.3086,8,22,8Z"/></svg></div>
+  <div class="psn-it" title="Rendición de Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></div>
+  <div class="psn-it" title="Retiro en tienda"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M28,4H4A2,2,0,0,0,2,6V12a2,2,0,0,0,1,1.72V28a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V13.72A2,2,0,0,0,30,12V6A2,2,0,0,0,28,4ZM4,6H28v6H4ZM18,28H14V22h4Zm9,0H20V22a2,2,0,0,0-2-2H14a2,2,0,0,0-2,2v6H5V14H27Z"/></svg></div>
+  <div class="psn-it" title="Importar"><svg viewBox="0 0 32 32" fill="currentColor"><polygon points="28 19 14.83 19 17.41 16.41 16 15 11 20 16 25 17.41 23.59 14.83 21 28 21 28 19"/><path d="M24,14V10a1,1,0,0,0-.29-.71l-7-7A1,1,0,0,0,16,2H6A2,2,0,0,0,4,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V26H22v2H6V4h8v6a2,2,0,0,0,2,2h6v2Zm-8-4V4.41L21.59,10Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos (nuevo)"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-sep"></div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-group">Configuración de perfil</div>
+    <div class="sb-item active" onclick="switchTab(0,this)">Información personal</div>
+    <div class="sb-item" onclick="switchTab(1,this)">Seguridad</div>
+    <div class="sb-item" onclick="switchTab(2,this)">Acceso y usuarios</div>
+    <div class="sb-item" onclick="switchTab(3,this)">Reportes programados</div>
+  </nav>
+
+</aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-avatar">SA</div>
+      <div class="page-header-info">
+        <div class="page-header-name">soporte+arsa</div>
+        <div class="page-header-email">soporte+arsa@beettrack.com</div>
+      </div>
+      <button class="btn danger" onclick="showToast('Sesión cerrada')">Cerrar sesión</button>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ TAB 0 — Información personal ══ -->
+      <div class="panel active" id="panel-0">
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Foto de perfil</span></div>
+          <div class="card-body">
+            <div class="photo-upload" id="photo-upload-zone"
+                 ondragover="photoDragOver(event)"
+                 ondragleave="photoDragLeave(event)"
+                 ondrop="photoDrop(event)">
+              <!-- Circular avatar con hover overlay -->
+              <div class="photo-circle-wrap" onclick="document.getElementById('photo-input').click()">
+                <div class="photo-circle" id="photo-av">
+                  <!-- IBM Carbon: User avatar -->
+                  <svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>
+                </div>
+                <div class="photo-circle-overlay">
+                  <svg viewBox="0 0 32 32" fill="currentColor" width="18" height="18"><path d="M26,24H6a2,2,0,0,1-2-2V10A2,2,0,0,1,6,8h4l2-3h8l2,3h4a2,2,0,0,1,2,2V22A2,2,0,0,1,26,24ZM6,10V22H26V10ZM16,20a4,4,0,1,1,4-4A4,4,0,0,1,16,20Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,16,14Z"/></svg>
+                  Cambiar
+                </div>
+              </div>
+              <!-- Acción y hint -->
+              <button class="photo-replace-btn" onclick="document.getElementById('photo-input').click()">
+                <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>
+                Reemplazar imagen
+              </button>
+              <p class="photo-hint-txt">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+              <input type="file" id="photo-input" accept="image/jpeg,image/png" style="display:none" onchange="photoSelected(event)">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Datos personales</span></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="lbl">Nombre <span class="req">*</span></label>
+                <div class="inp-wrap"><input type="text" value="soporte+arsa"></div>
+              </div>
+              <div class="form-row">
+                <label class="lbl">Teléfono</label>
+                <div class="inp-wrap"><input type="tel" placeholder="+56 9 XXXX XXXX"></div>
+              </div>
+              <div class="form-row full">
+                <label class="lbl">Correo electrónico <span class="req">*</span></label>
+                <div class="inp-wrap">
+                  <input type="email" value="soporte+arsa@beettrack.com">
+                  <button class="btn sm" style="flex-shrink:0">Verificar email</button>
+                </div>
+                <p class="helper">Tu correo se usa para notificaciones y recuperación de cuenta.</p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn" onclick="showToast('Cambios descartados')">Cancelar</button>
+              <button class="btn primary" onclick="showToast('Datos personales guardados correctamente')">Guardar cambios</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Preferencias de la aplicación</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <label class="lbl">Tema de la interfaz</label>
+              <select class="sel">
+                <option selected>Claro</option>
+                <option>Oscuro</option>
+                <option>Automático (según el sistema)</option>
+              </select>
+            </div>
+            <div class="toggle-row">
+              <div class="swt on" onclick="this.classList.toggle('on')"></div>
+              <div>
+                <p class="toggle-lbl">Mostrar ventanas del chat</p>
+                <p class="toggle-desc">Muestra el widget de soporte en la esquina inferior de la pantalla.</p>
+              </div>
+            </div>
+            <div class="toggle-row">
+              <div class="swt" onclick="this.classList.toggle('on')"></div>
+              <div>
+                <p class="toggle-lbl">Enviar resumen diario por correo</p>
+                <p class="toggle-desc">Recibirás un resumen de la actividad del día en <strong>soporte+arsa@beettrack.com</strong> todos los días a las 8:00 AM.</p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn" onclick="showToast('Cambios descartados')">Cancelar</button>
+              <button class="btn primary" onclick="showToast('Preferencias guardadas correctamente')">Guardar preferencias</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ TAB 1 — Seguridad ══ -->
+      <div class="panel" id="panel-1">
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Cambiar contraseña</span></div>
+          <div class="card-body">
+            <div class="info-banner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Para cambiar tu contraseña, primero confirma tu identidad con la contraseña actual.
+            </div>
+            <div class="form-row">
+              <label class="lbl">Contraseña actual <span class="req">*</span></label>
+              <input class="inp" type="password" placeholder="Ingresa tu contraseña actual" autocomplete="current-password">
+              <p class="helper">Requerida para confirmar que eres tú quien realiza el cambio.</p>
+            </div>
+            <div class="divider"></div>
+            <div class="form-row">
+              <label class="lbl">Nueva contraseña <span class="req">*</span></label>
+              <input class="inp" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="updateStrength(this)">
+              <div class="pw-bars">
+                <div class="pw-bar" id="bar1"></div>
+                <div class="pw-bar" id="bar2"></div>
+                <div class="pw-bar" id="bar3"></div>
+              </div>
+              <p class="helper">Usa letras, números y al menos un carácter especial.</p>
+            </div>
+            <div class="form-row">
+              <label class="lbl">Confirmar nueva contraseña <span class="req">*</span></label>
+              <input class="inp" type="password" placeholder="Repite la nueva contraseña" autocomplete="new-password">
+            </div>
+            <div class="form-actions">
+              <button class="btn" onclick="showToast('Cambios descartados')">Cancelar</button>
+              <button class="btn primary" onclick="showToast('Contraseña actualizada correctamente')">Actualizar contraseña</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-ttl">Verificación en dos pasos (2FA)</span>
+            <span class="badge neutral"><span class="dot"></span>Desactivada</span>
+          </div>
+          <div class="card-body">
+            <div class="twofa-card">
+              <div class="twofa-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              </div>
+              <div>
+                <h3>Agrega una capa extra de seguridad</h3>
+                <p>La verificación en dos pasos protege tu cuenta solicitando un código desde tu smartphone cada vez que inicias sesión. Solo necesitas un smartphone para habilitarla.</p>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:flex-end">
+              <button class="btn primary" onclick="showToast('Configuración 2FA iniciada — revisa tu smartphone')">Activar verificación en dos pasos</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ TAB 2 — Acceso y usuarios ══ -->
+      <div class="panel" id="panel-2">
+
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-ttl">Usuarios con acceso compartido</span>
+            <button class="btn primary sm" onclick="toggleAddUser()">Agregar usuario</button>
+          </div>
+          <div class="card-body flush">
+            <div class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg>
+              </div>
+              <p class="empty-title">Sin usuarios asociados</p>
+              <p class="empty-desc">Comparte el acceso a tu cuenta con otros usuarios de tu organización.</p>
+              <button class="btn sm" onclick="toggleAddUser()">Agregar primer usuario</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="add-user-form" style="display:none">
+          <div class="card-hdr"><span class="card-ttl">Agregar usuario existente</span></div>
+          <div class="card-body">
+            <div class="info-banner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Ingresa el correo del usuario que quieres asociar. Tu contraseña actual es requerida para autorizar el acceso compartido.
+            </div>
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="lbl">Correo del usuario <span class="req">*</span></label>
+                <div class="inp-wrap"><input type="email" placeholder="usuario@empresa.com"></div>
+              </div>
+              <div class="form-row">
+                <label class="lbl">Tu contraseña actual <span class="req">*</span></label>
+                <div class="inp-wrap"><input type="password" placeholder="Confirma tu identidad" autocomplete="current-password"></div>
+                <p class="helper">Requerida para autorizar el acceso compartido.</p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn" onclick="toggleAddUser()">Cancelar</button>
+              <button class="btn primary" onclick="showToast('Usuario asociado correctamente');toggleAddUser()">Guardar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Agentes de soporte DispatchTrack</span></div>
+          <div class="card-body flush">
+            <table class="dt-table">
+              <thead>
+                <tr><th>Nombre</th><th>Correo</th><th>Estado</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-av-sm">CS</div>
+                      Customer Success Support
+                    </div>
+                  </td>
+                  <td style="color:var(--n5)">support@beettrack.com</td>
+                  <td><span class="badge success"><span class="dot"></span>Activo</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="tbl-footer">Los agentes de soporte son asignados por DispatchTrack. Contacta a tu representante para modificarlos.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ TAB 3 — Reportes programados ══ -->
+      <div class="panel" id="panel-3">
+
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-ttl">Reportes programados</span>
+            <button class="btn primary sm">Nuevo reporte</button>
+          </div>
+          <div class="card-body flush">
+            <div class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg>
+              </div>
+              <p class="empty-title">Sin reportes programados</p>
+              <p class="empty-desc">Crea un reporte programado para recibirlo automáticamente por correo según la frecuencia que elijas.</p>
+              <button class="btn primary sm">Crear primer reporte</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+</div><!-- /shell -->
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+  /* ── Photo upload ── */
+  function photoDragOver(e) {
+    e.preventDefault();
+    document.getElementById('photo-upload-zone').classList.add('drag-over');
+  }
+  function photoDragLeave(e) {
+    document.getElementById('photo-upload-zone').classList.remove('drag-over');
+  }
+  function photoDrop(e) {
+    e.preventDefault();
+    document.getElementById('photo-upload-zone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) applyPhoto(file);
+  }
+  function photoSelected(e) {
+    const file = e.target.files[0];
+    if (file) applyPhoto(file);
+  }
+  function applyPhoto(file) {
+    if (!file.type.match(/image\/(jpeg|png)/)) {
+      showToast('Solo se admiten archivos JPG o PNG'); return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('El archivo supera los 2 MB'); return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const av = document.getElementById('photo-av');
+      av.innerHTML = '';
+      av.style.backgroundImage = `url(${ev.target.result})`;
+      showToast('Foto cargada — recuerda guardar los cambios');
+    };
+    reader.readAsDataURL(file);
+  }
+  function removePhoto() {
+    const av = document.getElementById('photo-av');
+    av.style.backgroundImage = '';
+    av.innerHTML = `<svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>`;
+    document.getElementById('photo-input').value = '';
+  }
+
+  function switchTab(idx, el) {
+    document.querySelectorAll('.sb-item').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('panel-' + idx).classList.add('active');
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function toggleAddUser() {
+    const f = document.getElementById('add-user-form');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  }
+  function updateStrength(input) {
+    const v = input.value;
+    const bars = ['bar1','bar2','bar3'].map(id => document.getElementById(id));
+    bars.forEach(b => b.className = 'pw-bar');
+    if (v.length >= 3) bars[0].classList.add('weak');
+    if (v.length >= 6) bars[1].classList.add('med');
+    if (v.length >= 10 && /[0-9!@#$]/.test(v)) bars[2].classList.add('strong');
+  }
+</script>
+
+</body>
+</html>

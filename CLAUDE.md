@@ -167,14 +167,18 @@ Report the sync result to the user in one line before continuing.
 
 ## Existing prototypes (use as style reference)
 
+All design prototypes live in `Charlie_Designs/`. Format: `DES-XXX_feature-name.html`
+
 | File | Description | Live URL |
 |---|---|---|
-| `notifications-settings-DES824.html` | Notification settings listing page | [view](https://dt-design-system-package.pages.dev/notifications-settings-DES824.html) |
-| `notifications-new-DES824.html` | New notification editor | [view](https://dt-design-system-package.pages.dev/notifications-new-DES824.html) |
-| `ds-new-components-DES824.html` | DS review document (template) | [view](https://dt-design-system-package.pages.dev/ds-new-components-DES824.html) |
-| `alerts-settings-DES825.html` | Alerts Settings redesign | [view](https://dt-design-system-package.pages.dev/alerts-settings-DES825.html) |
-| `alerts-drawer-DES825.html` | Notifications drawer with Alerts tab | [view](https://dt-design-system-package.pages.dev/alerts-drawer-DES825.html) |
-| `ds-new-components-DES825.html` | DS review document DES-825 | [view](https://dt-design-system-package.pages.dev/ds-new-components-DES825.html) |
+| `Charlie_Designs/DES-824_notifications-settings.html` | Notification settings listing page | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/DES-824_notifications-settings.html) |
+| `Charlie_Designs/DES-824_notifications-new.html` | New notification editor | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/DES-824_notifications-new.html) |
+| `Charlie_Designs/DES-824_ds-review.html` | DS review document (template) | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/DES-824_ds-review.html) |
+| `Charlie_Designs/DES-825_alerts-settings.html` | Alerts Settings redesign | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/DES-825_alerts-settings.html) |
+| `Charlie_Designs/DES-825_alerts-drawer.html` | Notifications drawer with Alerts tab | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/DES-825_alerts-drawer.html) |
+| `Charlie_Designs/DES-825_ds-review.html` | DS review document DES-825 | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/DES-825_ds-review.html) |
+| `Charlie_Designs/DES-827_profile-settings.html` | Profile Settings redesign | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/DES-827_profile-settings.html) |
+| `Charlie_Designs/PLANNER_strategy-planner.html` | Strategy Planner | [view](https://dt-design-system-package.pages.dev/Charlie_Designs/PLANNER_strategy-planner.html) |
 
 These represent the current baseline. New prototypes should match this level of fidelity.
 
@@ -182,14 +186,16 @@ These represent the current baseline. New prototypes should match this level of 
 
 ## File naming conventions
 
+All prototype HTML files go in `Charlie_Designs/` with this format:
 ```
-[feature-name]-[JIRA-TICKET].html        # prototype
-ds-new-components-[JIRA-TICKET].html     # DS review document
+Charlie_Designs/DES-XXX_feature-name.html     # Jira ticket prototype
+Charlie_Designs/DES-XXX_ds-review.html        # DS review document for that ticket
+Charlie_Designs/PLANNER_feature-name.html     # Planner tickets (no DES number)
 ```
 
 Examples:
-- `notifications-settings-DES824.html`
-- `ds-new-components-DES824.html`
+- `Charlie_Designs/DES-827_profile-settings.html`
+- `Charlie_Designs/DES-824_ds-review.html`
 
 ---
 
