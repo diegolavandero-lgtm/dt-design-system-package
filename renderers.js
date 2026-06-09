@@ -1516,17 +1516,24 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         </div>
       </div>`;
 
-    // Timepicker popover (triggered from a time input)
+    // Timepicker popover — 2-step: select hour → select minutes → Save to close
     const tpPopover = (id, h24, initHour, initAmpm) => {
       const hStr = String(initHour).padStart(2,'0');
-      return `<div data-tp="${id}" data-hour="${initHour}" data-ampm="${initAmpm}" data-mode="clock" data-h24="${h24}"
+      return `<div data-tp="${id}" data-hour="${initHour}" data-minute="0" data-ampm="${initAmpm}" data-mode="clock" data-step="hour" data-h24="${h24}"
         data-popover style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:#F0F2F5;border-radius:12px;padding:14px;width:260px;box-shadow:0 4px 24px rgba(19,32,69,.14);font-family:var(--font-sans)">
-        <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:10px">Seleccionar hora</div>
+        <!-- Step label -->
+        <div data-tp-step-label style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:10px">Seleccionar hora</div>
+        <!-- Header: clickable hour + minute boxes + AM/PM -->
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-          <div style="background:#fff;border:2px solid var(--b6);border-radius:8px;width:64px;height:50px;display:flex;align-items:center;justify-content:center;font:700 28px var(--font-sans);color:var(--n7)">
-            <span data-time-h>${hStr}</span></div>
+          <div data-time-h-box onclick="_tpSetStep(this,'hour')"
+            style="background:#fff;border:2px solid var(--b6);border-radius:8px;width:64px;height:50px;display:flex;align-items:center;justify-content:center;font:700 28px var(--font-sans);color:var(--n7);cursor:pointer">
+            <span data-time-h>${hStr}</span>
+          </div>
           <span style="font:700 24px var(--font-sans);color:var(--n7)">:</span>
-          <div style="background:#fff;border-radius:8px;width:64px;height:50px;display:flex;align-items:center;justify-content:center;font:700 28px var(--font-sans);color:var(--n7)">00</div>
+          <div data-time-m-box onclick="_tpSetStep(this,'minute')"
+            style="background:#fff;border:1px solid var(--n3);border-radius:8px;width:64px;height:50px;display:flex;align-items:center;justify-content:center;font:700 28px var(--font-sans);color:var(--n5);cursor:pointer">
+            <span data-time-m>00</span>
+          </div>
           ${!h24?`<div style="display:flex;flex-direction:column;border-radius:8px;overflow:hidden;border:1px solid var(--n3)">
             <button data-ampm-btn="AM" onclick="_tpAmPm(this,'AM')" style="padding:3px 9px;font:600 10px var(--font-sans);border:none;cursor:pointer;background:${initAmpm==='AM'?'var(--b6)':'transparent'};color:${initAmpm==='AM'?'#fff':'var(--n6)'}">AM</button>
             <div style="height:1px;background:var(--n3)"></div>
@@ -1556,7 +1563,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
           </button>
           <div style="display:flex;gap:14px">
             <button onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
-            <button onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
+            <button onclick="(function(btn){var tp=btn.closest('[data-tp]');var h=String(tp.dataset.hour||12).padStart(2,'0');var m=String(tp.dataset.minute||0).padStart(2,'0');var ampm=tp.dataset.h24==='true'?'':(' '+(tp.dataset.ampm||'AM'));var wrap=btn.closest('[style*=relative]')||btn.closest('[style*=position]');var inp=wrap?wrap.querySelector('[style*=cursor]:first-child span:first-child,span[style*=color]'):null;var allInps=wrap?wrap.querySelectorAll('span'):[];allInps.forEach(function(s){if(s.style.color&&s.style.color.includes('n5'))s.textContent=h+':'+m+ampm;});tp.closest('[data-popover]').style.display='none';})(this)"
+              style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
           </div>
         </div>
       </div>`;
