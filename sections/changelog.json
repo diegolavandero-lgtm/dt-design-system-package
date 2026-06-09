@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T14:39:11.321Z",
+  "generated": "2026-06-09T14:46:00.158Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "00b6d5d",
+          "type": "update",
+          "section": "General",
+          "message": "feat(map elements): routes with order pins (white circle + stop number)",
+          "author": "Diego"
+        },
         {
           "hash": "909e908",
           "type": "fix",
