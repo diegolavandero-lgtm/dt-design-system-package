@@ -4593,12 +4593,127 @@ async function downloadAllPins() {
         </div>
       </div>`;
 
+    /* ── FILTER BAR VARIANTS ─────────────────────────────────────────────
+       Static display variants — all use DS tokens, no functional wiring.
+       Rules:
+       · Up to 4 filters: show inline, no overflow button
+       · 5+ filters: max 4 in main bar + "add more" button for overflow
+       · Active filters in overflow: red dot badge on "add more" button */
+
+    // Shared static input (display-only, flex:1)
+    const sInp = (label='Label') =>
+      `<div style="flex:1;min-width:0;display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;box-sizing:border-box">
+        <span style="font:400 14px var(--font-sans);color:var(--n5)">${escHtml(label)}</span>
+      </div>`;
+
+    // Shared static select (display-only, flex:1)
+    const sChevron = `<svg viewBox="0 0 32 32" width="11" height="11" fill="var(--n5)" style="flex-shrink:0"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>`;
+    const sSel = (label='Label') =>
+      `<div style="flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;box-sizing:border-box;cursor:pointer;gap:6px">
+        <span style="flex:1;font:400 14px var(--font-sans);color:var(--n5);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(label)}</span>
+        ${sChevron}
+      </div>`;
+
+    // Filtrar button (static)
+    const sFiltrar = `<button style="height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);background:#fff;color:#4B82FA;border:1px solid #1F60ED;cursor:pointer;flex-shrink:0">Filtrar</button>`;
+
+    // Add more button with optional red-dot badge
+    const sAddMore = (badge=false) =>
+      `<button style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex;position:relative"
+        onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+        onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+        <span class="flt-def">${FLT_SVG_ADD_DEF}</span>
+        <span class="flt-hov" style="display:none">${FLT_SVG_ADD_HOV}</span>
+        ${badge ? `<span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:var(--r6);border:2px solid #fff"></span>` : ''}
+      </button>`;
+
+    // Reset button (static)
+    const sReset =
+      `<button style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex"
+        onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+        onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+        <span class="flt-def">${FLT_SVG_RES_DEF}</span>
+        <span class="flt-hov" style="display:none">${FLT_SVG_RES_HOV}</span>
+      </button>`;
+
+    // Filter bar wrapper
+    const fBar = (fields, extra='') =>
+      `<div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#fff;border-radius:8px;border:1px solid var(--n4)">
+        ${fields}${extra}
+      </div>`;
+
+    // Overflow dropdown panel
+    const overflowPanel = (count, rows, active=false) => {
+      const cells = rows.map(r => `<div style="display:flex;gap:8px">${r.map(()=>sInp()).join('')}</div>`).join('');
+      return `<div style="margin-top:4px;background:#fff;border-radius:8px;border:1px solid var(--n4);padding:16px;box-shadow:0 4px 16px rgba(19,32,69,.1)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font:700 13px var(--font-sans);color:var(--b7);letter-spacing:.04em;text-transform:uppercase">Otros filtros (${count})</span>
+          <button style="background:none;border:none;cursor:pointer;font:700 18px/1 var(--font-sans);color:var(--n5)">×</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">${cells}</div>
+      </div>`;
+    };
+
+    const variantSection = `
+      <h3 style="font:700 15px var(--font-sans);margin:24px 0 6px;color:var(--n7)">Filter bar variants</h3>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6">
+        La barra muestra hasta <strong>4 filtros</strong> en línea. Si hay más de 4, los adicionales se agrupan en el panel de overflow activado con el botón <em>Agregar filtros</em>.
+        Si hay filtros activos en el overflow, aparece un punto rojo sobre ese botón.
+      </p>
+      <div class="card" style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- 1 filter -->
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font:600 12px var(--font-sans);color:var(--n5)">1 filtro</span>
+          ${fBar(`${sInp()}`, `${sFiltrar}${sReset}`)}
+        </div>
+
+        <!-- 2 filters -->
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font:600 12px var(--font-sans);color:var(--n5)">2 filtros</span>
+          ${fBar(`${sInp()}${sSel()}`, `${sFiltrar}${sReset}`)}
+        </div>
+
+        <!-- 3 filters -->
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font:600 12px var(--font-sans);color:var(--n5)">3 filtros</span>
+          ${fBar(`${sInp()}${sSel()}${sInp()}`, `${sFiltrar}${sReset}`)}
+        </div>
+
+        <!-- 4 filters (max without overflow) -->
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font:600 12px var(--font-sans);color:var(--n5)">4 filtros — máximo visible sin overflow</span>
+          ${fBar(`${sInp()}${sSel()}${sInp()}${sSel()}`, `${sFiltrar}${sReset}`)}
+        </div>
+
+        <!-- 5+ filters → overflow button appears -->
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="font:600 12px var(--font-sans);color:var(--n5)">5+ filtros — botón overflow sin filtros activos en el panel</span>
+          ${fBar(`${sInp()}${sSel()}${sInp()}${sSel()}`, `${sFiltrar}${sAddMore(false)}${sReset}`)}
+        </div>
+
+        <!-- 5+ filters with active overflow -->
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="font:600 12px var(--font-sans);color:var(--n5)">5+ filtros — hay filtros activos en el panel (punto rojo)</span>
+          ${fBar(`${sInp()}${sSel()}${sInp()}${sSel()}`, `${sFiltrar}${sAddMore(true)}${sReset}`)}
+        </div>
+
+        <!-- Overflow panel open (8 extra filters in 2 rows of 4) -->
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="font:600 12px var(--font-sans);color:var(--n5)">Panel de overflow abierto — 8 filtros adicionales</span>
+          ${fBar(`${sInp()}${sSel()}${sInp()}${sSel()}`, `${sFiltrar}${sAddMore(true)}${sReset}`)}
+          ${overflowPanel(8, [['','','',''],['','','','']])}
+        </div>
+
+      </div>`;
+
     return `
       ${sectionHeader(data)}
       ${usageCard(data.pageUsage)}
       <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Filter bar · live demo</h3>
       ${filterDemo}
-      <h3 style="font:700 15px var(--font-sans);margin:0 0 10px;color:var(--n7)">Icon buttons</h3>
+      ${variantSection}
+      <h3 style="font:700 15px var(--font-sans);margin:24px 0 10px;color:var(--n7)">Icon buttons</h3>
       ${iconRef}
       <div class="card flush">
         <div class="card-hdr"><span class="ttl">Tokens</span></div>
