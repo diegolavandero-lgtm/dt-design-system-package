@@ -963,8 +963,8 @@ function initMapElements() {
 
   function buildMap(id, zoom) {
     var m = L.map(id, {center:DEPOT, zoom:zoom, scrollWheelZoom:false});
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {attribution:'© OpenStreetMap', maxZoom:18}).addTo(m);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      {attribution:'© <a href="https://carto.com/">CARTO</a>', subdomains:'abcd', maxZoom:19}).addTo(m);
 
     // Depot pin
     L.marker(DEPOT, {icon:mkIcon(depotPin(),34), zIndexOffset:200}).addTo(m);
@@ -994,8 +994,8 @@ function initMapElements() {
 
   function buildFormMap(id) {
     var m = L.map(id, {center: SCL, zoom: 14, scrollWheelZoom: false});
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {attribution:'© OpenStreetMap', maxZoom:19}).addTo(m);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      {attribution:'© <a href="https://carto.com/">CARTO</a>', subdomains:'abcd', maxZoom:19}).addTo(m);
 
     // Custom DT-style draggable pin using existing pinSvg
     var icon = mkIcon(depotPin(), 34);
