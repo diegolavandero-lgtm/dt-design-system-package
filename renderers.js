@@ -10,9 +10,12 @@ function isLight(hex) {
 }
 
 function sectionHeader(data) {
+  // Derive i18n keys from titleKey (e.g. "nav.colors" → "section.colors.desc")
+  const titleKey = data.titleKey || '';
+  const descKey  = titleKey ? ('section.' + titleKey.replace(/^nav\./, '') + '.desc') : '';
   return `
-    <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)">${data.title}</h1>
-    <p class="sub" style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px">${data.description || ''}</p>
+    <h1 style="font:700 28px/1.2 var(--font-sans);margin:0 0 6px;color:var(--n7)"${titleKey ? ` data-i18n="${titleKey}"` : ''}>${data.title}</h1>
+    <p class="sub" style="font:400 14px/1.6 var(--font-sans);color:var(--n5);margin:0 0 28px;max-width:660px"${descKey ? ` data-i18n="${descKey}"` : ''}>${data.description || ''}</p>
   `;
 }
 
@@ -21,7 +24,7 @@ function card(content, extra) {
 }
 
 function codeBlock(code) {
-  return `<div class="code" style="margin-bottom:14px"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(code)}</pre></div>`;
+  return `<div class="code" style="margin-bottom:14px"><button class="cp" data-i18n="ui.copy" onclick="copyCode(this)">Copy</button><pre>${escHtml(code)}</pre></div>`;
 }
 
 function usageCard(snippet) {
@@ -29,9 +32,9 @@ function usageCard(snippet) {
   return `<div class="card flush" style="margin-bottom:24px">
     <div class="card-hdr" style="display:flex;align-items:center;gap:8px">
       <svg width="14" height="14" viewBox="0 0 32 32" fill="var(--b6)"><path d="M10,6L8.59,7.41,13.17,12H4v2h9.17L8.59,18.59,10,20l7-7Zm12,8,7,7-1.41,1.41L22.83,18H32V16H22.83l4.76-4.59L26,10Z"/></svg>
-      <span class="ttl">How to call in pages</span>
+      <span class="ttl" data-i18n="ui.howToCall">How to call in pages</span>
     </div>
-    <div class="code" style="border-radius:0;margin:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(snippet)}</pre></div>
+    <div class="code" style="border-radius:0;margin:0"><button class="cp" data-i18n="ui.copy" onclick="copyCode(this)">Copy</button><pre>${escHtml(snippet)}</pre></div>
   </div>`;
 }
 
@@ -649,7 +652,7 @@ const renderers = {
       </div>
       <div class="card flush">
         <div class="card-hdr"><span class="ttl">colors_and_type.css</span><span class="meta">v2.4 · 8.2 KB</span></div>
-        <div class="code"><button class="cp" onclick="copyCode(this)">Copy</button><pre><span class="cm">/* Instalar: npm install @beetrack/hp-tokens-style */</span>
+        <div class="code"><button class="cp" data-i18n="ui.copy" onclick="copyCode(this)">Copy</button><pre><span class="cm">/* Instalar: npm install @beetrack/hp-tokens-style */</span>
 <span class="kw">@import</span> <span class="str">'~@beetrack/hp-tokens-style'</span>;
 
 <span class="cm">/* O carga las fuentes directamente */</span>
@@ -1058,7 +1061,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         <tbody>${variantRows}</tbody>
       </table>`;
 
-    const codeTab = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
+    const codeTab = `<div class="code" style="border-radius:0"><button class="cp" data-i18n="ui.copy" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
 
     const tokensTab = `
       <div style="padding:16px">
@@ -1347,7 +1350,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     </div>`;
 
     const combinedCode = (data.code || '') + '\n\n\n/* ──────────── DROPDOWNS ──────────── */\n\n' + (data.dropdownCode || '');
-    const codeTab = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(combinedCode)}</pre></div>`;
+    const codeTab = `<div class="code" style="border-radius:0"><button class="cp" data-i18n="ui.copy" onclick="copyCode(this)">Copy</button><pre>${escHtml(combinedCode)}</pre></div>`;
 
     const tokensTab = `<div style="padding:16px">
       <div style="font:700 14px/20px var(--font-sans);color:var(--n7);margin-bottom:12px">Text inputs</div>
@@ -1495,8 +1498,8 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
               : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`}
           </button>
           <div style="display:flex;gap:16px">
-            <button style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
-            <button style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
+            <button data-i18n="ui.cancel" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
+            <button data-i18n="ui.save" style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
           </div>
         </div>
       </div>`;
@@ -1579,7 +1582,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           </button>
           <div style="display:flex;gap:14px">
-            <button onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
+            <button data-i18n="ui.cancel" onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
             <button onclick="(function(btn){var tp=btn.closest('[data-tp]');var h=String(tp.dataset.hour||12).padStart(2,'0');var m=String(tp.dataset.minute||0).padStart(2,'0');var ampm=tp.dataset.h24==='true'?'':(' '+(tp.dataset.ampm||'AM'));var wrap=btn.closest('[style*=relative]')||btn.closest('[style*=position]');var inp=wrap?wrap.querySelector('[style*=cursor]:first-child span:first-child,span[style*=color]'):null;var allInps=wrap?wrap.querySelectorAll('span'):[];allInps.forEach(function(s){if(s.style.color&&s.style.color.includes('n5'))s.textContent=h+':'+m+ampm;});tp.closest('[data-popover]').style.display='none';})(this)"
               style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
           </div>
@@ -1887,7 +1890,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     ).join('');
 
     const previewTab = `<div style="padding:32px;background:var(--n1)">${iconSection}${placementsSection}${persistentSection}${inputInfoSection}${mapPinSection}</div>`;
-    const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
+    const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" data-i18n="ui.copy" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
     const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
 
     return `
@@ -2051,7 +2054,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     ).join('');
 
     const previewTab = `<div style="padding:24px;background:var(--n1)">${interactive}${selectSection}${multiSection}</div>`;
-    const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
+    const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" data-i18n="ui.copy" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
     const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
 
     return `
@@ -2110,11 +2113,11 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     function fuRow(label, hasToggle, toggleOn, hasFile, filename) {
       const disabled = hasToggle && !toggleOn;
       const labelClr = disabled ? 'var(--n4)' : 'var(--n6)';
-      const noFileTxt = disabled ? `<span style="font:400 12px var(--font-sans);color:var(--n4)">No file chosen</span>` : `<span style="font:400 12px var(--font-sans);color:var(--n5)">No file chosen</span>`;
+      const noFileTxt = disabled ? `<span data-i18n="ui.noFileChosen" style="font:400 12px var(--font-sans);color:var(--n4)">Sin archivo seleccionado</span>` : `<span data-i18n="ui.noFileChosen" style="font:400 12px var(--font-sans);color:var(--n5)">Sin archivo seleccionado</span>`;
       const toggleHtml = hasToggle ? `<div class="swt ${toggleOn ? 'on' : ''}" style="pointer-events:none;flex-shrink:0"></div>` : '';
       const fileArea = hasFile
         ? fuFilePill(filename || 'Example', disabled)
-        : `${disabled ? `<button style="${fuBtnDisStyle}">${fuFileIcon}Choose File</button>` : `<button style="${fuBtnStyle}">${fuFileIcon}Choose File</button>`}${noFileTxt}`;
+        : `${disabled ? `<button data-i18n="ui.chooseFile" style="${fuBtnDisStyle}">${fuFileIcon}Elegir archivo</button>` : `<button data-i18n="ui.chooseFile" style="${fuBtnStyle}">${fuFileIcon}Elegir archivo</button>`}${noFileTxt}`;
       return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--n3)">
         ${toggleHtml}
         <span style="font:500 13px var(--font-sans);color:${labelClr};min-width:100px">${label}</span>
@@ -2183,7 +2186,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <div class="card" style="margin-bottom:0;padding:0;overflow:hidden">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--n3)">
           <span style="font:600 13px/1 var(--font-sans);color:var(--n7)">HTML snippet</span>
-          <button onclick="copyCode(this)" style="height:24px;padding:0 10px;border-radius:4px;font:600 11px var(--font-sans);background:var(--n2);color:var(--n6);border:1px solid var(--n3);cursor:pointer">Copy</button>
+          <button data-i18n="ui.copy" onclick="copyCode(this)" style="height:24px;padding:0 10px;border-radius:4px;font:600 11px var(--font-sans);background:var(--n2);color:var(--n6);border:1px solid var(--n3);cursor:pointer">Copy</button>
         </div>
         <pre style="margin:0;padding:16px;font:400 11px/1.7 var(--font-mono);color:var(--n6);background:var(--n1);overflow-x:auto">${fuCodeSnippet}</pre>
       </div>
@@ -2441,7 +2444,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       <div class="card" style="margin-bottom:12px;padding:0;overflow:hidden">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--n3)">
           <span style="font:600 13px/1 var(--font-sans);color:var(--n7)">HTML + CSS snippet</span>
-          <button onclick="copyCode(this)" style="height:24px;padding:0 10px;border-radius:4px;font:600 11px var(--font-sans);background:var(--n2);color:var(--n6);border:1px solid var(--n3);cursor:pointer">Copy</button>
+          <button data-i18n="ui.copy" onclick="copyCode(this)" style="height:24px;padding:0 10px;border-radius:4px;font:600 11px var(--font-sans);background:var(--n2);color:var(--n6);border:1px solid var(--n3);cursor:pointer">Copy</button>
         </div>
         <pre style="margin:0;padding:16px;font:400 11px/1.7 var(--font-mono);color:var(--n6);background:var(--n1);overflow-x:auto">${tabCodeSnippet}</pre>
       </div>
