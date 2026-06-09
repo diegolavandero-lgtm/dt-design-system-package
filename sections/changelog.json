@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T14:34:06.968Z",
+  "generated": "2026-06-09T14:39:11.321Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "909e908",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(tooltip): 3 bugs — calc spaces, persistent reopen, pin click",
+          "author": "Diego"
+        },
         {
           "hash": "80b0f61",
           "type": "fix",
