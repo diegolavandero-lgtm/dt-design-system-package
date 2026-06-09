@@ -2,8 +2,20 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T00:18:46.708Z",
+  "generated": "2026-06-09T14:34:06.968Z",
   "days": [
+    {
+      "date": "2026-06-09",
+      "entries": [
+        {
+          "hash": "80b0f61",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(tooltip): no-overlap layout + input+icon + map pin variants",
+          "author": "Diego"
+        }
+      ]
+    },
     {
       "date": "2026-06-08",
       "entries": [
