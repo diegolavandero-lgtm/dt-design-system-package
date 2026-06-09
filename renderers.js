@@ -1596,106 +1596,228 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const icoFilCls = `<svg class="ico-fil" viewBox="0 0 32 32" width="16" height="16" fill="currentColor" style="flex-shrink:0;color:var(--n5);display:none"><path d="${FIL_PATH}"/></svg>`;
     const X_CLOSE   = `<svg viewBox="0 0 32 32" width="10" height="10" fill="currentColor"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6z"/></svg>`;
 
-    const subHead = t => `<div style="font:700 18px/24px var(--font-sans);color:var(--n7);padding-bottom:14px;margin-bottom:28px;border-bottom:2px solid var(--n3)">${escHtml(t)}</div>`;
-    const cardLabel = t => `<div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">${escHtml(t)}</div>`;
-    const tip = (pos, arrow, extra='') => `<div style="position:absolute;${pos};background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;z-index:2${extra ? ';' + extra : ''}">${escHtml(text)}<div style="position:absolute;${arrow};width:0;height:0"></div></div>`;
+    const subHead = t => `<div style="font:700 18px/24px var(--font-sans);color:var(--n7);padding-bottom:14px;margin-bottom:24px;border-bottom:2px solid var(--n3)">${escHtml(t)}</div>`;
+    const cardLabel = t => `<div style="font:600 11px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">${escHtml(t)}</div>`;
 
-    // ─── Section 1: Info icon states ───
-    const stateDefault = `<div>
-      ${cardLabel('Default')}
-      <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">Label ${icoOut}</div>
-    </div>`;
+    // Tooltip bubble builder — inline absolute, no arrow auto-placement issue
+    const tipBubble = (dir) => {
+      const ARROW = {
+        top:    'top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)',
+        bottom: 'bottom:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid var(--n7)',
+        left:   'left:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid var(--n7)',
+        right:  'right:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:5px solid var(--n7)',
+      };
+      const POS = {
+        top:    'bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)',
+        bottom: 'top:calc(100% + 8px);left:50%;transform:translateX(-50%)',
+        left:   'right:calc(100% + 8px);top:50%;transform:translateY(-50%)',
+        right:  'left:calc(100% + 8px);top:50%;transform:translateY(-50%)',
+      };
+      return `<div style="position:absolute;${POS[dir]};background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;z-index:4;pointer-events:none">
+        ${escHtml(text)}<div style="position:absolute;${ARROW[dir]};width:0;height:0"></div></div>`;
+    };
 
-    const stateHover = `<div>
-      ${cardLabel('Hover')}
-      <div style="padding-top:88px">
-        <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
-          Label
-          <div style="position:relative;display:inline-flex;align-items:center">
-            ${tip('bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)','top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)')}
-            ${icoFil}
+    // Interactive hover tooltip helper
+    const hoverTip = (trigger, dir='top') =>
+      `<span style="position:relative;display:inline-flex;align-items:center;cursor:default"
+        onmouseenter="var t=this.querySelector('.tt-live');t.style.opacity='1';t.style.visibility='visible';var o=this.querySelector('.ico-out'),f=this.querySelector('.ico-fil');if(o)o.style.display='none';if(f)f.style.display='inline-flex';"
+        onmouseleave="var t=this.querySelector('.tt-live');t.style.opacity='0';t.style.visibility='hidden';var o=this.querySelector('.ico-out'),f=this.querySelector('.ico-fil');if(o)o.style.display='inline-flex';if(f)f.style.display='none';">
+        ${trigger}
+        <div class="tt-live" style="position:absolute;${({'top':'bottom:calc(100%+8px);left:50%;transform:translateX(-50%)','bottom':'top:calc(100%+8px);left:50%;transform:translateX(-50%)','left':'right:calc(100%+8px);top:50%;transform:translateY(-50%)','right':'left:calc(100%+8px);top:50%;transform:translateY(-50%)'})[dir]};background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">
+          ${escHtml(text)}<div style="position:absolute;${({'top':'top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)','bottom':'bottom:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid var(--n7)','left':'left:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid var(--n7)','right':'right:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:5px solid var(--n7)'})[dir]};width:0;height:0"></div>
+        </div>
+      </span>`;
+
+    // ─── Section 1: Info icon states ─────────────────────────────────────────
+    const iconSection = `<div style="margin-bottom:40px">
+      ${subHead('Info icon')}
+      <div style="display:flex;flex-wrap:wrap;gap:16px">
+
+        <!-- Default -->
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+          ${cardLabel('Default')}
+          <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">Label ${icoOut}</div>
+        </div>
+
+        <!-- Hover (static preview) -->
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+          ${cardLabel('Hover')}
+          <div style="position:relative;padding-top:74px">
+            <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
+              Label
+              <div style="position:relative;display:inline-flex;align-items:center">
+                ${tipBubble('top')}${icoFil}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>`;
 
-    const stateInteractive = `<div>
-      ${cardLabel('Interactive')}
-      <div style="padding-top:88px">
-        <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
-          Label
-          <span style="position:relative;display:inline-flex;align-items:center;cursor:default"
-            onmouseenter="let t=this.querySelector('.tt-ico');t.style.opacity='1';t.style.visibility='visible';this.querySelector('.ico-out').style.display='none';this.querySelector('.ico-fil').style.display='inline-flex'"
-            onmouseleave="let t=this.querySelector('.tt-ico');t.style.opacity='0';t.style.visibility='hidden';this.querySelector('.ico-out').style.display='inline-flex';this.querySelector('.ico-fil').style.display='none'">
-            ${icoOutCls}${icoFilCls}
-            <div class="tt-ico" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">${escHtml(text)}<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div></div>
-          </span>
+        <!-- Interactive -->
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+          ${cardLabel('Interactive — hover me')}
+          <div style="position:relative;padding-top:74px">
+            <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
+              Label ${hoverTip(`${icoOutCls}${icoFilCls}`, 'top')}
+            </div>
+          </div>
         </div>
+
       </div>
     </div>`;
 
-    const iconSection = `<div style="margin-bottom:52px">
-      ${subHead('Info icon')}
-      <div style="display:flex;flex-wrap:wrap;gap:32px 56px;align-items:flex-end">${stateDefault}${stateHover}${stateInteractive}</div>
-    </div>`;
-
-    // ─── Section 2: Placements (filled icon = tooltip is showing) ───
+    // ─── Section 2: Placements — each in its own isolated card ───────────────
     function makeCard(placement) {
-      const isTop    = placement === 'top';
-      const isBottom = placement === 'bottom';
-      const isLeft   = placement === 'left';
-      let tipPos, arrowPos, spacer;
-      if (isTop) {
-        tipPos   = 'bottom:calc(100% + 8px);left:50%;transform:translateX(-50%)';
-        arrowPos = 'top:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)';
-        spacer   = 'padding-top:88px';
-      } else if (isBottom) {
-        tipPos   = 'top:calc(100% + 8px);left:50%;transform:translateX(-50%)';
-        arrowPos = 'bottom:100%;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid var(--n7)';
-        spacer   = 'padding-bottom:88px';
-      } else if (isLeft) {
-        tipPos   = 'right:calc(100% + 8px);top:50%;transform:translateY(-50%)';
-        arrowPos = 'left:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid var(--n7)';
-        spacer   = 'padding-left:190px';
-      } else {
-        tipPos   = 'left:calc(100% + 8px);top:50%;transform:translateY(-50%)';
-        arrowPos = 'right:100%;top:50%;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:5px solid var(--n7)';
-        spacer   = 'padding-right:190px';
-      }
-      return `<div>
+      const STAGE_H = { top:160, bottom:160, left:60, right:60 };
+      const h = STAGE_H[placement] || 120;
+      const iconAlign = {
+        top:    'align-items:flex-end;justify-content:center;padding-bottom:20px',
+        bottom: 'align-items:flex-start;justify-content:center;padding-top:20px',
+        left:   'align-items:center;justify-content:flex-end;padding-right:20px',
+        right:  'align-items:center;justify-content:flex-start;padding-left:20px',
+      }[placement];
+      return `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px 20px;min-width:260px;flex:1">
         ${cardLabel(placement)}
-        <div style="${spacer}">
+        <div style="position:relative;height:${h}px;display:flex;${iconAlign};overflow:visible">
           <div style="position:relative;display:inline-flex;align-items:center">
-            ${tip(tipPos, arrowPos)}
-            ${icoFil}
+            ${tipBubble(placement)}${icoFil}
           </div>
         </div>
       </div>`;
     }
 
-    const placementsSection = `<div style="margin-bottom:52px">
+    const placementsSection = `<div style="margin-bottom:40px">
       ${subHead('Placements')}
-      <div style="display:flex;flex-wrap:wrap;gap:32px 56px;align-items:flex-end">${['top','bottom','left','right'].map(p => makeCard(p)).join('')}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        ${['top','bottom','left','right'].map(makeCard).join('')}
+      </div>
     </div>`;
 
-    // ─── Section 3: Persistent (with close button) ───
-    const persistentSection = `<div>
+    // ─── Section 3: Persistent (with close button) ───────────────────────────
+    const persistentSection = `<div style="margin-bottom:40px">
       ${subHead('Persistent (with close)')}
-      <div style="font:400 14px/20px var(--font-sans);color:var(--n5);margin-top:-18px;margin-bottom:24px">Tooltip stays visible until the user closes it manually.</div>
-      <div style="padding-top:96px;display:inline-flex">
-        <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
-          Label
-          <div class="tt-persist-wrap" style="position:relative;display:inline-flex;align-items:center">
-            <div class="tt-persist" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 28px 10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;z-index:2">
-              ${escHtml(text)}
-              <button onclick="this.closest('.tt-persist-wrap').querySelector('.tt-persist').style.display='none'"
-                style="position:absolute;top:8px;right:8px;background:transparent;border:none;color:#fff;cursor:pointer;padding:2px;display:flex;align-items:center;opacity:.6;line-height:1"
-                onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.6'">${X_CLOSE}</button>
-              <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 20px">Tooltip stays visible until the user closes it manually.</p>
+      <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;display:inline-flex">
+        <div style="position:relative;padding-top:74px">
+          <div style="display:flex;align-items:center;gap:6px;font:400 14px/20px var(--font-sans);color:var(--n7)">
+            Label
+            <div class="tt-persist-wrap" style="position:relative;display:inline-flex;align-items:center">
+              <div class="tt-persist" style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 28px 10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:200px;white-space:normal;z-index:2">
+                ${escHtml(text)}
+                <button onclick="this.closest('.tt-persist-wrap').querySelector('.tt-persist').style.display='none'"
+                  style="position:absolute;top:8px;right:8px;background:transparent;border:none;color:#fff;cursor:pointer;padding:2px;display:flex;align-items:center;opacity:.6;line-height:1"
+                  onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.6'">${X_CLOSE}</button>
+                <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
+              </div>
+              ${icoFil}
             </div>
-            ${icoFil}
           </div>
         </div>
+      </div>
+    </div>`;
+
+    // ─── Section 4: Input field + info icon ──────────────────────────────────
+    const inputInfoSection = `<div style="margin-bottom:40px">
+      ${subHead('Input field + info icon')}
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 20px">Tooltip on the info icon explains the purpose or constraints of the field. Hover the icon to activate.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+
+        <!-- Icon after label -->
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;flex:1;min-width:260px">
+          ${cardLabel('Icon next to label')}
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:5px">
+              <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Nombre de usuario</label>
+              ${hoverTip(`${icoOutCls}${icoFilCls}`, 'top')}
+            </div>
+            <input type="text" placeholder="walter.wallace"
+              style="height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+              onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+              onblur="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
+            <p style="font:400 11px var(--font-sans);color:var(--n5);margin:2px 0 0">No debe contener espacios.</p>
+          </div>
+        </div>
+
+        <!-- Icon inside input right side -->
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;flex:1;min-width:260px">
+          ${cardLabel('Icon inside input')}
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <label style="font:400 12px/16px var(--font-sans);color:var(--n7)">Contraseña</label>
+            <div style="position:relative">
+              <input type="password" placeholder="••••••••"
+                style="height:32px;padding:0 32px 0 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px var(--font-sans);background:#fff;color:var(--n7);box-sizing:border-box;outline:none;width:100%"
+                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                onblur="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
+              <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex">
+                ${hoverTip(`${icoOutCls}${icoFilCls}`, 'top')}
+              </div>
+            </div>
+            <p style="font:400 11px var(--font-sans);color:var(--n5);margin:2px 0 0">Mínimo 4 caracteres.</p>
+          </div>
+        </div>
+
+        <!-- Switch row with info icon -->
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:20px;flex:1;min-width:260px">
+          ${cardLabel('Switch row')}
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="flex:1;font:400 14px var(--font-sans);color:var(--n7)">Crear órdenes nuevas</span>
+            ${hoverTip(`${icoOutCls}${icoFilCls}`, 'top')}
+            <div class="swt on" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>`;
+
+    // ─── Section 5: Map pin tooltip ──────────────────────────────────────────
+    // Build a simple DT-style teardrop pin using the same path as mappins renderer
+    const PB = 'M16.5 1.5C24.78 1.5 31.5 8.22 31.5 16.5C31.5 21.44 29.11 25.82 25.43 28.55C22.61 30.67 18.58 34.04 17.66 39.48C17.56 40.05 17.08 40.5 16.5 40.5C15.92 40.5 15.44 40.05 15.34 39.48C14.42 34.04 10.39 30.67 7.56 28.55C3.88 25.82 1.5 21.44 1.5 16.5C1.5 8.22 8.22 1.5 16.5 1.5Z';
+    const pinSvg = (fill, label, num) => `<div style="position:relative;cursor:pointer;display:inline-block;line-height:0;filter:drop-shadow(0 2px 4px rgba(19,32,69,.25))">
+      <svg width="33" height="42" viewBox="0 0 33 42"><path d="${PB}" fill="${fill}" stroke="#fff" stroke-width="2"/>
+        <text x="16.5" y="17" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="13" fill="#fff">${escHtml(num)}</text>
+      </svg>
+    </div>`;
+
+    const mapPinSection = `<div style="margin-bottom:40px">
+      ${subHead('Map pin tooltip')}
+      <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 20px">Tooltip appears above the pin on hover — shows order or stop details without opening a panel.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+
+        <!-- Hover (static) -->
+        <div style="background:var(--n2);border:1px solid var(--n3);border-radius:8px;padding:24px 28px;flex:1;min-width:240px">
+          ${cardLabel('Hover (static preview)')}
+          <div style="display:flex;justify-content:center;padding-top:80px">
+            <div style="position:relative;display:inline-flex">
+              <div style="position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:180px;white-space:normal;z-index:4">
+                <div style="font:700 12px/16px var(--font-sans);margin-bottom:4px">#ORD-4821 · Maya Johnson</div>
+                <div style="color:rgba(255,255,255,.75)">Av. Principal 123 · Zona Norte</div>
+                <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
+              </div>
+              ${pinSvg('#1F60ED','',4)}
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive — hover the pin -->
+        <div style="background:var(--n2);border:1px solid var(--n3);border-radius:8px;padding:24px 28px;flex:1;min-width:240px">
+          ${cardLabel('Interactive — hover the pin')}
+          <div style="display:flex;gap:32px;justify-content:center;padding-top:80px">
+            ${['#1F60ED|4','#00B8D9|7','#8FA0BA|·'].map(s => {
+              const [fill, num] = s.split('|');
+              const tipHtml = fill === '#8FA0BA'
+                ? `<div style="font:700 12px/16px var(--font-sans);margin-bottom:4px">Sin asignar</div><div style="color:rgba(255,255,255,.75)">Sin conductor</div>`
+                : `<div style="font:700 12px/16px var(--font-sans);margin-bottom:4px">#ORD-${3900+parseInt(num)*11} · Parada ${num}</div><div style="color:rgba(255,255,255,.75)">Av. Secundaria ${num}${num}5</div>`;
+              return `<span style="position:relative;display:inline-flex;cursor:pointer"
+                onmouseenter="this.querySelector('.pin-tt').style.opacity='1';this.querySelector('.pin-tt').style.visibility='visible'"
+                onmouseleave="this.querySelector('.pin-tt').style.opacity='0';this.querySelector('.pin-tt').style.visibility='hidden'">
+                <div class="pin-tt" style="position:absolute;bottom:calc(100%+8px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:10px 12px;border-radius:6px;font:400 12px/16px var(--font-sans);width:180px;white-space:normal;opacity:0;visibility:hidden;transition:opacity .15s;z-index:10;pointer-events:none">
+                  ${tipHtml}<div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--n7)"></div>
+                </div>
+                ${pinSvg(fill,'',num)}
+              </span>`;
+            }).join('')}
+          </div>
+        </div>
+
       </div>
     </div>`;
 
@@ -1703,7 +1825,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
     ).join('');
 
-    const previewTab = `<div style="padding:32px;background:var(--n1)">${iconSection}${placementsSection}${persistentSection}</div>`;
+    const previewTab = `<div style="padding:32px;background:var(--n1)">${iconSection}${placementsSection}${persistentSection}${inputInfoSection}${mapPinSection}</div>`;
     const codeTab    = `<div class="code" style="border-radius:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code || '')}</pre></div>`;
     const tokensTab  = `<div style="padding:16px"><table class="ttbl"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody>${tokenRows}</tbody></table></div>`;
 
