@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T16:04:08.345Z",
+  "generated": "2026-06-09T16:19:09.531Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "019f55d",
+          "type": "feat",
+          "section": "General",
+          "message": "feat(filters): add filter bar variants section (1–4, 5+, overflow panel)",
+          "author": "Diego"
+        },
         {
           "hash": "f23204f",
           "type": "fix",
