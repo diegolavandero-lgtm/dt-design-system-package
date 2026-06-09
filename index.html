@@ -755,11 +755,10 @@ async function navigate(id) {
     if (window._pendingScroll) {
       const target = window._pendingScroll.toLowerCase();
       window._pendingScroll = null;
-      const secs = view.querySelectorAll('.sec');
-      for (const sec of secs) {
-        const h2 = sec.querySelector('h2');
-        if (h2 && h2.textContent.trim().toLowerCase().startsWith(target)) {
-          setTimeout(() => sec.scrollIntoView({ behavior:'smooth', block:'start' }), 60);
+      const headings = view.querySelectorAll('h2, h3');
+      for (const el of headings) {
+        if (el.textContent.trim().toLowerCase().startsWith(target)) {
+          setTimeout(() => el.scrollIntoView({ behavior:'smooth', block:'start' }), 60);
           break;
         }
       }
@@ -871,26 +870,57 @@ function indexSectionBlocks(sectionId) {
   const groupLabel = navGroup ? navGroup.group : '';
 
   const view = document.getElementById('section-view');
-  view.querySelectorAll('.sec').forEach(sec => {
-    const h2 = sec.querySelector('h2');
-    if (!h2) return;
-    // Extract text ignoring .anch badge spans
-    let text = '';
-    h2.childNodes.forEach(n => {
-      if (n.nodeType === 3) text += n.textContent;
-      else if (n.nodeType === 1 && !n.classList.contains('anch') && n.tagName !== 'SPAN') text += n.textContent;
-      else if (n.nodeType === 1 && n.classList.contains('anch')) { /* skip anchor badge */ }
-      else if (n.nodeType === 1) { /* partial: grab text only */ text += (n.textContent || ''); }
-    });
-    text = text.trim();
-    if (text && text.length > 1) {
+  view.querySelectorAll('h2, h3').forEach(el => {
+    const anchText = (el.querySelector('.anch') || {}).textContent || '';
+    const text = el.textContent.replace(anchText, '').trim();
+    if (!text || text.length < 3 || text.includes('${') || text.length > 60) return;
+    const dup = blockIndex.some(b => b.sectionId === sectionId && b.labelLow === text.toLowerCase());
+    if (!dup) {
       blockIndex.push({ label: text, labelLow: text.toLowerCase(), sectionId, navGroup: groupLabel });
     }
   });
 }
 
-// Pre-index ALL sections in background at startup (renders into detached div)
+// Static block map — covers hardcoded h3 blocks inside renderers that don't use .sec h2
+const STATIC_BLOCK_MAP = {
+  'buttons':     ['Primary', 'Secondary', 'Subtle', 'Danger', 'Icon buttons'],
+  'inputs':      ['Text input', 'Dropdown', 'Date picker', 'Date range picker', 'Time picker', 'Textarea'],
+  'selection':   ['Checkbox', 'Radio', 'Switch', 'File uploader', 'Tabs'],
+  'chips':       ['Chips / Tags', 'Sizes', 'Colors'],
+  'alerts':      ['Banners', 'Toasts', 'Inline'],
+  'modal':       ['Confirm modal', 'Form modal', 'Destructive'],
+  'table':       ['Cell types', 'Scroll demo', 'Sortable'],
+  'sidebar':     ['Sidebar estándar', 'Sidebar de ajustes'],
+  'topbar':      ['Desktop', 'Tablet', 'Mobile'],
+  'filters':     ['Filter bar variants', 'Filter bar · live demo', '5+ filtros · live preview'],
+  'mappins':     ['Route pins', 'Order pins', 'Map elements'],
+  'tooltip':     ['Default', 'With icon', 'Map pin variant'],
+  'colors':      ['Neutral scale', 'Green', 'Blue', 'Red', 'Orange'],
+  'typography':  ['Type scale', 'Font weights', 'Design tokens', 'Desktop tokens', 'Mobile tokens'],
+  'iconography': ['Icon library', 'Usage'],
+  'badges':      ['Status badges', 'Sizes', 'Pills'],
+  'dropdowns':   ['Single select', 'Multi select'],
+  'pages-table': ['Table page'],
+  'pages-form':  ['Form page', 'Block catalog', 'Page shell'],
+  'brand':       ['What\'s inside this repo', 'Honeypot brand', 'Repository structure'],
+};
+
+// Pre-index ALL sections in background at startup
 async function preIndexAllSections() {
+  // First pass: seed from static map instantly (no rendering needed)
+  for (const group of NAV) {
+    for (const item of group.items) {
+      const staticBlocks = STATIC_BLOCK_MAP[item.id];
+      if (staticBlocks) {
+        const groupLabel = group.group || '';
+        staticBlocks.forEach(label => {
+          blockIndex.push({ label, labelLow: label.toLowerCase(), sectionId: item.id, navGroup: groupLabel });
+        });
+      }
+    }
+  }
+
+  // Second pass: render into detached div to catch h2/h3 from dynamic renderers
   const tmp = document.createElement('div');
   for (const group of NAV) {
     for (const item of group.items) {
@@ -906,18 +936,17 @@ async function preIndexAllSections() {
         tmp.innerHTML = fn(cache[item.id]);
         _indexedSections.add(item.id);
         const groupLabel = group.group || '';
-        tmp.querySelectorAll('.sec').forEach(sec => {
-          const h2 = sec.querySelector('h2');
-          if (!h2) return;
-          // Remove .anch badge text
-          const anchText = (h2.querySelector('.anch') || {}).textContent || '';
-          const text = h2.textContent.replace(anchText, '').trim();
-          if (text && text.length > 1) {
+        // Scan h2 and h3 — covers .sec h2 and inline-styled headings
+        tmp.querySelectorAll('h2, h3').forEach(el => {
+          const anchText = (el.querySelector('.anch') || {}).textContent || '';
+          const text = el.textContent.replace(anchText, '').trim();
+          if (!text || text.length < 3 || text.includes('${') || text.length > 60) return;
+          const dup = blockIndex.some(b => b.sectionId === item.id && b.labelLow === text.toLowerCase());
+          if (!dup) {
             blockIndex.push({ label: text, labelLow: text.toLowerCase(), sectionId: item.id, navGroup: groupLabel });
           }
         });
-      } catch(e) { /* silent — never break the UI */ }
-      // Yield to keep page responsive
+      } catch(e) { /* silent */ }
       await new Promise(r => setTimeout(r, 20));
     }
   }
@@ -932,11 +961,10 @@ window.navigateToBlock = function(sectionId, blockLabel) {
     window._pendingScroll = null;
     const view = document.getElementById('section-view');
     const target = blockLabel.toLowerCase();
-    const secs = view.querySelectorAll('.sec');
-    for (const sec of secs) {
-      const h2 = sec.querySelector('h2');
-      if (h2 && h2.textContent.trim().toLowerCase().startsWith(target)) {
-        sec.scrollIntoView({ behavior:'smooth', block:'start' });
+    const headings = view.querySelectorAll('h2, h3');
+    for (const el of headings) {
+      if (el.textContent.trim().toLowerCase().startsWith(target)) {
+        el.scrollIntoView({ behavior:'smooth', block:'start' });
         break;
       }
     }
