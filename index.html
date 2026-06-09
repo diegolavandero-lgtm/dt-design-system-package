@@ -44,6 +44,7 @@ button,input,select{font-family:inherit}
 #gsearch-drop .sd-item .sd-grp-tag{font:400 11px var(--font-sans);color:var(--n5);flex-shrink:0}
 #gsearch-drop .sd-item mark{background:var(--b2);color:var(--b7);border-radius:2px;padding:0 1px;font-style:normal}
 #gsearch-drop .sd-empty{font:400 13px var(--font-sans);color:var(--n5);padding:16px 12px;text-align:center}
+#gsearch-drop .sd-block{padding-left:20px;border-left:2px solid var(--n3);margin-left:12px}
 .gh-action{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);padding:5px 12px;border-radius:6px;font:600 11px var(--font-sans);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .gh-action:hover{background:rgba(255,255,255,.18)}
 
@@ -748,6 +749,21 @@ async function navigate(id) {
     if (id === 'pages-form') initFormPageMaps();
     if (id === 'inputs')    initDateTimePickers();
     if (window.applyI18n) applyI18n();
+    // Index blocks for deep search
+    indexSectionBlocks(id);
+    // Scroll to a specific block if navigation was triggered by block search
+    if (window._pendingScroll) {
+      const target = window._pendingScroll.toLowerCase();
+      window._pendingScroll = null;
+      const secs = view.querySelectorAll('.sec');
+      for (const sec of secs) {
+        const h2 = sec.querySelector('h2');
+        if (h2 && h2.textContent.trim().toLowerCase().startsWith(target)) {
+          setTimeout(() => sec.scrollIntoView({ behavior:'smooth', block:'start' }), 60);
+          break;
+        }
+      }
+    }
   } catch(e) {
     view.innerHTML = `<div class="card"><p style="color:var(--r6)">Error loading section: ${e.message}</p></div>`;
     console.error(e);
@@ -841,6 +857,62 @@ function clearNavFilter() {
 }
 
 /* ================================================================
+   BLOCK INDEX — deep search within sections
+================================================================ */
+// Flat array: { label, labelLow, sectionId, navGroup }
+const blockIndex = [];
+const _indexedSections = new Set();
+
+function indexSectionBlocks(sectionId) {
+  if (_indexedSections.has(sectionId)) return;
+  _indexedSections.add(sectionId);
+
+  const navGroup = NAV.find(g => g.items.some(i => i.id === sectionId));
+  const groupLabel = navGroup ? navGroup.group : '';
+
+  const view = document.getElementById('section-view');
+  view.querySelectorAll('.sec').forEach(sec => {
+    const h2 = sec.querySelector('h2');
+    if (!h2) return;
+    // Extract text ignoring .anch badge spans
+    let text = '';
+    h2.childNodes.forEach(n => {
+      if (n.nodeType === 3) text += n.textContent;
+      else if (n.nodeType === 1 && !n.classList.contains('anch') && n.tagName !== 'SPAN') text += n.textContent;
+      else if (n.nodeType === 1 && n.classList.contains('anch')) { /* skip anchor badge */ }
+      else if (n.nodeType === 1) { /* partial: grab text only */ text += (n.textContent || ''); }
+    });
+    text = text.trim();
+    if (text && text.length > 1) {
+      blockIndex.push({ label: text, labelLow: text.toLowerCase(), sectionId, navGroup: groupLabel });
+    }
+  });
+}
+
+// Navigate to a section and scroll to a specific block heading
+window.navigateToBlock = function(sectionId, blockLabel) {
+  window._pendingScroll = blockLabel;
+  // If already on the section, just scroll
+  const currentHash = location.hash.replace('#', '');
+  if (currentHash === sectionId) {
+    window._pendingScroll = null;
+    const view = document.getElementById('section-view');
+    const target = blockLabel.toLowerCase();
+    const secs = view.querySelectorAll('.sec');
+    for (const sec of secs) {
+      const h2 = sec.querySelector('h2');
+      if (h2 && h2.textContent.trim().toLowerCase().startsWith(target)) {
+        sec.scrollIntoView({ behavior:'smooth', block:'start' });
+        break;
+      }
+    }
+  } else {
+    navigate(sectionId);
+  }
+  closeSearch();
+};
+
+/* ================================================================
    SEARCH
 ================================================================ */
 // Collects all keywords from all sections (from NAV ids and cached data)
@@ -871,7 +943,7 @@ function doSearch(q) {
     return `<svg class="sd-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="${d}"/></svg>`;
   }
 
-  // Gather matches grouped by NAV group
+  // ── Section-level matches (NAV) ──
   const groups = [];
   for (const group of NAV) {
     const hits = [];
@@ -889,7 +961,14 @@ function doSearch(q) {
     if (hits.length) groups.push({ group, hits });
   }
 
-  const totalHits = groups.reduce((n, g) => n + g.hits.length, 0);
+  // ── Block-level matches (indexed h2 blocks within sections) ──
+  // Exclude blocks whose section is already a section hit (avoid dupe)
+  const sectionHitIds = new Set(groups.flatMap(g => g.hits.map(i => i.id)));
+  const blockHits = blockIndex.filter(b =>
+    b.labelLow.includes(term) && !sectionHitIds.has(b.sectionId)
+  );
+
+  const totalHits = groups.reduce((n, g) => n + g.hits.length, 0) + blockHits.length;
 
   if (totalHits === 0) {
     drop.innerHTML = `<div class="sd-empty">Sin resultados para "<strong>${q.trim()}</strong>"</div>`;
@@ -897,18 +976,36 @@ function doSearch(q) {
     return;
   }
 
-  // Always render dropdown — never auto-navigate while typing
-  // Navigate only on click or Enter key
+  // Block icon — a sub-arrow to distinguish from sections
+  const BLOCK_ICO = `<svg class="sd-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="opacity:.5"><path d="M9 18l6-6-6-6"/></svg>`;
+
   let html = '';
+
+  // Section results grouped
   for (const { group, hits } of groups) {
     const grpLabel = typeof group.group === 'string' ? group.group : (group.group || '');
     html += `<div class="sd-grp">${grpLabel}</div>`;
     for (const item of hits) {
-      // onmousedown preventDefault keeps focus on the input while clicking results
       html += `<div class="sd-item" onmousedown="event.preventDefault()" onclick="navigate('${item.id}');closeSearch()">
         ${itemIco(item)}
         <span class="sd-lbl">${hl(item.label)}</span>
         <span class="sd-grp-tag">${grpLabel}</span>
+      </div>`;
+    }
+  }
+
+  // Block results — show section name as context tag, indented visually
+  if (blockHits.length) {
+    html += `<div class="sd-grp">Bloques</div>`;
+    for (const blk of blockHits) {
+      // Find the section label for context
+      const secItem = NAV.flatMap(g => g.items).find(i => i.id === blk.sectionId);
+      const secLabel = secItem ? secItem.label : blk.navGroup;
+      const safeLabel = blk.label.replace(/'/g, "\\'");
+      html += `<div class="sd-item sd-block" onmousedown="event.preventDefault()" onclick="navigateToBlock('${blk.sectionId}','${safeLabel}')">
+        ${BLOCK_ICO}
+        <span class="sd-lbl" style="padding-left:4px">${hl(blk.label)}</span>
+        <span class="sd-grp-tag">${secLabel}</span>
       </div>`;
     }
   }
