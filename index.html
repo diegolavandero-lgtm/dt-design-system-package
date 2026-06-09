@@ -1023,12 +1023,9 @@ function doSearch(q) {
     if (hits.length) groups.push({ group, hits });
   }
 
-  // ── Block-level matches (indexed h2 blocks within sections) ──
-  // Exclude blocks whose section is already a section hit (avoid dupe)
-  const sectionHitIds = new Set(groups.flatMap(g => g.hits.map(i => i.id)));
-  const blockHits = blockIndex.filter(b =>
-    b.labelLow.includes(term) && !sectionHitIds.has(b.sectionId)
-  );
+  // ── Block-level matches (indexed h2/h3 blocks within sections) ──
+  // Always show block hits — even if parent section also matches (block = more specific destination)
+  const blockHits = blockIndex.filter(b => b.labelLow.includes(term));
 
   const totalHits = groups.reduce((n, g) => n + g.hits.length, 0) + blockHits.length;
 
