@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T21:40:41.550Z",
+  "generated": "2026-06-09T21:47:32.466Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "d94a894",
+          "type": "fix",
+          "section": "General",
+          "message": "feat(i18n): complete ES/EN audit — fix critical bug, add 40+ keys, re-render on switch",
+          "author": "Diego"
+        },
         {
           "hash": "6f1f23f",
           "type": "update",
