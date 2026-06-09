@@ -889,6 +889,40 @@ function indexSectionBlocks(sectionId) {
   });
 }
 
+// Pre-index ALL sections in background at startup (renders into detached div)
+async function preIndexAllSections() {
+  const tmp = document.createElement('div');
+  for (const group of NAV) {
+    for (const item of group.items) {
+      if (_indexedSections.has(item.id) || !item.path || !item.renderer) continue;
+      try {
+        if (!cache[item.id]) {
+          const res = await fetch(item.path);
+          if (!res.ok) continue;
+          cache[item.id] = await res.json();
+        }
+        const fn = renderers[item.renderer];
+        if (typeof fn !== 'function') continue;
+        tmp.innerHTML = fn(cache[item.id]);
+        _indexedSections.add(item.id);
+        const groupLabel = group.group || '';
+        tmp.querySelectorAll('.sec').forEach(sec => {
+          const h2 = sec.querySelector('h2');
+          if (!h2) return;
+          // Remove .anch badge text
+          const anchText = (h2.querySelector('.anch') || {}).textContent || '';
+          const text = h2.textContent.replace(anchText, '').trim();
+          if (text && text.length > 1) {
+            blockIndex.push({ label: text, labelLow: text.toLowerCase(), sectionId: item.id, navGroup: groupLabel });
+          }
+        });
+      } catch(e) { /* silent — never break the UI */ }
+      // Yield to keep page responsive
+      await new Promise(r => setTimeout(r, 20));
+    }
+  }
+}
+
 // Navigate to a section and scroll to a specific block heading
 window.navigateToBlock = function(sectionId, blockLabel) {
   window._pendingScroll = blockLabel;
@@ -1956,7 +1990,12 @@ async function initOverviewDashboard() {
 window.addEventListener('DOMContentLoaded', () => {
   buildNav();
   const hash = location.hash.replace('#', '') || 'overview';
-  navigate(hash);
+  navigate(hash).then(() => {
+    // Pre-index all sections silently after first render so search works immediately
+    setTimeout(preIndexAllSections, 500);
+  }).catch(() => {
+    setTimeout(preIndexAllSections, 500);
+  });
 });
 
 window.addEventListener('hashchange', () => {
