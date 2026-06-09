@@ -364,6 +364,30 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 .lastopt{font:400 11px var(--font-sans);color:var(--n5);margin-top:10px;}
 .tools{display:flex;gap:6px;flex-wrap:wrap;}
 .tools .btn{height:32px;}
+/* Tool selector — radio-style, one active at a time */
+.tool-bar{display:flex;gap:0;border:1px solid var(--n3);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.tool-btn{flex:1;height:32px;border:0;border-right:1px solid var(--n3);background:#fff;font:700 12px var(--font-sans);color:var(--n6);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:background .1s;white-space:nowrap;padding:0 6px;}
+.tool-btn:last-child{border-right:0;}
+.tool-btn:hover{background:var(--n2);}
+.tool-btn.active{background:var(--b5);color:#fff;}
+/* Option group label */
+.opt-group-lbl{font:700 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.06em;padding:8px 0 5px;border-top:1px solid var(--n3);margin-top:8px;}
+/* Option sub-group (indented, shown when parent tool active) */
+.opt-sub{padding-left:12px;border-left:2px solid var(--n3);margin-left:4px;display:none;}
+.opt-sub.on{display:block;}
+/* Clear locks button */
+.btn.clear{background:transparent;color:var(--r6);border-color:var(--r6);width:100%;justify-content:center;}
+.btn.clear:hover{background:var(--r1);}
+/* Toggle row: label left, switch right */
+.toggle-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.toggle-row .trl{flex:1;}
+.toggle-row .trl .trn{font:500 13px var(--font-sans);color:var(--n7);line-height:1.3;}
+.toggle-row .trl .trd{font:400 11px var(--font-sans);color:var(--n5);margin-top:2px;line-height:1.4;}
+/* DS switch (from dt-design-system) */
+.swt{width:32px;height:18px;border-radius:999px;background:var(--n3);position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;margin-top:2px;}
+.swt.on{background:var(--b6);}
+.swt:after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.swt.on:after{left:16px;}
 
 /* MAP — Leaflet container */
 .map{flex:1;position:relative;overflow:hidden;}
@@ -829,9 +853,37 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                 .ddlo.on::before{content:"✓";font-size:11px;color:var(--b6);width:14px;flex-shrink:0;}
                 .ddlo:not(.on)::before{content:"";width:14px;flex-shrink:0;}
               </style>
-              <div class="frow"><div class="flbl">Estilo de ruta</div><div class="seg"><button class="on">Líneas rectas</button><button>Rutas viales</button></div></div>
-              <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mostrar tramo a bodega</label>
-              <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mostrar rutas bloqueadas</label>
+              <div class="frow">
+                <div class="flbl">Estilo de ruta</div>
+                <div class="seg" id="routeStyleSeg">
+                  <button class="on" onclick="setRouteStyle('straight',this)" title="Línea recta de parada a parada (como el cuervo vuela)">Líneas rectas</button>
+                  <button onclick="setRouteStyle('road',this)" title="Rutas viales reales">Rutas viales</button>
+                </div>
+              </div>
+              <!-- Depot Legs -->
+              <div class="toggle-row">
+                <div class="trl">
+                  <div class="trn">Depot Legs</div>
+                  <div class="trd">Muestra la línea bodega→primera parada y bodega→última parada de cada ruta.</div>
+                </div>
+                <div class="swt on" id="swtDepotLegs" onclick="toggleSetting(this,'depotLegs')"></div>
+              </div>
+              <!-- Locked Routes -->
+              <div class="toggle-row">
+                <div class="trl">
+                  <div class="trn">Rutas bloqueadas</div>
+                  <div class="trd">Muestra u oculta las rutas que están bloqueadas (congeladas para el motor).</div>
+                </div>
+                <div class="swt on" id="swtLockedRoutes" onclick="toggleSetting(this,'lockedRoutes')"></div>
+              </div>
+              <!-- Overlay stops -->
+              <div class="toggle-row">
+                <div class="trl">
+                  <div class="trn">Superponer paradas del día</div>
+                  <div class="trd">Al hacer clic en un chip de día, muestra sus paradas sobre todos los demás días. Ayuda a identificar clústeres al editar manualmente.</div>
+                </div>
+                <div class="swt" id="swtOverlay" onclick="toggleSetting(this,'overlay')"></div>
+              </div>
             </div>
           </div>
 
@@ -849,13 +901,93 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
             <div class="acc-h" onclick="toggleAcc('a3')"><span class="n">3</span><span class="t">Edición</span><span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></div>
             <div class="dis-note">Las herramientas de Bloquear y Mover se habilitan después de correr <b>1 · Optimización</b>.</div>
             <div class="acc-b">
-              <div class="frow"><div class="flbl">Herramientas</div><div class="tools"><button class="btn ter">Bloquear</button><button class="btn ter">Mover</button><button class="btn ter">Mover días</button><button class="btn ter">Limpiar</button></div></div>
-              <div class="frow"><div class="flbl">Opciones de movimiento</div>
-                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Re-optimizar ruta de origen</label>
-                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Reflejar en días del ciclo</label>
-                <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Mantener mismo camión</label>
-                <label class="ck"><span class="chk"></span>Vincular ruta de origen</label>
+
+              <!-- Tool selector -->
+              <div class="tool-bar">
+                <button class="tool-btn" id="toolLock" onclick="selectTool('lock')" title="Haz clic en una ruta para bloquearla — el motor de optimización no la modificará">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Bloquear
+                </button>
+                <button class="tool-btn" id="toolMove" onclick="selectTool('move')" title="Dibuja un lazo alrededor de paradas y arrástralas a otra ruta">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9"/></svg>
+                  Mover
+                </button>
+                <button class="tool-btn" id="toolMoveDays" onclick="selectTool('movedays')" title="Dibuja un lazo y busca días de ciclo alternos respetando el espaciado">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Mover días
+                </button>
               </div>
+
+              <!-- Clear locks -->
+              <button class="btn clear" onclick="clearAllLocks()" style="height:30px;font-size:12px;margin-bottom:12px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                Limpiar todos los bloqueos
+              </button>
+
+              <!-- LOCK options -->
+              <div id="lockOpts" class="opt-sub">
+                <div class="opt-group-lbl">Opciones de bloqueo</div>
+                <div class="toggle-row">
+                  <div class="trl">
+                    <div class="trn">Reflejar en días del ciclo</div>
+                    <div class="trd">Si esta ruta aparece en otro día de la semana, también bloquearla.</div>
+                  </div>
+                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="trl">
+                    <div class="trn">Mismo camión</div>
+                    <div class="trd">Para que el reflejo de bloqueo se aplique, la ruta en el otro día debe tener al menos las mismas paradas y el mismo camión.</div>
+                  </div>
+                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+
+              <!-- MOVE options -->
+              <div id="moveOpts" class="opt-sub">
+                <div class="opt-group-lbl">Opciones de movimiento</div>
+                <div class="toggle-row">
+                  <div class="trl">
+                    <div class="trn">Re-optimizar ruta de origen</div>
+                    <div class="trd">Al mover paradas de la Ruta A → Ruta B, re-optimiza completamente la Ruta A. Si está apagado, solo recalcula tiempos de llegada.</div>
+                  </div>
+                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="trl">
+                    <div class="trn">Reflejar en días del ciclo</div>
+                    <div class="trd">Repite el movimiento de paradas en la Ruta B de otros días si se cumple la condición de camión.</div>
+                  </div>
+                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="trl">
+                    <div class="trn">Mismo camión (destino)</div>
+                    <div class="trd">El reflejo solo aplica si la Ruta B (destino) tiene el mismo camión en el día repetido.</div>
+                  </div>
+                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                </div>
+                <div class="toggle-row">
+                  <div class="trl">
+                    <div class="trn">Vincular ruta de origen</div>
+                    <div class="trd">Además de la ruta destino, la ruta origen también debe coincidir para que el reflejo se aplique.</div>
+                  </div>
+                  <div class="swt" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+
+              <!-- MOVE DAYS options -->
+              <div id="moveDaysOpts" class="opt-sub">
+                <div class="opt-group-lbl">Opciones de mover días</div>
+                <div class="toggle-row">
+                  <div class="trl">
+                    <div class="trn">Respetar espaciado de ciclo</div>
+                    <div class="trd">Solo propone días alternativos que mantienen el intervalo de visitas. Ej.: L-X puede pasar a M-J o X-V, pero no a L-M.</div>
+                  </div>
+                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -905,17 +1037,47 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 
               <!-- Map control buttons — top-right of map area -->
               <div class="map-ctrls" id="mapCtrls">
+                <!-- Controls panel dropdown -->
                 <div class="ver-wrap">
-                  <button class="mctrl" id="btnVer" onclick="toggleVer(event,this)">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    <span class="mlbl">Ver</span>
+                  <button class="mctrl" id="btnControls" onclick="toggleMapControls(event,this)">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <span class="mlbl">Controles</span>
                   </button>
-                  <div class="ver-menu" id="verMenu">
-                    <label class="ver-opt"><input type="checkbox" checked> Órdenes en ruta</label>
-                    <label class="ver-opt"><input type="checkbox"> Órdenes sin asignar</label>
-                    <label class="ver-opt"><input type="checkbox"> Geocercas</label>
+                  <div class="ver-menu" id="mapControlsMenu" style="min-width:240px;right:0;">
+                    <!-- Route style -->
+                    <div style="padding:8px 12px 4px;font:700 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.06em;">Visualización</div>
+                    <div class="ver-opt" onclick="setRouteStyleFromCtrl(this,'straight')" id="ctrlStraight">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span style="flex:1">Rutas: Líneas rectas</span>
+                    </div>
+                    <div class="ver-opt" onclick="setRouteStyleFromCtrl(this,'road')" id="ctrlRoad">
+                      <span style="width:12px;flex-shrink:0"></span>
+                      <span style="flex:1">Rutas: Viales</span>
+                    </div>
+                    <div style="height:1px;background:var(--n3);margin:4px 0;"></div>
+                    <div class="ver-opt" id="ctrlDepotLegs" onclick="toggleCtrlSetting('depotLegs',this)">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2" id="ctrlDepotCheck"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span style="flex:1">Depot Legs</span>
+                      <span style="font:700 11px var(--font-sans);color:var(--b6)" id="ctrlDepotLbl">ON</span>
+                    </div>
+                    <div class="ver-opt" id="ctrlLocked" onclick="toggleCtrlSetting('lockedRoutes',this)">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2" id="ctrlLockedCheck"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span style="flex:1">Rutas bloqueadas</span>
+                      <span style="font:700 11px var(--font-sans);color:var(--b6)" id="ctrlLockedLbl">ON</span>
+                    </div>
+                    <div class="ver-opt" id="ctrlUnrouted" onclick="toggleCtrlSetting('hideUnrouted',this)">
+                      <span style="width:12px;flex-shrink:0"></span>
+                      <span style="flex:1">Ocultar sin rutear</span>
+                      <span style="font:700 11px var(--font-sans);color:var(--n45)" id="ctrlUnroutedLbl">OFF</span>
+                    </div>
+                    <div style="height:1px;background:var(--n3);margin:4px 0;"></div>
+                    <div class="ver-opt" onclick="recenterMap()">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n7)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+                      <span style="flex:1">Recentrar</span>
+                    </div>
                   </div>
                 </div>
+                <!-- Lasso button -->
                 <button class="mctrl" id="btnLasso" onclick="toggleLasso()">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
                   <span class="mlbl">Seleccionar con lazo</span>
@@ -2165,6 +2327,114 @@ function mapCtrlsHtml(compact,cellId){
     }
   };
 })();
+
+/* ── Section 1 Vista — toggle settings ── */
+var mapSettings={routeStyle:'straight',depotLegs:true,lockedRoutes:true,overlay:false,hideUnrouted:false};
+
+function toggleSetting(swt,key){
+  swt.classList.toggle('on');
+  mapSettings[key]=swt.classList.contains('on');
+  applyMapSettings();
+}
+function setRouteStyle(style,btn){
+  mapSettings.routeStyle=style;
+  var seg=document.getElementById('routeStyleSeg');
+  if(seg)[].forEach.call(seg.querySelectorAll('button'),function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  // Sync sidebar switch state
+  var ctrlS=document.getElementById('ctrlStraight');
+  var ctrlR=document.getElementById('ctrlRoad');
+  if(ctrlS&&ctrlR){
+    ctrlS.querySelector('svg').style.display=style==='straight'?'block':'none';
+    ctrlR.querySelector('svg')?ctrlR.querySelector('svg').style.display=style==='road'?'block':'none':'';
+  }
+  applyMapSettings();
+}
+function applyMapSettings(){
+  // Route lines opacity
+  document.querySelectorAll('.route-line').forEach(function(l){
+    l.style.opacity=mapSettings.depotLegs?'0.55':'0';
+  });
+}
+/* Controls panel toggle */
+function toggleMapControls(e,btn){
+  e.stopPropagation();
+  var m=document.getElementById('mapControlsMenu');
+  var open=m.classList.contains('on');
+  m.classList.toggle('on',!open);
+  btn.classList.toggle('active',!open);
+  if(!open){setTimeout(function(){document.addEventListener('click',function h(ev){if(!btn.closest('.ver-wrap').contains(ev.target)){m.classList.remove('on');btn.classList.remove('active');document.removeEventListener('click',h);}});},0);}
+}
+function toggleCtrlSetting(key,row){
+  mapSettings[key]=!mapSettings[key];
+  var on=mapSettings[key];
+  // Visual feedback in the menu row
+  var check=row.querySelector('svg');
+  var lbl=row.querySelector('[id$="Lbl"]');
+  if(check){check.style.display=on?'block':'none';}
+  if(lbl){lbl.textContent=on?'ON':'OFF';lbl.style.color=on?'var(--b6)':'var(--n45)';}
+  // Sync sidebar toggle if exists
+  var swtMap={depotLegs:'swtDepotLegs',lockedRoutes:'swtLockedRoutes',hideUnrouted:null};
+  if(swtMap[key]){var swt=document.getElementById(swtMap[key]);if(swt)swt.classList.toggle('on',on);}
+  applyMapSettings();
+}
+function setRouteStyleFromCtrl(row,style){
+  var straight=style==='straight';
+  document.getElementById('ctrlStraight').querySelector('svg').style.display=straight?'block':'none';
+  var ctrlR=document.getElementById('ctrlRoad');
+  if(!ctrlR.querySelector('svg'))ctrlR.insertAdjacentHTML('afterbegin','<svg width="12" height="12" style="display:none" viewBox="0 0 24 24" fill="none" stroke="var(--b6)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>');
+  ctrlR.querySelector('svg').style.display=straight?'none':'block';
+  // Sync seg buttons
+  var seg=document.getElementById('routeStyleSeg');
+  if(seg)[].forEach.call(seg.querySelectorAll('button'),function(b,i){b.classList.toggle('on',straight?i===0:i===1);});
+  mapSettings.routeStyle=style;
+}
+function recenterMap(){
+  if(lmap)lmap.setView([-33.472,-70.762],9);
+  document.getElementById('mapControlsMenu').classList.remove('on');
+  document.getElementById('btnControls').classList.remove('active');
+}
+
+/* ── Section 3 Edición — tool selector ── */
+var activeTool=null;
+function selectTool(tool){
+  var same=(activeTool===tool);
+  // Deactivate all
+  ['lock','move','movedays'].forEach(function(t){
+    var btn=document.getElementById('tool'+t.charAt(0).toUpperCase()+t.slice(1).replace('days','Days'));
+    if(btn)btn.classList.remove('active');
+    var opts=document.getElementById(t.replace('move','move').replace('movedays','moveDays')+'Opts');
+    if(!opts){
+      // handle casing
+      var map={lock:'lockOpts',move:'moveOpts',movedays:'moveDaysOpts'};
+      opts=document.getElementById(map[t]);
+    }
+    if(opts)opts.classList.remove('on');
+  });
+  if(same){activeTool=null;return;}
+  activeTool=tool;
+  var btnMap={lock:'toolLock',move:'toolMove',movedays:'toolMoveDays'};
+  var optsMap={lock:'lockOpts',move:'moveOpts',movedays:'moveDaysOpts'};
+  var btn=document.getElementById(btnMap[tool]);
+  var opts=document.getElementById(optsMap[tool]);
+  if(btn)btn.classList.add('active');
+  if(opts)opts.classList.add('on');
+  // Tool-specific map cursor
+  var layer=document.getElementById('lassoDrawLayer');
+  if(tool==='move'||tool==='movedays'){
+    if(layer)layer.style.display='block';
+    enterLasso();
+  } else {
+    if(layer)layer.style.display='none';
+    if(lassoActive)exitLasso();
+  }
+}
+function clearAllLocks(){
+  // Visual feedback — flash button
+  var btn=document.querySelector('.btn.clear');
+  if(btn){btn.style.background='var(--r1)';setTimeout(function(){btn.style.background='';},600);}
+  if(activeTool==='lock')selectTool('lock'); // deactivate
+}
 
 /* ══════════════════════════════════════════════════
    TERRITORY PLANNER — screens 10–15
