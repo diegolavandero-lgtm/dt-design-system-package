@@ -447,6 +447,42 @@ function buildSettingsSidebar(product, activeItem, contentHtml) {
   </div>`;
 }
 
+/* ── MODULE-LEVEL: DS alert/banner — shared by alerts(), modal(), and anywhere
+   an alert or banner is needed. Use dsAlert(text, type) everywhere.
+   type: 'info' | 'neutral' | 'warning' | 'error' | 'success'
+   row can be a string (simple text) or { text, title, paragraphs, hasClose, extraActions }
+   This is the canonical DS alert — never recreate custom banners. */
+const _ALERT_TC = {
+  info:    { bg:'var(--b2)',  bd:'var(--b3)',  fg:'var(--b7)', ic:'var(--b6)',  ip:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
+  neutral: { bg:'var(--n2)', bd:'var(--n3)',   fg:'var(--n6)', ic:'var(--n5)',  ip:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
+  warning: { bg:'var(--o1)', bd:'var(--o3)',   fg:'var(--n7)', ic:'var(--o7)',  ip:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>' },
+  error:   { bg:'var(--r1)', bd:'#f5c2c7',    fg:'var(--r7)', ic:'var(--r6)',  ip:'<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>' },
+  success: { bg:'var(--g1)', bd:'var(--g2)',   fg:'var(--g7)', ic:'var(--g6)',  ip:'<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/>' },
+};
+
+function dsAlert(row, type) {
+  if (typeof row === 'string') row = { text: row, hasClose: false };
+  const c = _ALERT_TC[type] || _ALERT_TC.info;
+  const base = `background:${c.bg};border:1px solid ${c.bd};border-radius:6px;color:${c.fg}`;
+  const ico  = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${c.ic}" style="flex-shrink:0;margin-top:1px">${c.ip}</svg>`;
+  const xBtn = row.hasClose === false ? '' : `<button style="flex-shrink:0;background:none;border:none;padding:0;cursor:pointer;opacity:.55;display:flex;align-items:center;line-height:0" title="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
+  if (row.title) {
+    const paras = row.paragraphs || (row.text ? [row.text] : []);
+    return `<div style="${base};padding:14px 40px 14px 16px;position:relative">
+      ${row.hasClose !== false ? `<div style="position:absolute;top:10px;right:10px">${xBtn}</div>` : ''}
+      <strong style="display:block;font:700 14px/1.4 var(--font-sans);margin-bottom:8px">${escHtml(row.title)}</strong>
+      ${paras.map(p => `<p style="margin:0 0 6px;font:400 13px/1.5 var(--font-sans)">${escHtml(p)}</p>`).join('')}
+    </div>`;
+  }
+  const lines = (row.text || '').split('\n');
+  const textHtml = lines.length > 1 ? lines.map(l => escHtml(l)).join('<br>') : escHtml(row.text || '');
+  return `<div style="${base};padding:10px 12px;display:flex;align-items:center;gap:10px">
+    ${ico}
+    <span style="flex:1;font:400 13px/1.4 var(--font-sans)">${textHtml}</span>
+    ${xBtn}
+  </div>`;
+}
+
 /* ── MODULE-LEVEL: filter icon buttons — exact Figma SVGs, shared everywhere ──
    Used by filters() demo, tablepage(), and any future filter bar. */
 const FLT_SVG_ADD_DEF = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#1F60ED"/><g clip-path="url(#ml-add-c)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="ml-add-c"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
@@ -2562,23 +2598,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
   alerts(data) {
     const TYPES = data.types || ['info', 'neutral', 'warning', 'error', 'success'];
 
-    const TC = {
-      info:    { bg: 'var(--b2)', bd: 'var(--b3)',  fg: 'var(--b7)', ic: 'var(--b6)',  ip: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
-      neutral: { bg: 'var(--n2)', bd: 'var(--n3)',  fg: 'var(--n6)', ic: 'var(--n5)',  ip: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>' },
-      warning: { bg: 'var(--o1)', bd: 'var(--o3)',  fg: 'var(--n7)', ic: 'var(--o7)',  ip: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>' },
-      error:   { bg: 'var(--r1)', bd: '#f5c2c7',    fg: 'var(--r7)', ic: 'var(--r6)',  ip: '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>' },
-      success: { bg: 'var(--g1)', bd: 'var(--g2)',  fg: 'var(--g7)', ic: 'var(--g6)',  ip: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14l-4-4 1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"/>' },
-    };
-
-    function typeIcon(type) {
-      const c = TC[type] || TC.info;
-      return `<svg width="16" height="16" viewBox="0 0 24 24" fill="${c.ic}" style="flex-shrink:0;margin-top:1px">${c.ip}</svg>`;
-    }
-
-    function xBtn() {
-      return `<button style="flex-shrink:0;background:none;border:none;padding:0;cursor:pointer;opacity:.55;display:flex;align-items:center;line-height:0" title="Dismiss"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
-    }
-
+    // Use module-level dsAlert() — same canonical component everywhere
     function actionIcon(name) {
       const paths = {
         eye:      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
@@ -2588,28 +2608,16 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     }
 
     function renderAlert(row, type) {
-      const c = TC[type] || TC.info;
-      const base = `background:${c.bg};border:1px solid ${c.bd};border-radius:6px;color:${c.fg}`;
-
-      if (row.title) {
-        const paras = row.paragraphs || (row.text ? [row.text] : []);
-        return `<div style="${base};padding:14px 40px 14px 16px;position:relative">
-          ${row.hasClose !== false ? `<div style="position:absolute;top:10px;right:10px">${xBtn()}</div>` : ''}
-          <strong style="display:block;font:700 14px/1.4 var(--font-sans);margin-bottom:8px">${escHtml(row.title)}</strong>
-          ${paras.map(p => `<p style="margin:0 0 6px;font:400 13px/1.5 var(--font-sans)">${escHtml(p)}</p>`).join('')}
-        </div>`;
-      }
-
+      // extraActions aren't in dsAlert — handle them here then delegate
       const extras = (row.extraActions || []).map(actionIcon).join('');
-      const lines = (row.text || '').split('\n');
-      const textHtml = lines.length > 1
-        ? lines.map(l => escHtml(l)).join('<br>')
-        : escHtml(row.text || '');
-      return `<div style="${base};padding:10px 12px;display:flex;align-items:center;gap:10px">
-        ${typeIcon(type)}
-        <span style="flex:1;font:400 13px/1.4 var(--font-sans)">${textHtml}</span>
-        ${extras}
-        ${row.hasClose !== false ? xBtn() : ''}
+      if (!extras) return dsAlert(row, type);
+      // With extra action icons: build inline ourselves using same tokens
+      const c = _ALERT_TC[type] || _ALERT_TC.info;
+      const ico = `<svg width="16" height="16" viewBox="0 0 24 24" fill="${c.ic}" style="flex-shrink:0;margin-top:1px">${c.ip}</svg>`;
+      const lines = (row.text||'').split('\n');
+      const textHtml = lines.length > 1 ? lines.map(l=>escHtml(l)).join('<br>') : escHtml(row.text||'');
+      return `<div style="background:${c.bg};border:1px solid ${c.bd};border-radius:6px;color:${c.fg};padding:10px 12px;display:flex;align-items:center;gap:10px">
+        ${ico}<span style="flex:1;font:400 13px/1.4 var(--font-sans)">${textHtml}</span>${extras}
       </div>`;
     }
 
@@ -2631,7 +2639,6 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const mt = data.mobileTokens || {};
 
     const MOD_CHEVRON = `<svg viewBox="0 0 32 32" width="12" height="12" fill="currentColor" style="flex-shrink:0;pointer-events:none;color:var(--n5)"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg>`;
-    const WARN_ICO = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--o7,#FF8B00)" stroke-width="2" style="flex-shrink:0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
 
     // ── DS input tokens (exact from inputs.json) ──────────────────────────
     function dsInput(f) {
@@ -2672,10 +2679,10 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       return fields.map(f => f.type === 'select' ? dsSelect(f) : dsInput(f)).join('');
     }
 
-    // ── Warning banner (bn wr from banners.json) ──────────────────────────
-    const warning = p.warning ? `<div class="bn wr" style="margin-bottom:16px">
-      ${WARN_ICO}<span>${escHtml(p.warning)}</span>
-    </div>` : '';
+    // ── Alert from alerts.json via module-level dsAlert() ────────────────
+    const warning = p.warning
+      ? `<div style="margin-bottom:16px">${dsAlert({text:p.warning, hasClose:false}, 'warning')}</div>`
+      : '';
 
     // ── Buttons (pill DS tokens) ──────────────────────────────────────────
     // Desktop: right-aligned inline
