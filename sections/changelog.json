@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T19:27:52.839Z",
+  "generated": "2026-06-09T19:48:43.070Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "0dac1f3",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): CARTO Positron + DS pins + sequential routes",
+          "author": "Diego"
+        },
         {
           "hash": "db6e361",
           "type": "fix",
