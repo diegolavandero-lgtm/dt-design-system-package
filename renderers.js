@@ -447,6 +447,27 @@ function buildSettingsSidebar(product, activeItem, contentHtml) {
   </div>`;
 }
 
+/* ── MODULE-LEVEL: filter icon buttons — exact Figma SVGs, shared everywhere ──
+   Used by filters() demo, tablepage(), and any future filter bar. */
+const FLT_SVG_ADD_DEF = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#1F60ED"/><g clip-path="url(#ml-add-c)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="ml-add-c"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
+const FLT_SVG_ADD_HOV = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" fill="#EDF3FF" stroke="#1F60ED"/><g clip-path="url(#ml-addh-c)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="ml-addh-c"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
+const FLT_SVG_RES_DEF = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg>`;
+const FLT_SVG_RES_HOV = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" fill="#FFEBE6" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg>`;
+
+const FLT_BTN_ADD = `<button title="Agregar filtro" style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex"
+    onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+    onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+  <span class="flt-def">${FLT_SVG_ADD_DEF}</span>
+  <span class="flt-hov" style="display:none">${FLT_SVG_ADD_HOV}</span>
+</button>`;
+
+const FLT_BTN_RESET = `<button title="Limpiar filtros" style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex"
+    onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+    onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+  <span class="flt-def">${FLT_SVG_RES_DEF}</span>
+  <span class="flt-hov" style="display:none">${FLT_SVG_RES_HOV}</span>
+</button>`;
+
 /* ── MODULE-LEVEL: filter field renderer (shared by filters + tablepage) ─────
    Renders one filter field by type: text → DS input, select → dt-drop-wrap,
    date → dpFilterField (input + datepicker popover).
@@ -4271,19 +4292,10 @@ async function downloadAllPins() {
         onmouseup="this.style.background='#EDF5FF'"
       >${escHtml(label)}</button>`;
 
-    // ── Exact SVG buttons from Figma (not recreated, embedded as-is) ────
-    const SVG_ADD_DEFAULT = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#1F60ED"/><g clip-path="url(#flt-add-clip)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="flt-add-clip"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
-    const SVG_ADD_HOVER   = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" fill="#EDF3FF" stroke="#1F60ED"/><g clip-path="url(#flt-addh-clip)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="flt-addh-clip"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
-    const SVG_RES_DEFAULT = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg>`;
-    const SVG_RES_HOVER   = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" fill="#FFEBE6" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg>`;
-
-    // Add/reset buttons with hover swap (exact SVGs, no recreation)
-    const btnAdd = `<button title="Agregar filtro" style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex"
-        onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
-        onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
-      <span class="flt-def">${SVG_ADD_DEFAULT}</span>
-      <span class="flt-hov" style="display:none">${SVG_ADD_HOVER}</span>
-    </button>`;
+    // Use module-level SVG constants — same buttons as tablepage and everywhere
+    const SVG_ADD_DEFAULT = FLT_SVG_ADD_DEF, SVG_ADD_HOVER = FLT_SVG_ADD_HOV;
+    const SVG_RES_DEFAULT = FLT_SVG_RES_DEF, SVG_RES_HOVER = FLT_SVG_RES_HOV;
+    const btnAdd = FLT_BTN_ADD;
 
     const btnReset = (tableId, barId) => {
       const onclick = `(function(btn){
@@ -4488,12 +4500,8 @@ async function downloadAllPins() {
               <div style="display:flex;align-items:center;gap:8px">
                 ${(data.filterFields||[]).map(renderFilterField).join('')}
                 <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'" onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'">${escHtml(data.filterBtnLabel||'Filtrar')}</button>
-                <button title="Agregar filtro" style="width:32px;height:32px;border:1px solid var(--b6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
-                  ${iconSvg('filter--add', 24, 'var(--b6)')}
-                </button>
-                <button title="Limpiar filtros" style="width:32px;height:32px;border:1px solid var(--r6);border-radius:4px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0;box-sizing:border-box">
-                  ${iconSvg('filter--reset', 24, 'var(--r6)')}
-                </button>
+                ${FLT_BTN_ADD}
+                ${FLT_BTN_RESET}
               </div>
 
               <!-- Table: tblDemoTable(data.scrollDemo) from table.json -->
