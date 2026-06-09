@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-09T14:49:36.714Z",
+  "generated": "2026-06-09T14:52:33.281Z",
   "days": [
     {
       "date": "2026-06-09",
       "entries": [
+        {
+          "hash": "862b117",
+          "type": "fix",
+          "section": "Map pins",
+          "message": "fix(map pins): polylines connect exactly at pin tip",
+          "author": "Diego"
+        },
         {
           "hash": "6b69b2d",
           "type": "fix",
