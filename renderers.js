@@ -4850,48 +4850,162 @@ async function downloadAllPins() {
     const rawTable5 = tblDemoTable(data.scrollDemo || {});
     const demoTable5 = rawTable5.replace('<div class="tbl-outer">', `<div class="tbl-outer" id="${live5TblId}">`);
 
-    const live5Section = `
+    // Shared overflow panel close button (Carbon × icon)
+    const closePanelBtn = (panelId) =>
+      `<button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:4px;color:var(--n5);flex-shrink:0"
+        onclick="document.getElementById('${panelId}').style.display='none'"
+        onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='none'">${dsCloseIcon(16,'var(--n5)')}</button>`;
+
+    // Overflow panel card — same style as static variant
+    const ovPanelCard = (panelId, count, fieldsHtml) =>
+      `<div id="${panelId}" style="display:none;background:#fff;border-radius:8px;border:1px solid var(--n4);padding:16px;box-shadow:0 4px 16px rgba(19,32,69,.1)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font:700 11px var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.06em">Otros filtros (${count})</span>
+          ${closePanelBtn(panelId)}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${fieldsHtml}
+        </div>
+      </div>`;
+
+    // Overflow fields in 1 row (desktop) or stacked (mobile)
+    const ovRow = `<div style="display:flex;gap:8px">${ovFieldsHtml}</div>`;
+
+    // ── Mobile version IDs
+    const mobBarId = 'flt5m-bar', mobOvId = 'flt5m-ov', mobBadgeId = 'flt5m-badge';
+
+    // Mobile overflow = main bar fields [1..3] + all ovFields
+    const mobileFields = (data.fields||[]).slice(1); // all except first
+    const allMobFields = [...mobileFields, ...ovFields];
+    const mobColMap = allMobFields.map(f => f.colIdx !== undefined ? f.colIdx : -1);
+    const mobTypes  = allMobFields.map(f => f.type);
+
+    // Mobile: only first field in main bar
+    const firstField = (data.fields||[])[0];
+    const mobFirstHtml = firstField ? renderFilterFunctionalFor(firstField, mobBadgeId) : '';
+
+    // Helper: render a field with badge check on change
+    function renderFilterFunctionalFor(f, badgeId) {
+      if (f.type === 'date') return dpFilterField(f.placeholder);
+      if (f.type === 'select') {
+        const items = (f.options||[]).map(o => {
+          const safe = escHtml(o);
+          return `<div onclick="dtPickOpt(this);this.closest('.dt-drop-wrap').dataset.val='${safe}'"
+            data-val="${safe}" onmouseenter="this.style.background='var(--b1)';this.style.color='var(--b7)'"
+            onmouseleave="this.style.background='';this.style.color='var(--n7)'"
+            style="height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px/20px var(--font-sans);color:var(--n7);cursor:pointer">${safe}</div>`;
+        }).join('');
+        return `<div class="dt-drop-wrap" data-val="" style="position:relative;flex:1;min-width:0">
+          <div class="dt-dtrigger" data-theme="border" onclick="dtDrop(this.parentElement)"
+            onmouseenter="if(!this.parentElement.classList.contains('dt-open'))this.style.background='var(--n2)'"
+            onmouseleave="if(!this.parentElement.classList.contains('dt-open'))this.style.background='#fff'"
+            style="display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;box-sizing:border-box">
+            <span class="dt-dlabel" data-ph="${escHtml(f.placeholder)}" style="flex:1;font:400 14px/20px var(--font-sans);color:var(--n6)">${escHtml(f.placeholder)}</span>
+            <span style="color:var(--n5);display:flex;flex-shrink:0">${_FILTER_CHEVRON}</span>
+          </div>
+          <div class="dt-dmenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:110;padding:4px 0">${items}</div>
+        </div>`;
+      }
+      return `<div style="flex:1;min-width:0">
+        <input type="text" placeholder="${escHtml(f.placeholder)}"
+          style="${_FILTER_INP_BASE};padding:0 10px"
+          onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+          onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'">
+      </div>`;
+    }
+
+    // Mobile overflow fields html (main [1..3] + extra, stacked in rows of 2)
+    const mobOvHtml = (() => {
+      const allF = allMobFields;
+      const cols = 2;
+      let rows = '';
+      for (let i = 0; i < allF.length; i += cols) {
+        const rowF = allF.slice(i, i + cols);
+        rows += `<div style="display:flex;gap:8px">${rowF.map(f => renderFilterFunctionalFor(f, mobBadgeId)).join('')}</div>`;
+      }
+      return rows;
+    })();
+
+    // Mobile filter IIFE
+    const onMobFilter = `(function(){
+      var bar=document.getElementById('${mobBarId}');
+      var ov=document.getElementById('${mobOvId}');
+      var tbl=document.getElementById('${live5TblId}');
+      if(!bar||!tbl)return;
+      var mainInps=[].slice.call(bar.querySelectorAll('input[type=text]'));
+      var mainW=bar.querySelector('.dt-drop-wrap[data-val]');
+      var ovInps=ov?[].slice.call(ov.querySelectorAll('input[type=text]')):[];
+      var ovWraps=ov?[].slice.call(ov.querySelectorAll('.dt-drop-wrap[data-val]')):[];
+      var f1Val=(mainInps[0]?mainInps[0].value:'').toLowerCase().trim();
+      tbl.querySelectorAll('tbody tr').forEach(function(row){
+        var cells=row.querySelectorAll('td');
+        var show=true;
+        if(f1Val&&!(cells[${(data.fields||[])[0]?.colIdx||2}]?cells[${(data.fields||[])[0]?.colIdx||2}].textContent:'').toLowerCase().includes(f1Val))show=false;
+        var ti=0,si=0;
+        ${JSON.stringify(mobColMap)}.forEach(function(ci,fi){
+          var t=${JSON.stringify(mobTypes)}[fi];
+          if(t==='select'){var v=ovWraps[si]?ovWraps[si].dataset.val:'';si++;if(v&&ci>=0&&(cells[ci]?cells[ci].textContent:'').trim()!==v)show=false;}
+          else if(t==='text'){var v2=(ovInps[ti]?ovInps[ti].value:'').toLowerCase().trim();ti++;if(v2&&ci>=0&&!(cells[ci]?cells[ci].textContent:'').toLowerCase().includes(v2))show=false;}
+        });
+        row.style.display=show?'':'none';
+      });
+    })()`.replace(/\s+/g,' ');
+
+    // Mobile add-more btn + badge
+    const mobAddMore = `<button id="flt5m-addbtn" style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex;position:relative"
+        onclick="(function(btn){var ov=document.getElementById('${mobOvId}');ov.style.display=ov.style.display==='none'?'block':'none';})(this)"
+        onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+        onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+      <span class="flt-def">${FLT_SVG_ADD_DEF}</span>
+      <span class="flt-hov" style="display:none">${FLT_SVG_ADD_HOV}</span>
+      <span id="${mobBadgeId}" style="display:none;position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:var(--r6);border:2px solid #fff;pointer-events:none"></span>
+    </button>`;
+
+    const live5SectionFixed = `
       <h3 style="font:700 15px var(--font-sans);margin:24px 0 6px;color:var(--n7)">5+ filtros · live preview</h3>
       <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0 0 16px;line-height:1.6">
-        4 filtros principales en la barra + 3 filtros en el panel de overflow. El punto rojo aparece cuando el panel tiene filtros activos.
-        Todos los inputs son funcionales y filtran la tabla en tiempo real al presionar Filtrar.
+        Todos los inputs y botones son funcionales. <strong>Desktop</strong>: 4 campos visibles + overflow.
+        <strong>Mobile</strong>: solo el primer campo visible; todos los demás van al panel de overflow.
       </p>
-      <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:16px">
-        <!-- Main filter bar (4 fields) -->
+
+      <!-- Desktop -->
+      <div style="margin-bottom:8px;font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Desktop
+      </div>
+      <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
         <div id="${live5Id}" style="display:flex;align-items:center;gap:8px">
           ${(data.fields||[]).map(renderFieldFunctional).join('')}
           <button style="${secBtnStyle}" onclick="${onFilter5.replace(/"/g,"'")}"
             onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'"
             onmousedown="this.style.background='#D1E0FF'" onmouseup="this.style.background='#EDF5FF'"
           >${escHtml(data.filterBtnLabel||'Filtrar')}</button>
-          ${addMore5}
-          ${reset5Btn}
+          ${addMore5}${reset5Btn}
         </div>
+        ${ovPanelCard(live5OvId, ovFields.length, ovRow)}
+        <div style="border:1px solid var(--n4);border-radius:4px;overflow:hidden">${demoTable5}</div>
+      </div>
 
-        <!-- Overflow panel (hidden by default) -->
-        <div id="${live5OvId}" style="display:none;background:var(--n2);border-radius:8px;padding:16px;border:1px solid var(--n3)">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <span style="font:700 11px var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.06em">Otros filtros (${ovFields.length})</span>
-            ${dsCloseBtn(16, 'var(--n5)', '')} <!-- Carbon close icon -->
-          </div>
-          <div style="display:flex;gap:8px">${ovFieldsHtml}</div>
+      <!-- Mobile -->
+      <div style="margin-bottom:8px;font:600 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Mobile — solo el primer campo en la barra; todos los demás en el panel
+      </div>
+      <div style="background:#fff;border-radius:8px;border:1px solid var(--n4);padding:20px;display:flex;flex-direction:column;gap:12px;max-width:400px">
+        <div id="${mobBarId}" style="display:flex;align-items:center;gap:8px">
+          ${mobFirstHtml}
+          <button style="${secBtnStyle}" onclick="${onMobFilter.replace(/"/g,"'")}"
+            onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'"
+          >${escHtml(data.filterBtnLabel||'Filtrar')}</button>
+          ${mobAddMore}
+          <button style="width:32px;height:32px;background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;display:inline-flex"
+            onclick="(function(){var bar=document.getElementById('${mobBarId}');var ov=document.getElementById('${mobOvId}');[bar,ov].forEach(function(el){if(!el)return;el.querySelectorAll('input[type=text]').forEach(function(i){i.value='';i.style.border='1px solid var(--n3)';i.style.background='#fff';});el.querySelectorAll('.dt-drop-wrap').forEach(function(w){var l=w.querySelector('.dt-dlabel');if(l){l.textContent=l.dataset.ph||l.textContent;l.style.color='var(--n6)';l.dataset.filled='';}w.dataset.val='';if(typeof dtDropClose==='function')dtDropClose(w);});});document.getElementById('${mobBadgeId}').style.display='none';document.getElementById('${live5TblId}').querySelectorAll('tbody tr').forEach(function(r){r.style.display='';});ov.style.display='none';})()"
+            onmouseenter="this.querySelector('.flt-def').style.display='none';this.querySelector('.flt-hov').style.display='inline'"
+            onmouseleave="this.querySelector('.flt-def').style.display='inline';this.querySelector('.flt-hov').style.display='none'">
+            <span class="flt-def">${FLT_SVG_RES_DEF}</span>
+            <span class="flt-hov" style="display:none">${FLT_SVG_RES_HOV}</span>
+          </button>
         </div>
-
-        <!-- Demo table -->
-        <div style="border:1px solid var(--n4);border-radius:4px;overflow:hidden">
-          ${demoTable5}
-        </div>
+        ${ovPanelCard(mobOvId, allMobFields.length, mobOvHtml)}
       </div>`;
-
-    // Wire the × inside overflow panel to close it
-    // (done via onclick on the dsCloseBtn, but we need to patch it after render)
-    // We use an IIFE in the button itself:
-    const live5SectionFixed = live5Section.replace(
-      `${dsCloseBtn(16, 'var(--n5)', '')} <!-- Carbon close icon -->`,
-      `<button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:4px;color:var(--n5);flex-shrink:0"
-        onclick="document.getElementById('${live5OvId}').style.display='none'"
-        onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='none'">${dsCloseIcon(16,'var(--n5)')}</button>`
-    );
 
     return `
       ${sectionHeader(data)}
@@ -4901,6 +5015,7 @@ async function downloadAllPins() {
       ${variantSection}
       ${live5SectionFixed}
       <h3 style="font:700 15px var(--font-sans);margin:24px 0 10px;color:var(--n7)">Icon buttons</h3>
+
       ${iconRef}
       <div class="card flush">
         <div class="card-hdr"><span class="ttl">Tokens</span></div>
