@@ -1047,11 +1047,6 @@
             </div>
           </div>
 
-          <!-- Card footer with actions -->
-          <div style="padding:12px 20px;border-top:1px solid var(--n3);background:#FAFBFD;display:flex;justify-content:flex-end;gap:8px">
-            <button class="btn ghost" onclick="backToReports()">Cancelar</button>
-            <button id="edit-save-btn-bottom" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>
-          </div>
         </div>
 
         <!-- Danger zone card (no header) -->
@@ -1355,7 +1350,7 @@
   }
 
   function setEditSaveBtns(disabled) {
-    ['edit-save-btn-top','edit-save-btn-bottom'].forEach(id => {
+    ['edit-save-btn-top'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) btn.disabled = disabled;
     });
