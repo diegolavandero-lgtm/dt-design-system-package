@@ -352,14 +352,12 @@
     /* ════════════════════════
        INFO BANNER
     ════════════════════════ */
-    .info-banner{
-      display:flex;align-items:flex-start;gap:10px;
-      padding:12px 14px;border-radius:6px;
-      background:var(--n1);border:1px solid #E1E6ED;
-      font:400 13px var(--font-sans);color:var(--n6);
-      margin-bottom:16px;line-height:1.5;
-    }
-    .info-banner svg{width:15px;height:15px;color:var(--n45);flex-shrink:0;margin-top:1px}
+    .bn{display:flex;gap:9px;padding:9px 12px;border-radius:4px;align-items:flex-start;font:400 12px/1.4 var(--font-sans);color:var(--n7)}
+    .bn svg{flex-shrink:0;margin-top:1px}
+    .bn.ok{background:var(--g1);border-left:3px solid var(--g6)}
+    .bn.wr{background:var(--o1);border-left:3px solid var(--o5)}
+    .bn.er{background:var(--r1);border-left:3px solid var(--r6)}
+    .bn.in{background:var(--b1);border-left:3px solid var(--b6)}
 
     /* 2FA info card */
     .twofa-body{display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -760,9 +758,9 @@
         <div class="card">
           <div class="card-hdr"><span class="card-ttl">Cambiar contraseña</span></div>
           <div class="card-body">
-            <div class="info-banner">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Para cambiar tu contraseña, primero confirma tu identidad con la contraseña actual.
+            <div class="bn in" style="margin-bottom:16px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+              <span>Para cambiar tu contraseña, primero confirma tu identidad con la contraseña actual.</span>
             </div>
             <div class="form-row">
               <label class="lbl">Contraseña actual <span class="req">*</span></label>
@@ -848,9 +846,9 @@
           <div class="card" id="add-user-form-card">
             <div class="card-hdr"><span class="card-ttl">Agregar usuario existente</span></div>
             <div class="card-body">
-              <div class="info-banner">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                Ingresa el correo del usuario que quieres asociar. Tu contraseña actual es requerida para autorizar el acceso compartido.
+              <div class="bn in" style="margin-bottom:16px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F60ED" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+                <span>Ingresa el correo del usuario que quieres asociar. Tu contraseña actual es requerida para autorizar el acceso compartido.</span>
               </div>
               <div class="form-grid">
                 <div class="form-row">
