@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:27:36.645Z",
+  "generated": "2026-06-10T18:37:10.744Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "1fd4a29",
+          "type": "feat",
+          "section": "Inputs",
+          "message": "DES-827: add syncSharedUsersHeight, sync user list card height to form card on tab show",
+          "author": "Carlos"
+        },
         {
           "hash": "428f0bb",
           "type": "update",
