@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:52:56.187Z",
+  "generated": "2026-06-10T18:56:24.465Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "a1a2659",
+          "type": "update",
+          "section": "Icons",
+          "message": "DES-827: use filled Material info icon for .bn.in banners",
+          "author": "Carlos"
+        },
         {
           "hash": "148327b",
           "type": "fix",
