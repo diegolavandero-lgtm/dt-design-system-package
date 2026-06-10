@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T16:49:46.269Z",
+  "generated": "2026-06-10T16:53:16.202Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "d2ed9b6",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: vertically center 2FA card content",
+          "author": "Carlos"
+        },
         {
           "hash": "80f25f4",
           "type": "update",
