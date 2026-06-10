@@ -1255,7 +1255,7 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                   <div style="flex:1;min-width:0;position:relative;">
                     <div class="flbl">Inicio turno</div>
                     <div class="t-time-inp"
-                      onclick="(function(el){var pop=el.nextElementSibling;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open){pop.style.display='block';buildClockFace(pop.querySelector('[data-tp]'));}})(this)"
+                      onclick="(function(el){var pop=el.nextElementSibling;if(window._floatEl===pop){window.floatClose();return;}pop.style.display='block';window.floatOpen(pop,el);window.buildClockFace(pop.querySelector('[data-tp]'));})(this)"
                       onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
                       <span id="twStartDisp">09:00</span>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -1274,8 +1274,8 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
                           <button data-mode-icon onclick="_tpToggleMode(this)" style="background:none;border:none;cursor:pointer;display:flex"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></button>
                           <div style="display:flex;gap:14px">
-                            <button onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
-                            <button onclick="(function(b){var tp=b.closest('[data-tp]');var h=String(tp.dataset.hour||9).padStart(2,'0');var m=String(tp.dataset.minute||0).padStart(2,'0');document.getElementById('twStartDisp').textContent=h+':'+m;b.closest('[data-popover]').style.display='none';})(this)" style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
+                            <button onclick="floatClose()" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
+                            <button onclick="(function(b){var tp=b.closest('[data-tp]');var h=String(tp.dataset.hour||9).padStart(2,'0');var m=String(tp.dataset.minute||0).padStart(2,'0');document.getElementById('twStartDisp').textContent=h+':'+m;floatClose();})(this)" style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
                           </div>
                         </div>
                       </div>
@@ -1284,7 +1284,7 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                   <div style="flex:1;min-width:0;position:relative;">
                     <div class="flbl">Fin turno</div>
                     <div class="t-time-inp"
-                      onclick="(function(el){var pop=el.nextElementSibling;var open=pop.style.display!=='none';document.querySelectorAll('[data-popover]').forEach(function(p){p.style.display='none';});if(!open){pop.style.display='block';buildClockFace(pop.querySelector('[data-tp]'));}})(this)"
+                      onclick="(function(el){var pop=el.nextElementSibling;if(window._floatEl===pop){window.floatClose();return;}pop.style.display='block';window.floatOpen(pop,el);window.buildClockFace(pop.querySelector('[data-tp]'));})(this)"
                       onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'">
                       <span id="twEndDisp">18:00</span>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -1303,8 +1303,8 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
                           <button data-mode-icon onclick="_tpToggleMode(this)" style="background:none;border:none;cursor:pointer;display:flex"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></button>
                           <div style="display:flex;gap:14px">
-                            <button onclick="this.closest('[data-popover]').style.display='none'" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
-                            <button onclick="(function(b){var tp=b.closest('[data-tp]');var h=String(tp.dataset.hour||18).padStart(2,'0');var m=String(tp.dataset.minute||0).padStart(2,'0');document.getElementById('twEndDisp').textContent=h+':'+m;b.closest('[data-popover]').style.display='none';})(this)" style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
+                            <button onclick="floatClose()" style="background:none;border:none;font:500 13px var(--font-sans);color:var(--n6);cursor:pointer">Cancelar</button>
+                            <button onclick="(function(b){var tp=b.closest('[data-tp]');var h=String(tp.dataset.hour||18).padStart(2,'0');var m=String(tp.dataset.minute||0).padStart(2,'0');document.getElementById('twEndDisp').textContent=h+':'+m;floatClose();})(this)" style="background:none;border:none;font:600 13px var(--font-sans);color:var(--b6);cursor:pointer">Guardar</button>
                           </div>
                         </div>
                       </div>
@@ -1787,6 +1787,9 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
     </div>
   </div>
 </div>
+
+<!-- Fixed float layer: popovers moved here to escape overflow containers -->
+<div id="dt-float" style="position:fixed;inset:0;pointer-events:none;z-index:25000;"></div>
 
 <!-- ============ PROTOTYPE NAV ============ -->
 <div class="protonav" id="protonav">
@@ -2839,30 +2842,73 @@ window._tpToggleMode=function(btn){
   if(m==='clock')buildClockFace(tp);
 };
 
-/* Functional DS Select */
-function tToggleSel(wrapId){
-  var wrap=document.getElementById(wrapId);
-  var menu=document.getElementById(wrapId+'Menu');
-  var open=menu.classList.contains('on');
-  // Close all other selects
-  document.querySelectorAll('.t-select-menu.on').forEach(function(m){m.classList.remove('on');});
-  if(!open){
-    menu.classList.add('on');
-    setTimeout(function(){document.addEventListener('click',function h(e){
-      if(!wrap.contains(e.target)){menu.classList.remove('on');document.removeEventListener('click',h);}
-    });},0);
+/* ── Floating popover manager — escapes overflow containers via #dt-float ──
+   All dropdowns and time pickers use this so they're never clipped.         */
+var _floatEl=null;   // currently open floating element
+var _floatOrigin=null; // original parent before moving to #dt-float
+var _floatTrigger=null; // trigger element for outside-click detection
+var _outsideHandler=null;
+
+function floatOpen(el,trigger){
+  /* Close any open float first */
+  floatClose();
+  var layer=document.getElementById('dt-float');
+  if(!layer||!el)return;
+  /* Remember where it came from */
+  _floatEl=el;
+  _floatOrigin=el.parentElement;
+  _floatTrigger=trigger;
+  /* Calculate position from trigger */
+  var r=trigger.getBoundingClientRect();
+  el.style.position='absolute';
+  el.style.top=(r.bottom+4)+'px';
+  el.style.left=r.left+'px';
+  el.style.minWidth=r.width+'px';
+  el.style.pointerEvents='all';
+  el.style.display='block';
+  layer.appendChild(el);
+  /* Close on outside click (checks both trigger and the floated el) */
+  setTimeout(function(){
+    _outsideHandler=function(e){
+      if(!el.contains(e.target)&&!trigger.contains(e.target)){
+        floatClose();
+      }
+    };
+    document.addEventListener('click',_outsideHandler,{capture:true});
+  },0);
+}
+function floatClose(){
+  if(!_floatEl)return;
+  /* Move back to original parent */
+  _floatEl.style.display='none';
+  _floatEl.style.pointerEvents='';
+  if(_floatOrigin&&_floatOrigin.contains===undefined===false){
+    _floatOrigin.appendChild(_floatEl);
   }
+  if(_outsideHandler){
+    document.removeEventListener('click',_outsideHandler,{capture:true});
+    _outsideHandler=null;
+  }
+  _floatEl=null;_floatOrigin=null;_floatTrigger=null;
+}
+
+/* Functional DS Select — uses floating layer */
+function tToggleSel(wrapId){
+  var trigger=document.querySelector('#'+wrapId+' .t-select-trigger');
+  var menu=document.getElementById(wrapId+'Menu');
+  if(!trigger||!menu)return;
+  if(_floatEl===menu){floatClose();return;}
+  floatOpen(menu,trigger);
 }
 function tPickSel(wrapId,val){
   document.getElementById(wrapId+'Lbl').textContent=val;
-  document.getElementById(wrapId+'Menu').classList.remove('on');
-  // Update sel class
   document.querySelectorAll('#'+wrapId+'Menu .t-select-opt').forEach(function(o){
     o.classList.toggle('sel',o.textContent.trim()===val);
   });
+  floatClose();
 }
 
-/* ── DS 24H Time Picker ── */
+/* ── DS 24H Time Picker — uses floating layer ── */
 var _tpState={};
 
 function tBuildClock(wrapId,h,m){
@@ -2920,20 +2966,22 @@ function tBuildClock(wrapId,h,m){
 }
 function pad2(n){return n<10?'0'+n:String(n);}
 function tOpenTime(wrapId){
-  var valEl=document.getElementById(wrapId+'Val');
-  var parts=(valEl.textContent||'09:00').split(':');
+  var trigger=document.querySelector('#'+wrapId+' .t-time-inp');
+  var picker=document.getElementById(wrapId+'Picker');
+  if(!trigger||!picker)return;
+  if(_floatEl===picker){floatClose();return;}
+  var valEl=document.getElementById(wrapId+'Val')||document.getElementById(wrapId.replace('tw','tw')+'Disp');
+  if(!valEl){valEl=trigger.querySelector('span');}
+  var parts=(valEl?valEl.textContent:'09:00').split(':');
   var h=parseInt(parts[0])||0, m=parseInt(parts[1])||0;
   _tpState[wrapId]={h:h,m:m};
-  var picker=document.getElementById(wrapId+'Picker');
   picker.innerHTML=tBuildClock(wrapId,h,m);
-  picker.classList.add('on');
-  setTimeout(function(){document.addEventListener('click',function hh(e){
-    var wrap=document.getElementById(wrapId);
-    if(!wrap.contains(e.target)){picker.classList.remove('on');document.removeEventListener('click',hh);}
-  });},0);
+  floatOpen(picker,trigger);
 }
 function tCloseTime(wrapId){
-  document.getElementById(wrapId+'Picker').classList.remove('on');
+  var picker=document.getElementById(wrapId+'Picker');
+  if(_floatEl===picker)floatClose();
+  else picker.classList.remove('on');
 }
 function tPickHour(wrapId,h){
   var st=_tpState[wrapId]||{h:h,m:0};
