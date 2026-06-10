@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:45:54.464Z",
+  "generated": "2026-06-10T18:48:23.705Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "04d32fb",
+          "type": "update",
+          "section": "Banners",
+          "message": "DES-827: replace custom info-banner with DS .bn.in component",
+          "author": "Carlos"
+        },
         {
           "hash": "766d5be",
           "type": "fix",
