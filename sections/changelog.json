@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T15:28:53.134Z",
+  "generated": "2026-06-10T15:34:14.299Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "10a9fd0",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(filters): compact overflow panel — remove height:32px from close btn, reduce margin-bottom 12→8px",
+          "author": "Diego"
+        },
         {
           "hash": "f8d4545",
           "type": "fix",
