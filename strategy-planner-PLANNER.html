@@ -2842,54 +2842,39 @@ window._tpToggleMode=function(btn){
   if(m==='clock')buildClockFace(tp);
 };
 
-/* ── Floating popover manager — escapes overflow containers via #dt-float ──
-   All dropdowns and time pickers use this so they're never clipped.         */
-var _floatEl=null;   // currently open floating element
-var _floatOrigin=null; // original parent before moving to #dt-float
-var _floatTrigger=null; // trigger element for outside-click detection
-var _outsideHandler=null;
+/* ── Floating popover manager ──
+   Sets position:fixed directly on the element so it escapes any
+   overflow container. Closes on outside click or sidebar scroll. */
+var _floatEl=null,_floatTrigger=null,_outsideHandler=null,_scrollHandler=null;
 
 function floatOpen(el,trigger){
-  /* Close any open float first */
   floatClose();
-  var layer=document.getElementById('dt-float');
-  if(!layer||!el)return;
-  /* Remember where it came from */
-  _floatEl=el;
-  _floatOrigin=el.parentElement;
-  _floatTrigger=trigger;
-  /* Calculate position from trigger */
+  if(!el||!trigger)return;
+  _floatEl=el;_floatTrigger=trigger;
   var r=trigger.getBoundingClientRect();
-  el.style.position='absolute';
+  el.style.position='fixed';
   el.style.top=(r.bottom+4)+'px';
   el.style.left=r.left+'px';
-  el.style.minWidth=r.width+'px';
-  el.style.pointerEvents='all';
+  el.style.width=Math.max(r.width,200)+'px';
+  el.style.zIndex='25000';
   el.style.display='block';
-  layer.appendChild(el);
-  /* Close on outside click (checks both trigger and the floated el) */
   setTimeout(function(){
     _outsideHandler=function(e){
-      if(!el.contains(e.target)&&!trigger.contains(e.target)){
-        floatClose();
-      }
+      if(!el.contains(e.target)&&!trigger.contains(e.target))floatClose();
     };
     document.addEventListener('click',_outsideHandler,{capture:true});
+    var sc=document.querySelector('.tcfg');
+    if(sc){_scrollHandler=function(){floatClose();};sc.addEventListener('scroll',_scrollHandler,{passive:true});}
   },0);
 }
 function floatClose(){
   if(!_floatEl)return;
-  /* Move back to original parent */
+  _floatEl.style.cssText=_floatEl.style.cssText.replace(/position:[^;]+;?/,'').replace(/top:[^;]+;?/,'').replace(/left:[^;]+;?/,'').replace(/width:[^;]+;?/,'').replace(/z-index:[^;]+;?/,'');
   _floatEl.style.display='none';
-  _floatEl.style.pointerEvents='';
-  if(_floatOrigin&&_floatOrigin.contains===undefined===false){
-    _floatOrigin.appendChild(_floatEl);
-  }
-  if(_outsideHandler){
-    document.removeEventListener('click',_outsideHandler,{capture:true});
-    _outsideHandler=null;
-  }
-  _floatEl=null;_floatOrigin=null;_floatTrigger=null;
+  if(_outsideHandler){document.removeEventListener('click',_outsideHandler,{capture:true});_outsideHandler=null;}
+  var sc=document.querySelector('.tcfg');
+  if(sc&&_scrollHandler){sc.removeEventListener('scroll',_scrollHandler);_scrollHandler=null;}
+  _floatEl=null;_floatTrigger=null;
 }
 
 /* Functional DS Select — uses floating layer */
