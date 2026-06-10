@@ -1140,8 +1140,13 @@
   });
 
   function switchTab(idx, el) {
+    // Exit edit mode if active
+    document.getElementById('panel-edit-report').style.display = 'none';
+    const ha = document.getElementById('page-header-actions');
+    if (ha) ha.style.display = 'none';
+
     document.querySelectorAll('.sb-item').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => { p.classList.remove('active'); p.style.display = ''; });
     el.classList.add('active');
     document.getElementById('panel-' + idx).classList.add('active');
     document.querySelector('.content').classList.toggle('wide', idx === 3);
