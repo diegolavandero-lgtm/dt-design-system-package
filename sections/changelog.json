@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T15:44:28.351Z",
+  "generated": "2026-06-10T15:46:18.121Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "482d1f7",
+          "type": "update",
+          "section": "Topbar",
+          "message": "DES-827: move Cerrar sesión to user dropdown in topbar",
+          "author": "Carlos"
+        },
         {
           "hash": "4faa7ea",
           "type": "fix",
