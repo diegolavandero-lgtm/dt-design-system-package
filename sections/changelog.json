@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T19:52:31.281Z",
+  "generated": "2026-06-10T19:56:19.530Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "d32c656",
+          "type": "update",
+          "section": "Inputs",
+          "message": "DES-827: consistency audit — modal radius 4px, form-grid gap 16px, btn.danger, label for/id a11y associations",
+          "author": "Carlos"
+        },
         {
           "hash": "b873354",
           "type": "fix",
