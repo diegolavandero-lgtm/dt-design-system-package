@@ -255,6 +255,7 @@
     .btn.primary{background:#4B82FA;color:#fff;border-color:#4B82FA}
     .btn.primary:hover{background:#1F60ED;border-color:#1F60ED}
     .btn.primary:active{background:#0052CC;border-color:#0052CC}
+    .btn.primary:disabled{background:#A8C3FD;border-color:#A8C3FD;cursor:not-allowed;pointer-events:none;opacity:1}
     .btn.danger{background:#fff;color:var(--r6);border-color:var(--r6)}
     .btn.danger:hover{background:var(--r1)}
 
@@ -910,7 +911,7 @@
             </div>
             <div style="display:flex;gap:8px">
               <button class="btn ghost" onclick="backToReports()">Cancelar</button>
-              <button class="btn primary" onclick="saveReport()">Guardar cambios</button>
+              <button id="edit-save-btn-top" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>
             </div>
           </div>
           <div class="card-body">
@@ -923,6 +924,7 @@
                 style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;
                        font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);
                        box-sizing:border-box;outline:none;padding:0 10px"
+                oninput="checkEditDirty()"
                 onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
                 onblur="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
             </div>
@@ -937,10 +939,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
                   <div class="dt-dmenu">
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Órdenes del día</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Actividad de rutas</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Resumen de conductores</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Entregas por zona</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-tipo','lbl-edit-tipo',this)">Órdenes del día</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-tipo','lbl-edit-tipo',this)">Actividad de rutas</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-tipo','lbl-edit-tipo',this)">Resumen de conductores</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-tipo','lbl-edit-tipo',this)">Entregas por zona</div>
                   </div>
                 </div>
               </div>
@@ -952,8 +954,8 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
                   <div class="dt-dmenu">
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-formato','lbl-edit-formato',this)">Excel (.xlsx)</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-formato','lbl-edit-formato',this)">PDF</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-formato','lbl-edit-formato',this)">Excel (.xlsx)</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-formato','lbl-edit-formato',this)">PDF</div>
                   </div>
                 </div>
               </div>
@@ -969,9 +971,9 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
                   <div class="dt-dmenu">
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-frec','lbl-edit-frec',this)">Diario</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-frec','lbl-edit-frec',this)">Semanal</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-frec','lbl-edit-frec',this)">Mensual</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-frec','lbl-edit-frec',this)">Diario</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-frec','lbl-edit-frec',this)">Semanal</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-frec','lbl-edit-frec',this)">Mensual</div>
                   </div>
                 </div>
               </div>
@@ -983,12 +985,12 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
                   <div class="dt-dmenu">
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">06:00</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">08:00</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">09:00</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">12:00</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">17:00</div>
-                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">20:00</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">06:00</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">08:00</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">09:00</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">12:00</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">17:00</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">20:00</div>
                   </div>
                 </div>
               </div>
@@ -1009,15 +1011,12 @@
           <!-- Card footer with actions -->
           <div style="padding:12px 20px;border-top:1px solid var(--n3);background:#FAFBFD;display:flex;justify-content:flex-end;gap:8px">
             <button class="btn ghost" onclick="backToReports()">Cancelar</button>
-            <button class="btn primary" onclick="saveReport()">Guardar cambios</button>
+            <button id="edit-save-btn-bottom" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>
           </div>
         </div>
 
-        <!-- Danger zone card -->
+        <!-- Danger zone card (no header) -->
         <div class="danger-zone">
-          <div class="danger-zone-hdr">
-            <span class="danger-zone-ttl">Zona de peligro</span>
-          </div>
           <div class="danger-zone-body">
             <div>
               <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:4px">Eliminar este reporte</div>
@@ -1264,15 +1263,54 @@
       });
     }
 
-    // Navigate to edit panel
-    document.querySelector('.content').classList.add('wide');
+    // Navigate to edit panel (no wide — default 820px max-width)
+    document.querySelector('.content').classList.remove('wide');
     document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
     document.getElementById('panel-edit-report').style.display = 'block';
+
+    // Disable save buttons until a change is detected
+    setEditSaveBtns(true);
+    _editOriginal = getEditSnapshot();
+  }
+
+  /* ── dirty-check helpers ── */
+  let _editOriginal = {};
+
+  function getEditSnapshot() {
+    const chips = [...document.querySelectorAll('#edit-chips .email-chip')]
+      .map(c => c.textContent.replace('×','').trim()).join(',');
+    return {
+      nombre:    document.getElementById('edit-nombre').value.trim(),
+      tipo:      document.getElementById('lbl-edit-tipo').textContent.trim(),
+      formato:   document.getElementById('lbl-edit-formato').textContent.trim(),
+      frec:      document.getElementById('lbl-edit-frec').textContent.trim(),
+      hora:      document.getElementById('lbl-edit-hora').textContent.trim(),
+      chips
+    };
+  }
+
+  function checkEditDirty() {
+    const cur = getEditSnapshot();
+    const dirty = Object.keys(_editOriginal).some(k => cur[k] !== _editOriginal[k]);
+    setEditSaveBtns(!dirty);
+  }
+
+  function setEditSaveBtns(disabled) {
+    ['edit-save-btn-top','edit-save-btn-bottom'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.disabled = disabled;
+    });
+  }
+
+  function dtPickEdit(dropId, lblId, el) {
+    dtPick(dropId, lblId, el);
+    checkEditDirty();
   }
 
   function backToReports() {
     document.getElementById('panel-edit-report').style.display = 'none';
     document.getElementById('panel-3').style.display = 'block';
+    document.querySelector('.content').classList.add('wide');
   }
 
   function editEmailKeydown(e) {
@@ -1281,13 +1319,14 @@
       e.preventDefault();
       const chip = document.createElement('span');
       chip.className = 'email-chip';
-      chip.innerHTML = `${inp.value.trim()} <button type="button" onclick="this.parentElement.remove()">×</button>`;
+      chip.innerHTML = `${inp.value.trim()} <button type="button" onclick="this.parentElement.remove();checkEditDirty()">×</button>`;
       document.getElementById('edit-chips').insertBefore(chip, inp);
       inp.value = '';
+      checkEditDirty();
     }
     if (e.key === 'Backspace' && inp.value === '') {
       const chips = document.querySelectorAll('#edit-chips .email-chip');
-      if (chips.length) chips[chips.length - 1].remove();
+      if (chips.length) { chips[chips.length - 1].remove(); checkEditDirty(); }
     }
   }
 
