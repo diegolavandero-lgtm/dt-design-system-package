@@ -438,32 +438,33 @@
        DS TABLE — tokens from table.json
        cellHeight:44px · headerBg:N3 · rowHover:N2 · radius:8px
     ════════════════════════ */
-    .ds-table-wrap{border-radius:8px;border:1px solid var(--n3);overflow:hidden}
-    .ds-table{width:100%;border-collapse:collapse;font:400 13px var(--font-sans)}
-    .ds-table thead tr{background:var(--n3)}
-    .ds-table th{
-      height:40px;padding:0 14px;text-align:left;
-      font:700 10px var(--font-sans);color:var(--n5);
-      text-transform:uppercase;letter-spacing:.05em;
-      white-space:nowrap;border-bottom:1px solid var(--n3);
-    }
-    .ds-table td{
-      height:44px;padding:0 14px;color:var(--n7);
-      border-bottom:1px solid var(--n3);vertical-align:middle;
-      white-space:nowrap;
-    }
-    .ds-table tbody tr:last-child td{border-bottom:none}
-    .ds-table tbody tr:hover td{background:var(--n2)}
-    .ds-table .td-name{font-weight:600;color:var(--n7)}
-    .ds-table .td-actions{display:flex;align-items:center;gap:6px}
-    .ds-table .act-btn{
-      width:28px;height:28px;border-radius:4px;border:1px solid var(--n3);
-      background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
-      color:var(--n5);transition:background .1s,color .1s,border-color .1s;
-    }
-    .ds-table .act-btn:hover{background:var(--n2);color:var(--n7);border-color:var(--n4)}
-    .ds-table .act-btn.danger:hover{background:var(--r1);color:var(--r6);border-color:var(--r6)}
-    .ds-table .act-btn svg{width:14px;height:14px;fill:currentColor}
+    /* ── DS TABLE (from index.html) ── */
+    .tbl{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color:var(--n7)}
+    .tbl-wrap>.tbl{width:auto;min-width:100%}
+    .tbl thead th{background:var(--n3);font:700 13px var(--font-sans);text-align:left;padding:10px 16px;border-bottom:1px solid var(--n4);color:var(--n7);white-space:nowrap;min-width:110px}
+    .tbl td{padding:10px 16px;border-bottom:1px solid var(--n3);vertical-align:middle;min-width:110px;white-space:nowrap}
+    .tbl tr:last-child td{border-bottom:0}
+    .tbl tr:hover td{background:var(--n2)}
+    .tbl tr.sel td{background:var(--b1)}
+    .tbl .lnk,.tbl td.cell-lnk{color:var(--b7);font-weight:600;cursor:pointer}
+    .tbl td.cell-num{text-align:right;font-variant-numeric:tabular-nums}
+    .tbl td.cell-muted{color:var(--n5)}
+    .tbl .tbl-acts{display:flex;align-items:center;gap:1px;justify-content:center}
+    .tbl .tbl-act-btn{width:26px;height:26px;border:none;background:none;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5);padding:0}
+    .tbl .tbl-act-btn:hover{background:var(--n2);color:var(--n7)}
+    .tbl th .tbl-sort{margin-left:5px;vertical-align:middle;opacity:.55}
+    .tbl-outer{position:relative}
+    .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tbl-wrap::-webkit-scrollbar{height:5px}
+    .tbl-wrap::-webkit-scrollbar-track{background:transparent}
+    .tbl-wrap::-webkit-scrollbar-thumb{background:transparent;border-radius:3px}
+    .tbl-outer:hover .tbl-wrap::-webkit-scrollbar-track{background:var(--n2)}
+    .tbl-outer:hover .tbl-wrap::-webkit-scrollbar-thumb{background:var(--n4);border-radius:3px}
+    .tbl th.tbl-acts-col{position:sticky;right:0;z-index:2;width:82px;min-width:82px;max-width:82px;background:var(--n3);box-shadow:-6px 0 12px -6px rgba(0,0,0,.14);text-align:center;padding:10px 4px}
+    .tbl td.tbl-acts-col{position:sticky;right:0;z-index:1;width:82px;min-width:82px;max-width:82px;background:#fff;box-shadow:-6px 0 12px -6px rgba(0,0,0,.10);text-align:center}
+    .tbl th.tbl-acts-col::before,.tbl td.tbl-acts-col::before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:1px;pointer-events:none}
+    .tbl th.tbl-acts-col::before{background:var(--n4)}
+    .tbl td.tbl-acts-col::before{background:var(--n3)}
 
     /* ════════════════════════
        MODAL — DS pattern
@@ -843,25 +844,27 @@
           </div>
 
           <!-- TABLE (hidden until first report added) -->
-          <div id="rpt-table-wrap" style="display:none">
-            <div class="ds-table-wrap" style="border-radius:0;border:none;border-top:1px solid var(--n3)">
-              <table class="ds-table">
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Tipo</th>
-                    <th>Formato</th>
-                    <th>Frecuencia</th>
-                    <th>Próximo envío</th>
-                    <th>Destinatarios</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="rpt-tbody"></tbody>
-              </table>
+          <div id="rpt-table-wrap" style="display:none;border-top:1px solid var(--n3)">
+            <div class="tbl-outer">
+              <div class="tbl-wrap">
+                <table class="tbl">
+                  <thead>
+                    <tr>
+                      <th>Nombre <svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg></th>
+                      <th>Tipo</th>
+                      <th>Formato</th>
+                      <th>Frecuencia <svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg></th>
+                      <th>Próximo envío <svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg></th>
+                      <th>Destinatarios</th>
+                      <th>Estado</th>
+                      <th class="tbl-acts-col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rpt-tbody"></tbody>
+                </table>
+              </div>
             </div>
-            <div style="padding:10px 16px;border-top:1px solid var(--n3);font:400 12px var(--font-sans);color:var(--n5)" id="rpt-count">1 reporte programado</div>
+            <div style="padding:8px 16px;border-top:1px solid var(--n3);font:400 12px var(--font-sans);color:var(--n5)" id="rpt-count"></div>
           </div>
         </div>
 
@@ -1028,30 +1031,41 @@
     showToast('Reporte programado creado correctamente');
   }
 
+  const _badge = (label, bg, bd, fg) =>
+    `<span style="display:inline-flex;align-items:center;height:22px;padding:2px 8px;border-radius:4px;border:1px solid ${bd};background:${bg};color:${fg};font:600 11px/1 var(--font-sans);white-space:nowrap">${label}</span>`;
+  const _iconBtn = (title, paths, onclick) =>
+    `<button class="tbl-act-btn" title="${title}" onclick="${onclick}"><svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14">${paths}</svg></button>`;
+
   function renderReportTable() {
+    const EDIT_ICO  = '<path d="M2 26H30V28H2z"/><path d="M25.4,9c.8-.8.8-2,0-2.8l-3.6-3.6c-.8-.8-2-.8-2.8,0l-14,14V22h6.4L25.4,9zM20.4,4L24,7.6l-3,3L17.4,7zM6,22v-3.6l10-10,3.6,3.6-10,10H6z"/>';
+    const DEL_ICO   = '<path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/>';
+
     const tbody = document.getElementById('rpt-tbody');
     tbody.innerHTML = reportRows.map((r, i) => `
       <tr>
-        <td><strong>${r.nombre}</strong></td>
+        <td><strong style="font-weight:600">${r.nombre}</strong></td>
         <td>${r.tipo}</td>
         <td>${r.formato}</td>
         <td>${r.frec}</td>
         <td>${r.proximo}</td>
-        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.destinatarios}">${r.destinatarios}</td>
-        <td><span class="status-badge active">Activo</span></td>
-        <td>
-          <button class="act-btn" title="Editar" onclick="deleteReport(${i})">
-            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M2 26h28v2H2zM25.4 9c.8-.8.8-2 0-2.8l-3.6-3.6c-.8-.8-2-.8-2.8 0l-14 14V22h6.4l14-13zM20.6 4.2L24.2 7.8 22 10l-3.6-3.6 2.2-2.2zM6 20v-3.6l10-10 3.6 3.6-10 10H6z"/></svg>
-          </button>
-          <button class="act-btn" title="Eliminar" onclick="deleteReport(${i})" style="color:var(--red,#E54D4D)">
-            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12 12H10v12h2zm8 0h-2v12h2z"/><path d="M4 6v2h2l2 20h16l2-20h2V6zm4.9 20L9 8h14.1l-1.1 18z"/><path d="M12 2h8v2h-8z"/></svg>
-          </button>
+        <td class="cell-muted" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${r.destinatarios}">${r.destinatarios}</td>
+        <td>${_badge('Activo','var(--g1)','var(--g3)','var(--g7)')}</td>
+        <td class="tbl-acts-col">
+          <div class="tbl-acts">
+            ${_iconBtn('Editar', EDIT_ICO, `editReport(${i})`)}
+            ${_iconBtn('Eliminar', DEL_ICO, `deleteReport(${i})`)}
+          </div>
         </td>
       </tr>`).join('');
+
     const count = reportRows.length;
     document.getElementById('rpt-count').textContent = `${count} reporte${count !== 1 ? 's' : ''} programado${count !== 1 ? 's' : ''}`;
     document.getElementById('rpt-empty').style.display = 'none';
     document.getElementById('rpt-table-wrap').style.display = 'block';
+  }
+
+  function editReport(idx) {
+    showToast('Edición de reportes — próximamente');
   }
 
   function deleteReport(idx) {
