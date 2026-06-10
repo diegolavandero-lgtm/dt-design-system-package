@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T19:08:06.708Z",
+  "generated": "2026-06-10T19:18:44.880Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "54ea680",
+          "type": "feat",
+          "section": "Inputs",
+          "message": "DES-827: add width:100% to .inp-wrap so inputs fill their container",
+          "author": "Carlos"
+        },
         {
           "hash": "484de51",
           "type": "fix",
