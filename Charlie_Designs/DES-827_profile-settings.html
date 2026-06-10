@@ -813,6 +813,8 @@
       <!-- ══ TAB 2 — Acceso y usuarios ══ -->
       <div class="panel" id="panel-2">
 
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
         <div class="card">
           <div class="card-hdr">
             <span class="card-ttl">Usuarios con acceso compartido</span>
@@ -825,31 +827,6 @@
               <p class="empty-title">Sin usuarios asociados</p>
               <p class="empty-desc">Comparte el acceso a tu cuenta con otros usuarios de tu organización.</p>
               <button class="btn" onclick="toggleAddUser()">Agregar primer usuario</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card" id="add-user-form" style="display:none">
-          <div class="card-hdr"><span class="card-ttl">Agregar usuario existente</span></div>
-          <div class="card-body">
-            <div class="info-banner">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Ingresa el correo del usuario que quieres asociar. Tu contraseña actual es requerida para autorizar el acceso compartido.
-            </div>
-            <div class="form-grid">
-              <div class="form-row">
-                <label class="lbl">Correo del usuario <span class="req">*</span></label>
-                <div class="inp-wrap"><input type="email" placeholder="usuario@empresa.com"></div>
-              </div>
-              <div class="form-row">
-                <label class="lbl">Tu contraseña actual <span class="req">*</span></label>
-                <div class="inp-wrap"><input type="password" placeholder="Confirma tu identidad" autocomplete="current-password"></div>
-                <p class="helper">Requerida para autorizar el acceso compartido.</p>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="btn" onclick="toggleAddUser()">Cancelar</button>
-              <button class="btn primary" onclick="showToast('Usuario asociado correctamente');toggleAddUser()">Guardar</button>
             </div>
           </div>
         </div>
@@ -875,6 +852,33 @@
               </tbody>
             </table>
             <div class="tbl-footer">Los agentes de soporte son asignados por DispatchTrack. Contacta a tu representante para modificarlos.</div>
+          </div>
+        </div>
+
+        </div><!-- end 2-col grid -->
+
+        <div class="card" id="add-user-form" style="display:none">
+          <div class="card-hdr"><span class="card-ttl">Agregar usuario existente</span></div>
+          <div class="card-body">
+            <div class="info-banner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Ingresa el correo del usuario que quieres asociar. Tu contraseña actual es requerida para autorizar el acceso compartido.
+            </div>
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="lbl">Correo del usuario <span class="req">*</span></label>
+                <div class="inp-wrap"><input type="email" placeholder="usuario@empresa.com"></div>
+              </div>
+              <div class="form-row">
+                <label class="lbl">Tu contraseña actual <span class="req">*</span></label>
+                <div class="inp-wrap"><input type="password" placeholder="Confirma tu identidad" autocomplete="current-password"></div>
+                <p class="helper">Requerida para autorizar el acceso compartido.</p>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn" onclick="toggleAddUser()">Cancelar</button>
+              <button class="btn primary" onclick="showToast('Usuario asociado correctamente');toggleAddUser()">Guardar</button>
+            </div>
           </div>
         </div>
 
