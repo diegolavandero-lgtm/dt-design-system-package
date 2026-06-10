@@ -830,7 +830,7 @@
               </div>
             </div>
             <div id="shared-users-table" class="card-body flush" style="display:none">
-              <table class="dt-table">
+              <table class="tbl">
                 <thead>
                   <tr>
                     <th>Nombre</th>
@@ -1220,11 +1220,11 @@
     tbody.insertAdjacentHTML('beforeend', `
       <tr>
         <td><div class="user-cell"><div class="user-av-sm">${initials}</div>${name}</div></td>
-        <td style="color:var(--n5)">${email}</td>
+        <td class="cell-muted">${email}</td>
         <td><span class="badge success"><span class="dot"></span>Activo</span></td>
         <td class="tbl-acts-col"><div class="tbl-acts">
           <button class="tbl-act-btn" title="Eliminar" onclick="this.closest('tr').remove();checkSharedUsersEmpty()">
-            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12 12h2v11h-2zm6 0h2v11h-2z"/><path d="M4 6v2h2l2 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l2-19h2V6zm5.88 21L8.06 8h15.88l-1.82 19z"/><path d="M12 2h8v2h-8z"/></svg>
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg>
           </button>
         </div></td>
       </tr>`);
