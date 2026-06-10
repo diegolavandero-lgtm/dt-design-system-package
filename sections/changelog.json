@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T16:39:55.893Z",
+  "generated": "2026-06-10T16:41:23.789Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "86f6762",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: remove 820px max-width constraint — full width layout",
+          "author": "Carlos"
+        },
         {
           "hash": "adee580",
           "type": "update",
