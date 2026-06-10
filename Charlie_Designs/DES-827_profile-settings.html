@@ -166,6 +166,7 @@
     .card{
       background:#fff;border:1px solid #E1E6ED;
       border-radius:8px;margin-bottom:16px;overflow:hidden;
+      display:flex;flex-direction:column;
     }
     .card-hdr{
       padding:10px 20px;border-bottom:1px solid #E1E6ED;
@@ -361,18 +362,13 @@
     .info-banner svg{width:15px;height:15px;color:var(--n45);flex-shrink:0;margin-top:1px}
 
     /* 2FA info card */
-    .twofa-card{
-      display:flex;align-items:flex-start;gap:14px;
-      padding:16px;border-radius:6px;
-      background:var(--b1);border:1px solid var(--b2);margin-bottom:16px;
-    }
-    .twofa-icon{
-      width:36px;height:36px;border-radius:6px;background:#1F60ED;
-      display:flex;align-items:center;justify-content:center;flex-shrink:0;
-    }
-    .twofa-icon svg{width:18px;height:18px;stroke:#fff;fill:none}
-    .twofa-card h3{font:700 13px var(--font-sans);color:var(--n7);margin-bottom:4px}
-    .twofa-card p{font:400 12px var(--font-sans);color:var(--n5);line-height:1.5}
+    .twofa-body{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;gap:20px;padding:32px 24px;height:100%;box-sizing:border-box}
+    .twofa-icon-lg{width:64px;height:64px;border-radius:16px;background:var(--b1);border:1px solid var(--b2);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .twofa-icon-lg svg{width:30px;height:30px;stroke:#1F60ED;fill:none}
+    .twofa-body h3{font:700 15px var(--font-sans);color:var(--n7);margin:0}
+    .twofa-body p{font:400 13px var(--font-sans);color:var(--n5);line-height:1.6;margin:0;max-width:280px}
 
     /* ════════════════════════
        TABLE
@@ -796,18 +792,16 @@
             <span class="card-ttl">Verificación en dos pasos (2FA)</span>
             <span class="badge neutral"><span class="dot"></span>Desactivada</span>
           </div>
-          <div class="card-body">
-            <div class="twofa-card">
-              <div class="twofa-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <div class="card-body" style="flex:1;display:flex;padding:0">
+            <div class="twofa-body">
+              <div class="twofa-icon-lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
               </div>
-              <div>
+              <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
                 <h3>Agrega una capa extra de seguridad</h3>
-                <p>La verificación en dos pasos protege tu cuenta solicitando un código desde tu smartphone cada vez que inicias sesión. Solo necesitas un smartphone para habilitarla.</p>
+                <p>La verificación en dos pasos protege tu cuenta solicitando un código desde tu smartphone cada vez que inicias sesión.</p>
               </div>
-            </div>
-            <div style="display:flex;justify-content:flex-end">
-              <button class="btn primary" onclick="showToast('Configuración 2FA iniciada — revisa tu smartphone')">Activar verificación en dos pasos</button>
+              <button class="btn primary" onclick="showToast('Configuración 2FA iniciada — revisa tu smartphone')">Activar verificación</button>
             </div>
           </div>
         </div>
