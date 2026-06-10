@@ -3059,8 +3059,147 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const tokenRows = Object.entries(t).map(([k,v]) =>
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td><td><code>${escHtml(String(mt[k] || '—'))}</code></td></tr>`).join('');
 
+    // ── "In use" context preview — table page bg + overlay + modal ───────────
+    // Topbar icons (Carbon, fill=currentColor, 32×32)
+    const C_APPS  = `<svg viewBox="0 0 32 32" width="16" height="16" fill="rgba(255,255,255,.7)"><path d="M8 4H4v4h4V4zm10 0h-4v4h4V4zm10 0h-4v4h4V4zM8 14H4v4h4v-4zm10 0h-4v4h4v-4zm10 0h-4v4h4v-4zM8 24H4v4h4v-4zm10 0h-4v4h4v-4zm10 0h-4v4h4v-4z"/></svg>`;
+    const C_BELL  = `<svg viewBox="0 0 32 32" width="16" height="16" fill="rgba(255,255,255,.7)"><path d="M28 26H4v-2l2-2V15a10 10 0 017-9.5V5a3 3 0 016 0v.5A10 10 0 0127 15v7l2 2v2zm-12 4a3 3 0 003-3h-6a3 3 0 003 3z"/></svg>`;
+    const C_HELP  = `<svg viewBox="0 0 32 32" width="16" height="16" fill="rgba(255,255,255,.7)"><path d="M16 2A14 14 0 102 16 14 14 0 0016 2zm0 26A12 12 0 114 16a12 12 0 0112 12zM17 22h-2v-2h2zm0-4h-2v-8h2z"/></svg>`;
+    const C_USER  = `<svg viewBox="0 0 32 32" width="16" height="16" fill="rgba(255,255,255,.7)"><path d="M16 4a6 6 0 110 12A6 6 0 0116 4zm0 14c6.6 0 12 2.7 12 6v2H4v-2c0-3.3 5.4-6 12-6z"/></svg>`;
+
+    // Sidebar mini-icons (faded blue)
+    const sideIcons = [
+      `<svg viewBox="0 0 32 32" width="18" height="18" fill="var(--b5)"><path d="M16 2L2 12v2h3v14h10v-8h2v8h10V14h3v-2z"/></svg>`,
+      `<svg viewBox="0 0 32 32" width="18" height="18" fill="var(--b5)"><path d="M12 4H4v8h8V4zm16 0h-8v8h8V4zM12 20H4v8h8v-8zm16 0h-8v8h8v-8z"/></svg>`,
+      `<svg viewBox="0 0 32 32" width="18" height="18" fill="var(--b5)"><path d="M28 6H4v2h24V6zM4 14h24v-2H4v2zm24 6H4v2h24v-2z"/></svg>`,
+      `<svg viewBox="0 0 32 32" width="18" height="18" fill="var(--b5)"><path d="M26 6H6a2 2 0 00-2 2v16a2 2 0 002 2h20a2 2 0 002-2V8a2 2 0 00-2-2zm0 4H6V8h20v2zm0 14H6V13h20v11z"/></svg>`,
+      `<svg viewBox="0 0 32 32" width="18" height="18" fill="var(--n4)"><path d="M27 16.76V16a11 11 0 10-11 11h.76a5.6 5.6 0 002.24 2H16A13 13 0 113 16a13 13 0 0113-13h.76z"/></svg>`,
+      `<svg viewBox="0 0 32 32" width="18" height="18" fill="var(--n4)"><path d="M27 16.8V16a11 11 0 10-11 11h.8a5.6 5.6 0 012.2 2H16A13 13 0 113 16a13 13 0 0113-13h.8z"/></svg>`,
+    ];
+
+    // Simplified table rows for background
+    const mkRow = (ord, name, ini, clr, badge, badgeClr, zone, date, progress) => `
+      <tr style="border-bottom:1px solid var(--n3)">
+        <td style="padding:8px 10px;width:16px"><input type="checkbox" style="pointer-events:none;accent-color:var(--b6)"></td>
+        <td style="padding:8px 10px;font:400 13px var(--font-sans);color:var(--b6)">${ord}</td>
+        <td style="padding:8px 10px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="width:24px;height:24px;border-radius:50%;background:${clr};display:flex;align-items:center;justify-content:center;font:700 9px var(--font-sans);color:#fff;flex-shrink:0">${ini}</div>
+            <span style="font:400 13px var(--font-sans);color:var(--n7)">${name}</span>
+          </div>
+        </td>
+        <td style="padding:8px 10px"><span style="background:${badgeClr};color:#fff;padding:2px 8px;border-radius:99px;font:600 11px var(--font-sans)">${badge}</span></td>
+        <td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--n7)">${zone}</td>
+        <td style="padding:8px 10px;font:400 12px var(--font-sans);color:var(--n5)">${date}</td>
+        <td style="padding:8px 10px">
+          <div style="background:var(--n3);border-radius:99px;height:6px;width:80px;overflow:hidden">
+            <div style="background:var(--b5);height:100%;width:${progress}%;border-radius:99px"></div>
+          </div>
+        </td>
+      </tr>`;
+
+    const bgRows =
+      mkRow('#ORD-4821','Maya Johnson','MJ','#1F60ED','Entregado','#00875A','Zona Norte','10-10-25 14:00',100) +
+      mkRow('#ORD-3917','Lucas Martínez','LM','#8777D9','En tránsito','#1F60ED','Zona Sur','—',52) +
+      mkRow('#ORD-5102','Aisha Patel','AP','#00B8D9','Pendiente','#FFAB00','Zona Este','10-10-25 16:00',20) +
+      mkRow('#ORD-2856','Liam Smith','LS','#36B37E','Cancelado','#DE350B','Zona Centro','08-10-25 11:00',0) +
+      mkRow('#ORD-6631','Sara López','SL','#F27B42','Entregado','#00875A','Zona Norte','11-10-25 09:30',100);
+
+    const bgTablePage = `
+      <!-- Topbar -->
+      <div style="height:52px;background:#132045;display:flex;align-items:center;padding:0 16px 0 16px;gap:0;flex-shrink:0">
+        <img src="sections/assets/logos/lastmile-desktop-white.svg" height="16" alt="LastMile" style="margin-right:auto">
+        <div style="display:flex;align-items:center;gap:18px;margin-right:12px">
+          ${C_APPS}${C_BELL}${C_HELP}${C_USER}
+        </div>
+        <div style="width:72px;height:52px;background:#fff;border-radius:14px 0 0 0;display:flex;align-items:center;justify-content:center;font:700 10px var(--font-sans);color:#132045">ACME CO</div>
+      </div>
+      <!-- Body -->
+      <div style="display:flex;flex:1;min-height:0">
+        <!-- Sidebar collapsed -->
+        <div style="width:52px;flex-shrink:0;background:#fff;border-right:1px solid var(--n3);display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px">
+          ${sideIcons.map((ico,i) => `<div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px${i===3?';background:rgba(75,130,250,.08)':''}">${ico}</div>`).join('')}
+        </div>
+        <!-- Main content -->
+        <div style="flex:1;padding:16px 18px;overflow:hidden;background:var(--n2)">
+          <!-- Page header -->
+          <div style="display:flex;align-items:center;margin-bottom:14px">
+            <span style="font:700 20px/1 var(--font-sans);color:var(--n7);flex:1">Órdenes</span>
+            <div style="display:flex;gap:8px">
+              <button style="height:28px;padding:0 12px;border-radius:50px;border:1px solid #1F60ED;background:#fff;color:#4B82FA;font:700 12px var(--font-sans);cursor:default">Exportar</button>
+              <button style="height:28px;padding:0 12px;border-radius:50px;border:none;background:var(--b6);color:#fff;font:700 12px var(--font-sans);cursor:default">+ Nueva orden</button>
+            </div>
+          </div>
+          <!-- White card: filter bar + table -->
+          <div style="background:#fff;border-radius:8px;border:1px solid var(--n3);padding:14px;overflow:hidden">
+            <!-- Filter bar -->
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+              <div style="flex:1;height:28px;border:1px solid var(--n3);border-radius:6px;padding:0 8px;font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center">Cliente</div>
+              <div style="flex:1;height:28px;border:1px solid var(--n3);border-radius:6px;padding:0 8px;font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;justify-content:space-between">Estado <svg viewBox="0 0 32 32" width="10" height="10" fill="var(--n5)"><path d="M16 22L4 10l1.5-1.5L16 19l10.5-10.5L28 10z"/></svg></div>
+              <div style="flex:1;height:28px;border:1px solid var(--n3);border-radius:6px;padding:0 8px;font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center">F. Creación</div>
+              <button style="height:28px;padding:0 12px;border-radius:50px;border:1px solid #1F60ED;background:#fff;color:#4B82FA;font:700 12px var(--font-sans);cursor:default">Filtrar</button>
+            </div>
+            <!-- Table -->
+            <table style="width:100%;border-collapse:collapse">
+              <thead>
+                <tr style="background:var(--n2);border-bottom:1px solid var(--n3)">
+                  <th style="padding:6px 10px;width:16px"></th>
+                  <th style="padding:6px 10px;text-align:left;font:700 11px var(--font-sans);color:var(--n5)"># Orden</th>
+                  <th style="padding:6px 10px;text-align:left;font:700 11px var(--font-sans);color:var(--n5)">Cliente</th>
+                  <th style="padding:6px 10px;text-align:left;font:700 11px var(--font-sans);color:var(--n5)">Estado</th>
+                  <th style="padding:6px 10px;text-align:left;font:700 11px var(--font-sans);color:var(--n5)">Zona</th>
+                  <th style="padding:6px 10px;text-align:left;font:700 11px var(--font-sans);color:var(--n5)">F. Entrega</th>
+                  <th style="padding:6px 10px;text-align:left;font:700 11px var(--font-sans);color:var(--n5)">Progreso</th>
+                </tr>
+              </thead>
+              <tbody>${bgRows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+
+    // ── Modal content (reuse same p data) ─────────────────────────────────────
+    const ctxModal = `
+      <div style="width:440px;max-width:calc(100% - 48px);background:#fff;border-radius:8px;padding:24px;box-shadow:0 12px 40px rgba(0,0,0,.35)">
+        <div style="display:flex;align-items:flex-start;margin-bottom:6px">
+          <div style="flex:1">
+            <h1 style="font:700 22px/1.3 var(--font-sans);color:var(--n7);margin:0 0 4px">${escHtml(p.title || '')}</h1>
+            <p style="font:400 13px var(--font-sans);color:var(--n5);margin:0">${escHtml(p.subtitle || '')}</p>
+          </div>
+          <button style="background:none;border:none;cursor:pointer;padding:2px;display:flex;color:var(--n5);flex-shrink:0;margin-top:2px"
+            onmouseenter="this.style.color='var(--n7)'" onmouseleave="this.style.color='var(--n5)'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div style="margin-top:16px">
+          ${renderFields(p.fields || [])}
+          ${warning}
+          ${renderActions(p.actions || [], false)}
+        </div>
+      </div>`;
+
+    const inContextCard = `
+      <div style="margin-bottom:20px">
+        <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          In use — modal sobre tabla page
+          <span style="font-weight:400;color:var(--n5);margin-left:auto">Overlay rgba(19,32,69,.45) · modal 440px centrado</span>
+        </div>
+        <div class="card flush" style="overflow:hidden">
+          <div style="position:relative;height:500px;display:flex;flex-direction:column;overflow:hidden">
+            ${bgTablePage}
+            <!-- Dark overlay -->
+            <div style="position:absolute;inset:0;background:rgba(19,32,69,.45);pointer-events:none"></div>
+            <!-- Modal centered -->
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;pointer-events:none">
+              <div style="pointer-events:auto">${ctxModal}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
     return `
       ${sectionHeader(data)}
+      ${inContextCard}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
         <div>
           <div style="font:700 11px var(--font-sans);color:var(--n7);margin-bottom:8px;display:flex;align-items:center;gap:6px">
