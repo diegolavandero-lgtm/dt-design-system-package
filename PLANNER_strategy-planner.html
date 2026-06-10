@@ -904,90 +904,62 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
             <div class="dis-note">Las herramientas de Bloquear y Mover se habilitan después de correr <b>1 · Optimización</b>.</div>
             <div class="acc-b">
 
-              <!-- Tool selector -->
-              <div class="tool-bar">
-                <button class="tool-btn" id="toolLock" onclick="selectTool('lock')" title="Haz clic en una ruta para bloquearla — el motor de optimización no la modificará">
+              <!-- Tool row: Lock | Move | Move Days | Clear Locks (matches reference exactly) -->
+              <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+                <button class="tool-btn" id="toolLock" onclick="selectTool('lock')" title="Haz clic en una ruta para bloquearla">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                   Bloquear
                 </button>
-                <button class="tool-btn" id="toolMove" onclick="selectTool('move')" title="Dibuja un lazo alrededor de paradas y arrástralas a otra ruta">
+                <button class="tool-btn" id="toolMove" onclick="selectTool('move')" title="Lazo → mover paradas a otra ruta">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 9l-3 3 3 3M2 12h13M19 5l3 3-3 3M22 8H9"/></svg>
                   Mover
                 </button>
-                <button class="tool-btn" id="toolMoveDays" onclick="selectTool('movedays')" title="Dibuja un lazo y busca días de ciclo alternos respetando el espaciado">
+                <button class="tool-btn" id="toolMoveDays" onclick="selectTool('movedays')" title="Lazo → buscar días de ciclo alternos">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                   Mover días
                 </button>
+                <button class="tool-btn" onclick="clearAllLocks()" title="Desbloquea todas las rutas" style="color:var(--r6);border-color:var(--r5);">
+                  Limpiar bloqueos
+                </button>
               </div>
 
-              <!-- Clear locks -->
-              <button class="btn clear" onclick="clearAllLocks()" style="height:30px;font-size:12px;margin-bottom:12px;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                Limpiar todos los bloqueos
-              </button>
+              <!-- Two-column options — ALWAYS visible (matches production reference) -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px;">
 
-              <!-- LOCK options -->
-              <div id="lockOpts" class="opt-sub">
-                <div class="opt-group-lbl">Opciones de bloqueo</div>
-                <div class="toggle-row">
-                  <div class="trl">
-                    <div class="trn">Reflejar en días del ciclo</div>
-                    <div class="trd">Si esta ruta aparece en otro día de la semana, también bloquearla.</div>
-                  </div>
-                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                <!-- LOCK column -->
+                <div>
+                  <div class="opt-group-lbl" style="border-top:none;padding-top:0;margin-top:0;">BLOQUEAR</div>
+                  <label class="ck" style="margin-bottom:6px;align-items:flex-start;">
+                    <span class="chk on" style="margin-top:1px;flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span style="font:400 12px var(--font-sans);color:var(--n7);line-height:1.4;">Reflejar en días del ciclo</span>
+                  </label>
+                  <label class="ck" style="margin-bottom:6px;align-items:flex-start;padding-left:8px;">
+                    <span class="chk on" style="margin-top:1px;flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span style="font:400 12px var(--font-sans);color:var(--n7);line-height:1.4;">Mismo camión</span>
+                  </label>
                 </div>
-                <div class="toggle-row">
-                  <div class="trl">
-                    <div class="trn">Mismo camión</div>
-                    <div class="trd">Para que el reflejo de bloqueo se aplique, la ruta en el otro día debe tener al menos las mismas paradas y el mismo camión.</div>
-                  </div>
-                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
-                </div>
-              </div>
 
-              <!-- MOVE options -->
-              <div id="moveOpts" class="opt-sub">
-                <div class="opt-group-lbl">Opciones de movimiento</div>
-                <div class="toggle-row">
-                  <div class="trl">
-                    <div class="trn">Re-optimizar ruta de origen</div>
-                    <div class="trd">Al mover paradas de la Ruta A → Ruta B, re-optimiza completamente la Ruta A. Si está apagado, solo recalcula tiempos de llegada.</div>
-                  </div>
-                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
+                <!-- MOVE column -->
+                <div>
+                  <div class="opt-group-lbl" style="border-top:none;padding-top:0;margin-top:0;">MOVER</div>
+                  <label class="ck" style="margin-bottom:6px;align-items:flex-start;">
+                    <span class="chk on" style="margin-top:1px;flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span style="font:400 12px var(--font-sans);color:var(--n7);line-height:1.4;">Re-optimizar ruta de origen</span>
+                  </label>
+                  <label class="ck" style="margin-bottom:6px;align-items:flex-start;">
+                    <span class="chk on" style="margin-top:1px;flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span style="font:400 12px var(--font-sans);color:var(--n7);line-height:1.4;">Reflejar en días del ciclo</span>
+                  </label>
+                  <label class="ck" style="margin-bottom:6px;align-items:flex-start;padding-left:8px;">
+                    <span class="chk on" style="margin-top:1px;flex-shrink:0;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span style="font:400 12px var(--font-sans);color:var(--n7);line-height:1.4;">Mismo camión</span>
+                  </label>
+                  <label class="ck" style="margin-bottom:6px;align-items:flex-start;padding-left:8px;">
+                    <span class="chk" style="margin-top:1px;flex-shrink:0;"></span>
+                    <span style="font:400 12px var(--font-sans);color:var(--n7);line-height:1.4;">Vincular ruta de origen</span>
+                  </label>
                 </div>
-                <div class="toggle-row">
-                  <div class="trl">
-                    <div class="trn">Reflejar en días del ciclo</div>
-                    <div class="trd">Repite el movimiento de paradas en la Ruta B de otros días si se cumple la condición de camión.</div>
-                  </div>
-                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
-                </div>
-                <div class="toggle-row">
-                  <div class="trl">
-                    <div class="trn">Mismo camión (destino)</div>
-                    <div class="trd">El reflejo solo aplica si la Ruta B (destino) tiene el mismo camión en el día repetido.</div>
-                  </div>
-                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
-                </div>
-                <div class="toggle-row">
-                  <div class="trl">
-                    <div class="trn">Vincular ruta de origen</div>
-                    <div class="trd">Además de la ruta destino, la ruta origen también debe coincidir para que el reflejo se aplique.</div>
-                  </div>
-                  <div class="swt" onclick="this.classList.toggle('on')"></div>
-                </div>
-              </div>
 
-              <!-- MOVE DAYS options -->
-              <div id="moveDaysOpts" class="opt-sub">
-                <div class="opt-group-lbl">Opciones de mover días</div>
-                <div class="toggle-row">
-                  <div class="trl">
-                    <div class="trn">Respetar espaciado de ciclo</div>
-                    <div class="trd">Solo propone días alternativos que mantienen el intervalo de visitas. Ej.: L-X puede pasar a M-J o X-V, pero no a L-M.</div>
-                  </div>
-                  <div class="swt on" onclick="this.classList.toggle('on')"></div>
-                </div>
               </div>
 
             </div>
