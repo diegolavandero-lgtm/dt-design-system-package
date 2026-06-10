@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T14:35:46.508Z",
+  "generated": "2026-06-10T14:40:15.276Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "4c6a04d",
+          "type": "update",
+          "section": "Tables",
+          "message": "DES-827: replace custom table with DS tbl component in Reportes tab",
+          "author": "Carlos"
+        },
         {
           "hash": "387f2d7",
           "type": "feat",
