@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:48:23.705Z",
+  "generated": "2026-06-10T18:48:50.005Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "c5e8515",
+          "type": "update",
+          "section": "General",
+          "message": "chore: trigger deploy",
+          "author": "Diego"
+        },
         {
           "hash": "04d32fb",
           "type": "update",
