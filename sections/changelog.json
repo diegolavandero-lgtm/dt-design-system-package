@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T16:47:10.440Z",
+  "generated": "2026-06-10T16:49:46.269Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "80f25f4",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: redesign 2FA card as centered full-height layout",
+          "author": "Carlos"
+        },
         {
           "hash": "ea9bcd6",
           "type": "fix",
