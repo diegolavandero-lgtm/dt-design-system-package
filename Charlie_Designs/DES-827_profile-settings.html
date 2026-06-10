@@ -184,7 +184,7 @@
     .form-row{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
     .form-row:last-of-type{margin-bottom:0}
     /* Two-column grid — patrón DS: grid-template-columns:1fr 1fr, gap:14px 20px */
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
     .form-grid .form-row.full{grid-column:1/-1}
     .lbl{font:700 13px var(--font-sans);color:var(--n7)}
     .lbl .req,.req{color:var(--r5);margin-left:2px}
@@ -535,7 +535,7 @@
     }
     .modal-overlay.open{opacity:1;pointer-events:all}
     .modal{
-      background:#fff;border-radius:8px;width:560px;max-width:calc(100vw - 48px);
+      background:#fff;border-radius:4px;width:560px;max-width:calc(100vw - 48px);
       box-shadow:0 8px 32px rgba(19,32,69,.18);
       transform:translateY(12px);transition:transform .2s;
       max-height:calc(100vh - 80px);overflow-y:auto;
@@ -712,17 +712,17 @@
           <div class="card-body">
             <div class="form-grid">
               <div class="form-row">
-                <label class="lbl">Nombre <span class="req">*</span></label>
-                <div class="inp-wrap"><input type="text" value="soporte+arsa" oninput="checkTab0Dirty()"></div>
+                <label class="lbl" for="t0-nombre">Nombre <span class="req">*</span></label>
+                <div class="inp-wrap"><input id="t0-nombre" type="text" value="soporte+arsa" oninput="checkTab0Dirty()"></div>
               </div>
               <div class="form-row">
-                <label class="lbl">Teléfono</label>
-                <div class="inp-wrap"><input type="tel" placeholder="+56 9 XXXX XXXX" oninput="checkTab0Dirty()"></div>
+                <label class="lbl" for="t0-telefono">Teléfono</label>
+                <div class="inp-wrap"><input id="t0-telefono" type="tel" placeholder="+56 9 XXXX XXXX" oninput="checkTab0Dirty()"></div>
               </div>
               <div class="form-row full">
-                <label class="lbl">Correo electrónico <span class="req">*</span></label>
+                <label class="lbl" for="t0-correo">Correo electrónico <span class="req">*</span></label>
                 <div style="display:flex;gap:8px;align-items:center">
-                  <div class="inp-wrap" style="flex:1"><input type="email" value="soporte+arsa@beettrack.com" oninput="checkTab0Dirty()"></div>
+                  <div class="inp-wrap" style="flex:1"><input id="t0-correo" type="email" value="soporte+arsa@beettrack.com" oninput="checkTab0Dirty()"></div>
                   <button class="btn" style="flex-shrink:0">Verificar email</button>
                 </div>
                 <p class="helper">Tu correo se usa para notificaciones y recuperación de cuenta.</p>
@@ -782,14 +782,14 @@
               <span>Para cambiar tu contraseña, primero confirma tu identidad con la contraseña actual.</span>
             </div>
             <div class="form-row">
-              <label class="lbl">Contraseña actual <span class="req">*</span></label>
-              <input class="inp" type="password" placeholder="Ingresa tu contraseña actual" autocomplete="current-password" oninput="checkTab1Dirty()">
+              <label class="lbl" for="t1-pw-current">Contraseña actual <span class="req">*</span></label>
+              <input id="t1-pw-current" class="inp" type="password" placeholder="Ingresa tu contraseña actual" autocomplete="current-password" oninput="checkTab1Dirty()">
               <p class="helper">Requerida para confirmar que eres tú quien realiza el cambio.</p>
             </div>
             <div class="divider"></div>
             <div class="form-row">
-              <label class="lbl">Nueva contraseña <span class="req">*</span></label>
-              <input class="inp" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="updateStrength(this);checkTab1Dirty()">
+              <label class="lbl" for="t1-pw-new">Nueva contraseña <span class="req">*</span></label>
+              <input id="t1-pw-new" class="inp" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="updateStrength(this);checkTab1Dirty()">
               <div class="pw-bars">
                 <div class="pw-bar" id="bar1"></div>
                 <div class="pw-bar" id="bar2"></div>
@@ -798,8 +798,8 @@
               <p class="helper">Usa letras, números y al menos un carácter especial.</p>
             </div>
             <div class="form-row">
-              <label class="lbl">Confirmar nueva contraseña <span class="req">*</span></label>
-              <input class="inp" type="password" placeholder="Repite la nueva contraseña" autocomplete="new-password" oninput="checkTab1Dirty()">
+              <label class="lbl" for="t1-pw-confirm">Confirmar nueva contraseña <span class="req">*</span></label>
+              <input id="t1-pw-confirm" class="inp" type="password" placeholder="Repite la nueva contraseña" autocomplete="new-password" oninput="checkTab1Dirty()">
             </div>
           </div>
         </div>
@@ -871,15 +871,15 @@
               </div>
               <div class="form-grid">
                 <div class="form-row">
-                  <label class="lbl">Nombre <span class="req">*</span></label>
+                  <label class="lbl" for="add-user-name">Nombre <span class="req">*</span></label>
                   <div class="inp-wrap"><input id="add-user-name" type="text" placeholder="Nombre del usuario"></div>
                 </div>
                 <div class="form-row">
-                  <label class="lbl">Correo del usuario <span class="req">*</span></label>
+                  <label class="lbl" for="add-user-email">Correo del usuario <span class="req">*</span></label>
                   <div class="inp-wrap"><input id="add-user-email" type="email" placeholder="usuario@empresa.com"></div>
                 </div>
                 <div class="form-row">
-                  <label class="lbl">Tu contraseña actual <span class="req">*</span></label>
+                  <label class="lbl" for="add-user-pw">Tu contraseña actual <span class="req">*</span></label>
                   <div class="inp-wrap"><input id="add-user-pw" type="password" placeholder="Confirma tu identidad" autocomplete="current-password"></div>
                   <p class="helper">Requerida para autorizar el acceso compartido.</p>
                 </div>
@@ -1056,8 +1056,7 @@
               <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:4px">Eliminar este reporte</div>
               <div class="danger-zone-desc">Esta acción es permanente. El reporte dejará de enviarse y no podrá recuperarse.</div>
             </div>
-            <button onclick="confirmDeleteFromEdit()" style="height:32px;padding:0 16px;border-radius:50px;border:1px solid var(--r5,#DE350B);background:#fff;color:var(--r6,#DE350B);font:700 13px var(--font-sans);cursor:pointer;white-space:nowrap;flex-shrink:0"
-              onmouseenter="this.style.background='var(--r1)'" onmouseleave="this.style.background='#fff'">
+            <button class="btn danger" onclick="confirmDeleteFromEdit()" style="flex-shrink:0">
               Eliminar reporte
             </button>
           </div>
