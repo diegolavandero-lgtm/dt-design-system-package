@@ -813,13 +813,12 @@
       <!-- ══ TAB 2 — Acceso y usuarios ══ -->
       <div class="panel" id="panel-2">
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-
         <div class="card">
           <div class="card-hdr">
             <span class="card-ttl">Usuarios con acceso compartido</span>
           </div>
-          <div class="card-body flush">
+          <!-- Empty state (toggle with id) -->
+          <div id="shared-users-empty" class="card-body flush">
             <div class="empty-state">
               <div class="empty-icon">
                 <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg>
@@ -829,33 +828,21 @@
               <button class="btn" onclick="toggleAddUser()">Agregar primer usuario</button>
             </div>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="card-hdr"><span class="card-ttl">Agentes de soporte DispatchTrack</span></div>
-          <div class="card-body flush">
+          <!-- Populated state (shown after adding a user) -->
+          <div id="shared-users-table" class="card-body flush" style="display:none">
             <table class="dt-table">
               <thead>
-                <tr><th>Nombre</th><th>Correo</th><th>Estado</th></tr>
-              </thead>
-              <tbody>
                 <tr>
-                  <td>
-                    <div class="user-cell">
-                      <div class="user-av-sm">CS</div>
-                      Customer Success Support
-                    </div>
-                  </td>
-                  <td style="color:var(--n5)">support@beettrack.com</td>
-                  <td><span class="badge success"><span class="dot"></span>Activo</span></td>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Estado</th>
+                  <th class="tbl-acts-col">Acciones</th>
                 </tr>
-              </tbody>
+              </thead>
+              <tbody id="shared-users-tbody"></tbody>
             </table>
-            <div class="tbl-footer">Los agentes de soporte son asignados por DispatchTrack. Contacta a tu representante para modificarlos.</div>
           </div>
         </div>
-
-        </div><!-- end 2-col grid -->
 
         <div class="card" id="add-user-form" style="display:none">
           <div class="card-hdr"><span class="card-ttl">Agregar usuario existente</span></div>
@@ -877,7 +864,7 @@
             </div>
             <div class="form-actions">
               <button class="btn" onclick="toggleAddUser()">Cancelar</button>
-              <button class="btn primary" onclick="showToast('Usuario asociado correctamente');toggleAddUser()">Guardar</button>
+              <button class="btn primary" onclick="saveSharedUser()">Guardar</button>
             </div>
           </div>
         </div>
@@ -1208,6 +1195,32 @@
   function toggleAddUser() {
     const f = document.getElementById('add-user-form');
     f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  }
+  function saveSharedUser() {
+    const email = document.querySelector('#add-user-form input[type="email"]').value.trim();
+    if (!email) return;
+    const initials = email.slice(0,2).toUpperCase();
+    const tbody = document.getElementById('shared-users-tbody');
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td><div class="user-cell"><div class="user-av-sm">${initials}</div>${email.split('@')[0]}</div></td>
+        <td style="color:var(--n5)">${email}</td>
+        <td><span class="badge success"><span class="dot"></span>Activo</span></td>
+        <td class="tbl-acts-col"><div class="tbl-acts">
+          <button class="tbl-act-btn" title="Eliminar" onclick="this.closest('tr').remove();checkSharedUsersEmpty()">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12 12h2v11h-2zm6 0h2v11h-2z"/><path d="M4 6v2h2l2 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2l2-19h2V6zm5.88 21L8.06 8h15.88l-1.82 19z"/><path d="M12 2h8v2h-8z"/></svg>
+          </button>
+        </div></td>
+      </tr>`);
+    document.getElementById('shared-users-empty').style.display = 'none';
+    document.getElementById('shared-users-table').style.display = 'block';
+    toggleAddUser();
+    showToast('Usuario asociado correctamente');
+  }
+  function checkSharedUsersEmpty() {
+    const empty = document.getElementById('shared-users-tbody').children.length === 0;
+    document.getElementById('shared-users-empty').style.display = empty ? 'block' : 'none';
+    document.getElementById('shared-users-table').style.display = empty ? 'none' : 'block';
   }
   function updateStrength(input) {
     const v = input.value;
