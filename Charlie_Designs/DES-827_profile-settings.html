@@ -953,7 +953,9 @@
     if (!isOpen) wrap.classList.add('open');
   }
   function dtPick(dropId, labelId, el) {
-    document.getElementById(labelId).textContent = el.textContent.trim();
+    const lbl = document.getElementById(labelId);
+    lbl.textContent = el.textContent.trim();
+    lbl.style.color = 'var(--n7)';
     el.closest('.dt-dmenu').querySelectorAll('.dt-dopt').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected');
     document.getElementById(dropId).classList.remove('open');
@@ -1076,18 +1078,23 @@
 
       <!-- Nombre -->
       <div class="form-row">
-        <label class="form-label">Nombre del reporte <span style="color:var(--red,#E54D4D)">*</span></label>
-        <input id="rpt-nombre" class="form-input" type="text" placeholder="Ej: Reporte diario de entregas">
+        <label class="form-label">Nombre del reporte <span style="color:#DE350B">*</span></label>
+        <input id="rpt-nombre" type="text" placeholder="Ej: Reporte diario de entregas"
+          style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;
+                 font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);
+                 box-sizing:border-box;outline:none;padding:0 10px"
+          onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+          onblur="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
       </div>
 
       <!-- Tipo -->
       <div class="form-row">
-        <label class="form-label">Tipo de reporte <span style="color:var(--red,#E54D4D)">*</span></label>
-        <div class="dt-drop-wrap" id="dd-rpt-tipo">
-          <button class="dt-dbtn" type="button" onclick="dtToggle('dd-rpt-tipo')">
-            <span id="lbl-rpt-tipo">Seleccionar</span>
-            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M16 22L4 10l1.4-1.4L16 19.2l10.6-10.6L28 10z"/></svg>
-          </button>
+        <label class="form-label">Tipo de reporte <span style="color:#DE350B">*</span></label>
+        <div class="dt-drop-wrap" id="dd-rpt-tipo" style="width:100%">
+          <div class="dt-dtrigger" onclick="dtToggle('dd-rpt-tipo')">
+            <span class="dt-dlabel" id="lbl-rpt-tipo" style="color:var(--n5)">Seleccionar</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
           <div class="dt-dmenu">
             <div class="dt-dopt" onclick="dtPick('dd-rpt-tipo','lbl-rpt-tipo',this)">Órdenes del día</div>
             <div class="dt-dopt" onclick="dtPick('dd-rpt-tipo','lbl-rpt-tipo',this)">Actividad de rutas</div>
@@ -1098,27 +1105,27 @@
       </div>
 
       <!-- Formato + Frecuencia (2 col) -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-row" style="margin-bottom:0">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div>
           <label class="form-label">Formato</label>
-          <div class="dt-drop-wrap" id="dd-rpt-formato">
-            <button class="dt-dbtn" type="button" onclick="dtToggle('dd-rpt-formato')">
-              <span id="lbl-rpt-formato">Seleccionar</span>
-              <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M16 22L4 10l1.4-1.4L16 19.2l10.6-10.6L28 10z"/></svg>
-            </button>
+          <div class="dt-drop-wrap" id="dd-rpt-formato" style="width:100%">
+            <div class="dt-dtrigger" onclick="dtToggle('dd-rpt-formato')">
+              <span class="dt-dlabel" id="lbl-rpt-formato" style="color:var(--n5)">Seleccionar</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
             <div class="dt-dmenu">
               <div class="dt-dopt" onclick="dtPick('dd-rpt-formato','lbl-rpt-formato',this)">Excel (.xlsx)</div>
               <div class="dt-dopt" onclick="dtPick('dd-rpt-formato','lbl-rpt-formato',this)">PDF</div>
             </div>
           </div>
         </div>
-        <div class="form-row" style="margin-bottom:0">
-          <label class="form-label">Frecuencia <span style="color:var(--red,#E54D4D)">*</span></label>
-          <div class="dt-drop-wrap" id="dd-rpt-frec">
-            <button class="dt-dbtn" type="button" onclick="dtToggle('dd-rpt-frec')">
-              <span id="lbl-rpt-frec">Seleccionar</span>
-              <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M16 22L4 10l1.4-1.4L16 19.2l10.6-10.6L28 10z"/></svg>
-            </button>
+        <div>
+          <label class="form-label">Frecuencia <span style="color:#DE350B">*</span></label>
+          <div class="dt-drop-wrap" id="dd-rpt-frec" style="width:100%">
+            <div class="dt-dtrigger" onclick="dtToggle('dd-rpt-frec')">
+              <span class="dt-dlabel" id="lbl-rpt-frec" style="color:var(--n5)">Seleccionar</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
             <div class="dt-dmenu">
               <div class="dt-dopt" onclick="dtPick('dd-rpt-frec','lbl-rpt-frec',this)">Diario</div>
               <div class="dt-dopt" onclick="dtPick('dd-rpt-frec','lbl-rpt-frec',this)">Semanal</div>
@@ -1129,13 +1136,13 @@
       </div>
 
       <!-- Hora de envío -->
-      <div class="form-row" style="margin-top:12px">
-        <label class="form-label">Hora de envío <span style="color:var(--red,#E54D4D)">*</span></label>
-        <div class="dt-drop-wrap" id="dd-rpt-hora">
-          <button class="dt-dbtn" type="button" onclick="dtToggle('dd-rpt-hora')">
-            <span id="lbl-rpt-hora">Seleccionar</span>
-            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M16 22L4 10l1.4-1.4L16 19.2l10.6-10.6L28 10z"/></svg>
-          </button>
+      <div class="form-row">
+        <label class="form-label">Hora de envío <span style="color:#DE350B">*</span></label>
+        <div class="dt-drop-wrap" id="dd-rpt-hora" style="width:100%">
+          <div class="dt-dtrigger" onclick="dtToggle('dd-rpt-hora')">
+            <span class="dt-dlabel" id="lbl-rpt-hora" style="color:var(--n5)">Seleccionar</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
           <div class="dt-dmenu">
             <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">06:00</div>
             <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">08:00</div>
@@ -1148,10 +1155,11 @@
       </div>
 
       <!-- Destinatarios -->
-      <div class="form-row">
+      <div class="form-row" style="margin-bottom:0">
         <label class="form-label">Destinatarios</label>
         <div class="chip-input-wrap" id="rpt-chips" onclick="document.getElementById('rpt-email-input').focus()">
-          <input id="rpt-email-input" type="email" placeholder="Escribe un email y presiona Enter" onkeydown="rptEmailKeydown(event)" style="flex:1;min-width:160px;border:none;outline:none;font:400 13px var(--font-sans);background:transparent;color:var(--n8)">
+          <input id="rpt-email-input" type="email" placeholder="Escribe un email y presiona Enter" onkeydown="rptEmailKeydown(event)"
+            style="flex:1;min-width:160px;border:none;outline:none;font:400 13px var(--font-sans);background:transparent;color:var(--n7)">
         </div>
         <span class="form-helper">Presiona Enter o coma para agregar cada dirección</span>
       </div>
