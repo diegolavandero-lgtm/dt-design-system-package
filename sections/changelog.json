@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T15:20:44.677Z",
+  "generated": "2026-06-10T15:28:53.134Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "f8d4545",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(filters): match live overflow panel title to static variant — 11px→13px, letter-spacing .06→.04em",
+          "author": "Diego"
+        },
         {
           "hash": "cada5a7",
           "type": "feat",
