@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T14:48:46.865Z",
+  "generated": "2026-06-10T14:57:26.794Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "89d1809",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: edit report — disabled save, no danger zone title, 820px width",
+          "author": "Carlos"
+        },
         {
           "hash": "d91e57a",
           "type": "feat",
