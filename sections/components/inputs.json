@@ -167,5 +167,45 @@
     "chipRadius": "999px"
   },
   "dropdownCode": "/* ── Single select ── */\n<Select\n  options={options}\n  value={value}\n  onChange={setValue}\n  placeholder='Select an option...'\n  theme='border'\n/>\n\n/* ── Borderless theme ── */\n<Select\n  theme='borderless'\n  options={options}\n  value={value}\n  onChange={setValue}\n/>\n\n/* ── With leading icon ── */\n<Select\n  leadingIcon={<ListIcon />}\n  options={options}\n  value={value}\n/>\n\n/* ── Multiselect ── */\n<MultiSelect\n  options={options}\n  value={selected}          // string[]\n  onChange={setSelected}\n  placeholder='Select options...'\n/>\n\n/* ── CSS tokens ── */\n.dt-select {\n  height: 32px;\n  padding: 0 10px;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  background: #fff;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  cursor: pointer;\n}\n.dt-select:hover { background: var(--n2); }\n.dt-select.open   { border: 2px solid var(--b6); }\n.dt-select.filled { border-color: var(--n5); }\n.dt-select:disabled { background: var(--n1); opacity: .55; }\n\n.dt-select--borderless {\n  border-color: transparent;\n  background: transparent;\n}\n.dt-select--borderless:hover { background: var(--n2); }\n\n.dt-select-chip {\n  height: 20px;\n  padding: 0 6px;\n  background: var(--b1);\n  border: 1px solid var(--b3);\n  border-radius: 999px;\n  font: 400 12px/1 var(--font-sans);\n  color: var(--b6);\n  display: inline-flex;\n  align-items: center;\n  gap: 3px;\n}\n\n.dt-select-menu {\n  position: absolute;\n  top: calc(100% + 4px);\n  left: 0;\n  right: 0;\n  background: #fff;\n  border: 1px solid var(--n3);\n  border-radius: 6px;\n  box-shadow: 0 4px 16px rgba(0,0,0,.12);\n  z-index: 100;\n  padding: 4px 0;\n}\n.dt-select-option {\n  height: 36px;\n  padding: 0 12px;\n  display: flex;\n  align-items: center;\n  font: 400 14px/20px var(--font-sans);\n  color: var(--n7);\n  cursor: pointer;\n}\n.dt-select-option:hover { background: var(--b1); color: var(--b7); }",
+  "specialVariants": [
+    {
+      "id": "number",
+      "label": "Number input",
+      "description": "Increments / decrements by 1. Minimum value: 0.",
+      "defaultValue": 0,
+      "min": 0
+    },
+    {
+      "id": "textarea",
+      "label": "Textarea",
+      "description": "Multi-line text. Fixed to 4 visible lines — scroll appears after.",
+      "placeholder": "Escribe tu mensaje aquí…"
+    },
+    {
+      "id": "password",
+      "label": "Password",
+      "description": "Characters hidden as dots. Eye icon toggles visibility.",
+      "placeholder": "Contraseña"
+    },
+    {
+      "id": "readonly",
+      "label": "Read only",
+      "description": "Non-editable. Styled like placeholder text with a lock icon.",
+      "value": "Valor por defecto"
+    },
+    {
+      "id": "search",
+      "label": "Search",
+      "description": "Press Enter or click the icon to trigger search / filter.",
+      "placeholder": "Buscar…"
+    },
+    {
+      "id": "input-button",
+      "label": "Input with button",
+      "description": "Pill button anchored inside the right edge. Use for inline actions (apply coupon, add tag, etc.).",
+      "placeholder": "Ingresa un valor…",
+      "buttonLabel": "Aplicar"
+    }
+  ],
   "pageUsage": "Renderer : renderers.inputs(data)\nSource   : sections/components/inputs.json\n\nText input  → exact inline styles from renderVariant() in renderers.js inputs renderer\n              height:32px · border-radius:6px · font:400 14px/20px · padding:0 10px\n\nDropdown    → dt-drop-wrap + dtDrop() / dtPickOpt()  (functions defined in index.html)\n              Classes: .dt-drop-wrap  .dt-dtrigger  .dt-dlabel  .dt-dmenu\n⚠️  Never use <select> — always use the dt-drop-wrap structure."
 }

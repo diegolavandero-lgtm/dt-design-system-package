@@ -1338,11 +1338,137 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       `<tr><td><code>${escHtml(k)}</code></td><td><code>${escHtml(String(v))}</code></td></tr>`
     ).join('');
 
+    // ─── Special input variants ─────────────────────────────────────────────
+    // Carbon Design icon paths (32×32 viewBox, fill="currentColor")
+    const ICO_ADD  = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M17 15V8h-2v7H8v2h7v7h2v-7h7v-2z"/></svg>`;
+    const ICO_SUB  = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M8 15h16v2H8z"/></svg>`;
+    const ICO_VIEW = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M16 7C9.5 7 4 12 4 16s5.5 9 12 9 12-5 12-9S22.5 7 16 7zm0 16c-5.4 0-10-3.8-10-7s4.6-7 10-7 10 3.8 10 7-4.6 7-10 7zm0-12a5 5 0 100 10A5 5 0 0016 11zm0 8a3 3 0 110-6 3 3 0 010 6z"/></svg>`;
+    const ICO_HIDE = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M5.4 6.8L4 8.2l4.4 4.4C6.8 13.7 6 14.8 6 16c0 2.8 2.8 5.5 8 8.5L6.5 28l1.4 1.4 20-20L26.6 8l-4.3 4.3C20.3 10.8 18.2 10 16 10c-1 0-2 .2-2.9.5L5.4 6.8zm7.8 7.8l6.2 6.2A3 3 0 0113 16a3 3 0 01.2-1.4zM16 12c1 0 2 .2 2.9.5l-2.4 2.4A3 3 0 0013 19l-2.4 2.4C9 19.9 8 18 8 16c0-2.4 3.3-4 8-4zm0 14c-4.7 0-8-1.6-8-4h2c0 1.2 2.4 2 6 2s6-.8 6-2h2c0 2.4-3.3 4-8 4z"/></svg>`;
+    const ICO_LOCK = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M24 14h-2V8a6 6 0 00-12 0v6H8v16h24V14zm-12-6a4 4 0 018 0v6H12V8zm12 16H10V16h14v8zm-7-7a2 2 0 100 4 2 2 0 000-4z"/></svg>`;
+    const ICO_SRCH = `<svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M29 27.6l-7.6-7.6a11 11 0 10-1.4 1.4L27.6 29zM4 13a9 9 0 1118 0A9 9 0 014 13z"/></svg>`;
+
+    // Shared focus/blur/hover handlers for special inputs
+    const FCS = `this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'`;
+    const BLR = `this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'`;
+    const MEN = `if(document.activeElement!==this)this.style.background='var(--n2)'`;
+    const MLE = `if(document.activeElement!==this)this.style.background='#fff'`;
+    const INP_BASE = `height:32px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);color:var(--n7);background:#fff;box-sizing:border-box;outline:none`;
+
+    const specialItems = (data.specialVariants || []).map(sv => {
+      let demo = '';
+
+      if (sv.id === 'number') {
+        // ── Number input ──────────────────────────────────────────────────────
+        const BTN = `width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:#fff;cursor:pointer;color:var(--n5);flex-shrink:0;padding:0`;
+        demo = `
+          <div style="display:inline-flex;align-items:center;border:1px solid var(--n3);border-radius:6px;overflow:hidden;height:32px;background:#fff"
+               onfocusin="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+               onfocusout="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
+            <button style="${BTN};border-right:1px solid var(--n3)"
+              onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'"
+              onclick="(function(b){var i=b.parentElement.querySelector('input');i.value=Math.max(${sv.min||0},parseInt(i.value||0)-1)})(this)"
+              aria-label="Decrementar">${ICO_SUB}</button>
+            <input type="number" value="${sv.defaultValue||0}" min="${sv.min||0}"
+              style="width:68px;height:30px;border:none;outline:none;text-align:center;font:400 14px/1 var(--font-sans);color:var(--n7);background:transparent;-moz-appearance:textfield;appearance:textfield;padding:0">
+            <button style="${BTN};border-left:1px solid var(--n3)"
+              onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'"
+              onclick="(function(b){var i=b.parentElement.querySelector('input');i.value=parseInt(i.value||0)+1})(this)"
+              aria-label="Incrementar">${ICO_ADD}</button>
+          </div>
+          <style>.special-num input[type=number]::-webkit-inner-spin-button,.special-num input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}</style>`;
+      }
+
+      if (sv.id === 'textarea') {
+        // ── Textarea ──────────────────────────────────────────────────────────
+        // 4 lines = 4 × 20px line-height + 8px top + 8px bottom = 96px
+        demo = `
+          <textarea placeholder="${escHtml(sv.placeholder||'Escribe aquí…')}"
+            style="width:240px;height:96px;max-height:96px;resize:none;overflow-y:auto;padding:8px 10px;border:1px solid var(--n3);border-radius:6px;font:400 14px/20px var(--font-sans);color:var(--n7);background:#fff;box-sizing:border-box;outline:none"
+            onfocus="${FCS}" onblur="${BLR}"
+            onmouseenter="${MEN}" onmouseleave="${MLE}"></textarea>`;
+      }
+
+      if (sv.id === 'password') {
+        // ── Password ──────────────────────────────────────────────────────────
+        demo = `
+          <div style="position:relative;display:inline-flex;align-items:center;width:240px">
+            <input type="password" placeholder="${escHtml(sv.placeholder||'Contraseña')}"
+              style="${INP_BASE};width:100%;padding:0 36px 0 10px"
+              onfocus="${FCS}" onblur="${BLR}" onmouseenter="${MEN}" onmouseleave="${MLE}">
+            <button
+              onclick="(function(b){var inp=b.parentElement.querySelector('input');var eon=b.querySelector('.eon');var eoff=b.querySelector('.eoff');if(inp.type==='password'){inp.type='text';eon.style.display='none';eoff.style.display='block'}else{inp.type='password';eon.style.display='block';eoff.style.display='none'}})(this)"
+              style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;align-items:center;color:var(--n5);padding:2px;line-height:0"
+              onmouseenter="this.style.color='var(--n7)'" onmouseleave="this.style.color='var(--n5)'"
+              title="Mostrar / ocultar contraseña" tabindex="-1">
+              <span class="eon">${ICO_VIEW}</span><span class="eoff" style="display:none">${ICO_HIDE}</span>
+            </button>
+          </div>`;
+      }
+
+      if (sv.id === 'readonly') {
+        // ── Read only ─────────────────────────────────────────────────────────
+        demo = `
+          <div style="position:relative;display:inline-flex;align-items:center;width:240px">
+            <input type="text" readonly value="${escHtml(sv.value||'Valor por defecto')}"
+              style="${INP_BASE};width:100%;padding:0 34px 0 10px;color:var(--n5);background:var(--n1);cursor:default"
+              title="Campo de solo lectura">
+            <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--n4);display:flex;pointer-events:none">${ICO_LOCK}</span>
+          </div>`;
+      }
+
+      if (sv.id === 'search') {
+        // ── Search ────────────────────────────────────────────────────────────
+        // On Enter or icon click → triggers the DS global search (doSearch)
+        const doSrch = `(function(wrap){var v=wrap.querySelector('input').value.trim();if(!v)return;var gs=document.getElementById('gsearch');if(gs&&typeof doSearch==='function'){gs.value=v;doSearch(v);gs.focus()}})(this.closest('[data-search-wrap]'))`;
+        demo = `
+          <div data-search-wrap style="position:relative;display:inline-flex;align-items:center;width:240px">
+            <input type="search" placeholder="${escHtml(sv.placeholder||'Buscar…')}"
+              style="${INP_BASE};width:100%;padding:0 36px 0 10px;-webkit-appearance:none"
+              onfocus="${FCS}" onblur="${BLR}" onmouseenter="${MEN}" onmouseleave="${MLE}"
+              onkeydown="if(event.key==='Enter'){${doSrch}}">
+            <button onclick="${doSrch}"
+              style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;display:flex;align-items:center;color:var(--n5);padding:2px;line-height:0"
+              onmouseenter="this.style.color='var(--n7)'" onmouseleave="this.style.color='var(--n5)'"
+              title="Buscar">${ICO_SRCH}</button>
+          </div>`;
+      }
+
+      if (sv.id === 'input-button') {
+        // ── Input with button ─────────────────────────────────────────────────
+        const btnLbl = escHtml(sv.buttonLabel || 'Aplicar');
+        const onApply = `(function(b){var inp=b.parentElement.querySelector('input');if(!inp.value.trim())return;b.textContent='✓';b.style.background='var(--g6)';setTimeout(function(){b.textContent='${btnLbl}';b.style.background='var(--b6)'},1200)})(this)`;
+        demo = `
+          <div style="position:relative;display:inline-flex;align-items:center;width:260px">
+            <input type="text" placeholder="${escHtml(sv.placeholder||'Ingresa un valor…')}"
+              style="${INP_BASE};width:100%;padding:0 84px 0 10px"
+              onfocus="${FCS}" onblur="${BLR}" onmouseenter="${MEN}" onmouseleave="${MLE}"
+              onkeydown="if(event.key==='Enter')this.nextElementSibling.click()">
+            <button onclick="${onApply}"
+              style="position:absolute;right:5px;top:50%;transform:translateY(-50%);height:22px;padding:0 10px;border-radius:50px;background:var(--b6);color:#fff;border:none;font:700 11px/1 var(--font-sans);cursor:pointer;white-space:nowrap;transition:background .12s"
+              onmouseenter="if(this.textContent==='${btnLbl}')this.style.background='var(--b7)'" onmouseleave="if(this.textContent==='${btnLbl}')this.style.background='var(--b6)'">${btnLbl}</button>
+          </div>`;
+      }
+
+      return `<div style="display:flex;flex-direction:column;gap:6px;min-width:200px">
+        <div style="font:600 12px/16px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.07em">${escHtml(sv.label)}</div>
+        <div style="font:400 12px/16px var(--font-sans);color:var(--n5);margin-bottom:6px;max-width:260px">${escHtml(sv.description||'')}</div>
+        ${demo}
+      </div>`;
+    });
+
+    const specialSection = specialItems.length
+      ? `<div style="margin-bottom:48px">
+          ${subHead('Special inputs')}
+          <div style="display:flex;flex-wrap:wrap;gap:32px 48px;align-items:flex-start">${specialItems.join('')}</div>
+        </div>`
+      : '';
+
     const previewTab = `<div style="padding:24px;background:var(--n1)">
       <div style="margin-bottom:48px">
         ${subHead('Text inputs')}
         ${groupSections}
       </div>
+      ${specialSection}
       <div>
         ${subHead('Dropdowns')}
         ${dropInteractive}${selectSection}${multiSection}
