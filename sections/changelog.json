@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T19:31:27.751Z",
+  "generated": "2026-06-10T19:38:03.749Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "982e4d9",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): floating popover layer escapes overflow containers",
+          "author": "Diego"
+        },
         {
           "hash": "7eb8caa",
           "type": "update",
