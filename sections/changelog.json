@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:11:28.334Z",
+  "generated": "2026-06-10T18:24:39.036Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "5067300",
+          "type": "update",
+          "section": "Tables",
+          "message": "DES-827: redesign Acceso y usuarios — single card with empty/table states",
+          "author": "Carlos"
+        },
         {
           "hash": "08ef66b",
           "type": "update",
