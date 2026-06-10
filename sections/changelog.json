@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T19:56:19.530Z",
+  "generated": "2026-06-10T20:06:43.907Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "b7ae794",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: keyboard-accessible toggles + inline field validation errors",
+          "author": "Carlos"
+        },
         {
           "hash": "d32c656",
           "type": "update",
