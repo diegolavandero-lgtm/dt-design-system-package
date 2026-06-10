@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T20:22:53.771Z",
+  "generated": "2026-06-10T20:29:23.613Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "fe63d86",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: standardize HTML tab title to match other prototypes",
+          "author": "Carlos"
+        },
         {
           "hash": "76daa22",
           "type": "update",
