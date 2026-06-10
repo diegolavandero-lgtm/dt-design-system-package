@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:56:24.465Z",
+  "generated": "2026-06-10T19:01:39.981Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "5bb59a8",
+          "type": "feat",
+          "section": "General",
+          "message": "DES-827: add responsive 960px breakpoint — tab-grid collapses to single column",
+          "author": "Carlos"
+        },
         {
           "hash": "a1a2659",
           "type": "update",
