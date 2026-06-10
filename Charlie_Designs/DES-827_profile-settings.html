@@ -940,15 +940,6 @@
       <!-- ══ EDIT REPORT PAGE ══ -->
       <div class="panel" id="panel-edit-report" style="display:none">
 
-        <!-- Page header -->
-        <div class="pg-edit-hdr">
-          <button class="pg-back-btn" onclick="backToReports()">
-            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M14 26L4 16 14 6l1.4 1.4L6.8 16l8.6 8.6z"/><path d="M5 15h23v2H5z"/></svg>
-            Reportes programados
-          </button>
-          <svg viewBox="0 0 32 32" fill="currentColor" width="12" height="12" style="color:var(--n4)"><path d="M12 8l8 8-8 8"/></svg>
-          <span id="edit-breadcrumb-name" style="font:400 13px var(--font-sans);color:var(--n5);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-        </div>
 
         <!-- Main form card -->
         <div class="card">
@@ -1303,7 +1294,6 @@
     document.getElementById('edit-nombre').value = r.nombre;
     document.getElementById('edit-page-title').textContent = r.nombre;
     document.getElementById('edit-page-sub').textContent = `Creado · Tipo: ${r.tipo}`;
-    document.getElementById('edit-breadcrumb-name').textContent = r.nombre;
 
     // Set dropdowns
     const setDrop = (dropId, lblId, val) => {
