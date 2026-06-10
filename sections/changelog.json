@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T15:52:45.140Z",
+  "generated": "2026-06-10T15:58:16.494Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "d7ffe5f",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: consolidate edit report actions to header only",
+          "author": "Carlos"
+        },
         {
           "hash": "fa9128c",
           "type": "update",
