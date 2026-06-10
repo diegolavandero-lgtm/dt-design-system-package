@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T20:06:43.907Z",
+  "generated": "2026-06-10T20:11:13.944Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "5474e9f",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: dynamic page header — section title for tabs 1-3, user profile for tab 0",
+          "author": "Carlos"
+        },
         {
           "hash": "b7ae794",
           "type": "update",
