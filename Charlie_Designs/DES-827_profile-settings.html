@@ -473,6 +473,19 @@
     .pg-edit-sub{font:400 13px var(--font-sans);color:var(--n5);margin-top:2px}
     .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     .form-grid-full{grid-column:1/-1}
+
+    /* ════ Two-column card layout ════ */
+    .tab-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+    /* ════ Responsive — desktop breakpoint ════
+       Sidebar: 52px (global) + 212px (subnav) = 264px
+       Content padding: 48px — total chrome: 312px
+       Below 960px the two columns get too narrow to be usable */
+    @media (max-width:960px){
+      .tab-grid{grid-template-columns:1fr}
+      .form-grid,.form-grid-2{grid-template-columns:1fr}
+      .form-grid .form-row.full{grid-column:1}
+    }
     .danger-zone{border:1px solid var(--r3);border-radius:8px;overflow:hidden;margin-top:20px}
     .danger-zone-hdr{padding:12px 20px;background:var(--r1);border-bottom:1px solid var(--r3);
       display:flex;align-items:center;justify-content:space-between}
@@ -686,7 +699,7 @@
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="tab-grid">
 
         <div class="card">
           <div class="card-hdr"><span class="card-ttl">Datos personales</span></div>
@@ -753,7 +766,7 @@
       <!-- ══ TAB 1 — Seguridad ══ -->
       <div class="panel" id="panel-1">
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="tab-grid">
 
         <div class="card">
           <div class="card-hdr"><span class="card-ttl">Cambiar contraseña</span></div>
@@ -811,7 +824,7 @@
       <!-- ══ TAB 2 — Acceso y usuarios ══ -->
       <div class="panel" id="panel-2">
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+        <div class="tab-grid" style="align-items:start">
 
           <!-- Left: user list — matches form height, overflows internally when more users added -->
           <div class="card" id="shared-users-card" style="min-height:var(--add-user-form-h,auto)">
