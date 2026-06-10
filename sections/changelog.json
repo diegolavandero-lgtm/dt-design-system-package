@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T16:53:16.202Z",
+  "generated": "2026-06-10T18:11:28.334Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "08ef66b",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: two-column layout for Acceso y usuarios tab",
+          "author": "Carlos"
+        },
         {
           "hash": "d2ed9b6",
           "type": "update",
