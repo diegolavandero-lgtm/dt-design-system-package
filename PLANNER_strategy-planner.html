@@ -240,15 +240,48 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
 
 /* Screen 11 — Territory canvas */
 .tcanvas{display:flex;flex:1;min-height:0;}
-.tcfg{width:320px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;padding-bottom:16px;}
-.tcfg .sec{padding:14px 16px;border-bottom:1px solid var(--n3);}
-.tcfg .sec-title{font:700 12px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;}
+/* Territory config panel — 24px horizontal padding, full-width controls */
+.tcfg{width:320px;background:#fff;border-right:1px solid var(--n3);flex-shrink:0;overflow-y:auto;padding-bottom:16px;box-sizing:border-box;}
+.tcfg .sec{padding:14px 24px;border-bottom:1px solid var(--n3);}
+.tcfg .sec-title{font:700 11px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
 .tcfg .frow{margin-bottom:12px;}
 .tcfg .flbl{font:400 12px var(--font-sans);color:var(--n7);margin-bottom:5px;}
-.tcfg .stepper-num{display:flex;align-items:center;gap:0;border:1px solid var(--n3);border-radius:6px;overflow:hidden;height:32px;background:#fff;}
-.tcfg .stepper-num button{width:32px;height:32px;border:0;background:#fff;font:700 16px var(--font-sans);color:var(--n5);cursor:pointer;flex-shrink:0;}
-.tcfg .stepper-num button:hover{background:var(--n2);}
-.tcfg .stepper-num span{flex:1;text-align:center;font:700 14px var(--font-sans);color:var(--n7);}
+/* DS Number Input (from DS selection controls spec) */
+.num-inp{display:flex;border:1px solid var(--n3);border-radius:6px;overflow:hidden;height:32px;background:#fff;width:100%;}
+.num-inp button{width:36px;height:32px;border:0;background:#fff;font:500 18px/1 var(--font-sans);color:var(--n5);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.num-inp button:hover{background:var(--n2);color:var(--n7);}
+.num-inp .num-val{flex:1;text-align:center;font:700 14px var(--font-sans);color:var(--n7);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--n3);border-right:1px solid var(--n3);}
+/* DS Select (functional dropdown) */
+.t-select{position:relative;width:100%;}
+.t-select-trigger{display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;font:400 14px var(--font-sans);color:var(--n7);width:100%;box-sizing:border-box;}
+.t-select-trigger:hover{background:var(--n2);}
+.t-select-trigger .t-sel-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.t-select-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;padding:4px 0;}
+.t-select-menu.on{display:block;}
+.t-select-opt{height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer;}
+.t-select-opt:hover{background:var(--b1);color:var(--b7);}
+.t-select-opt.sel::before{content:"✓";margin-right:8px;color:var(--b6);font-size:11px;}
+.t-select-opt:not(.sel)::before{content:"";margin-right:19px;}
+/* DS 24H Time Picker */
+.t-time-wrap{position:relative;width:100%;}
+.t-time-inp{display:flex;align-items:center;height:32px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;font:400 14px var(--font-sans);color:var(--n7);gap:8px;box-sizing:border-box;}
+.t-time-inp:hover{background:var(--n2);}
+.t-time-inp span{flex:1;}
+.t-time-picker{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1px solid var(--n3);border-radius:12px;box-shadow:0 8px 24px rgba(19,32,69,.14);z-index:300;padding:16px;width:256px;}
+.t-time-picker.on{display:block;}
+.t-time-picker .tp-title{font:700 13px var(--font-sans);color:var(--n7);margin-bottom:12px;}
+.t-time-picker .tp-display{display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+.t-time-picker .tp-box{width:64px;height:56px;border-radius:8px;border:1px solid var(--n3);display:flex;align-items:center;justify-content:center;font:700 28px/1 var(--font-sans);color:var(--n7);cursor:pointer;user-select:none;}
+.t-time-picker .tp-box.active{border:2px solid var(--b6);color:var(--b6);}
+.t-time-picker .tp-sep{font:700 24px var(--font-sans);color:var(--n7);}
+.t-time-picker .tp-clock{position:relative;width:196px;height:196px;margin:0 auto 14px;border-radius:50%;background:var(--n2);}
+.tp-center{position:absolute;width:8px;height:8px;background:var(--b6);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);}
+.tp-hand{position:absolute;bottom:50%;left:50%;transform-origin:bottom center;width:2px;background:var(--b6);border-radius:2px;}
+.tp-hour-num{position:absolute;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:500 12px var(--font-sans);color:var(--n7);cursor:pointer;transform:translate(-50%,-50%);}
+.tp-hour-num:hover{background:rgba(75,130,250,.12);}
+.tp-hour-num.sel{background:var(--b6);color:#fff;}
+.t-time-picker .tp-footer{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--n3);padding-top:10px;}
+/* Day chips */
 .tcfg .tdays{display:flex;gap:4px;}
 .tcfg .tday{flex:1;height:32px;border:1px solid var(--n3);border-radius:6px;background:#fff;font:700 11px var(--font-sans);color:var(--n6);cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .tcfg .tday.on{background:var(--b5);border-color:var(--b5);color:#fff;}
@@ -1186,30 +1219,61 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
           <div class="tcanvas">
             <!-- Config panel -->
             <div class="tcfg">
+
+              <!-- FLOTA -->
               <div class="sec">
                 <div class="sec-title">Flota</div>
+
+                <!-- Motor de optimización — select with ellipsis -->
                 <div class="frow">
                   <div class="flbl">Motor de optimización</div>
-                  <div class="ddl">TP Mark III (anchor-grow + DayAssigner) <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                  <div class="t-select" id="selMotor">
+                    <div class="t-select-trigger" onclick="tToggleSel('selMotor')">
+                      <span class="t-sel-lbl" id="selMotorLbl">TP Mark III (anchor-grow + DayAssigner)</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div class="t-select-menu" id="selMotorMenu">
+                      <div class="t-select-opt sel" onclick="tPickSel('selMotor','TP Mark III (anchor-grow + DayAssigner)')">TP Mark III (anchor-grow + DayAssigner)</div>
+                      <div class="t-select-opt" onclick="tPickSel('selMotor','Territory Planner estándar')">Territory Planner estándar</div>
+                    </div>
+                  </div>
                 </div>
+
+                <!-- Número de vendedores — DS number input -->
                 <div class="frow">
                   <div class="flbl">Número de vendedores</div>
-                  <div class="tcfg stepper-num">
-                    <button onclick="tAdj('tNSellers',-1)">−</button>
-                    <span id="tNSellers">5</span>
-                    <button onclick="tAdj('tNSellers',1)">+</button>
+                  <div class="num-inp">
+                    <button onclick="tNumAdj('tNSellers',-1,1)">−</button>
+                    <div class="num-val" id="tNSellers">5</div>
+                    <button onclick="tNumAdj('tNSellers',1,1)">+</button>
                   </div>
                 </div>
+
+                <!-- Inicio / Fin de turno — DS 24H time picker -->
                 <div class="frow" style="display:flex;gap:10px;">
-                  <div style="flex:1">
+                  <div style="flex:1;min-width:0;">
                     <div class="flbl">Inicio turno</div>
-                    <div class="inp" style="height:32px"><input type="text" value="09:00"></div>
+                    <div class="t-time-wrap" id="twStart">
+                      <div class="t-time-inp" onclick="tOpenTime('twStart')">
+                        <span id="twStartVal">09:00</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
+                      <div class="t-time-picker" id="twStartPicker"></div>
+                    </div>
                   </div>
-                  <div style="flex:1">
+                  <div style="flex:1;min-width:0;">
                     <div class="flbl">Fin turno</div>
-                    <div class="inp" style="height:32px"><input type="text" value="18:00"></div>
+                    <div class="t-time-wrap" id="twEnd">
+                      <div class="t-time-inp" onclick="tOpenTime('twEnd')">
+                        <span id="twEndVal">18:00</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
+                      <div class="t-time-picker" id="twEndPicker"></div>
+                    </div>
                   </div>
                 </div>
+
+                <!-- Días permitidos -->
                 <div class="frow">
                   <div class="flbl">Días permitidos</div>
                   <div class="tdays">
@@ -1218,34 +1282,68 @@ table.t{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color
                   </div>
                 </div>
               </div>
+
+              <!-- CADENCIA DE VISITAS -->
               <div class="sec">
                 <div class="sec-title">Cadencia de visitas</div>
+
                 <div class="frow" style="display:flex;gap:10px;">
-                  <div style="flex:1">
+                  <div style="flex:1;min-width:0;">
                     <div class="flbl">Visitas / semana</div>
-                    <div class="tcfg stepper-num"><button onclick="tAdj('tVisits',-1)">−</button><span id="tVisits">1</span><button onclick="tAdj('tVisits',1)">+</button></div>
+                    <div class="num-inp">
+                      <button onclick="tNumAdj('tVisits',-1,1)">−</button>
+                      <div class="num-val" id="tVisits">1</div>
+                      <button onclick="tNumAdj('tVisits',1,1)">+</button>
+                    </div>
                   </div>
-                  <div style="flex:1">
-                    <div class="flbl">Días entre</div>
-                    <div class="tcfg stepper-num"><button onclick="tAdj('tGap',-1)">−</button><span id="tGap">0</span><button onclick="tAdj('tGap',1)">+</button></div>
+                  <div style="flex:1;min-width:0;">
+                    <div class="flbl">Días entre visitas</div>
+                    <div class="num-inp">
+                      <button onclick="tNumAdj('tGap',-1,0)">−</button>
+                      <div class="num-val" id="tGap">0</div>
+                      <button onclick="tNumAdj('tGap',1,0)">+</button>
+                    </div>
                   </div>
                 </div>
+
+                <!-- Recurrencia — functional select -->
                 <div class="frow">
                   <div class="flbl">Recurrencia</div>
-                  <div class="ddl">Cada 2 semanas (quincenal) <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                  <div class="t-select" id="selRecurr">
+                    <div class="t-select-trigger" onclick="tToggleSel('selRecurr')">
+                      <span class="t-sel-lbl" id="selRecurrLbl">Cada dos semanas (quincenal)</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--n5)" stroke-width="2" style="flex-shrink:0"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div class="t-select-menu" id="selRecurrMenu">
+                      <div class="t-select-opt" onclick="tPickSel('selRecurr','1 vez a la semana')">1 vez a la semana</div>
+                      <div class="t-select-opt sel" onclick="tPickSel('selRecurr','Cada dos semanas (quincenal)')">Cada dos semanas (quincenal)</div>
+                      <div class="t-select-opt" onclick="tPickSel('selRecurr','1 vez al mes (mensual)')">1 vez al mes (mensual)</div>
+                    </div>
+                  </div>
                 </div>
+
                 <label class="ck"><span class="chk"></span>Usar días de ciclo por cliente (vendedor)</label>
               </div>
+
+              <!-- SERVICIO -->
               <div class="sec">
                 <div class="sec-title">Servicio</div>
+
+                <!-- Tiempo de servicio — DS number input -->
                 <div class="frow">
                   <div class="flbl">Tiempo de servicio (min)</div>
-                  <div class="ddl">catálogo (default 20) <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#67768D" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                  <div class="num-inp">
+                    <button onclick="tNumAdj('tSvcTime',-1,1)">−</button>
+                    <div class="num-val" id="tSvcTime">20</div>
+                    <button onclick="tNumAdj('tSvcTime',1,1)">+</button>
+                  </div>
                 </div>
+
                 <label class="ck"><span class="chk on"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Respetar depot legs</label>
                 <label class="ck"><span class="chk"></span>Ocultar paradas sin rutear</label>
               </div>
-              <div style="padding:14px 16px;">
+
+              <div style="padding:14px 24px;">
                 <button class="btn pri full" onclick="tRunPlan()">Planificar territorios</button>
               </div>
             </div>
@@ -2608,6 +2706,128 @@ function buildTError(){
       '<button class="btn ter" onclick="goTV(11)">Ajustar parámetros</button>'+
       '<button class="btn pri" onclick="tRunPlan()">Reintentar</button>'+
     '</div>';
+}
+
+/* ── Territory config controls ── */
+
+/* DS Number Input — replaces stepper-num */
+function tNumAdj(id,delta,min){
+  var el=document.getElementById(id);
+  var v=parseInt(el.textContent)+delta;
+  if(v<(min||0))v=(min||0);
+  if(v>99)v=99;
+  el.textContent=v;
+}
+/* Keep old tAdj for compatibility */
+function tAdj(id,delta){tNumAdj(id,delta,0);}
+
+/* Functional DS Select */
+function tToggleSel(wrapId){
+  var wrap=document.getElementById(wrapId);
+  var menu=document.getElementById(wrapId+'Menu');
+  var open=menu.classList.contains('on');
+  // Close all other selects
+  document.querySelectorAll('.t-select-menu.on').forEach(function(m){m.classList.remove('on');});
+  if(!open){
+    menu.classList.add('on');
+    setTimeout(function(){document.addEventListener('click',function h(e){
+      if(!wrap.contains(e.target)){menu.classList.remove('on');document.removeEventListener('click',h);}
+    });},0);
+  }
+}
+function tPickSel(wrapId,val){
+  document.getElementById(wrapId+'Lbl').textContent=val;
+  document.getElementById(wrapId+'Menu').classList.remove('on');
+  // Update sel class
+  document.querySelectorAll('#'+wrapId+'Menu .t-select-opt').forEach(function(o){
+    o.classList.toggle('sel',o.textContent.trim()===val);
+  });
+}
+
+/* ── DS 24H Time Picker ── */
+var _tpState={};
+
+function tBuildClock(wrapId,h,m){
+  var r=88; // clock radius
+  var cx=98,cy=98; // center of 196px clock
+  var hours=[];
+  // Outer ring: 12–23
+  for(var i=12;i<=23;i++){
+    var angle=(i-12)*(360/12)-90;
+    var rad=angle*Math.PI/180;
+    hours.push({val:i,x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)});
+  }
+  // Inner ring: 0–11
+  var ri=58;
+  for(var j=0;j<=11;j++){
+    var a2=(j-12+12)%12*(360/12)-90;
+    if(j===0)a2=-90; // 12 o'clock
+    else a2=(j)*(360/12)-90;
+    var r2=a2*Math.PI/180;
+    hours.push({val:j,x:cx+ri*Math.cos(r2),y:cy+ri*Math.sin(r2)});
+  }
+  // Hand angle
+  var hNorm=h>11?h-12:h;
+  var handAngle=hNorm*(360/12)-90;
+  var handRad=handAngle*Math.PI/180;
+  var isOuter=h>=12;
+  var hr=isOuter?r:ri;
+  var hx=cx+hr*Math.cos(handRad);
+  var hy=cy+hr*Math.sin(handRad);
+  var handLen=hr;
+
+  var numsHtml=hours.map(function(n){
+    var isSel=n.val===h;
+    return '<div class="tp-hour-num'+(isSel?' sel':'')+'" style="left:'+n.x+'px;top:'+n.y+'px;" onclick="tPickHour(\''+wrapId+'\','+n.val+')">'+n.val+'</div>';
+  }).join('');
+
+  return '<div class="tp-title">Seleccionar hora</div>'+
+    '<div class="tp-display">'+
+      '<div class="tp-box active" id="'+wrapId+'-hbox">'+pad2(h)+'</div>'+
+      '<span class="tp-sep">:</span>'+
+      '<div class="tp-box" id="'+wrapId+'-mbox">'+pad2(m)+'</div>'+
+    '</div>'+
+    '<div class="tp-clock">'+
+      '<svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 196 196">'+
+        '<line x1="'+cx+'" y1="'+cy+'" x2="'+hx+'" y2="'+hy+'" stroke="var(--b6)" stroke-width="2" stroke-linecap="round"/>'+
+        '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="var(--b6)"/>'+
+        '<circle cx="'+hx+'" cy="'+hy+'" r="10" fill="var(--b6)" opacity="0.25"/>'+
+      '</svg>'+
+      numsHtml+
+    '</div>'+
+    '<div class="tp-footer">'+
+      '<button class="btn txt" style="height:28px;padding:0 10px;" onclick="tCloseTime(\''+wrapId+'\')">Cancelar</button>'+
+      '<button class="btn pri" style="height:28px;padding:0 14px;font-size:12px;" onclick="tSaveTime(\''+wrapId+'\')">Guardar</button>'+
+    '</div>';
+}
+function pad2(n){return n<10?'0'+n:String(n);}
+function tOpenTime(wrapId){
+  var valEl=document.getElementById(wrapId+'Val');
+  var parts=(valEl.textContent||'09:00').split(':');
+  var h=parseInt(parts[0])||0, m=parseInt(parts[1])||0;
+  _tpState[wrapId]={h:h,m:m};
+  var picker=document.getElementById(wrapId+'Picker');
+  picker.innerHTML=tBuildClock(wrapId,h,m);
+  picker.classList.add('on');
+  setTimeout(function(){document.addEventListener('click',function hh(e){
+    var wrap=document.getElementById(wrapId);
+    if(!wrap.contains(e.target)){picker.classList.remove('on');document.removeEventListener('click',hh);}
+  });},0);
+}
+function tCloseTime(wrapId){
+  document.getElementById(wrapId+'Picker').classList.remove('on');
+}
+function tPickHour(wrapId,h){
+  var st=_tpState[wrapId]||{h:h,m:0};
+  st.h=h;_tpState[wrapId]=st;
+  var picker=document.getElementById(wrapId+'Picker');
+  picker.innerHTML=tBuildClock(wrapId,h,st.m);
+  picker.classList.add('on');
+}
+function tSaveTime(wrapId){
+  var st=_tpState[wrapId]||{h:9,m:0};
+  document.getElementById(wrapId+'Val').textContent=pad2(st.h)+':'+pad2(st.m);
+  tCloseTime(wrapId);
 }
 
 /* ══════════════════════════════════════════
