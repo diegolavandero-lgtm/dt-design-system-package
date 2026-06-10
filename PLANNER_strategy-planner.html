@@ -2610,6 +2610,62 @@ function buildTError(){
     '</div>';
 }
 
+/* ══════════════════════════════════════════
+   GLOBAL INTERACTIVE CONTROLS — delegated
+   Makes every .ck, .swt, .tday, .seg, .chk
+   and .vendor-ck functional without individual
+   onclick attributes on each element.
+══════════════════════════════════════════ */
+var CHECK_SVG='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+document.addEventListener('click',function(e){
+
+  /* 1 ── label.ck → toggle .chk inside (DS checkbox) */
+  var label=e.target.closest('label.ck');
+  if(label && !e.target.closest('.swt') && e.target.tagName!=='INPUT'){
+    var chk=label.querySelector('.chk');
+    if(chk){
+      var nowOn=chk.classList.toggle('on');
+      chk.innerHTML=nowOn?CHECK_SVG:'';
+      e.preventDefault(); // prevent double-fire on inline inputs
+    }
+    return;
+  }
+
+  /* 2 ── .swt without an explicit onclick → toggle */
+  var swt=e.target.closest('.swt');
+  if(swt && !swt.getAttribute('onclick') && !swt.hasAttribute('data-handled')){
+    swt.classList.toggle('on');
+    return;
+  }
+
+  /* 3 ── .tday chips (territory allowed days) */
+  var tday=e.target.closest('.tday');
+  if(tday){
+    tday.classList.toggle('on');
+    return;
+  }
+
+  /* 4 ── .vendor-ck (rebalance seller checkboxes) */
+  var vck=e.target.closest('.vendor-ck');
+  if(vck){
+    vck.classList.toggle('sel');
+    return;
+  }
+
+  /* 5 ── generic .seg button (not already handled by setRouteStyle) */
+  var segBtn=e.target.closest('.seg button');
+  if(segBtn){
+    var seg=segBtn.closest('.seg');
+    if(seg&&!seg.closest('#a1')){ // skip Vista route style seg (handled by setRouteStyle)
+      [].forEach.call(seg.querySelectorAll('button'),function(b){b.classList.remove('on');});
+      segBtn.classList.add('on');
+    }
+    return;
+  }
+
+});
+
 /* init */
 renderPins(false);setOptimized(false);setProto('list');
 </script>
