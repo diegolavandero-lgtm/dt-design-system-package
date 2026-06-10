@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T13:57:47.053Z",
+  "generated": "2026-06-10T14:29:55.763Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "dae4eb1",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "DES-827: fix modal form styling — use dt-dtrigger instead of dt-dbtn",
+          "author": "Carlos"
+        },
         {
           "hash": "2f2728e",
           "type": "feat",
