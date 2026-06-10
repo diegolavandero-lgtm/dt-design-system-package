@@ -5277,7 +5277,7 @@ async function downloadAllPins() {
     const ovPanelCard = (panelId, count, fieldsHtml) =>
       `<div id="${panelId}" style="display:none;background:#fff;border-radius:8px;border:1px solid var(--n4);padding:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <span style="font:700 11px var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.06em">Otros filtros (${count})</span>
+          <span style="font:700 13px var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.04em">Otros filtros (${count})</span>
           ${closePanelBtn(panelId)}
         </div>
         <div style="display:flex;flex-direction:column;gap:8px">
