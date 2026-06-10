@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T19:38:03.749Z",
+  "generated": "2026-06-10T19:44:03.399Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "55f9a6f",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): position:fixed directly on element — no container wrapper",
+          "author": "Diego"
+        },
         {
           "hash": "982e4d9",
           "type": "fix",
