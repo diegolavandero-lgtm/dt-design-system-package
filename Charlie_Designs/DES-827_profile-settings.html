@@ -477,10 +477,20 @@
     /* ════ Two-column card layout ════ */
     .tab-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 
-    /* ════ Responsive — desktop breakpoint ════
-       Sidebar: 52px (global) + 212px (subnav) = 264px
-       Content padding: 48px — total chrome: 312px
-       Below 960px the two columns get too narrow to be usable */
+    /* ════ Responsive — two-stage desktop collapse ════
+       Chrome fixo: sidebar 52px + subnav 212px + padding 48px = 312px
+
+       Stage 1 — 1200px: inner form fields collapse to single column.
+       Inside a half-width tab-grid card the two inputs (~191px each)
+       are too narrow to be readable.
+
+       Stage 2 — 960px: outer tab-grid collapses to single column.
+       Below this the cards themselves are too narrow side-by-side. */
+    @media (max-width:1200px){
+      .tab-grid .form-grid,
+      .tab-grid .form-grid-2{grid-template-columns:1fr}
+      .tab-grid .form-grid .form-row.full{grid-column:1}
+    }
     @media (max-width:960px){
       .tab-grid{grid-template-columns:1fr}
       .form-grid,.form-grid-2{grid-template-columns:1fr}
