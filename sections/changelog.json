@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:37:10.744Z",
+  "generated": "2026-06-10T18:40:10.092Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "5d8e72d",
+          "type": "update",
+          "section": "Icons",
+          "message": "DES-827: align shared users table to standard .tbl styles and icons",
+          "author": "Carlos"
+        },
         {
           "hash": "1fd4a29",
           "type": "feat",
