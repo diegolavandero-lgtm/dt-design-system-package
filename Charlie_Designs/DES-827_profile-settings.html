@@ -256,6 +256,8 @@
     .btn.primary:hover{background:#1F60ED;border-color:#1F60ED}
     .btn.primary:active{background:#0052CC;border-color:#0052CC}
     .btn.primary:disabled{background:#A8C3FD;border-color:#A8C3FD;cursor:not-allowed;pointer-events:none;opacity:1}
+    .btn.ghost{background:transparent;border-color:var(--n3);color:var(--n6)}
+    .btn.ghost:hover{background:var(--n2);border-color:var(--n4)}
     .btn.danger{background:#fff;color:var(--r6);border-color:var(--r6)}
     .btn.danger:hover{background:var(--r1)}
 
@@ -654,10 +656,7 @@
         <div class="page-header-name">soporte+arsa</div>
         <div class="page-header-email">soporte+arsa@beettrack.com</div>
       </div>
-      <div id="page-header-actions" style="display:none;margin-left:auto;gap:8px;align-items:center">
-        <button class="btn ghost" onclick="backToReports()">Cancelar</button>
-        <button id="edit-save-btn-top" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>
-      </div>
+      <div id="page-header-actions" style="display:flex;margin-left:auto;gap:8px;align-items:center"></div>
     </div>
 
     <div class="content">
@@ -700,24 +699,20 @@
             <div class="form-grid">
               <div class="form-row">
                 <label class="lbl">Nombre <span class="req">*</span></label>
-                <div class="inp-wrap"><input type="text" value="soporte+arsa"></div>
+                <div class="inp-wrap"><input type="text" value="soporte+arsa" oninput="checkTab0Dirty()"></div>
               </div>
               <div class="form-row">
                 <label class="lbl">Teléfono</label>
-                <div class="inp-wrap"><input type="tel" placeholder="+56 9 XXXX XXXX"></div>
+                <div class="inp-wrap"><input type="tel" placeholder="+56 9 XXXX XXXX" oninput="checkTab0Dirty()"></div>
               </div>
               <div class="form-row full">
                 <label class="lbl">Correo electrónico <span class="req">*</span></label>
                 <div style="display:flex;gap:8px;align-items:center">
-                  <div class="inp-wrap" style="flex:1"><input type="email" value="soporte+arsa@beettrack.com"></div>
+                  <div class="inp-wrap" style="flex:1"><input type="email" value="soporte+arsa@beettrack.com" oninput="checkTab0Dirty()"></div>
                   <button class="btn" style="flex-shrink:0">Verificar email</button>
                 </div>
                 <p class="helper">Tu correo se usa para notificaciones y recuperación de cuenta.</p>
               </div>
-            </div>
-            <div class="form-actions">
-              <button class="btn" onclick="showToast('Cambios descartados')">Cancelar</button>
-              <button class="btn primary" onclick="showToast('Datos personales guardados correctamente')">Guardar cambios</button>
             </div>
           </div>
         </div>
@@ -733,29 +728,25 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
                 <div class="dt-dmenu">
-                  <div class="dt-dopt selected" onclick="dtPick('theme-drop','theme-label',this)">Claro</div>
-                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this)">Oscuro</div>
-                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this)">Automático (según el sistema)</div>
+                  <div class="dt-dopt selected" onclick="dtPick('theme-drop','theme-label',this);checkTab0Dirty()">Claro</div>
+                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this);checkTab0Dirty()">Oscuro</div>
+                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this);checkTab0Dirty()">Automático (según el sistema)</div>
                 </div>
               </div>
             </div>
             <div class="toggle-row">
-              <div class="swt on" onclick="this.classList.toggle('on')"></div>
+              <div class="swt on" onclick="this.classList.toggle('on');checkTab0Dirty()"></div>
               <div>
                 <p class="toggle-lbl">Mostrar ventanas del chat</p>
                 <p class="toggle-desc">Muestra el widget de soporte en la esquina inferior de la pantalla.</p>
               </div>
             </div>
             <div class="toggle-row">
-              <div class="swt" onclick="this.classList.toggle('on')"></div>
+              <div class="swt" onclick="this.classList.toggle('on');checkTab0Dirty()"></div>
               <div>
                 <p class="toggle-lbl">Enviar resumen diario por correo</p>
                 <p class="toggle-desc">Recibirás un resumen de la actividad del día en <strong>soporte+arsa@beettrack.com</strong> todos los días a las 8:00 AM.</p>
               </div>
-            </div>
-            <div class="form-actions">
-              <button class="btn" onclick="showToast('Cambios descartados')">Cancelar</button>
-              <button class="btn primary" onclick="showToast('Preferencias guardadas correctamente')">Guardar preferencias</button>
             </div>
           </div>
         </div>
@@ -774,13 +765,13 @@
             </div>
             <div class="form-row">
               <label class="lbl">Contraseña actual <span class="req">*</span></label>
-              <input class="inp" type="password" placeholder="Ingresa tu contraseña actual" autocomplete="current-password">
+              <input class="inp" type="password" placeholder="Ingresa tu contraseña actual" autocomplete="current-password" oninput="checkTab1Dirty()">
               <p class="helper">Requerida para confirmar que eres tú quien realiza el cambio.</p>
             </div>
             <div class="divider"></div>
             <div class="form-row">
               <label class="lbl">Nueva contraseña <span class="req">*</span></label>
-              <input class="inp" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="updateStrength(this)">
+              <input class="inp" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="updateStrength(this);checkTab1Dirty()">
               <div class="pw-bars">
                 <div class="pw-bar" id="bar1"></div>
                 <div class="pw-bar" id="bar2"></div>
@@ -790,11 +781,7 @@
             </div>
             <div class="form-row">
               <label class="lbl">Confirmar nueva contraseña <span class="req">*</span></label>
-              <input class="inp" type="password" placeholder="Repite la nueva contraseña" autocomplete="new-password">
-            </div>
-            <div class="form-actions">
-              <button class="btn" onclick="showToast('Cambios descartados')">Cancelar</button>
-              <button class="btn primary" onclick="showToast('Contraseña actualizada correctamente')">Actualizar contraseña</button>
+              <input class="inp" type="password" placeholder="Repite la nueva contraseña" autocomplete="new-password" oninput="checkTab1Dirty()">
             </div>
           </div>
         </div>
@@ -828,7 +815,6 @@
         <div class="card">
           <div class="card-hdr">
             <span class="card-ttl">Usuarios con acceso compartido</span>
-            <button class="btn primary" onclick="toggleAddUser()">Agregar usuario</button>
           </div>
           <div class="card-body flush">
             <div class="empty-state">
@@ -899,7 +885,6 @@
         <div class="card">
           <div class="card-hdr">
             <span class="card-ttl">Reportes programados</span>
-            <button class="btn primary" onclick="openReportModal()">Nuevo reporte</button>
           </div>
 
           <!-- EMPTY STATE (visible when no reports) -->
@@ -1139,17 +1124,75 @@
     if (wrap && !wrap.contains(e.target)) closeUserMenu();
   });
 
+  /* ── PAGE HEADER ACTIONS — per-tab ── */
+  function renderHeaderActions(idx) {
+    const ha = document.getElementById('page-header-actions');
+    if (!ha) return;
+    const actions = {
+      0: `<button class="btn ghost" id="ph-cancel-0" onclick="cancelTab0()" disabled>Cancelar</button>
+          <button class="btn primary" id="ph-save-0" onclick="saveTab0()" disabled>Guardar cambios</button>`,
+      1: `<button class="btn ghost" id="ph-cancel-1" onclick="cancelTab1()" disabled>Cancelar</button>
+          <button class="btn primary" id="ph-save-1" onclick="saveTab1()" disabled>Actualizar contraseña</button>`,
+      2: `<button class="btn primary" onclick="toggleAddUser()">Agregar usuario</button>`,
+      3: `<button class="btn primary" onclick="openReportModal()">Nuevo reporte</button>`,
+    };
+    ha.innerHTML = actions[idx] || '';
+  }
+
+  function checkTab0Dirty() {
+    const cancel = document.getElementById('ph-cancel-0');
+    const save   = document.getElementById('ph-save-0');
+    if (cancel) cancel.disabled = false;
+    if (save)   save.disabled   = false;
+  }
+  function cancelTab0() {
+    showToast('Cambios descartados');
+    const cancel = document.getElementById('ph-cancel-0');
+    const save   = document.getElementById('ph-save-0');
+    if (cancel) cancel.disabled = true;
+    if (save)   save.disabled   = true;
+  }
+  function saveTab0() {
+    showToast('Datos guardados correctamente');
+    const cancel = document.getElementById('ph-cancel-0');
+    const save   = document.getElementById('ph-save-0');
+    if (cancel) cancel.disabled = true;
+    if (save)   save.disabled   = true;
+  }
+
+  function checkTab1Dirty() {
+    const pw0 = document.querySelector('#panel-1 input[autocomplete="current-password"]');
+    const pw1 = document.querySelector('#panel-1 input[placeholder="Mínimo 8 caracteres"]');
+    const pw2 = document.querySelector('#panel-1 input[placeholder="Repite la nueva contraseña"]');
+    const dirty = pw0 && pw1 && pw2 && pw0.value && pw1.value && pw2.value;
+    const cancel = document.getElementById('ph-cancel-1');
+    const save   = document.getElementById('ph-save-1');
+    if (cancel) cancel.disabled = !dirty;
+    if (save)   save.disabled   = !dirty;
+  }
+  function cancelTab1() {
+    document.querySelectorAll('#panel-1 input[type="password"]').forEach(i => i.value = '');
+    updateStrength({value:''});
+    checkTab1Dirty();
+    showToast('Cambios descartados');
+  }
+  function saveTab1() {
+    showToast('Contraseña actualizada correctamente');
+    document.querySelectorAll('#panel-1 input[type="password"]').forEach(i => i.value = '');
+    updateStrength({value:''});
+    checkTab1Dirty();
+  }
+
   function switchTab(idx, el) {
     // Exit edit mode if active
     document.getElementById('panel-edit-report').style.display = 'none';
-    const ha = document.getElementById('page-header-actions');
-    if (ha) ha.style.display = 'none';
 
     document.querySelectorAll('.sb-item').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => { p.classList.remove('active'); p.style.display = ''; });
     el.classList.add('active');
     document.getElementById('panel-' + idx).classList.add('active');
     document.querySelector('.content').classList.toggle('wide', idx === 3);
+    renderHeaderActions(idx);
   }
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -1327,9 +1370,12 @@
     document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
     document.getElementById('panel-edit-report').style.display = 'block';
 
-    // Show header actions
+    // Show header actions for edit-report view
     const ha = document.getElementById('page-header-actions');
-    if (ha) { ha.style.display = 'flex'; }
+    if (ha) {
+      ha.innerHTML = `<button class="btn ghost" onclick="backToReports()">Cancelar</button>
+        <button id="edit-save-btn-top" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>`;
+    }
 
     // Disable save buttons until a change is detected
     setEditSaveBtns(true);
@@ -1374,8 +1420,7 @@
     document.getElementById('panel-edit-report').style.display = 'none';
     document.getElementById('panel-3').style.display = 'block';
     document.querySelector('.content').classList.add('wide');
-    const ha = document.getElementById('page-header-actions');
-    if (ha) ha.style.display = 'none';
+    renderHeaderActions(3);
   }
 
   function editEmailKeydown(e) {
@@ -1433,6 +1478,9 @@
       renderReportTable();
     }
   }
+
+  // Initialize header actions for the default tab (tab 0)
+  renderHeaderActions(0);
 </script>
 
 <!-- ══ MODAL: Nuevo reporte programado ══ -->
