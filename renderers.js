@@ -5080,9 +5080,9 @@ async function downloadAllPins() {
     const overflowPanel = (count, rows, active=false) => {
       const cells = rows.map(r => `<div style="display:flex;gap:8px">${r.map(()=>sInp()).join('')}</div>`).join('');
       return `<div style="margin-top:4px;background:#fff;border-radius:8px;border:1px solid var(--n4);padding:16px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <span style="font:700 13px var(--font-sans);color:var(--b7);letter-spacing:.04em;text-transform:uppercase">Otros filtros (${count})</span>
-          <button style="background:none;border:none;cursor:pointer;font:700 18px/1 var(--font-sans);color:var(--n5)">×</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;height:18px;margin-bottom:8px">
+          <span style="font:700 13px/1 var(--font-sans);color:var(--b7);letter-spacing:.04em;text-transform:uppercase">Otros filtros (${count})</span>
+          <button style="background:none;border:none;padding:0;cursor:pointer;line-height:0;color:var(--n5);display:flex;align-items:center">${dsCloseIcon(14,'var(--n5)')}</button>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px">${cells}</div>
       </div>`;
@@ -5267,17 +5267,17 @@ async function downloadAllPins() {
     const rawTable5 = tblDemoTable(data.scrollDemo || {});
     const demoTable5 = rawTable5.replace('<div class="tbl-outer">', `<div class="tbl-outer" id="${live5TblId}">`);
 
-    // Shared overflow panel close button (Carbon × icon)
+    // Shared overflow panel close button — no height override, icon only
     const closePanelBtn = (panelId) =>
-      `<button style="background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:2px;border-radius:4px;color:var(--n5);flex-shrink:0;line-height:0"
+      `<button style="background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;line-height:0;color:var(--n5);flex-shrink:0"
         onclick="document.getElementById('${panelId}').style.display='none'"
-        onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='none'">${dsCloseIcon(14,'var(--n5)')}</button>`;
+        onmouseenter="this.style.color='var(--n7)'" onmouseleave="this.style.color='var(--n5)'">${dsCloseIcon(14,'var(--n5)')}</button>`;
 
     // Overflow panel card — same style as static variant
     const ovPanelCard = (panelId, count, fieldsHtml) =>
       `<div id="${panelId}" style="display:none;background:#fff;border-radius:8px;border:1px solid var(--n4);padding:16px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <span style="font:700 13px var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.04em">Otros filtros (${count})</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;height:18px;margin-bottom:8px">
+          <span style="font:700 13px/1 var(--font-sans);color:var(--b7);text-transform:uppercase;letter-spacing:.04em">Otros filtros (${count})</span>
           ${closePanelBtn(panelId)}
         </div>
         <div style="display:flex;flex-direction:column;gap:8px">
