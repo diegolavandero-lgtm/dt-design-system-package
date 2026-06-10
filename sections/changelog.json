@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T21:05:25.178Z",
+  "generated": "2026-06-10T21:13:39.910Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "7fd5464",
+          "type": "update",
+          "section": "General",
+          "message": "DES-828: more vertical breathing room in driver cards",
+          "author": "Carlos"
+        },
         {
           "hash": "0cf2525",
           "type": "update",
