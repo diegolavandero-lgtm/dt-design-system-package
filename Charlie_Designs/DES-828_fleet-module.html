@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fleet — DispatchTrack</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo:#132045;
+      --n1:#F5F6FA; --n2:#F0F2F5; --n3:#E1E6ED; --n4:#C5D2E7; --n45:#8FA0BA;
+      --n5:#67768D; --n6:#4B5564; --n7:#39414D;
+      --b1:#EDF5FF; --b2:#D1E0FF; --b5:#4B82FA; --b6:#1F60ED; --b7:#0052CC;
+      --g1:#E3FCEF; --g5:#36B37E; --g6:#00875A;
+      --r1:#FFEBE6; --r3:#FFBDAD; --r5:#FF5630; --r6:#DE350B;
+      --o1:#FFFAE6; --o5:#FFAB00; --o7:#FF8B00;
+      --font-sans:'DM Sans',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:var(--font-sans);color:var(--n7);background:var(--n2);font-size:14px;line-height:1.5}
+
+    /* ════════════════════════
+       TOPBAR — identical to DES-827
+    ════════════════════════ */
+    .topbar{
+      position:sticky;top:0;z-index:200;
+      height:52px;background:#132045;
+      display:flex;align-items:center;
+      padding:0 0 0 16px;
+      flex-shrink:0;
+    }
+    .topbar-logo{display:flex;align-items:center;height:20px;text-decoration:none}
+    .topbar-logo img{height:20px;width:auto;display:block}
+    .topbar-icons{margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px}
+    .topbar-icons svg{
+      width:18px;height:18px;color:rgba(255,255,255,.85);
+      display:block;cursor:pointer;transition:color .12s;flex-shrink:0;
+    }
+    .topbar-icons svg:hover{color:#fff}
+    .bell-wrap{position:relative}
+    .bell-wrap::after{
+      content:'';position:absolute;top:-2px;right:-2px;
+      width:7px;height:7px;border-radius:50%;
+      background:#FF5630;border:1.5px solid #132045;
+    }
+    .topbar-slot{
+      height:52px;width:100px;
+      background:#fff;border-radius:25px 0 0 0;
+      display:flex;align-items:center;justify-content:center;
+      color:#132045;font-size:13px;font-weight:700;
+      flex-shrink:0;margin-left:8px;gap:6px;
+    }
+
+    /* ── USER DROPDOWN MENU ── */
+    .user-menu-wrap{position:relative}
+    .user-menu-wrap .topbar-user-btn{cursor:pointer;display:flex;align-items:center;justify-content:center;
+      width:32px;height:32px;border-radius:50%;transition:background .15s}
+    .user-menu-wrap .topbar-user-btn:hover{background:rgba(255,255,255,.15)}
+    .user-menu-wrap .topbar-user-btn.active{background:rgba(255,255,255,.20)}
+    .user-dropdown{display:none;position:absolute;top:calc(100% + 10px);right:0;
+      background:#fff;border:1px solid var(--n3);border-radius:10px;
+      box-shadow:0 8px 24px rgba(19,32,69,.18);z-index:3000;min-width:220px;overflow:hidden}
+    .user-dropdown.open{display:block}
+    .user-dropdown-hdr{padding:14px 16px;border-bottom:1px solid var(--n3);
+      display:flex;align-items:center;gap:10px}
+    .user-dropdown-avatar{width:36px;height:36px;border-radius:50%;background:var(--b6);
+      color:#fff;font:700 14px/1 var(--font-sans);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .user-dropdown-name{font:600 13px/1.3 var(--font-sans);color:var(--n7)}
+    .user-dropdown-email{font:400 12px/1.3 var(--font-sans);color:var(--n5);margin-top:2px}
+    .user-dropdown-divider{height:1px;background:var(--n3)}
+    .user-dropdown-item{display:flex;align-items:center;gap:10px;height:40px;padding:0 16px;
+      cursor:pointer;font:400 14px/1 var(--font-sans);color:var(--n7);transition:background .12s;
+      text-decoration:none}
+    .user-dropdown-item:hover{background:var(--n2)}
+    .user-dropdown-item svg{width:16px;height:16px;flex-shrink:0;color:var(--n5)}
+    .user-dropdown-item.danger{color:var(--r6)}
+    .user-dropdown-item.danger:hover{background:var(--r1)}
+    .user-dropdown-item.danger svg{color:var(--r6)}
+
+    /* ════════════════════════
+       LAYOUT SHELL — fixed-height map workspace
+    ════════════════════════ */
+    .shell{display:flex;height:calc(100vh - 52px)}
+
+    /* ════════════════════════
+       SIDEBAR — icon strip (identical to DES-827)
+    ════════════════════════ */
+    .pg-sidenav{
+      width:52px;background:#fff;border-right:1px solid #E1E6ED;
+      display:flex;flex-direction:column;align-items:center;
+      padding:10px 0 8px;flex-shrink:0;
+      height:100%;overflow:hidden;
+    }
+    .pg-sidenav .psn-it{
+      width:36px;height:36px;border-radius:30px;
+      display:flex;align-items:center;justify-content:center;
+      color:#0052CC;cursor:pointer;position:relative;flex-shrink:0;
+    }
+    .pg-sidenav .psn-it:hover{background:#EDF5FF}
+    .pg-sidenav .psn-it.psn-sel{
+      background:#EDF5FF;border-radius:0 30px 30px 0;
+      width:47px;align-self:flex-end;
+    }
+    .pg-sidenav .psn-it.psn-sel::before{
+      content:"";position:absolute;left:0;top:5px;bottom:5px;
+      width:3px;background:#4B82FA;border-radius:0 3px 3px 0;
+    }
+    .pg-sidenav .psn-it svg{width:16px;height:16px;fill:currentColor;stroke:none;flex-shrink:0}
+    .pg-sidenav .psn-sep{width:26px;border-top:1px solid #E1E6ED;margin:5px 0;flex-shrink:0}
+
+    /* ════════════════════════
+       MAIN
+    ════════════════════════ */
+    .main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+
+    /* page header — contextual h1 (pattern DES-827) */
+    .page-header{
+      background:#fff;border-bottom:1px solid #E1E6ED;
+      padding:14px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0;
+    }
+    .page-header h1{font:700 20px var(--font-sans);color:var(--n7);flex:1;margin:0}
+    .upd-txt{font:400 12px var(--font-sans);color:var(--n5);display:flex;align-items:center;gap:5px}
+    .upd-txt .upd-dot{width:7px;height:7px;border-radius:50%;background:var(--g5);flex-shrink:0}
+
+    /* ════════════════════════
+       FILTER BAR — DS filters.json pattern, auto-apply (no "Filtrar" step)
+    ════════════════════════ */
+    .filter-bar{
+      background:#fff;border-bottom:1px solid #E1E6ED;
+      padding:12px 24px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;
+    }
+    .inp-wrap{
+      display:flex;align-items:center;gap:8px;
+      border:1px solid var(--n3);border-radius:6px;
+      background:#fff;padding:0 10px;height:32px;
+      box-sizing:border-box;min-width:0;
+    }
+    .inp-wrap:focus-within{border:2px solid var(--b6);padding:0 9px;background:var(--b1)}
+    .inp-wrap svg{flex-shrink:0;color:var(--n5)}
+    .inp-wrap input{
+      border:0;outline:0;flex:1;min-width:0;
+      font:400 14px var(--font-sans);color:var(--n7);background:transparent;
+    }
+    .inp-wrap input::placeholder{color:var(--n45)}
+
+    /* dt-drop-wrap — DS dropdown */
+    .dt-drop-wrap{position:relative}
+    .dt-dtrigger{
+      display:flex;align-items:center;height:32px;padding:0 10px;
+      border:1px solid var(--n3);border-radius:6px;background:#fff;
+      cursor:pointer;gap:6px;font:400 14px var(--font-sans);color:var(--n7);
+    }
+    .dt-dtrigger:hover{background:var(--n2)}
+    .dt-drop-wrap.open .dt-dtrigger{border:2px solid var(--b6);padding:0 9px}
+    .dt-dlabel{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dt-dmenu{
+      display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;
+      background:#fff;border:1px solid var(--n3);border-radius:6px;
+      box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:500;padding:4px 0;
+    }
+    .dt-drop-wrap.open .dt-dmenu{display:block}
+    .dt-dopt{
+      height:36px;padding:0 12px;display:flex;align-items:center;
+      font:400 14px var(--font-sans);color:var(--n7);cursor:pointer;
+    }
+    .dt-dopt:hover{background:var(--b1);color:var(--b7)}
+    .dt-dopt.selected{font-weight:700;color:var(--b7)}
+
+    /* filter--reset icon button (DS filters.json) */
+    .filter-reset{
+      width:32px;height:32px;border-radius:4px;border:1px solid var(--r6);
+      background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      color:var(--r6);transition:background .12s;flex-shrink:0;margin-left:auto;
+    }
+    .filter-reset:hover{background:var(--r1)}
+    .filter-reset svg{width:18px;height:18px;fill:currentColor}
+
+    /* ════════════════════════
+       STATUS CHIPS — replaces legacy "Estado" dropdown
+       DS chip: radius 4px, fw 600 (chips.json)
+    ════════════════════════ */
+    .chips-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .stat-chip{
+      height:26px;border-radius:4px;border:1px solid var(--n3);background:#fff;
+      padding:0 10px;font:600 12px var(--font-sans);color:var(--n6);
+      display:inline-flex;gap:6px;align-items:center;cursor:pointer;
+      transition:background .12s,border-color .12s,color .12s;
+    }
+    .stat-chip:hover{background:var(--n1)}
+    .stat-chip[aria-pressed="true"]{background:var(--b1);border-color:var(--b6);color:var(--b7)}
+    .stat-chip:focus-visible{outline:2px solid var(--b6);outline-offset:2px}
+    .stat-chip .sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .stat-chip .cnt{font-weight:700}
+
+    /* ════════════════════════
+       WORKSPACE — driver panel + map
+    ════════════════════════ */
+    .workspace{flex:1;min-height:0;display:flex;gap:16px;padding:16px 24px}
+
+    .fleet-panel{
+      width:340px;flex-shrink:0;display:flex;flex-direction:column;
+      background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;
+    }
+    .fleet-panel-hdr{padding:12px;border-bottom:1px solid var(--n3);display:flex;flex-direction:column;gap:8px}
+    .fleet-panel-count{font:700 13px var(--font-sans);color:var(--n7)}
+    .fleet-panel-count span{font-weight:400;color:var(--n5)}
+    .drv-list{flex:1;overflow-y:auto}
+    .drv-list::-webkit-scrollbar{width:5px}
+    .drv-list::-webkit-scrollbar-thumb{background:var(--n3);border-radius:3px}
+
+    .drv-item{border-bottom:1px solid var(--n2)}
+    .drv-card{
+      padding:10px 14px;cursor:pointer;display:flex;gap:10px;align-items:center;
+      border-left:3px solid transparent;transition:background .12s;
+    }
+    .drv-card:hover{background:var(--n1)}
+    .drv-card:focus-visible{outline:2px solid var(--b6);outline-offset:-2px}
+    .drv-item.open .drv-card{background:var(--b1);border-left-color:var(--b6)}
+    .drv-av{
+      width:36px;height:36px;border-radius:50%;background:var(--b1);
+      display:flex;align-items:center;justify-content:center;
+      font:700 12px var(--font-sans);color:var(--b7);flex-shrink:0;position:relative;
+    }
+    .drv-av .drv-dot{
+      position:absolute;bottom:-1px;right:-1px;width:11px;height:11px;
+      border-radius:50%;border:2px solid #fff;
+    }
+    .drv-info{flex:1;min-width:0}
+    .drv-name{font:600 13px/1.3 var(--font-sans);color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .drv-meta{display:flex;align-items:center;gap:6px;margin-top:3px}
+    .plate-chip{
+      font:600 11px/1 var(--font-sans);color:var(--n6);background:var(--n2);
+      border-radius:4px;padding:2px 6px;letter-spacing:.04em;flex-shrink:0;
+    }
+    .drv-phone{font:400 11px var(--font-sans);color:var(--n5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .drv-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+    .drv-prog-txt{font:600 11px var(--font-sans);color:var(--n5)}
+
+    /* badges */
+    .badge{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:2px 9px;border-radius:999px;
+      font:600 11px var(--font-sans);white-space:nowrap;
+    }
+    .badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+    .badge.success{background:var(--g1);color:var(--g6)}
+    .badge.neutral{background:var(--n2);color:var(--n6)}
+    .badge.info{background:var(--b1);color:var(--b7)}
+    .badge.outline{background:#fff;color:var(--n6);border:1px solid var(--n3)}
+
+    /* inline detail (accordion — replaces legacy hidden detail) */
+    .drv-detail{display:none;padding:0 14px 14px;background:var(--b1)}
+    .drv-item.open .drv-detail{display:block}
+    .drv-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+    .drv-stat{
+      background:#fff;border:1px solid var(--n3);border-radius:6px;
+      padding:8px 10px;display:flex;flex-direction:column;gap:2px;
+    }
+    .drv-stat-num{font:700 18px/1.2 var(--font-sans);color:var(--n7)}
+    .drv-stat-lbl{font:400 11px var(--font-sans);color:var(--n5)}
+    .drv-prog-bar{height:5px;border-radius:3px;background:var(--n3);overflow:hidden;margin:4px 0 2px}
+    .drv-prog-fill{height:100%;border-radius:3px;background:var(--b6);transition:width .3s}
+    .drv-prog-cap{font:400 11px var(--font-sans);color:var(--n5);margin-bottom:10px}
+    .drv-gps{display:flex;align-items:center;gap:6px;font:400 11px var(--font-sans);color:var(--n5);margin-bottom:12px}
+    .drv-gps svg{flex-shrink:0;fill:var(--n5)}
+    .drv-actions{display:flex;gap:8px}
+
+    /* ════════════════════════
+       BUTTONS — DS
+    ════════════════════════ */
+    .btn{
+      font-size:14px;font-weight:700;font-family:inherit;
+      padding:0 16px;border-radius:50px;height:32px;
+      border:1px solid #1F60ED;background:#fff;color:#1F60ED;
+      cursor:pointer;transition:background .12s,color .12s,border-color .12s;
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:6px;white-space:nowrap;line-height:1;text-decoration:none;
+    }
+    .btn:hover{background:#EDF5FF}
+    .btn.primary{background:#4B82FA;color:#fff;border-color:#4B82FA}
+    .btn.primary:hover{background:#1F60ED;border-color:#1F60ED}
+    .btn.primary:active{background:#0052CC;border-color:#0052CC}
+    .btn.sm{height:28px;font-size:13px;padding:0 12px}
+    .btn svg{flex-shrink:0}
+    .btn .spin{animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ════════════════════════
+       MAP
+    ════════════════════════ */
+    .map-wrap{
+      flex:1;min-width:0;position:relative;border-radius:8px;
+      border:1px solid var(--n3);overflow:hidden;background:#E9EDF2;
+    }
+    .map-stage{position:absolute;inset:0;transition:transform .25s ease;transform-origin:center center}
+    .map-stage svg.map-bg{position:absolute;inset:0;width:100%;height:100%}
+    .pin{
+      position:absolute;transform:translate(-50%,-100%);
+      transition:left 1s ease,top 1s ease;cursor:pointer;z-index:10;
+      border:none;background:none;padding:0;
+    }
+    .pin:focus-visible{outline:2px solid var(--b6);outline-offset:2px;border-radius:6px}
+    .pin img{display:block;width:33px;height:47px;pointer-events:none}
+    .pin.sel{z-index:20}
+    .pin-lbl{
+      position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+      white-space:nowrap;background:#132045;color:#fff;
+      font:600 11px/1 var(--font-sans);padding:5px 9px;border-radius:4px;
+      display:none;pointer-events:none;
+    }
+    .pin-lbl span{font-weight:400;color:rgba(255,255,255,.75);margin-left:5px}
+    .pin.sel .pin-lbl,.pin:hover .pin-lbl{display:block}
+
+    .map-ctrl{
+      position:absolute;top:14px;right:14px;z-index:50;
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .map-ctrl button{
+      width:32px;height:32px;border-radius:6px;border:1px solid var(--n3);
+      background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      color:var(--n6);box-shadow:0 1px 3px rgba(19,32,69,.12);transition:background .12s;
+    }
+    .map-ctrl button:hover{background:var(--n1);color:var(--n7)}
+    .map-ctrl button svg{width:16px;height:16px;fill:currentColor}
+
+    .map-legend{
+      position:absolute;left:14px;bottom:14px;z-index:50;
+      background:#fff;border:1px solid var(--n3);border-radius:8px;
+      padding:10px 14px;box-shadow:0 1px 4px rgba(19,32,69,.10);
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .map-legend-ttl{font:700 11px var(--font-sans);color:var(--n7);margin-bottom:2px}
+    .map-legend-row{display:flex;align-items:center;gap:7px;font:400 11px var(--font-sans);color:var(--n6)}
+    .map-legend-row .ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+    .map-empty{
+      position:absolute;inset:0;z-index:40;display:none;
+      align-items:center;justify-content:center;background:rgba(233,237,242,.82);
+    }
+    .map-empty.show{display:flex}
+
+    /* ════════════════════════
+       EMPTY STATE — DS
+    ════════════════════════ */
+    .empty-state{
+      padding:48px 24px;text-align:center;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+    }
+    .empty-icon{
+      width:44px;height:44px;border-radius:8px;background:var(--n2);
+      display:flex;align-items:center;justify-content:center;color:var(--n45);
+    }
+    .empty-icon svg{width:22px;height:22px;fill:currentColor;stroke:none}
+    .empty-title{font:700 14px var(--font-sans);color:var(--n7)}
+    .empty-desc{font:400 13px var(--font-sans);color:var(--n5);max-width:260px;line-height:1.5}
+
+    /* ════════════════════════
+       TOAST
+    ════════════════════════ */
+    .toast{
+      position:fixed;bottom:24px;right:24px;
+      background:var(--n7);color:#fff;
+      padding:10px 18px;border-radius:6px;
+      font:500 13px var(--font-sans);
+      display:flex;align-items:center;gap:8px;
+      box-shadow:0 4px 12px rgba(19,32,69,.18);
+      opacity:0;transform:translateY(8px);
+      transition:opacity .2s,transform .2s;
+      pointer-events:none;z-index:999;
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast svg{width:15px;height:15px;stroke:var(--g5);fill:none;flex-shrink:0}
+
+    /* ════ Responsive — desktop breakpoint 960px ════ */
+    @media (max-width:960px){
+      .workspace{flex-direction:column;padding:12px 16px}
+      .fleet-panel{width:100%;max-height:42vh}
+      .map-wrap{min-height:320px}
+      .filter-bar{padding:10px 16px}
+      .page-header{padding:12px 16px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<header class="topbar">
+  <a class="topbar-logo" href="#" aria-label="DispatchTrack Last Mile">
+    <img src="../sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <div class="bell-wrap" style="cursor:pointer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <div class="user-menu-wrap">
+      <div class="topbar-user-btn" id="topbar-user-btn" onclick="toggleUserMenu()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-dropdown" id="user-dropdown">
+        <div class="user-dropdown-hdr">
+          <div class="user-dropdown-avatar">SA</div>
+          <div>
+            <div class="user-dropdown-name">soporte+arsa</div>
+            <div class="user-dropdown-email">soporte+arsa@beettrack.com</div>
+          </div>
+        </div>
+        <div class="user-dropdown-divider"></div>
+        <a class="user-dropdown-item" href="DES-827_profile-settings.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Configuración de perfil
+        </a>
+        <div class="user-dropdown-divider"></div>
+        <div class="user-dropdown-item danger" onclick="closeUserMenu();showToast('Sesión cerrada')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar sesión
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<!-- ══ SHELL ══ -->
+<div class="shell">
+
+<!-- ══ SIDEBAR — icon strip, Flota active ══ -->
+<aside class="pg-sidenav">
+  <div class="psn-it" title="Resumen"><svg viewBox="0 0 32 32" fill="currentColor"><rect x="15" y="20" width="2" height="4"/><rect x="20" y="18" width="2" height="6"/><rect x="10" y="14" width="2" height="10"/><path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"/></svg></div>
+  <div class="psn-it" title="Actividad"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></div>
+  <div class="psn-it" title="Rutas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M30,30H22V22h8Zm-6-2h4V24H24Z"/><path d="M20,27H8A6,6,0,0,1,8,15h2v2H8a4,4,0,0,0,0,8H20Z"/><path d="M20,20H12V12h8Zm-6-2h4V14H14Z"/><path d="M24,17H22V15h2a4,4,0,0,0,0-8H12V5H24a6,6,0,0,1,0,12Z"/><path d="M10,10H2V2h8ZM4,8H8V4H4Z"/></svg></div>
+  <div class="psn-it" title="Órdenes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,6H20V4H6A2,2,0,0,0,4,6V22H6V6H20V8h2V6ZM26,10H10A2,2,0,0,0,8,12V28A2,2,0,0,0,10,30H26A2,2,0,0,0,28,28V12A2,2,0,0,0,26,10Zm0,18H10V12H26Z"/></svg></div>
+  <div class="psn-it psn-sel" title="Flota"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4 16H16V18H4z"/><path d="M2 11H12V13H2z"/><path d="M29.9189,16.6064l-3-7A.9985.9985,0,0,0,26,9H23V7a1,1,0,0,0-1-1H6V8H21V20.5562A3.9924,3.9924,0,0,0,19.1421,23H12.8579a4,4,0,1,0,0,2h6.2842a3.9806,3.9806,0,0,0,7.7158,0H29a1,1,0,0,0,1-1V17A.9965.9965,0,0,0,29.9189,16.6064ZM9,26a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,9,26ZM23,11h2.3408l2.1431,5H23Zm0,15a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,23,26Zm5-3H26.8579A3.9954,3.9954,0,0,0,23,20V18h5Z"/></svg></div>
+  <div class="psn-it" title="Estadísticas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg></div>
+  <div class="psn-it" title="Alertas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M28.7,24.9,26,20.4V14a10,10,0,1,0-20,0v6.4l-2.7,4.5A1,1,0,0,0,4,26H28A1,1,0,0,0,28.7,24.9ZM5.7,24l2.3-3.9V14a8,8,0,1,1,16,0v6.1L26.3,24ZM16,30a4,4,0,0,0,3.46-2H12.54A4,4,0,0,0,16,30Z"/></svg></div>
+  <div class="psn-it" title="Clientes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></div>
+  <div class="psn-it" title="Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-it" title="Logística inversa"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,8v2c2.2061,0,4,1.7944,4,4s-1.7939,4-4,4H10v-5l-6,6,6,6v-5H22c3.3086,0,6-2.6914,6-6S25.3086,8,22,8Z"/></svg></div>
+  <div class="psn-it" title="Rendición de Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></div>
+  <div class="psn-it" title="Retiro en tienda"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M28,4H4A2,2,0,0,0,2,6V12a2,2,0,0,0,1,1.72V28a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V13.72A2,2,0,0,0,30,12V6A2,2,0,0,0,28,4ZM4,6H28v6H4ZM18,28H14V22h4Zm9,0H20V22a2,2,0,0,0-2-2H14a2,2,0,0,0-2,2v6H5V14H27Z"/></svg></div>
+  <div class="psn-it" title="Importar"><svg viewBox="0 0 32 32" fill="currentColor"><polygon points="28 19 14.83 19 17.41 16.41 16 15 11 20 16 25 17.41 23.59 14.83 21 28 21 28 19"/><path d="M24,14V10a1,1,0,0,0-.29-.71l-7-7A1,1,0,0,0,16,2H6A2,2,0,0,0,4,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V26H22v2H6V4h8v6a2,2,0,0,0,2,2h6v2Zm-8-4V4.41L21.59,10Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos (nuevo)"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-sep"></div>
+</aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- Page header — contextual h1 + acciones -->
+    <div class="page-header">
+      <h1>Flota</h1>
+      <div id="page-header-actions" style="display:flex;margin-left:auto;gap:14px;align-items:center">
+        <span class="upd-txt"><span class="upd-dot"></span>Actualizado <span id="upd-ago">hace 1 min</span></span>
+        <button class="btn" onclick="refreshFleet(this)">
+          <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14" class="refresh-ico"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>
+          Actualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter bar — auto-apply (sin paso "Filtrar") -->
+    <div class="filter-bar">
+      <div class="inp-wrap" style="width:165px">
+        <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M26,4H22V2H20V4H12V2H10V4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4ZM6,26V6h4V8h2V6h8V8h2V6h4V10H6Zm0,0V12H26V26Z"/></svg>
+        <input id="f-date" type="text" value="10-06-2026" aria-label="Fecha" onchange="onDateChange()">
+      </div>
+      <div class="dt-drop-wrap" id="group-drop" style="width:170px">
+        <div class="dt-dtrigger" onclick="dtToggle('group-drop')">
+          <span class="dt-dlabel" id="group-label">Todos los grupos</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="dt-dmenu" role="listbox">
+          <div class="dt-dopt selected" onclick="pickGroup(this,'all')">Todos los grupos</div>
+          <div class="dt-dopt" onclick="pickGroup(this,'Norte')">Zona Norte</div>
+          <div class="dt-dopt" onclick="pickGroup(this,'Centro')">Zona Centro</div>
+          <div class="dt-dopt" onclick="pickGroup(this,'Sur')">Zona Sur</div>
+        </div>
+      </div>
+      <div class="inp-wrap" style="flex:1;max-width:300px">
+        <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
+        <input id="f-search" type="text" placeholder="Buscar por nombre o patente" aria-label="Buscar por nombre o patente" oninput="renderAll()">
+      </div>
+      <button class="filter-reset" title="Limpiar filtros" aria-label="Limpiar filtros" onclick="resetFilters()">
+        <svg viewBox="0 0 32 32"><path d="M22.5,9A7.4522,7.4522,0,0,0,16,12.7923V8H14v8h8V14H17.6167A5.4941,5.4941,0,1,1,22.5,22H22v2h.5a7.5,7.5,0,0,0,0-15Z"/><path d="M26,6H4V9.171l7.4142,7.4143L12,17.171V26h2v2H12a2,2,0,0,1-2-2V18L2.5858,10.5853A2,2,0,0,1,2,9.171V6A2,2,0,0,1,4,4H26Z"/></svg>
+      </button>
+      <!-- Status chips — reemplaza el dropdown "Estado" del legacy -->
+      <div class="chips-bar" id="chips-bar" style="width:100%;margin-top:2px"></div>
+    </div>
+
+    <!-- Workspace -->
+    <div class="workspace">
+
+      <!-- Driver panel -->
+      <section class="fleet-panel" aria-label="Conductores">
+        <div class="fleet-panel-hdr">
+          <div class="fleet-panel-count" id="panel-count">Conductores</div>
+        </div>
+        <div class="drv-list" id="drv-list"></div>
+      </section>
+
+      <!-- Map -->
+      <div class="map-wrap">
+        <div class="map-stage" id="map-stage">
+          <svg class="map-bg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="1000" height="700" fill="#E9EDF2"/>
+            <!-- parques -->
+            <path d="M70,90 Q160,40 250,95 L235,210 Q150,240 80,195 Z" fill="#DCEDDC"/>
+            <path d="M700,470 Q790,430 880,480 L860,590 Q760,620 690,570 Z" fill="#DCEDDC"/>
+            <!-- río -->
+            <path d="M-20,560 C200,520 320,640 560,600 C760,565 860,660 1020,620" fill="none" stroke="#CFE0F2" stroke-width="26" stroke-linecap="round"/>
+            <!-- vías principales -->
+            <g stroke="#FFFFFF" fill="none" stroke-linecap="round">
+              <path d="M-20,330 C240,300 520,360 1020,310" stroke-width="14"/>
+              <path d="M310,-20 C330,200 290,480 340,720" stroke-width="14"/>
+              <path d="M650,-20 C630,220 690,420 660,720" stroke-width="11"/>
+              <path d="M-20,150 C300,170 700,120 1020,160" stroke-width="9"/>
+              <path d="M-20,480 C260,460 540,500 1020,450" stroke-width="9"/>
+              <path d="M120,-20 C140,240 100,460 150,720" stroke-width="7"/>
+              <path d="M840,-20 C820,200 870,480 830,720" stroke-width="7"/>
+              <path d="M460,-20 C470,180 450,420 480,720" stroke-width="6"/>
+              <path d="M-20,240 C320,260 680,230 1020,250" stroke-width="5"/>
+              <path d="M-20,400 C300,390 700,415 1020,395" stroke-width="5"/>
+              <path d="M-20,60 C300,80 700,50 1020,75" stroke-width="4"/>
+            </g>
+            <!-- nombres de calles -->
+            <g fill="#9AA7B8" font-family="DM Sans,sans-serif" font-size="11">
+              <text x="500" y="325">Av. Libertador</text>
+              <text x="318" y="100" transform="rotate(88 318 100)">Av. Central</text>
+              <text x="60" y="470">Calle 80</text>
+              <text x="860" y="148">Av. del Puerto</text>
+            </g>
+          </svg>
+          <div id="pins-layer"></div>
+        </div>
+
+        <!-- Controles de zoom -->
+        <div class="map-ctrl">
+          <button title="Acercar" aria-label="Acercar" onclick="mapZoom(1)"><svg viewBox="0 0 32 32"><polygon points="17 15 17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15 17 15"/></svg></button>
+          <button title="Alejar" aria-label="Alejar" onclick="mapZoom(-1)"><svg viewBox="0 0 32 32"><rect x="8" y="15" width="16" height="2"/></svg></button>
+          <button title="Centrar flota" aria-label="Centrar flota" onclick="mapZoomReset()"><svg viewBox="0 0 32 32"><path d="M16,11a5,5,0,1,0,5,5A5.0057,5.0057,0,0,0,16,11Zm0,8a3,3,0,1,1,3-3A3.0033,3.0033,0,0,1,16,19Z"/><path d="M30,15H27.9492A11.0125,11.0125,0,0,0,17,4.0508V2H15V4.0508A11.0125,11.0125,0,0,0,4.0508,15H2v2H4.0508A11.0125,11.0125,0,0,0,15,27.9492V30h2V27.9492A11.0125,11.0125,0,0,0,27.9492,17H30ZM16,26a10,10,0,1,1,10-10A10.0114,10.0114,0,0,1,16,26Z"/></svg></button>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="map-legend" aria-hidden="true">
+          <div class="map-legend-ttl">Leyenda</div>
+          <div class="map-legend-row"><span class="ldot" style="background:#0C47C7"></span>En ruta</div>
+          <div class="map-legend-row"><span class="ldot" style="background:var(--g6)"></span>Ruta finalizada</div>
+          <div class="map-legend-row"><span class="ldot" style="background:var(--n6)"></span>Centro de distribución</div>
+        </div>
+
+        <!-- Empty overlay -->
+        <div class="map-empty" id="map-empty">
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16,18a5,5,0,1,1,5-5A5.0059,5.0059,0,0,1,16,18Zm0-8a3,3,0,1,0,3,3A3.0034,3.0034,0,0,0,16,10Z"/><path d="M16,30,7.5645,20.0513c-.0479-.0571-.3482-.4515-.3482-.4515A10.8888,10.8888,0,0,1,5,13a11,11,0,0,1,22,0,10.8844,10.8844,0,0,1-2.2148,6.5973l-.0015.0025s-.3.3944-.3447.4474ZM8.8125,18.395c.001.0007.2334.3082.2866.3744L16,26.9079l6.91-8.15c.0439-.0552.2783-.3649.2788-.3657A8.901,8.901,0,0,0,25,13,9,9,0,1,0,7,13a8.9054,8.9054,0,0,0,1.8125,5.395Z"/></svg>
+            </div>
+            <p class="empty-title">Sin posiciones en el mapa</p>
+            <p class="empty-desc">Ningún conductor con geolocalización coincide con los filtros aplicados.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+/* ════════════════════════ DATA ════════════════════════ */
+const PIN = s => '../sections/assets/pins/' + s + '.svg';
+const STATUS = {
+  ruta:   {label:'En ruta',        badge:'info',    dot:'#1F60ED', pin:'pin-en-ruta'},
+  prog:   {label:'Programado',     badge:'neutral', dot:'#8FA0BA', pin:null},
+  fin:    {label:'Finalizado',     badge:'success', dot:'#36B37E', pin:'pin-exitosa'},
+  disp:   {label:'Disponible',     badge:'outline', dot:'#00875A', pin:null},
+  nodisp: {label:'No disponible',  badge:'outline', dot:'#C5D2E7', pin:null}
+};
+
+const DRIVERS = [
+  {id:1,  name:'Cristian Yobani Cuervo Arguello',     plate:'DIM52H', phone:'323 246 7828', status:'ruta', done:7,  total:12, items:18, group:'Norte',  gps:{x:38,y:24}, last:'hace 1 min'},
+  {id:2,  name:'David Antonio Marin Castrillon',      plate:'CBK53D', phone:'300 791 9728', status:'ruta', done:4,  total:10, items:22, group:'Norte',  gps:{x:62,y:38}, last:'hace 2 min'},
+  {id:3,  name:'Jesus David Charris Jacome',          plate:'UIU90G', phone:'304 413 0162', status:'ruta', done:6,  total:8,  items:9,  group:'Centro', gps:{x:47,y:55}, last:'hace 1 min'},
+  {id:4,  name:'Jeferson Arley Giraldo Alvarez',      plate:'YDZ26D', phone:'300 484 8070', status:'ruta', done:2,  total:11, items:27, group:'Centro', gps:{x:75,y:62}, last:'hace 4 min'},
+  {id:5,  name:'Rafael Santos Prens Polo',            plate:'YID16G', phone:'311 718 7732', status:'ruta', done:10, total:14, items:11, group:'Sur',    gps:{x:25,y:64}, last:'hace 1 min'},
+  {id:6,  name:'William David Casas Baez',            plate:'LTJ77G', phone:'313 376 5274', status:'prog', done:0,  total:9,  items:0,  group:'Sur',    gps:null, last:'ruta inicia 14:00'},
+  {id:7,  name:'Nicolas Andres Patarroyo Maldonado',  plate:'KLC84E', phone:'320 884 1155', status:'prog', done:0,  total:12, items:0,  group:'Norte',  gps:null, last:'ruta inicia 15:30'},
+  {id:8,  name:'Kevin Andres Villamor Pertuz',        plate:'QRX31F', phone:'311 552 9086', status:'prog', done:0,  total:7,  items:0,  group:'Centro', gps:null, last:'ruta inicia 16:00'},
+  {id:9,  name:'Andres Felipe Rojas Castro',          plate:'MZT94B', phone:'314 220 8517', status:'fin',  done:11, total:11, items:0,  group:'Sur',    gps:{x:55,y:78}, last:'hace 12 min'},
+  {id:10, name:'Laura Jimenez Pardo',                 plate:'HKD45C', phone:'318 664 0921', status:'fin',  done:8,  total:8,  items:0,  group:'Centro', gps:{x:84,y:30}, last:'hace 25 min'},
+  {id:11, name:'Mario Restrepo Gil',                  plate:'PLB72E', phone:'312 775 3348', status:'disp', done:0,  total:0,  items:0,  group:'Norte',  gps:null, last:'en centro de distribución'},
+  {id:12, name:'Sandra Milena Ortiz Vega',            plate:'TWQ18D', phone:'315 990 2237', status:'nodisp', done:0, total:0, items:0,  group:'Sur',    gps:null, last:'fuera de turno'}
+];
+
+const CHIP_ORDER = ['all','ruta','prog','fin','disp','nodisp'];
+let stateFilter = 'all';
+let groupFilter = 'all';
+let selectedId = null;
+let zoomLevel = 1;
+
+/* ════════════════════════ HELPERS ════════════════════════ */
+const initials = n => n.split(' ').filter(Boolean).slice(0,2).map(p=>p[0]).join('').toUpperCase();
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+function filteredDrivers(){
+  const q = document.getElementById('f-search').value.trim().toLowerCase();
+  return DRIVERS.filter(d =>
+    (stateFilter==='all' || d.status===stateFilter) &&
+    (groupFilter==='all' || d.group===groupFilter) &&
+    (!q || d.name.toLowerCase().includes(q) || d.plate.toLowerCase().includes(q))
+  );
+}
+
+/* ════════════════════════ RENDER — chips ════════════════════════ */
+function renderChips(){
+  const base = DRIVERS.filter(d => groupFilter==='all' || d.group===groupFilter);
+  const bar = document.getElementById('chips-bar');
+  bar.innerHTML = CHIP_ORDER.map(k=>{
+    const count = k==='all' ? base.length : base.filter(d=>d.status===k).length;
+    const label = k==='all' ? 'Todos' : STATUS[k].label;
+    const dot = k==='all' ? '' : `<span class="sdot" style="background:${STATUS[k].dot}"></span>`;
+    return `<button class="stat-chip" aria-pressed="${stateFilter===k}" onclick="setStateFilter('${k}')">${dot}${label} <span class="cnt">${count}</span></button>`;
+  }).join('');
+}
+function setStateFilter(k){ stateFilter=k; renderAll(); }
+
+/* ════════════════════════ RENDER — list ════════════════════════ */
+function renderList(){
+  const list = document.getElementById('drv-list');
+  const drivers = filteredDrivers();
+  document.getElementById('panel-count').innerHTML =
+    `Conductores <span>· ${drivers.length} de ${DRIVERS.length}</span>`;
+
+  if(!drivers.length){
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg viewBox="0 0 32 32" fill="currentColor"><path d="M4 16H16V18H4z"/><path d="M2 11H12V13H2z"/><path d="M29.9189,16.6064l-3-7A.9985.9985,0,0,0,26,9H23V7a1,1,0,0,0-1-1H6V8H21V20.5562A3.9924,3.9924,0,0,0,19.1421,23H12.8579a4,4,0,1,0,0,2h6.2842a3.9806,3.9806,0,0,0,7.7158,0H29a1,1,0,0,0,1-1V17A.9965.9965,0,0,0,29.9189,16.6064ZM9,26a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,9,26ZM23,11h2.3408l2.1431,5H23Zm0,15a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,23,26Zm5-3H26.8579A3.9954,3.9954,0,0,0,23,20V18h5Z"/></svg>
+        </div>
+        <p class="empty-title">Sin conductores</p>
+        <p class="empty-desc">Ningún conductor coincide con los filtros aplicados. Ajusta la búsqueda o limpia los filtros.</p>
+        <button class="btn sm" onclick="resetFilters()">Limpiar filtros</button>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = drivers.map(d=>{
+    const st = STATUS[d.status];
+    const open = d.id===selectedId;
+    const prog = d.total ? `<span class="drv-prog-txt">${d.done}/${d.total}</span>` : '';
+    const pct = d.total ? Math.round(d.done/d.total*100) : 0;
+    const pending = d.total - d.done;
+    return `
+    <div class="drv-item${open?' open':''}" id="drv-${d.id}">
+      <div class="drv-card" role="button" tabindex="0" aria-expanded="${open}"
+           onclick="selectDriver(${d.id})"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectDriver(${d.id})}">
+        <div class="drv-av">${initials(d.name)}<span class="drv-dot" style="background:${st.dot}"></span></div>
+        <div class="drv-info">
+          <div class="drv-name" title="${esc(d.name)}">${esc(d.name)}</div>
+          <div class="drv-meta"><span class="plate-chip">${d.plate}</span><span class="drv-phone">${d.phone}</span></div>
+        </div>
+        <div class="drv-right">
+          <span class="badge ${st.badge}"><span class="dot"></span>${st.label}</span>
+          ${prog}
+        </div>
+      </div>
+      <div class="drv-detail">
+        ${d.total ? `
+        <div class="drv-stats">
+          <div class="drv-stat"><span class="drv-stat-num">${pending}</span><span class="drv-stat-lbl">Órdenes pendientes</span></div>
+          <div class="drv-stat"><span class="drv-stat-num">${d.items}</span><span class="drv-stat-lbl">Ítems en el camión</span></div>
+        </div>
+        <div class="drv-prog-bar"><div class="drv-prog-fill" style="width:${pct}%"></div></div>
+        <p class="drv-prog-cap">${d.done} de ${d.total} órdenes entregadas (${pct}%)</p>` : ''}
+        <div class="drv-gps">
+          <svg viewBox="0 0 32 32" width="13" height="13"><path d="M16,18a5,5,0,1,1,5-5A5.0059,5.0059,0,0,1,16,18Zm0-8a3,3,0,1,0,3,3A3.0034,3.0034,0,0,0,16,10Z"/><path d="M16,30,7.5645,20.0513c-.0479-.0571-.3482-.4515-.3482-.4515A10.8888,10.8888,0,0,1,5,13a11,11,0,0,1,22,0,10.8844,10.8844,0,0,1-2.2148,6.5973l-.0015.0025s-.3.3944-.3447.4474ZM8.8125,18.395c.001.0007.2334.3082.2866.3744L16,26.9079l6.91-8.15c.0439-.0552.2783-.3649.2788-.3657A8.901,8.901,0,0,0,25,13,9,9,0,1,0,7,13a8.9054,8.9054,0,0,0,1.8125,5.395Z"/></svg>
+          ${d.gps ? 'Última señal GPS: '+d.last : 'Sin señal GPS — '+d.last}
+        </div>
+        <div class="drv-actions">
+          <a class="btn sm" href="tel:+57${d.phone.replace(/\s/g,'')}">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="13" height="13"><path d="M26,29h-.17C6.18,27.87,3.39,11.29,3,6.23A3,3,0,0,1,5.76,3h5.51a2,2,0,0,1,1.86,1.26L14.65,8a2,2,0,0,1-.44,2.16l-2.13,2.15a9.37,9.37,0,0,0,7.58,7.6l2.17-2.15A2,2,0,0,1,24,17.35l3.77,1.51A2,2,0,0,1,29,20.72V26A3,3,0,0,1,26,29ZM6,5A1,1,0,0,0,5,6v.08C5.46,12,8.41,26,25.94,27A1,1,0,0,0,27,26.06V20.72l-3.77-1.51-2.87,2.85-.48-.06c-8.7-1.09-9.88-9.79-9.88-9.88l-.06-.48,2.84-2.87L11.28,5Z"/></svg>
+            Llamar
+          </a>
+          ${d.total ? `<button class="btn sm" onclick="event.stopPropagation();showToast('Abriendo ruta de ${esc(d.name.split(' ')[0])} — ${d.plate}')">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="13" height="13"><path d="M30,30H22V22h8Zm-6-2h4V24H24Z"/><path d="M20,27H8A6,6,0,0,1,8,15h2v2H8a4,4,0,0,0,0,8H20Z"/><path d="M20,20H12V12h8Zm-6-2h4V14H14Z"/><path d="M24,17H22V15h2a4,4,0,0,0,0-8H12V5H24a6,6,0,0,1,0,12Z"/><path d="M10,10H2V2h8ZM4,8H8V4H4Z"/></svg>
+            Ver ruta del día
+          </button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════ RENDER — map pins ════════════════════════ */
+function renderPins(){
+  const layer = document.getElementById('pins-layer');
+  const drivers = filteredDrivers().filter(d=>d.gps && STATUS[d.status].pin);
+  let html = `
+    <button class="pin" style="left:18%;top:70%" aria-label="Centro de distribución" onclick="event.stopPropagation()">
+      <span class="pin-lbl">Centro de distribución</span>
+      <img src="${PIN('pin-distribution-center-unselected')}" alt="">
+    </button>`;
+  html += drivers.map(d=>{
+    const sel = d.id===selectedId;
+    const pin = STATUS[d.status].pin + (sel?'-selected':'-unselected');
+    return `
+    <button class="pin${sel?' sel':''}" style="left:${d.gps.x}%;top:${d.gps.y}%"
+            aria-label="${esc(d.name)} — ${STATUS[d.status].label}"
+            onclick="selectDriver(${d.id},true)">
+      <span class="pin-lbl">${esc(d.name.split(' ').slice(0,2).join(' '))}<span>${d.plate}</span></span>
+      <img src="${PIN(pin)}" alt="">
+    </button>`;
+  }).join('');
+  layer.innerHTML = html;
+  document.getElementById('map-empty').classList.toggle('show', drivers.length===0);
+}
+
+function renderAll(){ renderChips(); renderList(); renderPins(); }
+
+/* ════════════════════════ INTERACTIONS ════════════════════════ */
+function selectDriver(id, fromMap){
+  selectedId = (selectedId===id && !fromMap) ? null : id;
+  renderList(); renderPins();
+  if(selectedId!==null){
+    const el = document.getElementById('drv-'+selectedId);
+    if(el) el.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+}
+
+function pickGroup(opt, val){
+  groupFilter = val;
+  document.getElementById('group-label').textContent = opt.textContent;
+  opt.closest('.dt-dmenu').querySelectorAll('.dt-dopt').forEach(o=>o.classList.toggle('selected',o===opt));
+  opt.closest('.dt-drop-wrap').classList.remove('open');
+  renderAll();
+}
+
+function onDateChange(){
+  showToast('Mostrando flota del '+document.getElementById('f-date').value);
+  renderAll();
+}
+
+function resetFilters(){
+  stateFilter='all'; groupFilter='all'; selectedId=null;
+  document.getElementById('f-search').value='';
+  document.getElementById('f-date').value='10-06-2026';
+  document.getElementById('group-label').textContent='Todos los grupos';
+  document.querySelectorAll('#group-drop .dt-dopt').forEach((o,i)=>o.classList.toggle('selected',i===0));
+  renderAll();
+  showToast('Filtros restablecidos');
+}
+
+/* refresh — simula nueva señal GPS */
+let agoMin = 1;
+function refreshFleet(btn){
+  const ico = btn.querySelector('.refresh-ico');
+  ico.classList.add('spin');
+  setTimeout(()=>{
+    DRIVERS.forEach(d=>{
+      if(d.gps && d.status==='ruta'){
+        d.gps.x = Math.min(92, Math.max(8,  d.gps.x + (Math.random()*4-2)));
+        d.gps.y = Math.min(90, Math.max(10, d.gps.y + (Math.random()*4-2)));
+      }
+    });
+    agoMin = 0; updateAgo();
+    renderPins();
+    ico.classList.remove('spin');
+    showToast('Posiciones actualizadas');
+  }, 600);
+}
+function updateAgo(){
+  document.getElementById('upd-ago').textContent = agoMin===0 ? 'justo ahora' : 'hace '+agoMin+' min';
+}
+setInterval(()=>{ agoMin++; updateAgo(); }, 60000);
+
+/* map zoom */
+function mapZoom(dir){
+  zoomLevel = Math.min(2, Math.max(1, zoomLevel + dir*0.25));
+  document.getElementById('map-stage').style.transform = 'scale('+zoomLevel+')';
+}
+function mapZoomReset(){
+  zoomLevel = 1;
+  document.getElementById('map-stage').style.transform = 'scale(1)';
+}
+
+/* dropdowns */
+function dtToggle(id){
+  const el = document.getElementById(id);
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.dt-drop-wrap.open').forEach(w=>w.classList.remove('open'));
+  if(!wasOpen) el.classList.add('open');
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.dt-drop-wrap'))
+    document.querySelectorAll('.dt-drop-wrap.open').forEach(w=>w.classList.remove('open'));
+  if(!e.target.closest('.user-menu-wrap')) closeUserMenu();
+});
+
+/* user menu */
+function toggleUserMenu(){
+  document.getElementById('user-dropdown').classList.toggle('open');
+  document.getElementById('topbar-user-btn').classList.toggle('active');
+}
+function closeUserMenu(){
+  document.getElementById('user-dropdown').classList.remove('open');
+  document.getElementById('topbar-user-btn').classList.remove('active');
+}
+
+/* toast */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* init */
+renderAll();
+</script>
+</body>
+</html>
