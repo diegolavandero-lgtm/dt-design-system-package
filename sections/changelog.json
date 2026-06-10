@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T16:44:24.427Z",
+  "generated": "2026-06-10T16:47:10.440Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "ea9bcd6",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "DES-827: two-column equal-height layout for Seguridad tab; fix stretch in Información personal",
+          "author": "Carlos"
+        },
         {
           "hash": "31cca7d",
           "type": "update",
