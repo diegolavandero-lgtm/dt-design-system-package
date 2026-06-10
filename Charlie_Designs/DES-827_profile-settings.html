@@ -1052,18 +1052,6 @@
 
         </div>
 
-        <!-- Danger zone card (no header) -->
-        <div class="danger-zone">
-          <div class="danger-zone-body">
-            <div>
-              <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:4px">Eliminar este reporte</div>
-              <div class="danger-zone-desc">Esta acción es permanente. El reporte dejará de enviarse y no podrá recuperarse.</div>
-            </div>
-            <button class="btn danger" onclick="confirmDeleteFromEdit()" style="flex-shrink:0">
-              Eliminar reporte
-            </button>
-          </div>
-        </div>
 
       </div>
 
@@ -1163,9 +1151,9 @@
     const ha = document.getElementById('page-header-actions');
     if (!ha) return;
     const actions = {
-      0: `<button class="btn ghost" id="ph-cancel-0" onclick="cancelTab0()" disabled>Cancelar</button>
+      0: `<button class="btn" id="ph-cancel-0" onclick="cancelTab0()" disabled>Cancelar</button>
           <button class="btn primary" id="ph-save-0" onclick="saveTab0()" disabled>Guardar cambios</button>`,
-      1: `<button class="btn ghost" id="ph-cancel-1" onclick="cancelTab1()" disabled>Cancelar</button>
+      1: `<button class="btn" id="ph-cancel-1" onclick="cancelTab1()" disabled>Cancelar</button>
           <button class="btn primary" id="ph-save-1" onclick="saveTab1()" disabled>Actualizar contraseña</button>`,
       2: ``,
       3: `<button class="btn primary" onclick="openReportModal()">Nuevo reporte</button>`,
@@ -1470,7 +1458,8 @@
     // Show header actions for edit-report view
     const ha = document.getElementById('page-header-actions');
     if (ha) {
-      ha.innerHTML = `<button class="btn ghost" onclick="backToReports()">Cancelar</button>
+      ha.innerHTML = `<button class="btn danger" onclick="confirmDeleteFromEdit()">Eliminar reporte</button>
+        <button class="btn" onclick="backToReports()">Cancelar</button>
         <button id="edit-save-btn-top" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>`;
     }
 
