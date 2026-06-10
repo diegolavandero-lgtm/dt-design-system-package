@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T14:40:15.276Z",
+  "generated": "2026-06-10T14:42:19.217Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "bee0d46",
+          "type": "fix",
+          "section": "Inputs",
+          "message": "fix(inputs): number input layout and browser spinner",
+          "author": "Diego"
+        },
         {
           "hash": "4c6a04d",
           "type": "update",
