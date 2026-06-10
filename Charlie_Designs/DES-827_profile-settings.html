@@ -288,6 +288,8 @@
       background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2);
     }
     .swt.on::after{left:16px}
+    .swt:focus-visible{outline:2px solid var(--b6);outline-offset:2px}
+    .field-error{font:400 11px/1 var(--font-sans);color:var(--r6);margin-top:4px}
     .toggle-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0}
     .toggle-row+.toggle-row{border-top:1px solid #E1E6ED}
     .toggle-lbl{font:600 13px var(--font-sans);color:var(--n7)}
@@ -749,14 +751,18 @@
               </div>
             </div>
             <div class="toggle-row">
-              <div class="swt on" onclick="this.classList.toggle('on');checkTab0Dirty()"></div>
+              <div class="swt on" role="switch" tabindex="0" aria-checked="true"
+                onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()"
+                onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()}"></div>
               <div>
                 <p class="toggle-lbl">Mostrar ventanas del chat</p>
                 <p class="toggle-desc">Muestra el widget de soporte en la esquina inferior de la pantalla.</p>
               </div>
             </div>
             <div class="toggle-row">
-              <div class="swt" onclick="this.classList.toggle('on');checkTab0Dirty()"></div>
+              <div class="swt" role="switch" tabindex="0" aria-checked="false"
+                onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()"
+                onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()}"></div>
               <div>
                 <p class="toggle-lbl">Enviar resumen diario por correo</p>
                 <p class="toggle-desc">Recibirás un resumen de la actividad del día en <strong>soporte+arsa@beettrack.com</strong> todos los días a las 8:00 AM.</p>
@@ -1209,6 +1215,17 @@
     renderHeaderActions(idx);
     if (idx === 2) requestAnimationFrame(syncSharedUsersHeight);
   }
+  function showFieldError(anchorId, msg) {
+    const el = document.getElementById(anchorId);
+    if (!el) return;
+    const parent = el.closest('.form-row') || el.parentElement;
+    let err = parent.querySelector('.field-error');
+    if (!err) { err = document.createElement('p'); err.className = 'field-error'; parent.appendChild(err); }
+    err.textContent = msg;
+  }
+  function clearFieldErrors(scopeId) {
+    document.querySelectorAll('#' + scopeId + ' .field-error').forEach(e => e.remove());
+  }
   function showToast(msg) {
     const t = document.getElementById('toast');
     document.getElementById('toast-msg').textContent = msg;
@@ -1230,7 +1247,11 @@
     const pwEl    = document.getElementById('add-user-pw');
     const name    = nameEl  ? nameEl.value.trim()  : '';
     const email   = emailEl ? emailEl.value.trim() : '';
-    if (!name || !email) return;
+    clearFieldErrors('add-user-form-card');
+    let hasUserErrors = false;
+    if (!name)  { showFieldError('add-user-name',  'Este campo es requerido'); hasUserErrors = true; }
+    if (!email) { showFieldError('add-user-email', 'Ingresa un correo válido'); hasUserErrors = true; }
+    if (hasUserErrors) return;
     const tbody = document.getElementById('shared-users-tbody');
     tbody.insertAdjacentHTML('beforeend', `
       <tr>
@@ -1252,6 +1273,7 @@
     if (nameEl)  nameEl.value  = '';
     if (emailEl) emailEl.value = '';
     if (pwEl)    pwEl.value    = '';
+    clearFieldErrors('add-user-form-card');
     showToast('Usuario asociado correctamente');
   }
   function checkSharedUsersEmpty() {
@@ -1296,6 +1318,7 @@
     document.getElementById('rpt-modal').classList.add('open');
   }
   function closeReportModal() {
+    clearFieldErrors('rpt-modal');
     document.getElementById('rpt-modal').classList.remove('open');
   }
   function clearReportForm() {
@@ -1338,9 +1361,13 @@
     const hora   = document.getElementById('lbl-rpt-hora').textContent.trim();
     const chips  = [...document.querySelectorAll('#rpt-chips .email-chip')].map(c => c.textContent.replace('×','').trim());
 
-    if (!nombre || tipo === 'Seleccionar' || frec === 'Seleccionar' || hora === 'Seleccionar') {
-      showToast('Completa los campos requeridos'); return;
-    }
+    clearFieldErrors('rpt-modal');
+    let hasErrors = false;
+    if (!nombre) { showFieldError('rpt-nombre', 'Este campo es requerido'); hasErrors = true; }
+    if (tipo === 'Seleccionar') { showFieldError('dd-rpt-tipo', 'Selecciona un tipo de reporte'); hasErrors = true; }
+    if (frec === 'Seleccionar') { showFieldError('dd-rpt-frec', 'Selecciona una frecuencia'); hasErrors = true; }
+    if (hora === 'Seleccionar') { showFieldError('dd-rpt-hora', 'Selecciona una hora de envío'); hasErrors = true; }
+    if (hasErrors) return;
 
     const nextMap = { 'Diario': 'Mañana', 'Semanal': 'Próximo lunes', 'Mensual': '01/07/2026' };
     const row = { nombre, tipo, formato: formato === 'Seleccionar' ? 'Excel' : formato, frec, hora, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextMap[frec] || '—' };
@@ -1504,9 +1531,13 @@
     const hora    = document.getElementById('lbl-edit-hora').textContent.trim();
     const chips   = [...document.querySelectorAll('#edit-chips .email-chip')].map(c => c.textContent.replace('×','').trim());
 
-    if (!nombre || tipo === 'Seleccionar' || frec === 'Seleccionar' || hora === 'Seleccionar') {
-      showToast('Completa los campos requeridos'); return;
-    }
+    clearFieldErrors('panel-edit-report');
+    let hasEditErrors = false;
+    if (!nombre) { showFieldError('edit-nombre', 'Este campo es requerido'); hasEditErrors = true; }
+    if (tipo === 'Seleccionar') { showFieldError('dd-edit-tipo', 'Selecciona un tipo de reporte'); hasEditErrors = true; }
+    if (frec === 'Seleccionar') { showFieldError('dd-edit-frec', 'Selecciona una frecuencia'); hasEditErrors = true; }
+    if (hora === 'Seleccionar') { showFieldError('dd-edit-hora', 'Selecciona una hora de envío'); hasEditErrors = true; }
+    if (hasEditErrors) return;
 
     const nextMap = { 'Diario': 'Mañana', 'Semanal': 'Próximo lunes', 'Mensual': '01/07/2026' };
     reportRows[idx] = { nombre, tipo, formato: formato === 'Seleccionar' ? 'Excel (.xlsx)' : formato,
