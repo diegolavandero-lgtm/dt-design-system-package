@@ -1359,23 +1359,25 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
 
       if (sv.id === 'number') {
         // ── Number input ──────────────────────────────────────────────────────
-        const BTN = `width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:#fff;cursor:pointer;color:var(--n5);flex-shrink:0;padding:0`;
+        // Use type="text" + inputmode="numeric" to avoid browser native spinner
+        const BTN = `width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;color:var(--n5);flex-shrink:0;padding:0`;
+        const minVal = sv.min !== undefined ? sv.min : 0;
         demo = `
-          <div style="display:inline-flex;align-items:center;border:1px solid var(--n3);border-radius:6px;overflow:hidden;height:32px;background:#fff"
+          <div style="display:inline-flex;align-items:stretch;width:160px;border:1px solid var(--n3);border-radius:6px;overflow:hidden;height:32px;background:#fff"
                onfocusin="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
                onfocusout="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
             <button style="${BTN};border-right:1px solid var(--n3)"
-              onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'"
-              onclick="(function(b){var i=b.parentElement.querySelector('input');i.value=Math.max(${sv.min||0},parseInt(i.value||0)-1)})(this)"
+              onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='transparent'"
+              onclick="(function(b){var i=b.parentElement.querySelector('input');var v=parseInt(i.value||0)-1;i.value=v<${minVal}?${minVal}:v})(this)"
               aria-label="Decrementar">${ICO_SUB}</button>
-            <input type="number" value="${sv.defaultValue||0}" min="${sv.min||0}"
-              style="width:68px;height:30px;border:none;outline:none;text-align:center;font:400 14px/1 var(--font-sans);color:var(--n7);background:transparent;-moz-appearance:textfield;appearance:textfield;padding:0">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" value="${sv.defaultValue||0}"
+              style="flex:1;min-width:0;height:100%;border:none;outline:none;text-align:center;font:500 14px/1 var(--font-sans);color:var(--n7);background:transparent;padding:0"
+              oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             <button style="${BTN};border-left:1px solid var(--n3)"
-              onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='#fff'"
+              onmouseenter="this.style.background='var(--n2)'" onmouseleave="this.style.background='transparent'"
               onclick="(function(b){var i=b.parentElement.querySelector('input');i.value=parseInt(i.value||0)+1})(this)"
               aria-label="Incrementar">${ICO_ADD}</button>
-          </div>
-          <style>.special-num input[type=number]::-webkit-inner-spin-button,.special-num input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}</style>`;
+          </div>`;
       }
 
       if (sv.id === 'textarea') {
