@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T16:30:54.252Z",
+  "generated": "2026-06-10T16:38:29.782Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "0be4d41",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827: move all tab actions to global page header",
+          "author": "Carlos"
+        },
         {
           "hash": "7e6a504",
           "type": "fix",
