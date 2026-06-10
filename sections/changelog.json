@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:42:40.207Z",
+  "generated": "2026-06-10T18:45:54.464Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "766d5be",
+          "type": "fix",
+          "section": "General",
+          "message": "fix: rename back to strategy-planner-PLANNER.html (restores Vercel URL)",
+          "author": "Diego"
+        },
         {
           "hash": "d69e2c7",
           "type": "update",
