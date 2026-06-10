@@ -654,6 +654,10 @@
         <div class="page-header-name">soporte+arsa</div>
         <div class="page-header-email">soporte+arsa@beettrack.com</div>
       </div>
+      <div id="page-header-actions" style="display:none;margin-left:auto;gap:8px;align-items:center">
+        <button class="btn ghost" onclick="backToReports()">Cancelar</button>
+        <button id="edit-save-btn-top" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>
+      </div>
     </div>
 
     <div class="content">
@@ -947,10 +951,6 @@
             <div>
               <span class="card-ttl" id="edit-page-title">Editar reporte</span>
               <div class="pg-edit-sub" id="edit-page-sub"></div>
-            </div>
-            <div style="display:flex;gap:8px">
-              <button class="btn ghost" onclick="backToReports()">Cancelar</button>
-              <button id="edit-save-btn-top" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>
             </div>
           </div>
           <div class="card-body">
@@ -1322,6 +1322,10 @@
     document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
     document.getElementById('panel-edit-report').style.display = 'block';
 
+    // Show header actions
+    const ha = document.getElementById('page-header-actions');
+    if (ha) { ha.style.display = 'flex'; }
+
     // Disable save buttons until a change is detected
     setEditSaveBtns(true);
     _editOriginal = getEditSnapshot();
@@ -1365,6 +1369,8 @@
     document.getElementById('panel-edit-report').style.display = 'none';
     document.getElementById('panel-3').style.display = 'block';
     document.querySelector('.content').classList.add('wide');
+    const ha = document.getElementById('page-header-actions');
+    if (ha) ha.style.display = 'none';
   }
 
   function editEmailKeydown(e) {
