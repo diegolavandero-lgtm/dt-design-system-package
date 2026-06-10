@@ -466,6 +466,24 @@
     .tbl th.tbl-acts-col::before{background:var(--n4)}
     .tbl td.tbl-acts-col::before{background:var(--n3)}
 
+    /* ── EDIT REPORT PAGE ── */
+    .pg-back-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;
+      border-radius:50px;border:1px solid var(--n3);background:#fff;
+      font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;transition:all .12s}
+    .pg-back-btn:hover{border-color:var(--b5);color:var(--b6);background:var(--b1)}
+    .pg-back-btn svg{flex-shrink:0}
+    .pg-edit-hdr{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .pg-edit-title{font:700 18px/1 var(--font-sans);color:var(--n7)}
+    .pg-edit-sub{font:400 13px var(--font-sans);color:var(--n5);margin-top:2px}
+    .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-grid-full{grid-column:1/-1}
+    .danger-zone{border:1px solid var(--r3);border-radius:8px;overflow:hidden;margin-top:20px}
+    .danger-zone-hdr{padding:12px 20px;background:var(--r1);border-bottom:1px solid var(--r3);
+      display:flex;align-items:center;justify-content:space-between}
+    .danger-zone-ttl{font:700 13px var(--font-sans);color:var(--r6)}
+    .danger-zone-body{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .danger-zone-desc{font:400 13px var(--font-sans);color:var(--n6)}
+
     /* ════════════════════════
        MODAL — DS pattern
     ════════════════════════ */
@@ -870,6 +888,150 @@
 
       </div>
 
+      <!-- ══ EDIT REPORT PAGE ══ -->
+      <div class="panel" id="panel-edit-report" style="display:none">
+
+        <!-- Page header -->
+        <div class="pg-edit-hdr">
+          <button class="pg-back-btn" onclick="backToReports()">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M14 26L4 16 14 6l1.4 1.4L6.8 16l8.6 8.6z"/><path d="M5 15h23v2H5z"/></svg>
+            Reportes programados
+          </button>
+          <svg viewBox="0 0 32 32" fill="currentColor" width="12" height="12" style="color:var(--n4)"><path d="M12 8l8 8-8 8"/></svg>
+          <span id="edit-breadcrumb-name" style="font:400 13px var(--font-sans);color:var(--n5);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        </div>
+
+        <!-- Main form card -->
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <span class="card-ttl" id="edit-page-title">Editar reporte</span>
+              <div class="pg-edit-sub" id="edit-page-sub"></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn ghost" onclick="backToReports()">Cancelar</button>
+              <button class="btn primary" onclick="saveReport()">Guardar cambios</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <input type="hidden" id="edit-idx">
+
+            <!-- Nombre (full width) -->
+            <div class="form-row">
+              <label class="form-label">Nombre del reporte <span style="color:#DE350B">*</span></label>
+              <input id="edit-nombre" type="text" placeholder="Ej: Reporte diario de entregas"
+                style="width:100%;height:32px;border:1px solid var(--n3);border-radius:6px;
+                       font:400 14px/20px var(--font-sans);background:#fff;color:var(--n7);
+                       box-sizing:border-box;outline:none;padding:0 10px"
+                onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+                onblur="this.style.border='1px solid var(--n3)';this.style.background='#fff'">
+            </div>
+
+            <!-- 2-column row: Tipo | Formato -->
+            <div class="form-grid-2" style="margin-bottom:16px">
+              <div>
+                <label class="form-label">Tipo de reporte <span style="color:#DE350B">*</span></label>
+                <div class="dt-drop-wrap" id="dd-edit-tipo" style="width:100%">
+                  <div class="dt-dtrigger" onclick="dtToggle('dd-edit-tipo')">
+                    <span class="dt-dlabel" id="lbl-edit-tipo" style="color:var(--n5)">Seleccionar</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="dt-dmenu">
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Órdenes del día</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Actividad de rutas</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Resumen de conductores</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-tipo','lbl-edit-tipo',this)">Entregas por zona</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="form-label">Formato</label>
+                <div class="dt-drop-wrap" id="dd-edit-formato" style="width:100%">
+                  <div class="dt-dtrigger" onclick="dtToggle('dd-edit-formato')">
+                    <span class="dt-dlabel" id="lbl-edit-formato" style="color:var(--n5)">Seleccionar</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="dt-dmenu">
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-formato','lbl-edit-formato',this)">Excel (.xlsx)</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-formato','lbl-edit-formato',this)">PDF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2-column row: Frecuencia | Hora de envío -->
+            <div class="form-grid-2" style="margin-bottom:16px">
+              <div>
+                <label class="form-label">Frecuencia <span style="color:#DE350B">*</span></label>
+                <div class="dt-drop-wrap" id="dd-edit-frec" style="width:100%">
+                  <div class="dt-dtrigger" onclick="dtToggle('dd-edit-frec')">
+                    <span class="dt-dlabel" id="lbl-edit-frec" style="color:var(--n5)">Seleccionar</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="dt-dmenu">
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-frec','lbl-edit-frec',this)">Diario</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-frec','lbl-edit-frec',this)">Semanal</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-frec','lbl-edit-frec',this)">Mensual</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="form-label">Hora de envío <span style="color:#DE350B">*</span></label>
+                <div class="dt-drop-wrap" id="dd-edit-hora" style="width:100%">
+                  <div class="dt-dtrigger" onclick="dtToggle('dd-edit-hora')">
+                    <span class="dt-dlabel" id="lbl-edit-hora" style="color:var(--n5)">Seleccionar</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="dt-dmenu">
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">06:00</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">08:00</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">09:00</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">12:00</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">17:00</div>
+                    <div class="dt-dopt" onclick="dtPick('dd-edit-hora','lbl-edit-hora',this)">20:00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Destinatarios (full width) -->
+            <div class="form-row" style="margin-bottom:0">
+              <label class="form-label">Destinatarios</label>
+              <div class="chip-input-wrap" id="edit-chips" onclick="document.getElementById('edit-email-input').focus()">
+                <input id="edit-email-input" type="email" placeholder="Escribe un email y presiona Enter"
+                  onkeydown="editEmailKeydown(event)"
+                  style="flex:1;min-width:160px;border:none;outline:none;font:400 13px var(--font-sans);background:transparent;color:var(--n7)">
+              </div>
+              <span class="form-helper">Presiona Enter o coma para agregar cada dirección</span>
+            </div>
+          </div>
+
+          <!-- Card footer with actions -->
+          <div style="padding:12px 20px;border-top:1px solid var(--n3);background:#FAFBFD;display:flex;justify-content:flex-end;gap:8px">
+            <button class="btn ghost" onclick="backToReports()">Cancelar</button>
+            <button class="btn primary" onclick="saveReport()">Guardar cambios</button>
+          </div>
+        </div>
+
+        <!-- Danger zone card -->
+        <div class="danger-zone">
+          <div class="danger-zone-hdr">
+            <span class="danger-zone-ttl">Zona de peligro</span>
+          </div>
+          <div class="danger-zone-body">
+            <div>
+              <div style="font:600 13px var(--font-sans);color:var(--n7);margin-bottom:4px">Eliminar este reporte</div>
+              <div class="danger-zone-desc">Esta acción es permanente. El reporte dejará de enviarse y no podrá recuperarse.</div>
+            </div>
+            <button onclick="confirmDeleteFromEdit()" style="height:32px;padding:0 16px;border-radius:50px;border:1px solid var(--r5,#DE350B);background:#fff;color:var(--r6,#DE350B);font:700 13px var(--font-sans);cursor:pointer;white-space:nowrap;flex-shrink:0"
+              onmouseenter="this.style.background='var(--r1)'" onmouseleave="this.style.background='#fff'">
+              Eliminar reporte
+            </button>
+          </div>
+        </div>
+
+      </div>
+
     </div><!-- /content -->
   </main>
 
@@ -1065,7 +1227,97 @@
   }
 
   function editReport(idx) {
-    showToast('Edición de reportes — próximamente');
+    const r = reportRows[idx];
+    if (!r) return;
+
+    // Populate fields
+    document.getElementById('edit-idx').value = idx;
+    document.getElementById('edit-nombre').value = r.nombre;
+    document.getElementById('edit-page-title').textContent = r.nombre;
+    document.getElementById('edit-page-sub').textContent = `Creado · Tipo: ${r.tipo}`;
+    document.getElementById('edit-breadcrumb-name').textContent = r.nombre;
+
+    // Set dropdowns
+    const setDrop = (dropId, lblId, val) => {
+      const lbl = document.getElementById(lblId);
+      lbl.textContent = val;
+      lbl.style.color = 'var(--n7)';
+      document.querySelectorAll(`#${dropId} .dt-dopt`).forEach(o => {
+        o.classList.toggle('selected', o.textContent.trim() === val);
+      });
+    };
+    setDrop('dd-edit-tipo',    'lbl-edit-tipo',    r.tipo);
+    setDrop('dd-edit-formato', 'lbl-edit-formato', r.formato);
+    setDrop('dd-edit-frec',    'lbl-edit-frec',    r.frec);
+    setDrop('dd-edit-hora',    'lbl-edit-hora',    r.hora);
+
+    // Populate email chips
+    const chipsWrap = document.getElementById('edit-chips');
+    chipsWrap.querySelectorAll('.email-chip').forEach(c => c.remove());
+    const inp = document.getElementById('edit-email-input');
+    if (r.destinatarios && r.destinatarios !== '—') {
+      r.destinatarios.split(',').map(e => e.trim()).filter(Boolean).forEach(email => {
+        const chip = document.createElement('span');
+        chip.className = 'email-chip';
+        chip.innerHTML = `${email} <button type="button" onclick="this.parentElement.remove()">×</button>`;
+        chipsWrap.insertBefore(chip, inp);
+      });
+    }
+
+    // Navigate to edit panel
+    document.querySelector('.content').classList.add('wide');
+    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+    document.getElementById('panel-edit-report').style.display = 'block';
+  }
+
+  function backToReports() {
+    document.getElementById('panel-edit-report').style.display = 'none';
+    document.getElementById('panel-3').style.display = 'block';
+  }
+
+  function editEmailKeydown(e) {
+    const inp = e.target;
+    if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) {
+      e.preventDefault();
+      const chip = document.createElement('span');
+      chip.className = 'email-chip';
+      chip.innerHTML = `${inp.value.trim()} <button type="button" onclick="this.parentElement.remove()">×</button>`;
+      document.getElementById('edit-chips').insertBefore(chip, inp);
+      inp.value = '';
+    }
+    if (e.key === 'Backspace' && inp.value === '') {
+      const chips = document.querySelectorAll('#edit-chips .email-chip');
+      if (chips.length) chips[chips.length - 1].remove();
+    }
+  }
+
+  function saveReport() {
+    const idx   = parseInt(document.getElementById('edit-idx').value);
+    const nombre  = document.getElementById('edit-nombre').value.trim();
+    const tipo    = document.getElementById('lbl-edit-tipo').textContent.trim();
+    const formato = document.getElementById('lbl-edit-formato').textContent.trim();
+    const frec    = document.getElementById('lbl-edit-frec').textContent.trim();
+    const hora    = document.getElementById('lbl-edit-hora').textContent.trim();
+    const chips   = [...document.querySelectorAll('#edit-chips .email-chip')].map(c => c.textContent.replace('×','').trim());
+
+    if (!nombre || tipo === 'Seleccionar' || frec === 'Seleccionar' || hora === 'Seleccionar') {
+      showToast('Completa los campos requeridos'); return;
+    }
+
+    const nextMap = { 'Diario': 'Mañana', 'Semanal': 'Próximo lunes', 'Mensual': '01/07/2026' };
+    reportRows[idx] = { nombre, tipo, formato: formato === 'Seleccionar' ? 'Excel (.xlsx)' : formato,
+      frec, hora, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextMap[frec] || '—' };
+
+    renderReportTable();
+    backToReports();
+    showToast('Cambios guardados correctamente');
+  }
+
+  function confirmDeleteFromEdit() {
+    const idx = parseInt(document.getElementById('edit-idx').value);
+    deleteReport(idx);
+    backToReports();
+    showToast('Reporte eliminado');
   }
 
   function deleteReport(idx) {
