@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T14:42:19.217Z",
+  "generated": "2026-06-10T14:48:46.865Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "d91e57a",
+          "type": "feat",
+          "section": "General",
+          "message": "DES-827: add Edit Report full-page view",
+          "author": "Carlos"
+        },
         {
           "hash": "bee0d46",
           "type": "fix",
