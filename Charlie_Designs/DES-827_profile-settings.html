@@ -140,6 +140,7 @@
     .page-header-info{flex:1}
     .page-header-name{font:700 18px var(--font-sans);color:var(--n7)}
     .page-header-email{font:400 12px var(--font-sans);color:var(--n5);margin-top:1px}
+    .page-header h1{font:700 20px var(--font-sans);color:var(--n7);flex:1;margin:0}
 
     /* tabs */
     .tabs-bar{
@@ -665,11 +666,7 @@
 
     <!-- Page header -->
     <div class="page-header">
-      <div class="page-header-avatar">SA</div>
-      <div class="page-header-info">
-        <div class="page-header-name">soporte+arsa</div>
-        <div class="page-header-email">soporte+arsa@beettrack.com</div>
-      </div>
+      <div id="page-header-left" style="display:contents"></div>
       <div id="page-header-actions" style="display:flex;margin-left:auto;gap:8px;align-items:center"></div>
     </div>
 
@@ -1144,6 +1141,23 @@
     if (wrap && !wrap.contains(e.target)) closeUserMenu();
   });
 
+  /* ── PAGE HEADER LEFT — per-tab ── */
+  const TAB_TITLES = ['', 'Seguridad', 'Acceso y usuarios', 'Reportes programados'];
+  function renderPageHeader(idx) {
+    const left = document.getElementById('page-header-left');
+    if (!left) return;
+    if (idx === 0) {
+      left.innerHTML = `
+        <div class="page-header-avatar">SA</div>
+        <div class="page-header-info">
+          <div class="page-header-name">soporte+arsa</div>
+          <div class="page-header-email">soporte+arsa@beettrack.com</div>
+        </div>`;
+    } else {
+      left.innerHTML = `<h1>${TAB_TITLES[idx]}</h1>`;
+    }
+  }
+
   /* ── PAGE HEADER ACTIONS — per-tab ── */
   function renderHeaderActions(idx) {
     const ha = document.getElementById('page-header-actions');
@@ -1212,6 +1226,7 @@
     el.classList.add('active');
     document.getElementById('panel-' + idx).classList.add('active');
     document.querySelector('.content').classList.toggle('wide', idx === 3);
+    renderPageHeader(idx);
     renderHeaderActions(idx);
     if (idx === 2) requestAnimationFrame(syncSharedUsersHeight);
   }
@@ -1566,6 +1581,7 @@
   }
 
   // Initialize header actions for the default tab (tab 0)
+  renderPageHeader(0);
   renderHeaderActions(0);
 </script>
 
