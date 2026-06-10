@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T19:18:44.880Z",
+  "generated": "2026-06-10T19:23:34.306Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "61dc35a",
+          "type": "fix",
+          "section": "General",
+          "message": "DES-827: add min-width:0 to .inp-wrap to fix overflow in flex rows",
+          "author": "Carlos"
+        },
         {
           "hash": "54ea680",
           "type": "feat",
