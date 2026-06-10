@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T14:57:26.794Z",
+  "generated": "2026-06-10T15:20:44.677Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "cada5a7",
+          "type": "feat",
+          "section": "Modal",
+          "message": "feat(modal): add 'In use' context preview — modal over table page with dark overlay",
+          "author": "Diego"
+        },
         {
           "hash": "89d1809",
           "type": "update",
