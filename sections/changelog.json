@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T16:38:29.782Z",
+  "generated": "2026-06-10T16:39:55.893Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "adee580",
+          "type": "update",
+          "section": "General",
+          "message": "feat(planner): all checkboxes, switches and chips fully functional",
+          "author": "Diego"
+        },
         {
           "hash": "0be4d41",
           "type": "update",
