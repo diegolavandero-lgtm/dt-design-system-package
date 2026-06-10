@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T18:42:00.751Z",
+  "generated": "2026-06-10T18:42:40.207Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "d69e2c7",
+          "type": "update",
+          "section": "Tables",
+          "message": "DES-827: remove avatar initials circle from shared users table",
+          "author": "Carlos"
+        },
         {
           "hash": "bcee705",
           "type": "update",
