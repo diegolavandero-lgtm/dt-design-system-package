@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T20:29:23.613Z",
+  "generated": "2026-06-10T21:05:25.178Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "0cf2525",
+          "type": "update",
+          "section": "Map pins",
+          "message": "DES-828: Fleet Module redesign — auto-apply filters, status chips, inline driver detail, DS map pins",
+          "author": "Carlos"
+        },
         {
           "hash": "fe63d86",
           "type": "update",
