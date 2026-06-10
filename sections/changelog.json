@@ -2,11 +2,25 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-10T19:01:39.981Z",
+  "generated": "2026-06-10T19:08:06.708Z",
   "days": [
     {
       "date": "2026-06-10",
       "entries": [
+        {
+          "hash": "484de51",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(planner): use exact DS components — no recreation",
+          "author": "Diego"
+        },
+        {
+          "hash": "cd7a549",
+          "type": "feat",
+          "section": "Inputs",
+          "message": "DES-827: add 1200px breakpoint — inner form fields stack before outer grid collapses",
+          "author": "Carlos"
+        },
         {
           "hash": "5bb59a8",
           "type": "feat",
