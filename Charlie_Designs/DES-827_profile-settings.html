@@ -1215,11 +1215,10 @@
     const name    = nameEl  ? nameEl.value.trim()  : '';
     const email   = emailEl ? emailEl.value.trim() : '';
     if (!name || !email) return;
-    const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const tbody = document.getElementById('shared-users-tbody');
     tbody.insertAdjacentHTML('beforeend', `
       <tr>
-        <td><div class="user-cell"><div class="user-av-sm">${initials}</div>${name}</div></td>
+        <td>${name}</td>
         <td class="cell-muted">${email}</td>
         <td><span class="badge success"><span class="dot"></span>Activo</span></td>
         <td class="tbl-acts-col"><div class="tbl-acts">
