@@ -815,12 +815,12 @@
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
 
-          <!-- Left: user list -->
-          <div class="card">
+          <!-- Left: user list — matches form height, overflows internally when more users added -->
+          <div class="card" id="shared-users-card" style="min-height:var(--add-user-form-h,auto)">
             <div class="card-hdr">
               <span class="card-ttl">Usuarios con acceso compartido</span>
             </div>
-            <div id="shared-users-empty" class="card-body flush">
+            <div id="shared-users-empty" class="card-body flush" style="flex:1;display:flex;align-items:center;justify-content:center">
               <div class="empty-state">
                 <div class="empty-icon">
                   <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg>
@@ -844,8 +844,8 @@
             </div>
           </div>
 
-          <!-- Right: add user form (always visible) -->
-          <div class="card">
+          <!-- Right: add user form (always visible, fixed height reference) -->
+          <div class="card" id="add-user-form-card">
             <div class="card-hdr"><span class="card-ttl">Agregar usuario existente</span></div>
             <div class="card-body">
               <div class="info-banner">
@@ -853,6 +853,10 @@
                 Ingresa el correo del usuario que quieres asociar. Tu contraseña actual es requerida para autorizar el acceso compartido.
               </div>
               <div class="form-grid">
+                <div class="form-row">
+                  <label class="lbl">Nombre <span class="req">*</span></label>
+                  <div class="inp-wrap"><input id="add-user-name" type="text" placeholder="Nombre del usuario"></div>
+                </div>
                 <div class="form-row">
                   <label class="lbl">Correo del usuario <span class="req">*</span></label>
                   <div class="inp-wrap"><input id="add-user-email" type="email" placeholder="usuario@empresa.com"></div>
@@ -1127,7 +1131,7 @@
           <button class="btn primary" id="ph-save-0" onclick="saveTab0()" disabled>Guardar cambios</button>`,
       1: `<button class="btn ghost" id="ph-cancel-1" onclick="cancelTab1()" disabled>Cancelar</button>
           <button class="btn primary" id="ph-save-1" onclick="saveTab1()" disabled>Actualizar contraseña</button>`,
-      2: `<button class="btn primary" onclick="toggleAddUser()">Agregar usuario</button>`,
+      2: ``,
       3: `<button class="btn primary" onclick="openReportModal()">Nuevo reporte</button>`,
     };
     ha.innerHTML = actions[idx] || '';
@@ -1187,6 +1191,7 @@
     document.getElementById('panel-' + idx).classList.add('active');
     document.querySelector('.content').classList.toggle('wide', idx === 3);
     renderHeaderActions(idx);
+    if (idx === 2) requestAnimationFrame(syncSharedUsersHeight);
   }
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -1194,20 +1199,27 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2800);
   }
+  function syncSharedUsersHeight() {
+    const formCard = document.getElementById('add-user-form-card');
+    const listCard = document.getElementById('shared-users-card');
+    if (formCard && listCard) listCard.style.minHeight = formCard.offsetHeight + 'px';
+  }
   function toggleAddUser() {
     const f = document.getElementById('add-user-form');
     f.style.display = f.style.display === 'none' ? 'block' : 'none';
   }
   function saveSharedUser() {
+    const nameEl  = document.getElementById('add-user-name');
     const emailEl = document.getElementById('add-user-email');
     const pwEl    = document.getElementById('add-user-pw');
+    const name    = nameEl  ? nameEl.value.trim()  : '';
     const email   = emailEl ? emailEl.value.trim() : '';
-    if (!email) return;
-    const initials = email.slice(0,2).toUpperCase();
+    if (!name || !email) return;
+    const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const tbody = document.getElementById('shared-users-tbody');
     tbody.insertAdjacentHTML('beforeend', `
       <tr>
-        <td><div class="user-cell"><div class="user-av-sm">${initials}</div>${email.split('@')[0]}</div></td>
+        <td><div class="user-cell"><div class="user-av-sm">${initials}</div>${name}</div></td>
         <td style="color:var(--n5)">${email}</td>
         <td><span class="badge success"><span class="dot"></span>Activo</span></td>
         <td class="tbl-acts-col"><div class="tbl-acts">
@@ -1218,6 +1230,11 @@
       </tr>`);
     document.getElementById('shared-users-empty').style.display = 'none';
     document.getElementById('shared-users-table').style.display = 'block';
+    // Sync left card min-height to form height (once, on first add)
+    const formCard = document.getElementById('add-user-form-card');
+    const listCard = document.getElementById('shared-users-card');
+    if (formCard && listCard) listCard.style.minHeight = formCard.offsetHeight + 'px';
+    if (nameEl)  nameEl.value  = '';
     if (emailEl) emailEl.value = '';
     if (pwEl)    pwEl.value    = '';
     showToast('Usuario asociado correctamente');
