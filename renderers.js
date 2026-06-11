@@ -6789,16 +6789,27 @@ Object.assign(renderers, {
     `);
 
     /* Item card */
-    const itemCard = (sel) => `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-      <div style="flex:1;min-width:0">
-        <div style="font:700 13px/1.3 var(--font-sans);color:var(--n7)">ZAPATILLAS HOOPS 3.0 LOW CLASSIC VINTAGE</div>
+    /* check = null (sin checkbox) | false (vacío) | true (marcado) ·
+       con checkbox: checkbox arriba-derecha + lápiz editar abajo-derecha */
+    const itemCard = (check) => {
+      const hasCheck = check !== null && check !== undefined;
+      const checkbox = check === true
+        ? `<span style="width:18px;height:18px;border-radius:4px;background:var(--b6);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">${iconSvg('check', 12, '#fff')}</span>`
+        : (check === false ? `<span style="width:18px;height:18px;border-radius:4px;border:1.5px solid var(--n4);background:#fff;flex-shrink:0"></span>` : '');
+      return `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div style="font:700 13px/1.3 var(--font-sans);color:var(--n7)">ZAPATILLAS HOOPS 3.0 LOW CLASSIC VINTAGE</div>
+          ${hasCheck ? checkbox : iconSvg('edit', 16, 'var(--b6)')}
+        </div>
         <div style="font:400 12px var(--font-sans);color:var(--n5);margin:4px 0">SKU: 9AS-345345 -234234</div>
-        <div style="font:500 12px var(--font-sans);color:var(--n6)">Cantidad <b style="color:var(--n7)">12</b> · Entregado <b style="color:var(--n7)">12</b></div>
-      </div>
-      ${sel ? `<span style="width:18px;height:18px;border-radius:4px;background:var(--b6);display:inline-flex;align-items:center;justify-content:center">${iconSvg('check', 12, '#fff')}</span>` : iconSvg('edit', 16, 'var(--b6)')}
-    </div>`;
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px">
+          <span style="font:500 12px var(--font-sans);color:var(--n6)">Cantidad <b style="color:var(--n7)">12</b>&nbsp;&nbsp;Entregado <b style="color:var(--n7)">12</b></span>
+          ${hasCheck ? iconSvg('edit', 16, 'var(--b6)') : ''}
+        </div>
+      </div>`;
+    };
     const items = mStage(`
-      ${wrap('Con editar', itemCard(false))}
+      ${wrap('Con editar', itemCard(null))}
       ${wrap('Seleccionada (escaneo)', itemCard(true))}
     `);
 

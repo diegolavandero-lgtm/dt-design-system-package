@@ -33,9 +33,9 @@
       "specs": [
         ["Nombre", "body-bold 700 14px var(--n7), uppercase del producto"],
         ["SKU", "small 400 12px var(--n5)"],
-        ["Cantidades", "Cantidad N · Entregado N — small-medium 500 12px"],
-        ["Editar", "icono edit 16px var(--b6) a la derecha"],
-        ["Selección", "checkbox a la derecha del nombre (modo escaneo/gestión)"]
+        ["Cantidades", "Cantidad N  Entregado N — small-medium 500 12px"],
+        ["Editar", "icono edit 16px var(--b6); arriba-derecha sin checkbox, abajo-derecha con checkbox"],
+        ["Selección", "checkbox arriba-derecha del nombre (modo escaneo/gestión); el lápiz de editar baja a la esquina inferior derecha"]
       ]
     },
     "collectCard": {
