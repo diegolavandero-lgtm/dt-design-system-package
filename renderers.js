@@ -6360,4 +6360,60 @@ Object.assign(renderers, {
       ${mRules(data.rules)}`;
   },
 
+  /* ── App móvil · Menú lateral ── */
+  mNav(data) {
+    const c = data.components || {};
+    const ICONS = {
+      'Agregar ruta': 'add', 'Crear ruta': 'add', 'Agregar orden': 'add',
+      'Sincronizar datos': 'refresh', 'Historial de recaudo': 'receipt',
+      'Historial de rutas por recepcionar': 'return',
+      'Chat supervisor': 'message', 'Llamada de emergencia': 'phone',
+      'Solicitudes co-piloto': 'group', 'Configuración': 'settings',
+    };
+    const item = (label, dot) => `<div style="height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;cursor:pointer" onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''">
+      ${iconSvg(ICONS[label] || 'document', 20, 'var(--n6)')}
+      <span style="font:400 14px var(--font-sans);color:var(--n7)">${escHtml(label)}</span>
+      ${dot ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--r6)"></span>' : ''}
+    </div>`;
+
+    const profile = (expanded) => `
+      <div style="padding:16px;border-bottom:1px solid var(--n2)">
+        <img src="sections/assets/logos/lastmile-mobile-color.svg" height="16" alt="LastMile" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--b1);display:flex;align-items:center;justify-content:center;font:700 13px var(--font-sans);color:var(--b7);flex-shrink:0">DT</div>
+          <div style="flex:1;min-width:0">
+            <div style="font:700 14px var(--font-sans);color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Diego Tapia – Wal…</div>
+            <div style="font:400 12px var(--font-sans);color:var(--n5)">Código de negocio · 1234</div>
+          </div>
+          ${iconSvg(expanded ? 'chevron--down' : 'chevron--right', 16, 'var(--n5)')}
+        </div>
+        ${expanded ? `
+          <div style="margin-top:10px;border-top:1px solid var(--n2)">
+            ${['Perfil de usuario', 'Cambiar usuario'].map(l => `<div style="height:44px;display:flex;align-items:center;justify-content:space-between;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer">${l}${iconSvg('chevron--right', 14, 'var(--n5)')}</div>`).join('')}
+          </div>` : ''}
+      </div>`;
+
+    const drawer = (menuItems, cta, expanded) => mPhone(`
+      ${profile(expanded)}
+      <div style="flex:1;padding:4px 0">${menuItems.map(l => item(l, l === 'Solicitudes co-piloto')).join('')}</div>
+      <div style="padding:16px">
+        <button style="width:100%;height:40px;border-radius:99px;border:1px solid var(--b6);background:#fff;color:var(--b6);font:700 14px var(--font-sans);cursor:pointer">${cta}</button>
+      </div>`, { width: 290 });
+
+    const menus = data.menus || {};
+    const variants = mStage(`
+      <div>${mLabel('Sin ruta iniciada')}${drawer(menus.noRoute || [], 'Cerrar sesión', false)}</div>
+      <div>${mLabel('Con ruta activa')}${drawer(menus.onRoute || [], 'Finalizar ruta', false)}</div>
+      <div>${mLabel('Perfil expandido')}${drawer((menus.onRoute || []).slice(0, 4), 'Finalizar ruta', true)}</div>
+    `);
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.drawer.name, 'NEW', variants, c.drawer.specs,
+        'Los iconos son IBM Carbon 20px. El orden de los ítems es fijo y está definido por producto — no se reordena por cuenta.')}
+      ${mComponentCard(c.profile.name, 'NEW', '', c.profile.specs,
+        'El bloque de perfil soporta multi-cuenta: al expandir se accede a «Perfil de usuario» y «Cambiar usuario» (lista de empresas con logo y código de negocio).')}
+      ${mRules(data.rules)}`;
+  },
+
 });

@@ -1,0 +1,39 @@
+{
+  "title": "Menú lateral",
+  "titleKey": "nav.mobile.nav",
+  "description": "Drawer de navegación de la app de conductores. Se abre desde el menú hamburguesa del top app bar. Su contenido cambia según el estado de la ruta: sin ruta iniciada ofrece acciones de ruta; con ruta activa ofrece acciones de operación y el cierre de ruta.",
+  "components": {
+    "drawer": {
+      "name": "DTMNavDrawer",
+      "specs": [
+        ["Ancho", "304dp (Android) / 304pt (iOS), máx. 85% del viewport"],
+        ["Fondo", "#FFFFFF"],
+        ["Overlay", "rgba(19,32,69,.45) sobre el contenido"],
+        ["Ítem", "alto 48dp · icono 20px var(--n6) · label body 400 14px var(--n7)"],
+        ["Ítem con notificación", "dot 8px var(--r6) junto al label"],
+        ["CTA inferior", "DTMButton variante outline, ancho completo, margen 16px"],
+        ["Animación", "slide-in desde la izquierda, 250ms ease-out"]
+      ]
+    },
+    "profile": {
+      "name": "DTMDrawerProfile",
+      "specs": [
+        ["Avatar", "40×40, circular, imagen de la empresa o iniciales"],
+        ["Nombre", "body-bold 700 14px var(--n7), truncado con ellipsis"],
+        ["Código de negocio", "small 400 12px var(--n5)"],
+        ["Chevron", "chevron--down 16px var(--n5) — expande Perfil / Cambiar usuario"],
+        ["Expandido", "ítems: Perfil de usuario ›, Cambiar usuario › (alto 44dp)"]
+      ]
+    }
+  },
+  "menus": {
+    "noRoute": ["Agregar ruta", "Crear ruta", "Chat supervisor", "Sincronizar datos", "Historial de recaudo", "Configuración"],
+    "onRoute": ["Agregar orden", "Sincronizar datos", "Historial de recaudo", "Historial de rutas por recepcionar", "Chat supervisor", "Llamada de emergencia", "Solicitudes co-piloto", "Configuración"]
+  },
+  "rules": [
+    "Los ítems del menú dependen del estado de la ruta — nunca se muestran acciones de operación sin ruta activa.",
+    "«Solicitudes co-piloto» muestra dot rojo cuando hay solicitudes pendientes.",
+    "El CTA inferior es «Finalizar ruta» con ruta activa y «Cerrar sesión» sin ruta.",
+    "El perfil multi-cuenta permite cambiar entre empresas sin cerrar sesión; cada cuenta conserva su código de negocio."
+  ]
+}
