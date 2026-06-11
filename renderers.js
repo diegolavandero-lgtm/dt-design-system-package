@@ -6286,6 +6286,26 @@ function mPickupSelect(label) {
   </div>`;
 }
 
+/* ── DTMButton: variant = primary|outline|ghost|danger · state = default|pressed|disabled ── */
+function mBtn(label, variant = 'primary', state = 'default', extra = '') {
+  const V = {
+    primary:  { default: 'background:var(--b6);color:#fff;border:none',
+                pressed: 'background:var(--b7);color:#fff;border:none',
+                disabled:'background:var(--n4);color:#fff;border:none' },
+    outline:  { default: 'background:#fff;color:var(--b6);border:1px solid var(--b6)',
+                pressed: 'background:var(--b1);color:var(--b6);border:1px solid var(--b6)',
+                disabled:'background:#fff;color:var(--n4);border:1px solid var(--n4)' },
+    ghost:    { default: 'background:transparent;color:var(--b6);border:none',
+                pressed: 'background:var(--b1);color:var(--b6);border:none',
+                disabled:'background:transparent;color:var(--n4);border:none' },
+    danger:   { default: 'background:var(--r6);color:#fff;border:none',
+                pressed: 'background:var(--r7);color:#fff;border:none',
+                disabled:'background:var(--n4);color:#fff;border:none' },
+  };
+  const s = (V[variant] || V.primary)[state] || V.primary.default;
+  return `<button style="height:40px;padding:0 20px;border-radius:100px;font:700 14px/1 var(--font-sans);${s};cursor:${state === 'disabled' ? 'not-allowed' : 'pointer'};display:inline-flex;align-items:center;justify-content:center;gap:6px;box-sizing:border-box;${extra}">${label}</button>`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6413,6 +6433,55 @@ Object.assign(renderers, {
         'Los iconos son IBM Carbon 20px. El orden de los ítems es fijo y está definido por producto — no se reordena por cuenta.')}
       ${mComponentCard(c.profile.name, 'NEW', '', c.profile.specs,
         'El bloque de perfil soporta multi-cuenta: al expandir se accede a «Perfil de usuario» y «Cambiar usuario» (lista de empresas con logo y código de negocio).')}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Botones ── */
+  mButtons(data) {
+    const c = data.components || {};
+
+    /* Matriz variante × estado */
+    const VARIANTS = [['primary', 'Primario'], ['outline', 'Secundario'], ['ghost', 'Ghost'], ['danger', 'Danger']];
+    const STATES = [['default', 'Default'], ['pressed', 'Pressed'], ['disabled', 'Disabled']];
+    const matrix = `<div style="display:grid;grid-template-columns:90px repeat(3,1fr);gap:10px;align-items:center;background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px;margin-bottom:14px;max-width:560px">
+      <span></span>${STATES.map(s => `<span style="font:700 10px var(--font-sans);letter-spacing:.06em;color:var(--n5);text-align:center">${s[1].toUpperCase()}</span>`).join('')}
+      ${VARIANTS.map(v => `<span style="font:600 12px var(--font-sans);color:var(--n7)">${v[1]}</span>` + STATES.map(s => `<div style="text-align:center">${mBtn('Cancelar', v[0], s[0])}</div>`).join('')).join('')}
+    </div>`;
+
+    /* Full width + par */
+    const layouts = mStage(`
+      <div style="width:300px">
+        ${mLabel('Full width — CTA de pantalla')}
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mBtn('Iniciar ruta', 'primary', 'default', 'width:100%')}</div>
+        ${mLabel('Par de acciones')}
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px;display:flex;gap:12px">${mBtn('Cancelar', 'outline', 'default', 'flex:1')}${mBtn('Confirmar', 'primary', 'default', 'flex:1')}</div>
+        ${mLabel('Par con primario deshabilitado (formulario incompleto)')}
+        <div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px;display:flex;gap:12px">${mBtn('Cancelar', 'outline', 'default', 'flex:1')}${mBtn('Confirmar', 'primary', 'disabled', 'flex:1')}</div>
+      </div>`);
+
+    /* Botones de icono circulares */
+    const circle = (style, icon, color) => `<button style="width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;${style}">${iconSvg(icon, 20, color)}</button>`;
+    const iconBtns = mStage(`
+      ${circle('background:var(--b6);border:none', 'planner-route', '#fff')}
+      ${circle('background:#fff;border:1px solid var(--b6)', 'planner-route', 'var(--b6)')}
+      ${circle('background:#fff;border:none;box-shadow:0 1px 4px rgba(19,32,69,.18)', 'location', 'var(--n6)')}
+      ${circle('background:var(--r6);border:none', 'close-filled', '#fff')}
+      ${circle('background:var(--n3);border:none;cursor:not-allowed', 'planner-route', 'var(--n4)')}
+    `, { align: 'center' });
+
+    /* Chips de acción rápida */
+    const chip = (icon, label) => `<button style="height:32px;padding:0 12px;border-radius:99px;background:#fff;border:1px solid var(--n3);display:inline-flex;align-items:center;gap:6px;font:500 12px var(--font-sans);color:var(--b6);cursor:pointer">${iconSvg(icon, 14, 'var(--b6)')}${label}</button>`;
+    const chips = mStage(`${chip('phone', 'Llamar')}${chip('location', 'Llegando')}${chip('time', 'Atrasado')}`, { align: 'center' });
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.button.name, 'EXTENDED', matrix, c.button.specs,
+        'Misma forma pill y tokens del botón de escritorio, con alto 40dp para target táctil móvil. El estado pressed reemplaza al hover.')}
+      ${mComponentCard(c.pair.name, 'NEW', layouts, c.pair.specs)}
+      ${mComponentCard(c.iconButton.name, 'NEW', iconBtns, c.iconButton.specs,
+        'De izquierda a derecha: primario relleno, outline, ghost con sombra (sobre mapa), danger y disabled.')}
+      ${mComponentCard(c.quickChip.name, 'NEW', chips, c.quickChip.specs,
+        'Viven bajo la información de entrega en el detalle de orden. Disparan acciones de un toque sin abrir formularios.')}
       ${mRules(data.rules)}`;
   },
 

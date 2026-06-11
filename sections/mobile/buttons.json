@@ -1,0 +1,58 @@
+{
+  "title": "Botones",
+  "titleKey": "nav.mobile.buttons",
+  "description": "Botones de la app móvil de conductores. Conservan la forma pill del DS de escritorio pero crecen a 40dp de alto para cumplir el target táctil. Cuatro variantes (primario, secundario, ghost y danger) más botones de icono circulares y chips de acción rápida.",
+  "components": {
+    "button": {
+      "name": "DTMButton",
+      "specs": [
+        ["Alto", "40dp · target táctil 48dp con padding externo"],
+        ["Radio", "100px (pill, igual que escritorio)"],
+        ["Tipografía", "body-bold · 700 14px DM Sans"],
+        ["Padding horizontal", "20dp"],
+        ["Primario", "fondo var(--b6) · texto #fff · pressed var(--b7)"],
+        ["Secundario (outline)", "fondo #fff · borde 1px var(--b6) · texto var(--b6) · pressed fondo var(--b1)"],
+        ["Ghost (texto)", "sin fondo ni borde · texto var(--b6) · pressed fondo var(--b1)"],
+        ["Danger", "fondo var(--r6) · texto #fff · pressed var(--r7)"],
+        ["Disabled", "fondo var(--n4) · texto #fff (relleno) / borde y texto var(--n4) (outline y ghost)"],
+        ["Android", "ripple sobre el color pressed · Kotlin: DTMButton(style = .primary)"],
+        ["iOS", "highlight con color pressed · Swift: DTMButton(style: .primary)"]
+      ]
+    },
+    "pair": {
+      "name": "DTMButtonPair",
+      "specs": [
+        ["Composición", "secundario (izquierda) + primario (derecha)"],
+        ["Distribución", "flex 1 cada botón · gap 12dp"],
+        ["Posición", "fija al fondo de la pantalla, padding 16dp, fondo #fff"],
+        ["Regla", "la acción afirmativa siempre va a la derecha"]
+      ]
+    },
+    "iconButton": {
+      "name": "DTMIconCircleButton",
+      "specs": [
+        ["Tamaño", "40×40dp, circular"],
+        ["Icono", "IBM Carbon 20px"],
+        ["Variantes", "primario relleno · outline · ghost blanco con sombra · danger"],
+        ["Disabled", "fondo var(--n3) · icono var(--n4)"]
+      ]
+    },
+    "quickChip": {
+      "name": "DTMQuickActionChip",
+      "specs": [
+        ["Alto", "32dp"],
+        ["Radio", "99px"],
+        ["Fondo", "#fff · borde 1px var(--n3)"],
+        ["Contenido", "icono 14px var(--b6) + label small-medium 500 12px var(--b6)"],
+        ["Uso", "acciones rápidas de orden: Llamar · Llegando · Atrasado"],
+        ["Scroll", "fila horizontal scrolleable cuando no caben"]
+      ]
+    }
+  },
+  "rules": [
+    "Nunca usar naranja/ámbar como color de botón — ámbar es solo para estados de advertencia.",
+    "Danger relleno se reserva para confirmaciones destructivas o de discrepancia (ej. finalizar recaudo con monto distinto).",
+    "Un solo botón primario por pantalla. El resto de las acciones usan secundario o ghost.",
+    "Los CTAs de pantalla completa (Iniciar ruta, Confirmar) van fijos al fondo con fondo blanco y padding 16dp."
+  ]
+}
