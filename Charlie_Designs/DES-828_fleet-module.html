@@ -742,10 +742,9 @@ function gpsToLatLng(g){ return [ -33.405 - (g.y/100)*0.095, -70.725 + (g.x/100)
    Natural sizes: unselected 33×49, selected 33×47 (tip at ~16.5,40.5).
    Selected variant is scaled up slightly for emphasis (its hard dark
    shadow already distinguishes it per the DS spec). */
-function pinIcon(base, sel){
-  return sel
-    ? L.icon({iconUrl:`${PIN_DIR}${base}-selected.svg`,   iconSize:[40,57], iconAnchor:[20,49],   popupAnchor:[0,-50]})
-    : L.icon({iconUrl:`${PIN_DIR}${base}-unselected.svg`, iconSize:[33,49], iconAnchor:[16.5,41], popupAnchor:[0,-42]});
+function pinIcon(base){
+  // Always the -unselected asset → subtle soft shadow (no heavy dark ellipse).
+  return L.icon({iconUrl:`${PIN_DIR}${base}-unselected.svg`, iconSize:[33,49], iconAnchor:[16.5,41], popupAnchor:[0,-42]});
 }
 
 /* ── DS "with order" pin (pin-with-order-*) reproduced 1:1 from the SVG assets,
@@ -756,18 +755,19 @@ const _WO_STRK_NB = 'M25.4346 28.5488L24.5402 27.3446L24.5332 27.3498L25.4346 28
 const _WO_FILL_B = 'M16.5 16C24.7843 16 31.5 22.7157 31.5 31C31.5 35.9365 29.1148 40.3153 25.4346 43.0488C22.6082 45.1736 18.5785 48.539 17.6572 53.9795C17.5603 54.5516 17.0802 54.9951 16.5 54.9951C15.9198 54.9951 15.4397 54.5516 15.3428 53.9795C14.4214 48.5386 10.3909 45.1735 7.56445 43.0488C3.88459 40.3153 1.5 35.9362 1.5 31C1.5 22.7157 8.21573 16 16.5 16Z';
 const _WO_STRK_B = 'M25.4346 43.0488L24.5402 41.8446L24.5332 41.8498L25.4346 43.0488ZM17.6572 53.9795L19.1361 54.2301L19.1362 54.2299L17.6572 53.9795ZM15.3428 53.9795L13.8638 54.2299L13.8639 54.2301L15.3428 53.9795ZM7.56445 43.0488L8.4658 41.8498L8.45892 41.8447L7.56445 43.0488ZM16.5 16V17.5C23.9558 17.5 30 23.5442 30 31H31.5H33C33 21.8873 25.6127 14.5 16.5 14.5V16ZM31.5 31H30C30 35.4417 27.856 39.3818 24.5402 41.8447L25.4346 43.0488L26.329 44.253C30.3736 41.2488 33 36.4314 33 31H31.5ZM25.4346 43.0488L24.5332 41.8498C21.6902 43.9871 17.2058 47.6615 16.1783 53.729L17.6572 53.9795L19.1362 54.2299C19.9513 49.4166 23.5262 46.3601 26.3359 44.2478L25.4346 43.0488ZM17.6572 53.9795L16.1783 53.7289C16.1872 53.6766 16.214 53.6247 16.2618 53.582C16.3131 53.5364 16.3975 53.4951 16.5 53.4951V54.9951V56.4951C17.8802 56.4951 18.9287 55.4542 19.1361 54.2301L17.6572 53.9795ZM16.5 54.9951V53.4951C16.6025 53.4951 16.6869 53.5364 16.7382 53.582C16.786 53.6247 16.8128 53.6766 16.8217 53.7289L15.3428 53.9795L13.8639 54.2301C14.0713 55.4542 15.1198 56.4951 16.5 56.4951V54.9951ZM15.3428 53.9795L16.8217 53.729C15.7941 47.661 11.3086 43.9869 8.46579 41.8498L7.56445 43.0488L6.66312 44.2478C9.4731 46.3602 13.0487 49.4163 13.8638 54.2299L15.3428 53.9795ZM7.56445 43.0488L8.45892 41.8447C5.14355 39.3819 3 35.4415 3 31H1.5H0C0 36.431 2.62563 41.2487 6.66999 44.253L7.56445 43.0488ZM1.5 31H3C3 23.5442 9.04416 17.5 16.5 17.5V16V14.5C7.3873 14.5 0 21.8873 0 31H1.5Z';
 let _woUID = 0;
-function withOrderSVG(n, badge, selected){
+function withOrderSVG(n, badge){
   const hasB = badge != null && badge > 0;
   const id = 'wo' + (++_woUID);
+  // Always the soft/subtle blur shadow (unselected geometry) — selection is
+  // conveyed by tooltip + z-index, not by the heavy dark ellipse.
   const g = hasB
-    ? {w:46, h:selected?61:64, fill:_WO_FILL_B, strk:_WO_STRK_B, cy1:16, cy2:54.9951, circY:19, numY:31.8, blurY:51.5, softCy:57.5, hardCy:56}
-    : {w:33, h:selected?47:49, fill:_WO_FILL_NB, strk:_WO_STRK_NB, cy1:1.5, cy2:40.4951, circY:4.5, numY:17.3, blurY:37, softCy:43, hardCy:41.5};
-  const shadow = selected
-    ? `<ellipse cx="17" cy="${g.hardCy}" rx="13.5" ry="5" fill="#2D2926"/>`
-    : `<g filter="url(#${id}b)"><ellipse cx="16.5" cy="${g.softCy}" rx="6" ry="3" fill="black" fill-opacity="0.12"/></g>`;
+    ? {w:46, h:64, fill:_WO_FILL_B,  strk:_WO_STRK_B,  cy1:16,  cy2:54.9951, circCY:31,   blurY:51.5, softCy:57.5}
+    : {w:33, h:49, fill:_WO_FILL_NB, strk:_WO_STRK_NB, cy1:1.5, cy2:40.4951, circCY:16.5, blurY:37,   softCy:43};
+  const circY = g.circCY - 12; // white circle top-left (24×24, rx12)
+  const shadow = `<g filter="url(#${id}b)"><ellipse cx="16.5" cy="${g.softCy}" rx="6" ry="3" fill="black" fill-opacity="0.12"/></g>`;
   const badgePart = hasB
     ? `<rect x="18.5" y="1" width="26" height="26" rx="13" fill="#4B82FA"/><rect x="18.5" y="1" width="26" height="26" rx="13" stroke="white" stroke-width="2"/>`
-      + `<text x="31.5" y="14.6" text-anchor="middle" font-family="DM Sans,sans-serif" font-weight="700" font-size="13" fill="#fff">${badge}</text>`
+      + `<text x="31.5" y="14" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="12" fill="#fff">${badge}</text>`
     : '';
   return `<svg width="${g.w}" height="${g.h}" viewBox="0 0 ${g.w} ${g.h}" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -777,23 +777,23 @@ function withOrderSVG(n, badge, selected){
     ${shadow}
     <path d="${g.fill}" fill="#0C47C7"/>
     <path d="${g.strk}" fill="url(#${id}g)"/>
-    <rect x="4.5" y="${g.circY}" width="24" height="24" rx="12" fill="white"/>
-    <text x="16.5" y="${g.numY}" text-anchor="middle" font-family="DM Sans,sans-serif" font-weight="700" font-size="13" fill="#2D2926">${n}</text>
+    <rect x="4.5" y="${circY}" width="24" height="24" rx="12" fill="white"/>
+    <text x="16.5" y="${g.circCY}" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="13" fill="#2D2926">${n}</text>
     ${badgePart}
   </svg>`;
 }
-function withOrderIcon(n, badge, selected){
+function withOrderIcon(n, badge){
   const hasB = badge != null && badge > 0;
-  const w = hasB?46:33, h = hasB?(selected?61:64):(selected?47:49);
+  const w = hasB?46:33, h = hasB?64:49;
   const tipY = hasB ? 54.5 : 40.5;
-  return L.divIcon({className:'', html:withOrderSVG(n,badge,selected), iconSize:[w,h], iconAnchor:[16.5,tipY], popupAnchor:[0,-tipY+2]});
+  return L.divIcon({className:'', html:withOrderSVG(n,badge), iconSize:[w,h], iconAnchor:[16.5,tipY], popupAnchor:[0,-tipY+2]});
 }
 
 function initFleetMap(){
   if(!window.L || fleetMap) return;
   fleetMap = L.map('dme-map-main', {center:SANTIAGO, zoom:12, zoomControl:true, scrollWheelZoom:false});
   L.tileLayer(TILE_URL, TILE_OPTS).addTo(fleetMap);
-  dcMarker = L.marker(DC_LATLNG, {icon:pinIcon('pin-distribution-center', false), zIndexOffset:-100})
+  dcMarker = L.marker(DC_LATLNG, {icon:pinIcon('pin-distribution-center'), zIndexOffset:-100})
     .bindTooltip('Centro de distribución', {className:'dme-pin-tip', direction:'top', offset:[0,-44]});
   renderMarkers();
 }
@@ -810,10 +810,9 @@ function renderMarkers(){
     // En ruta → DS "with order" pin (número = órdenes de la ruta, badge = pendientes).
     // Finalizado → pin-exitosa (verde). Both straight from DS assets.
     const pending = d.total - d.done;
-    const icon = d.status==='ruta'
-      ? withOrderIcon(d.total, pending, sel)
-      : pinIcon(STATUS[d.status].pin, sel);
-    const offY = (d.status==='ruta') ? (sel?-58:-58) : (sel?-52:-44);
+    const isRuta = d.status==='ruta';
+    const icon = isRuta ? withOrderIcon(d.total, pending) : pinIcon(STATUS[d.status].pin);
+    const offY = (isRuta && pending>0) ? -58 : -44;
     const mk = L.marker(gpsToLatLng(d.gps), {icon, zIndexOffset: sel?1000:0})
       .addTo(fleetMap)
       .bindTooltip(`${esc(d.name.split(' ').slice(0,2).join(' '))}<span>${d.plate}</span>`,
