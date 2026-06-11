@@ -6652,7 +6652,7 @@ Object.assign(renderers, {
     const groupDivider = '<div style="height:1px;background:var(--n2);margin:8px 0"></div>';
 
     const profile = (expanded) => `
-      <div style="padding:16px;border-bottom:1px solid var(--n2)">
+      <div style="padding:24px 16px 16px;border-bottom:1px solid var(--n2)">
         <img src="sections/assets/logos/lastmile-desktop-color.svg" height="18" alt="DispatchTrack LastMile" style="margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:40px;height:40px;border-radius:50%;background:var(--b1);display:flex;align-items:center;justify-content:center;font:700 13px var(--font-sans);color:var(--b7);flex-shrink:0">DT</div>
@@ -6679,7 +6679,7 @@ Object.assign(renderers, {
         <div style="width:76.94%;background:#fff;display:flex;flex-direction:column">
           ${profile(expanded)}
           <div style="flex:1;padding:4px 0;overflow:hidden">${menuBody(groups)}</div>
-          <div style="padding:16px">
+          <div style="padding:16px 16px 24px">
             <button style="width:100%;height:40px;border-radius:99px;border:1px solid var(--b6);background:#fff;color:var(--b6);font:700 14px var(--font-sans);cursor:pointer">${cta}</button>
           </div>
         </div>
