@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T21:16:40.552Z",
+  "generated": "2026-06-11T21:25:01.522Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "6f4aa04",
+          "type": "update",
+          "section": "Badges",
+          "message": "DES-828: apply DS 'with order' map pins (number + badge) reproduced 1:1",
+          "author": "Carlos"
+        },
         {
           "hash": "da89d92",
           "type": "update",
