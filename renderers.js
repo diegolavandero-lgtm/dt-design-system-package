@@ -6334,6 +6334,66 @@ function mStepper(value, opts = {}) {
   return `<span style="display:inline-flex;align-items:center;gap:0;border-radius:6px">${minus}<span style="min-width:40px;text-align:center;font:500 14px var(--font-sans);color:var(--n7)">${value}</span>${btn('+')}</span>`;
 }
 
+/* ── Pin numerado de orden (pastilla cuadrada) ── */
+function mPin(num, variant = 'default') {
+  const V = {
+    default: 'background:var(--b6);color:#fff',
+    error:   'background:var(--r6);color:#fff',
+    muted:   'background:var(--n4);color:#fff',
+  };
+  if (variant === 'error') return `<span style="width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--r6)">${iconSvg('close-filled', 14, '#fff')}</span>`;
+  return `<span style="width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font:700 12px var(--font-sans);${V[variant] || V.default}">${num}</span>`;
+}
+
+/* ── Icono de estado de gestión (círculo) ── */
+function mStatusIcon(state) {
+  const M = {
+    delivered: ['var(--g6)', 'checkmark-filled'],
+    partial:   ['var(--o5)', 'warning'],
+    failed:    ['var(--r6)', 'close-filled'],
+  };
+  const m = M[state];
+  if (!m) return '';
+  return `<span style="flex-shrink:0">${iconSvg(m[1], 20, m[0])}</span>`;
+}
+
+/* metadata con icono pequeño */
+function mMeta(icon, text) {
+  return `<span style="display:inline-flex;align-items:center;gap:3px;color:var(--n5);font:400 12px var(--font-sans)">${iconSvg(icon, 14, 'var(--n5)')}${escHtml(text)}</span>`;
+}
+
+/* ── DTMOrderCard ──
+   o = {num, addr, order, person, time, items, custom, state, selected, statusLabel} */
+function mOrderCard(o = {}) {
+  const state = o.state || 'default';
+  const errored = state === 'error';
+  const selected = o.selected;
+  const border = selected ? '2px solid var(--b6)' : '1px solid var(--n3)';
+  const leftIcon = ['delivered', 'partial', 'failed'].includes(state) ? mStatusIcon(state) : mPin(o.num != null ? o.num : 1, errored ? 'error' : 'default');
+  const checkbox = selected != null
+    ? `<span style="width:18px;height:18px;border-radius:4px;flex-shrink:0;${selected ? 'background:var(--b6);border:none' : 'background:#fff;border:1.5px solid var(--n4)'};display:inline-flex;align-items:center;justify-content:center">${selected ? iconSvg('check', 12, '#fff') : ''}</span>`
+    : '';
+  const badges = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0">
+    ${o.statusBadge !== false ? badgeHtml('Entrega', 'info') : ''}
+    ${o.custom !== false ? `<span style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n6)"><span style="width:6px;height:6px;border-radius:50%;background:var(--n5)"></span>Campo personalizado</span>` : ''}
+  </div>`;
+  const meta = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    ${o.person ? mMeta('user', o.person) : ''}
+    ${o.time ? mMeta('time', o.time) : ''}
+    ${o.items != null ? mMeta('package', String(o.items)) : ''}
+  </div>`;
+  return `<div style="background:#fff;border:${border};border-radius:8px;padding:12px;display:flex;gap:10px;align-items:flex-start">
+    ${leftIcon}
+    <div style="flex:1;min-width:0">
+      <div style="font:700 14px/1.35 var(--font-sans);color:${errored ? 'var(--r6)' : 'var(--n7)'}">${escHtml(o.addr || '')}</div>
+      ${o.order ? `<div style="font:400 12px var(--font-sans);color:var(--n5);margin-top:2px">${escHtml(o.order)}</div>` : ''}
+      ${errored ? `<div style="font:600 12px var(--font-sans);color:var(--r6);margin-top:4px;display:flex;align-items:center;gap:5px">${iconSvg('warning', 14, 'var(--r6)')}Dirección no verificada</div>` : badges}
+      ${!errored ? meta : ''}
+    </div>
+    ${checkbox}
+  </div>`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6510,6 +6570,108 @@ Object.assign(renderers, {
         'De izquierda a derecha: primario relleno, outline, ghost con sombra (sobre mapa), danger y disabled.')}
       ${mComponentCard(c.quickChip.name, 'NEW', chips, c.quickChip.specs,
         'Viven bajo la información de entrega en el detalle de orden. Disparan acciones de un toque sin abrir formularios.')}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Cards ── */
+  mCards(data) {
+    const c = data.components || {};
+    const addr = 'Martín de Zamora 5760, 7560969, Las Condes, Región Metropolitana';
+    const wrap = (label, inner) => `<div style="width:320px">${mLabel(label)}${inner}</div>`;
+
+    /* Order card — estados */
+    const orderStates = mStage(`
+      ${wrap('Default', mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 }))}
+      ${wrap('Seleccionada', mOrderCard({ num: 2, addr, order: 'Orden #3829183901234564', person: 'Ana Álvarez', time: '8:00 – 17:00', items: 3, selected: true }))}
+      ${wrap('Sin georeferencia (error)', mOrderCard({ addr: 'Lux 45, Las Condes, Región Metropolitana', order: 'Orden #3829183901234564', state: 'error' }))}
+    `);
+    const orderStatus = mStage(`
+      ${wrap('Terminada · Entregado', mOrderCard({ state: 'delivered', addr, order: 'Orden #3829183901234564', person: 'Ana Álvarez', time: '8:00 – 17:00', items: 3 }))}
+      ${wrap('Terminada · Parcial', mOrderCard({ state: 'partial', addr, order: 'Orden #3829183901234564', person: 'Pedro Pérez', time: '8:00 – 17:00', items: 10 }))}
+      ${wrap('Terminada · No entregado', mOrderCard({ state: 'failed', addr, order: 'Orden #3829183901234564', person: 'Pedro Pérez', time: '8:00 – 17:00', items: 10 }))}
+    `);
+
+    /* Route card */
+    const routeCard = (opts) => {
+      const muted = opts.muted;
+      const tc = muted ? 'var(--n5)' : 'var(--n7)';
+      return `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:14px">
+        <div style="font:400 11px var(--font-sans);color:var(--n5)">Ruta</div>
+        <div style="font:700 14px var(--font-sans);color:${tc};display:flex;align-items:center;gap:8px">${escHtml(opts.title)}${muted ? badgeHtml('Sin iniciar', 'neutral') : ''}</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 ${opts.cta ? '14px' : '0'}">
+          ${mMeta('truck', 'VEH 123')}${mMeta('package', '12 órdenes')}${mMeta('package', '200 items')}${muted ? mMeta('location', '50 km') : ''}${mMeta('time', '8:00 – 17:00')}
+        </div>
+        ${opts.cta ? mBtn('Iniciar ruta', 'primary', 'default', 'width:100%') : ''}
+      </div>`;
+    };
+    const routes = mStage(`
+      ${wrap('Con CTA Iniciar', routeCard({ title: '332131491204912', cta: true }))}
+      ${wrap('Nombre asignado', routeCard({ title: 'Sector oriente 2040 mañana', cta: true }))}
+      ${wrap('Sin iniciar (deshabilitada)', routeCard({ title: '332131491204912', muted: true }))}
+    `);
+
+    /* Item card */
+    const itemCard = (sel) => `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+      <div style="flex:1;min-width:0">
+        <div style="font:700 13px/1.3 var(--font-sans);color:var(--n7)">ZAPATILLAS HOOPS 3.0 LOW CLASSIC VINTAGE</div>
+        <div style="font:400 12px var(--font-sans);color:var(--n5);margin:4px 0">SKU: 9AS-345345 -234234</div>
+        <div style="font:500 12px var(--font-sans);color:var(--n6)">Cantidad <b style="color:var(--n7)">12</b> · Entregado <b style="color:var(--n7)">12</b></div>
+      </div>
+      ${sel ? `<span style="width:18px;height:18px;border-radius:4px;background:var(--b6);display:inline-flex;align-items:center;justify-content:center">${iconSvg('check', 12, '#fff')}</span>` : iconSvg('edit', 16, 'var(--b6)')}
+    </div>`;
+    const items = mStage(`
+      ${wrap('Con editar', itemCard(false))}
+      ${wrap('Seleccionada (escaneo)', itemCard(true))}
+    `);
+
+    /* Collect card */
+    const collectRow = (id, amount, positive) => `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px;margin-bottom:8px">
+      <div style="font:500 12px var(--font-sans);color:var(--n7)">${id}</div>
+      <div style="font:700 14px var(--font-sans);color:${positive ? 'var(--g6)' : 'var(--r6)'};margin:4px 0">$ ${positive ? '+' : '−'} ${amount} clp</div>
+      <div style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n5)">${iconSvg('calendar', 14, 'var(--n5)')}2026-10-24 · 17:00</div>
+    </div>`;
+    const collect = mStage(wrap('Historial de recaudo', collectRow('1. #2453453452345343…', '40.000', true) + collectRow('2. #3453453452345343…', '19.000', false)));
+
+    /* Group card */
+    const groupCard = `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden">
+      <div style="background:var(--b1);padding:6px 12px;font:700 12px var(--font-sans);color:var(--n7)">4 órdenes</div>
+      <div style="padding:12px">
+        <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:6px">Categoría A</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+          <span style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n6)"><span style="width:6px;height:6px;border-radius:50%;background:var(--n5)"></span>Campo personalizado</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n6)"><span style="width:6px;height:6px;border-radius:50%;background:var(--n5)"></span>Otro campo</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          ${mMeta('user', 'Raúl Ríos, Marta Morales, Camilo C…')}
+          ${mMeta('package', '22')}
+        </div>
+      </div>
+    </div>`;
+    const group = mStage(wrap('Agrupación', groupCard));
+
+    /* Service unit */
+    const su = `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden">
+      <div style="padding:12px">
+        <div style="font:700 14px var(--font-sans);color:var(--n7);margin-bottom:8px">Service Unit 1</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          ${mMeta('location', '245 Cooper Square, New York, NY, 1…')}
+          <div style="display:flex;gap:10px">${mMeta('truck', 'VEH 123')}${mMeta('location', '3 stops')}${mMeta('package', '12 orders')}</div>
+          ${mMeta('time', '8:00 – 17:00')}
+        </div>
+      </div>
+      <div style="background:var(--n1);padding:8px 12px;border-top:1px solid var(--n2);display:inline-flex;align-items:center;gap:5px;width:100%;box-sizing:border-box;font:500 12px var(--font-sans);color:var(--n6)">${iconSvg('time', 14, 'var(--n6)')}Scheduled Departure 9:00 AM</div>
+    </div>`;
+    const serviceUnit = mStage(wrap('Service unit', su));
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.orderCard.name, 'NEW', orderStates + orderStatus, c.orderCard.specs,
+        'Unidad base de la operación. El pin refleja la parada; el icono de estado solo aparece en órdenes ya gestionadas. La selección usa checkbox + borde azul.')}
+      ${mComponentCard(c.routeCard.name, 'NEW', routes, c.routeCard.specs)}
+      ${mComponentCard(c.itemCard.name, 'NEW', items, c.itemCard.specs)}
+      ${mComponentCard(c.collectCard.name, 'NEW', collect, c.collectCard.specs)}
+      ${mComponentCard(c.groupCard.name, 'NEW', group, c.groupCard.specs)}
+      ${mComponentCard(c.serviceUnit.name, 'NEW', serviceUnit, c.serviceUnit.specs)}
       ${mRules(data.rules)}`;
   },
 

@@ -1,0 +1,73 @@
+{
+  "title": "Cards",
+  "titleKey": "nav.mobile.cards",
+  "description": "Tarjetas de la app móvil. Son la unidad base de la operación: cada orden, ruta, ítem y agrupación se representa con una card. Comparten fondo blanco, radio 8px, borde var(--n3) y la pastilla de pin numerado. Sus estados comunican el resultado de la gestión mediante color.",
+  "components": {
+    "orderCard": {
+      "name": "DTMOrderCard",
+      "specs": [
+        ["Fondo", "#FFFFFF · radio 8px · borde 1px var(--n3) · padding 12dp"],
+        ["Pin", "pastilla cuadrada 22×22, radio 6px, fondo var(--b6), número #fff 700 12px"],
+        ["Dirección", "body-bold 700 14px var(--n7)"],
+        ["Orden #", "small 400 12px var(--n5)"],
+        ["Pastillas", "Entrega (badge info) + Campo personalizado (dot + texto)"],
+        ["Meta", "persona · horario · N ítems — small 400 12px var(--n5) con iconos 14px"],
+        ["Default", "borde var(--n3)"],
+        ["Seleccionada", "checkbox azul marcado + borde var(--b6)"],
+        ["Error / sin georef", "pin rojo con icono close-filled, dirección en var(--r6)"],
+        ["Terminada", "icono de estado a la izquierda (check verde / parcial amber / no entregado rojo)"]
+      ]
+    },
+    "routeCard": {
+      "name": "DTMRouteCard",
+      "specs": [
+        ["ID o nombre", "body-bold 700 14px var(--n7), precedido de «Ruta» small var(--n5)"],
+        ["Meta", "VEH · N órdenes · N items · horario · +24 hrs — small con iconos"],
+        ["CTA Iniciar", "DTMButton primario full-width al pie de la card"],
+        ["Sin iniciar", "card en gris (texto var(--n5)), badge «Sin iniciar», muestra distancia (50 km)"],
+        ["Nombre asignado", "reemplaza el ID; trunca con ellipsis si es largo"]
+      ]
+    },
+    "itemCard": {
+      "name": "DTMItemCard",
+      "specs": [
+        ["Nombre", "body-bold 700 14px var(--n7), uppercase del producto"],
+        ["SKU", "small 400 12px var(--n5)"],
+        ["Cantidades", "Cantidad N · Entregado N — small-medium 500 12px"],
+        ["Editar", "icono edit 16px var(--b6) a la derecha"],
+        ["Selección", "checkbox a la derecha del nombre (modo escaneo/gestión)"]
+      ]
+    },
+    "collectCard": {
+      "name": "DTMCollectCard",
+      "specs": [
+        ["ID transacción", "small-medium 500 12px var(--n7)"],
+        ["Monto", "body-bold 700 14px · verde var(--g6) si ingreso (+) · rojo var(--r6) si egreso (−)"],
+        ["Fecha", "small 400 12px var(--n5) con icono calendar 14px"],
+        ["Uso", "filas del historial de recaudo"]
+      ]
+    },
+    "groupCard": {
+      "name": "DTMGroupCard",
+      "specs": [
+        ["Header", "«N órdenes» o «Categoría X» — separador small-bold sobre fondo var(--b1)"],
+        ["Contenido", "campos personalizados + lista de personas + contador de ítems"],
+        ["Expandible", "chevron para desplegar las órdenes del grupo"]
+      ]
+    },
+    "serviceUnit": {
+      "name": "DTMServiceUnitCard",
+      "specs": [
+        ["Título", "«Service Unit N» — body-bold 700 14px"],
+        ["Meta", "dirección de inicio · VEH · N stops · N orders"],
+        ["Pie", "Scheduled Departure HH:MM — sobre fondo var(--n1)"]
+      ]
+    }
+  },
+  "rules": [
+    "El pin numerado siempre refleja el orden de la parada en la ruta — nunca un identificador arbitrario.",
+    "El color de estado (verde/amber/rojo) solo aparece en órdenes ya gestionadas (tab Terminadas).",
+    "Una card seleccionada usa checkbox azul + borde azul; nunca solo cambio de fondo.",
+    "Las direcciones sin georeferencia se muestran en rojo con pin de error y enlace RESOLVE."
+  ]
+}
