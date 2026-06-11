@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T16:54:16.682Z",
+  "generated": "2026-06-11T18:40:29.213Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "ef48c79",
+          "type": "update",
+          "section": "Buttons",
+          "message": "DES-828: equal-width filter fields (grid) + low-radius Filtrar/reset buttons",
+          "author": "Carlos"
+        },
         {
           "hash": "3b53121",
           "type": "feat",
