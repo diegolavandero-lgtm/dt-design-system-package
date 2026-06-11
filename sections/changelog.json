@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T18:40:29.213Z",
+  "generated": "2026-06-11T18:42:29.127Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "b5b6e4c",
+          "type": "update",
+          "section": "Inputs",
+          "message": "feat(mobile-ds): seccion Inputs (DTMTextInput, DTMSearchBar, DTMPinInput, DTMStepper, DTMDropdown, DTMTextarea)",
+          "author": "Diego"
+        },
         {
           "hash": "ef48c79",
           "type": "update",
