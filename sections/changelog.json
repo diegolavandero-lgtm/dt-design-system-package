@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T15:45:51.937Z",
+  "generated": "2026-06-11T15:51:18.599Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "c9687d9",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "feat(mobile-ds): pestaña App móvil con sidebar propio + sección Introducción",
+          "author": "Diego"
+        },
         {
           "hash": "3f8729e",
           "type": "update",
