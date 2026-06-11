@@ -226,6 +226,8 @@
     }
     .badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
     .badge.success{background:var(--g1);color:var(--g6)}
+    .badge.warning{background:var(--o1);color:var(--o7)}
+    .badge.danger{background:var(--r1);color:var(--r6)}
     .badge.neutral{background:var(--n2);color:var(--n6)}
     .badge.info{background:var(--b1);color:var(--b7)}
     .badge.outline{background:#fff;color:var(--n6);border:1px solid var(--n3)}
@@ -246,6 +248,45 @@
     .drv-gps{display:flex;align-items:center;gap:6px;font:400 11px var(--font-sans);color:var(--n5);margin-bottom:12px}
     .drv-gps svg{flex-shrink:0;fill:var(--n5)}
     .drv-actions{display:flex;gap:8px}
+
+    /* ════════════════════════
+       FLEET SUMMARY STRIP — totales del día (legacy: barra superior del mapa)
+    ════════════════════════ */
+    .fleet-stats{
+      background:#fff;border-bottom:1px solid var(--n3);
+      padding:10px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;flex-shrink:0;
+    }
+    .fs-item{display:flex;align-items:baseline;gap:6px}
+    .fs-num{font:700 16px/1 var(--font-sans);color:var(--n7)}
+    .fs-lbl{font:400 12px var(--font-sans);color:var(--n5)}
+    .fs-sep{width:1px;height:20px;background:var(--n3);align-self:center}
+    .fs-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;align-self:center}
+
+    /* ════════════════════════
+       DRIVER DETAIL — ruta activa + timeline de paradas (legacy: panel de detalle)
+    ════════════════════════ */
+    .route-hdr{
+      display:flex;justify-content:space-between;align-items:center;
+      background:var(--n2);border-radius:6px;padding:7px 10px;
+      font:600 12px var(--font-sans);color:var(--n7);margin-bottom:10px;
+    }
+    .route-hdr span:last-child{color:var(--b7)}
+    .tl{position:relative;margin:0 0 12px;padding-left:19px}
+    .tl::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--n3)}
+    .tl-stop{position:relative;padding-bottom:13px}
+    .tl-stop:last-child{padding-bottom:0}
+    .tl-dot{
+      position:absolute;left:-19px;top:3px;width:12px;height:12px;border-radius:50%;
+      background:#fff;border:2px solid var(--n4);box-sizing:border-box;
+    }
+    .tl-stop.done .tl-dot{background:var(--g5);border-color:var(--g5)}
+    .tl-stop.parc .tl-dot{background:var(--o5);border-color:var(--o5)}
+    .tl-stop.fail .tl-dot{background:var(--r5);border-color:var(--r5)}
+    .tl-stop.next .tl-dot{border-color:var(--b6)}
+    .tl-row{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+    .tl-times{font:400 11px var(--font-sans);color:var(--n5)}
+    .tl-order{font:600 12px var(--font-sans);color:var(--b7);margin-top:1px;cursor:pointer}
+    .tl-cust{font:400 12px var(--font-sans);color:var(--n7)}
 
     /* ════════════════════════
        BUTTONS — DS
@@ -523,6 +564,9 @@
       </button>
     </div>
 
+    <!-- Fleet summary strip — totales del día (órdenes, ítems, desglose de entregas) -->
+    <div class="fleet-stats" id="fleet-stats"></div>
+
     <!-- Workspace -->
     <div class="workspace">
 
@@ -602,19 +646,67 @@ const STATUS = {
 };
 
 const DRIVERS = [
-  {id:1,  name:'Cristian Yobani Cuervo Arguello',     plate:'DIM52H', phone:'323 246 7828', status:'ruta', done:7,  total:12, items:18, group:'Norte',  gps:{x:38,y:24}, last:'hace 1 min'},
-  {id:2,  name:'David Antonio Marin Castrillon',      plate:'CBK53D', phone:'300 791 9728', status:'ruta', done:4,  total:10, items:22, group:'Norte',  gps:{x:62,y:38}, last:'hace 2 min'},
-  {id:3,  name:'Jesus David Charris Jacome',          plate:'UIU90G', phone:'304 413 0162', status:'ruta', done:6,  total:8,  items:9,  group:'Centro', gps:{x:47,y:55}, last:'hace 1 min'},
-  {id:4,  name:'Jeferson Arley Giraldo Alvarez',      plate:'YDZ26D', phone:'300 484 8070', status:'ruta', done:2,  total:11, items:27, group:'Centro', gps:{x:75,y:62}, last:'hace 4 min'},
-  {id:5,  name:'Rafael Santos Prens Polo',            plate:'YID16G', phone:'311 718 7732', status:'ruta', done:10, total:14, items:11, group:'Sur',    gps:{x:25,y:64}, last:'hace 1 min'},
-  {id:6,  name:'William David Casas Baez',            plate:'LTJ77G', phone:'313 376 5274', status:'prog', done:0,  total:9,  items:0,  group:'Sur',    gps:null, last:'ruta inicia 14:00'},
-  {id:7,  name:'Nicolas Andres Patarroyo Maldonado',  plate:'KLC84E', phone:'320 884 1155', status:'prog', done:0,  total:12, items:0,  group:'Norte',  gps:null, last:'ruta inicia 15:30'},
-  {id:8,  name:'Kevin Andres Villamor Pertuz',        plate:'QRX31F', phone:'311 552 9086', status:'prog', done:0,  total:7,  items:0,  group:'Centro', gps:null, last:'ruta inicia 16:00'},
-  {id:9,  name:'Andres Felipe Rojas Castro',          plate:'MZT94B', phone:'314 220 8517', status:'fin',  done:11, total:11, items:0,  group:'Sur',    gps:{x:55,y:78}, last:'hace 12 min'},
-  {id:10, name:'Laura Jimenez Pardo',                 plate:'HKD45C', phone:'318 664 0921', status:'fin',  done:8,  total:8,  items:0,  group:'Centro', gps:{x:84,y:30}, last:'hace 25 min'},
-  {id:11, name:'Mario Restrepo Gil',                  plate:'PLB72E', phone:'312 775 3348', status:'disp', done:0,  total:0,  items:0,  group:'Norte',  gps:null, last:'en centro de distribución'},
-  {id:12, name:'Sandra Milena Ortiz Vega',            plate:'TWQ18D', phone:'315 990 2237', status:'nodisp', done:0, total:0, items:0,  group:'Sur',    gps:null, last:'fuera de turno'}
+  {id:1,  name:'Cristian Yobani Cuervo Arguello',     plate:'DIM52H', phone:'323 246 7828', status:'ruta', done:7,  total:12, items:18, parc:0, fail:0, group:'Norte',  gps:{x:38,y:24}, last:'hace 1 min',
+   dist:'12,4 km', rmin:'2 h 05 min', idle:'8 min', start:'08:30',
+   route:[[66.4,65.5],[55,52],[44,36],[38,24]],
+   stops:[
+     {r:'10:42', e:'10:55', order:'400003843463', cust:'Alejandra Figueroa', st:'ent'},
+     {r:'11:10', e:'11:18', order:'400003843502', cust:'Marcos Peña Soto',   st:'ent'},
+     {r:'11:35', e:null,    order:'400003843517', cust:'Carolina Reyes',     st:'next'},
+     {r:'12:05', e:null,    order:'400003843544', cust:'Felipe Aravena',     st:'pend'}
+   ]},
+  {id:2,  name:'David Antonio Marin Castrillon',      plate:'CBK53D', phone:'300 791 9728', status:'ruta', done:4,  total:10, items:22, parc:0, fail:0, group:'Norte',  gps:{x:62,y:38}, last:'hace 2 min',
+   dist:'8,9 km', rmin:'1 h 32 min', idle:'14 min', start:'09:15',
+   route:[[66.4,65.5],[68,54],[64,45],[62,38]],
+   stops:[
+     {r:'10:05', e:'10:12', order:'400003844011', cust:'Valentina Cruz',  st:'ent'},
+     {r:'10:48', e:null,    order:'400003844036', cust:'Rodrigo Salinas', st:'next'},
+     {r:'11:20', e:null,    order:'400003844040', cust:'Camila Torres',   st:'pend'}
+   ]},
+  {id:3,  name:'Jesus David Charris Jacome',          plate:'UIU90G', phone:'304 413 0162', status:'ruta', done:6,  total:8,  items:9,  parc:0, fail:0, group:'Centro', gps:{x:47,y:55}, last:'hace 1 min',
+   dist:'15,1 km', rmin:'2 h 40 min', idle:'5 min', start:'08:00',
+   route:[[66.4,65.5],[58,62],[51,58],[47,55]],
+   stops:[
+     {r:'10:30', e:'10:41', order:'400003845120', cust:'Ignacio Fuentes',   st:'ent'},
+     {r:'11:02', e:'11:09', order:'400003845133', cust:'Daniela Vergara',   st:'ent'},
+     {r:'11:30', e:null,    order:'400003845158', cust:'Pablo Hernández',   st:'next'}
+   ]},
+  {id:4,  name:'Jeferson Arley Giraldo Alvarez',      plate:'YDZ26D', phone:'300 484 8070', status:'ruta', done:2,  total:11, items:27, parc:0, fail:1, group:'Centro', gps:{x:75,y:62}, last:'hace 4 min',
+   dist:'5,2 km', rmin:'58 min', idle:'21 min', start:'10:00',
+   route:[[66.4,65.5],[70,67],[73,64],[75,62]],
+   stops:[
+     {r:'10:25', e:'10:33', order:'400003846207', cust:'Josefa Miranda',  st:'ent'},
+     {r:'10:55', e:'11:02', order:'400003846219', cust:'Andrés Bustos',   st:'fail'},
+     {r:'11:25', e:null,    order:'400003846230', cust:'Teresa Lagos',    st:'next'}
+   ]},
+  {id:5,  name:'Rafael Santos Prens Polo',            plate:'YID16G', phone:'311 718 7732', status:'ruta', done:10, total:14, items:11, parc:1, fail:0, group:'Sur',    gps:{x:25,y:64}, last:'hace 1 min',
+   dist:'18,7 km', rmin:'3 h 12 min', idle:'6 min', start:'07:45',
+   route:[[66.4,65.5],[52,69],[38,67],[25,64]],
+   stops:[
+     {r:'10:15', e:'10:24', order:'400003847301', cust:'Beatriz Olivares', st:'ent'},
+     {r:'10:50', e:'10:58', order:'400003847312', cust:'Hugo Saavedra',    st:'parc'},
+     {r:'11:22', e:null,    order:'400003847328', cust:'Lorena Espinoza',  st:'next'},
+     {r:'11:50', e:null,    order:'400003847335', cust:'Matías Cornejo',   st:'pend'}
+   ]},
+  {id:6,  name:'William David Casas Baez',            plate:'LTJ77G', phone:'313 376 5274', status:'prog', done:0,  total:9,  items:0,  parc:0, fail:0, group:'Sur',    gps:null, last:'ruta inicia 14:00'},
+  {id:7,  name:'Nicolas Andres Patarroyo Maldonado',  plate:'KLC84E', phone:'320 884 1155', status:'prog', done:0,  total:12, items:0,  parc:0, fail:0, group:'Norte',  gps:null, last:'ruta inicia 15:30'},
+  {id:8,  name:'Kevin Andres Villamor Pertuz',        plate:'QRX31F', phone:'311 552 9086', status:'prog', done:0,  total:7,  items:0,  parc:0, fail:0, group:'Centro', gps:null, last:'ruta inicia 16:00'},
+  {id:9,  name:'Andres Felipe Rojas Castro',          plate:'MZT94B', phone:'314 220 8517', status:'fin',  done:11, total:11, items:0,  parc:0, fail:0, group:'Sur',    gps:{x:55,y:78}, last:'hace 12 min',
+   dist:'22,3 km', rmin:'4 h 05 min', idle:'12 min', start:'07:30', end:'11:35'},
+  {id:10, name:'Laura Jimenez Pardo',                 plate:'HKD45C', phone:'318 664 0921', status:'fin',  done:8,  total:8,  items:0,  parc:0, fail:0, group:'Centro', gps:{x:84,y:30}, last:'hace 25 min',
+   dist:'16,8 km', rmin:'3 h 20 min', idle:'9 min', start:'08:00', end:'11:20'},
+  {id:11, name:'Mario Restrepo Gil',                  plate:'PLB72E', phone:'312 775 3348', status:'disp', done:0,  total:0,  items:0,  parc:0, fail:0, group:'Norte',  gps:null, last:'en centro de distribución'},
+  {id:12, name:'Sandra Milena Ortiz Vega',            plate:'TWQ18D', phone:'315 990 2237', status:'nodisp', done:0, total:0, items:0, parc:0, fail:0, group:'Sur',    gps:null, last:'fuera de turno'}
 ];
+
+/* stop status → badge variant + label + timeline dot class */
+const STOP_BADGE = {
+  ent:  {b:'success', lbl:'Entregada',    cls:'done'},
+  parc: {b:'warning', lbl:'Parcial',      cls:'parc'},
+  fail: {b:'danger',  lbl:'No entregada', cls:'fail'},
+  next: {b:'info',    lbl:'En camino',    cls:'next'},
+  pend: {b:'neutral', lbl:'Pendiente',    cls:''}
+};
 
 const STATUS_ORDER = ['all','ruta','prog','fin','disp','nodisp'];
 const STATUS_LABEL = {all:'Todos los estados', ruta:'En ruta', prog:'Programado', fin:'Finalizado', disp:'Disponible', nodisp:'No disponible'};
@@ -700,14 +792,37 @@ function renderList(){
       <div class="drv-detail">
         ${d.total ? `
         <div class="drv-stats">
-          <div class="drv-stat"><span class="drv-stat-num">${pending}</span><span class="drv-stat-lbl">Órdenes pendientes</span></div>
+          <div class="drv-stat"><span class="drv-stat-num">${d.done}/${d.total}</span><span class="drv-stat-lbl">Órdenes gestionadas</span></div>
           <div class="drv-stat"><span class="drv-stat-num">${d.items}</span><span class="drv-stat-lbl">Ítems en el camión</span></div>
+          ${d.dist ? `
+          <div class="drv-stat"><span class="drv-stat-num">${d.dist}</span><span class="drv-stat-lbl">Distancia recorrida</span></div>
+          <div class="drv-stat"><span class="drv-stat-num">${d.rmin}</span><span class="drv-stat-lbl">Tiempo de ruta</span></div>` : ''}
         </div>
         <div class="drv-prog-bar"><div class="drv-prog-fill" style="width:${pct}%"></div></div>
         <p class="drv-prog-cap">${d.done} de ${d.total} órdenes entregadas (${pct}%)</p>` : ''}
+        ${d.status==='ruta' && d.start ? `<div class="route-hdr"><span>Ruta activa · inicio ${d.start}</span><span>${pct}%</span></div>` : ''}
+        ${d.status==='fin' && d.start ? `<div class="route-hdr"><span>Ruta finalizada · ${d.start} – ${d.end}</span><span>100%</span></div>` : ''}
+        ${d.stops ? `
+        <div class="tl">
+          ${d.stops.map(s=>{
+            const sb = STOP_BADGE[s.st];
+            return `
+          <div class="tl-stop ${sb.cls}">
+            <span class="tl-dot"></span>
+            <div class="tl-row">
+              <div>
+                <div class="tl-times">R: ${s.r}${s.e ? ' · E: '+s.e : ''}</div>
+                <div class="tl-order" onclick="event.stopPropagation();showToast('Abriendo orden #${s.order}')">#${s.order}</div>
+                <div class="tl-cust">${esc(s.cust)}</div>
+              </div>
+              <span class="badge ${sb.b}"><span class="dot"></span>${sb.lbl}</span>
+            </div>
+          </div>`;
+          }).join('')}
+        </div>` : ''}
         <div class="drv-gps">
           <svg viewBox="0 0 32 32" width="13" height="13"><path d="M16,18a5,5,0,1,1,5-5A5.0059,5.0059,0,0,1,16,18Zm0-8a3,3,0,1,0,3,3A3.0034,3.0034,0,0,0,16,10Z"/><path d="M16,30,7.5645,20.0513c-.0479-.0571-.3482-.4515-.3482-.4515A10.8888,10.8888,0,0,1,5,13a11,11,0,0,1,22,0,10.8844,10.8844,0,0,1-2.2148,6.5973l-.0015.0025s-.3.3944-.3447.4474ZM8.8125,18.395c.001.0007.2334.3082.2866.3744L16,26.9079l6.91-8.15c.0439-.0552.2783-.3649.2788-.3657A8.901,8.901,0,0,0,25,13,9,9,0,1,0,7,13a8.9054,8.9054,0,0,0,1.8125,5.395Z"/></svg>
-          ${d.gps ? 'Última señal GPS: '+d.last : 'Sin señal GPS — '+d.last}
+          ${d.gps ? 'Última señal GPS: '+d.last : 'Sin señal GPS — '+d.last}${d.idle ? ' · Sin actividad: '+d.idle : ''}
         </div>
         <div class="drv-actions">
           <a class="btn sm" href="tel:+57${d.phone.replace(/\s/g,'')}">
@@ -825,13 +940,53 @@ function renderMarkers(){
   // distribution center layer
   if(dcMarker){ layerVisible.dc ? dcMarker.addTo(fleetMap) : fleetMap.removeLayer(dcMarker); }
 
+  drawRoute();
+
   document.getElementById('map-empty').classList.toggle('show', drivers.length===0);
 }
 
 /* Ver dropdown layer toggles */
 function toggleLayer(key, on){ layerVisible[key] = on; renderMarkers(); }
 
-function renderAll(){ renderStatusMenu(); renderList(); renderMarkers(); }
+/* ════════════════════════ ROUTE TRACE — polyline + paradas del conductor seleccionado ════════════════════════ */
+let routeLayer = null;
+function drawRoute(){
+  if(routeLayer){ fleetMap.removeLayer(routeLayer); routeLayer = null; }
+  if(!fleetMap || selectedId===null) return;
+  const d = DRIVERS.find(x=>x.id===selectedId);
+  if(!d || !d.route || !d.gps || !layerVisible[d.status]) return;
+  const pts = d.route.map(p=>gpsToLatLng({x:p[0], y:p[1]}));
+  pts[pts.length-1] = gpsToLatLng(d.gps); // last point follows live position
+  const parts = [ L.polyline(pts, {color:'#4B82FA', weight:4, opacity:.75}) ];
+  // paradas intermedias como puntos sobre el trazado
+  pts.slice(1,-1).forEach(ll=>{
+    parts.push(L.circleMarker(ll, {radius:5, color:'#0C47C7', weight:2, fillColor:'#fff', fillOpacity:1}));
+  });
+  routeLayer = L.layerGroup(parts).addTo(fleetMap);
+}
+
+/* ════════════════════════ FLEET SUMMARY — totales del día ════════════════════════ */
+function renderSummary(){
+  const act = DRIVERS.filter(d=>d.total>0);
+  const pend  = act.reduce((a,d)=>a+(d.total-d.done),0);
+  const items = act.reduce((a,d)=>a+d.items,0);
+  const asig  = act.reduce((a,d)=>a+d.total,0);
+  const done  = act.reduce((a,d)=>a+d.done,0);
+  const parc  = act.reduce((a,d)=>a+(d.parc||0),0);
+  const fail  = act.reduce((a,d)=>a+(d.fail||0),0);
+  const ent   = done - parc - fail;
+  const pct   = n => done ? Math.round(n/done*100) : 0;
+  document.getElementById('fleet-stats').innerHTML = `
+    <div class="fs-item"><span class="fs-num">${pend}</span><span class="fs-lbl">Órdenes pendientes</span></div>
+    <div class="fs-item"><span class="fs-num">${items}</span><span class="fs-lbl">Ítems en vehículos</span></div>
+    <div class="fs-sep"></div>
+    <div class="fs-item"><span class="fs-num">${asig}</span><span class="fs-lbl">Asignadas</span></div>
+    <div class="fs-item"><span class="fs-dot" style="background:var(--g5)"></span><span class="fs-num">${pct(ent)}%</span><span class="fs-lbl">Entregadas</span></div>
+    <div class="fs-item"><span class="fs-dot" style="background:var(--o5)"></span><span class="fs-num">${pct(parc)}%</span><span class="fs-lbl">Parciales</span></div>
+    <div class="fs-item"><span class="fs-dot" style="background:var(--r5)"></span><span class="fs-num">${pct(fail)}%</span><span class="fs-lbl">No entregadas</span></div>`;
+}
+
+function renderAll(){ renderSummary(); renderStatusMenu(); renderList(); renderMarkers(); }
 
 /* ════════════════════════ INTERACTIONS ════════════════════════ */
 function selectDriver(id, fromMap){
@@ -1167,6 +1322,7 @@ function showToast(msg){
 }
 
 /* init */
+renderSummary();
 renderStatusMenu();
 renderList();
 function bootMap(){
