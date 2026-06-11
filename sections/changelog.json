@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T16:00:39.470Z",
+  "generated": "2026-06-11T16:27:22.687Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "fbd2b14",
+          "type": "update",
+          "section": "General",
+          "message": "DES-828: join driver list and map seamlessly — no gap, single divider",
+          "author": "Carlos"
+        },
         {
           "hash": "5b20aff",
           "type": "update",
