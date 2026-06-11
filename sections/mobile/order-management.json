@@ -1,0 +1,81 @@
+{
+  "title": "Gestión de órdenes",
+  "titleKey": "nav.mobile.orderManagement",
+  "description": "Componentes del flujo de gestión de una orden: el selector de estado de entrega, el subestado, el acordeón de secciones requeridas, los hitos de operación, la gestión masiva, el recaudo (cash on delivery) y la pantalla de éxito. Es el núcleo operativo de la app.",
+  "components": {
+    "statusSelector": {
+      "name": "DTMStatusSelector",
+      "specs": [
+        ["Composición", "segmented de 3 opciones: No entregado · Parcial · Entregado"],
+        ["Default", "fondo #fff · borde 1px var(--n3) · icono + label var(--n6)"],
+        ["Entregado (sel)", "fondo var(--g1) · borde var(--g5) · texto var(--g7) · check verde"],
+        ["Parcial (sel)", "fondo var(--o1) · borde var(--o5) · texto var(--o7)"],
+        ["No entregado (sel)", "fondo var(--r1) · borde var(--r6) · texto var(--r6)"],
+        ["Variante recogida", "No recogida · Parcial · Recogida (mismos colores)"],
+        ["Variante 2 opciones", "No recogida / Recogida"]
+      ]
+    },
+    "substatus": {
+      "name": "DTMSubstatusSelect",
+      "specs": [
+        ["Disparador", "DTMDropdown «Selecciona un subestado»"],
+        ["Menú", "buscable con campo «Buscar subestado»"],
+        ["Opciones", "según estado: Sin moradores · Producto dañado · Producto faltante · Dirección errónea…"],
+        ["Obligatorio", "el subestado es requerido para confirmar un estado parcial o fallido"]
+      ]
+    },
+    "managementAccordion": {
+      "name": "DTMManagementAccordion",
+      "specs": [
+        ["Secciones", "Información de entrega · Estado · Ítems · Pruebas de entrega · Recaudo"],
+        ["Fila", "DTMRequirementRow con badge «Requerido» y contador «0 de 3»"],
+        ["Llegué", "CTA primario al inicio: confirma llegada al punto de entrega"],
+        ["CTA", "Cancelar (outline) + Confirmar gestión (primario) al pie"]
+      ]
+    },
+    "milestones": {
+      "name": "DTMMilestones",
+      "specs": [
+        ["Hito", "label + botón «Marcar como confirmado» (pill) + timestamp editable"],
+        ["Confirmado", "check verde + «Confirmado a las 09:30» + «Marcar como no confirmado»"],
+        ["Secuencial", "los hitos siguientes quedan deshabilitados hasta confirmar el anterior"],
+        ["Advertencia", "banner amber «Marca el hito en tiempo real, tal como aparece la hora en el registro»"]
+      ]
+    },
+    "bulkManagement": {
+      "name": "DTMBulkManagement",
+      "specs": [
+        ["Selección", "checkboxes por orden + «Seleccionar todo»"],
+        ["Acciones", "«Gestionar selección» / «Gestionar todas (N)»"],
+        ["Origen", "menú kebab, pin agrupado del mapa o escáner masivo"],
+        ["Comprobante QR", "modal con QR generado para que el receptor (ej. Blue Express) escanee"]
+      ]
+    },
+    "cashCollection": {
+      "name": "DTMCashCollection",
+      "specs": [
+        ["Monto sugerido", "card azul «Total a recaudar $134.500 CLP» (calculado de los ítems con precio)"],
+        ["Saldo anterior", "checkbox «Considerar saldo anterior» autocompleta el monto"],
+        ["Detalle billetes", "filas con DTMStepper (1.000, 2.000, 5.000, 10.000…)"],
+        ["Medio de transacción", "DTMDropdown (Efectivo, Transferencia, Cheque, Redcompra)"],
+        ["Confirmar monto", "modal danger cuando el monto recaudado no coincide con el esperado"],
+        ["Ajustes", "resumen con Subtotal, «Ajustes por faltantes −$» en rojo, Total a recaudar"]
+      ]
+    },
+    "successScreen": {
+      "name": "DTMSuccessScreen",
+      "specs": [
+        ["Fondo", "fullscreen var(--b6) azul"],
+        ["Icono", "checkmark circular blanco 64px"],
+        ["Texto", "«Gestión finalizada» — title 700 22px #fff"],
+        ["Comportamiento", "auto-retorno a la lista de ruta tras 1–2s"]
+      ]
+    }
+  },
+  "rules": [
+    "El color del estado seleccionado es semántico: verde entregado, amber parcial, rojo no entregado.",
+    "Cambiar a un estado distinto tras marcar ítems o pruebas advierte que se perderán los cambios.",
+    "El monto de recaudo se prefilla con el total calculado de los ítems con precio; si ninguno tiene precio, se informa que no se puede calcular.",
+    "La pantalla de éxito azul confirma el cierre de la gestión antes de volver a la lista."
+  ]
+}

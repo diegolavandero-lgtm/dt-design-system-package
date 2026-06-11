@@ -6536,6 +6536,27 @@ function mSignatureStroke(color = 'var(--b6)') {
   return `<svg viewBox="0 0 200 70" style="width:140px;height:50px"><path d="M8,50 C20,10 30,60 42,38 C52,20 60,55 72,40 C88,20 96,58 110,35 C120,18 128,52 140,40 C150,30 160,46 175,22 L172,40 L185,30" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
+/* ── Selector de estado (segmented 3 o 2 opciones) ──
+   options = [{label, icon, tone}], selectedIndex ── */
+function mStatusSelector(options, selectedIndex) {
+  const TONE = {
+    g: ['var(--g1)', 'var(--g5)', 'var(--g7)'],
+    o: ['var(--o1)', 'var(--o5)', 'var(--o7)'],
+    r: ['var(--r1)', 'var(--r6)', 'var(--r6)'],
+  };
+  return `<div style="display:flex;gap:8px">${options.map((opt, i) => {
+    const sel = i === selectedIndex;
+    const t = TONE[opt.tone] || TONE.g;
+    const style = sel
+      ? `background:${t[0]};border:1px solid ${t[1]};color:${t[2]}`
+      : 'background:#fff;border:1px solid var(--n3);color:var(--n6)';
+    return `<div style="flex:1;border-radius:8px;${style};padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px">
+      ${iconSvg(opt.icon, 16, sel ? t[2] : 'var(--n5)')}
+      <span style="font:${sel ? 600 : 400} 12px var(--font-sans)">${escHtml(opt.label)}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6814,6 +6835,134 @@ Object.assign(renderers, {
       ${mComponentCard(c.collectCard.name, 'NEW', collect, c.collectCard.specs)}
       ${mComponentCard(c.groupCard.name, 'NEW', group, c.groupCard.specs)}
       ${mComponentCard(c.serviceUnit.name, 'NEW', serviceUnit, c.serviceUnit.specs)}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Gestión de órdenes ── */
+  mOrderManagement(data) {
+    const c = data.components || {};
+    const wrap = (label, inner, w) => `<div style="width:${w || 300}px">${mLabel(label)}${inner}</div>`;
+    const sheet = (inner) => `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;overflow:hidden">${inner}</div>`;
+    const delivery = [
+      { label: 'No entregado', icon: 'close-filled', tone: 'r' },
+      { label: 'Parcial', icon: 'ban', tone: 'o' },
+      { label: 'Entregado', icon: 'checkmark-filled', tone: 'g' },
+    ];
+    const pickup = [
+      { label: 'No recogida', icon: 'close-filled', tone: 'r' },
+      { label: 'Parcial', icon: 'ban', tone: 'o' },
+      { label: 'Recogida', icon: 'checkmark-filled', tone: 'g' },
+    ];
+
+    /* Status selector */
+    const status = mStage(`
+      ${wrap('Entrega · Entregado', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 2)}</div>`)}
+      ${wrap('Entrega · Parcial', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 1)}</div>`)}
+      ${wrap('Entrega · No entregado', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 0)}</div>`)}
+      ${wrap('Recogida (variante)', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(pickup, 2)}</div>`)}
+    `);
+
+    /* Substatus */
+    const substatus = mStage(wrap('Subestado buscable', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">
+      ${mInput('*Subestado', 'Selecciona un subestado', 'default', '', { rightIcon: 'chevron--down' })}
+      <div style="border:1px solid var(--n3);border-radius:6px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+        <div style="padding:8px 12px;border-bottom:1px solid var(--n2);display:flex;align-items:center;gap:8px">${iconSvg('search', 14, 'var(--n5)')}<span style="font:400 13px var(--font-sans);color:var(--n6)">Buscar subestado</span></div>
+        ${['Sin moradores', 'Producto dañado', 'Producto faltante', 'Dirección errónea'].map(o => `<div style="height:40px;display:flex;align-items:center;padding:0 12px;font:400 14px var(--font-sans);color:var(--n7)">${o}</div>`).join('')}
+      </div>
+    </div>`));
+
+    /* Management accordion */
+    const accordion = sheet(`
+      ${mReqRow({ label: 'Información de entrega', state: 'default' })}
+      <div style="padding:14px 12px;text-align:center;border-bottom:1px solid var(--n2)">
+        <div style="font:400 13px var(--font-sans);color:var(--n5);margin-bottom:8px">Para gestionar confirma que llegaste al punto de entrega</div>
+        ${mBtn('Llegué', 'primary', 'default', 'width:60%')}
+      </div>
+      ${mReqRow({ label: 'Estado', state: 'required' })}
+      ${mReqRow({ label: 'Ítems', sub: '0 de 3 entregado', state: 'default' })}
+      ${mReqRow({ label: 'Pruebas de entrega', sub: '0 de 3 completado', state: 'required' })}
+      ${mReqRow({ label: 'Recaudo', sub: '0 de 150.000', state: 'required' })}
+      <div style="padding:12px;display:flex;gap:10px">${mBtn('Cancelar', 'outline', 'default', 'flex:1')}${mBtn('Confirmar gestión', 'primary', 'default', 'flex:1')}</div>
+    `);
+    const accordionStage = mStage(wrap('Acordeón de gestión', accordion, 320));
+
+    /* Milestones */
+    const milestone = (label, done) => `<div style="padding:14px 12px;border-bottom:1px solid var(--n2)">
+      <div style="display:flex;align-items:center;justify-content:space-between"><span style="font:700 14px var(--font-sans);color:var(--n7)">${label}</span>${done ? iconSvg('checkmark-filled', 18, 'var(--g6)') : badgeHtml('Requerido', 'warning')}</div>
+      ${done
+        ? `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><button style="height:30px;padding:0 12px;border-radius:99px;background:#fff;border:1px solid var(--b6);color:var(--b6);font:600 12px var(--font-sans)">Marcar como no confirmado</button><span style="font:400 12px var(--font-sans);color:var(--n5)">Confirmado a las 09:30</span></div>`
+        : `<button style="height:30px;padding:0 12px;border-radius:99px;background:var(--b6);border:none;color:#fff;font:600 12px var(--font-sans);margin-top:8px">Marcar como confirmado</button>`}
+    </div>`;
+    const milestones = sheet(`
+      ${milestone('Arrival at client', true)}
+      ${milestone('Start download', false)}
+      <div style="padding:12px">${mBanner('Marca el hito en tiempo real, tal como aparece la hora en el registro.', 'warning')}</div>
+    `);
+    const milestonesStage = mStage(wrap('Hitos de operación', milestones, 320));
+
+    /* Bulk management */
+    const addr = 'Martín de Zamora 5760, 7560969, Las Condes';
+    const bulk = sheet(`
+      <div style="padding:10px 12px;background:var(--n1);font:700 13px var(--font-sans);color:var(--n7)">4 órdenes</div>
+      <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+        ${mOrderCard({ num: 1, addr, order: 'Orden #382918390', person: 'Ana Álvarez', items: 3, selected: true, custom: false })}
+        ${mOrderCard({ num: 2, addr, order: 'Orden #382918390', person: 'Ana Álvarez', items: 3, selected: false, custom: false })}
+      </div>
+      <div style="padding:12px;display:flex;gap:10px">${mBtn('Gestionar selección', 'outline', 'default', 'flex:1')}${mBtn('Gestionar todas (4)', 'primary', 'default', 'flex:1')}</div>
+    `);
+    const qrModal = `<div style="background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(19,32,69,.2);padding:20px;width:240px;text-align:center">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font:700 14px var(--font-sans);color:var(--n7)">Entrega código QR</span>${iconSvg('close-filled', 16, 'var(--n5)')}</div>
+      <div style="font:400 12px/1.5 var(--font-sans);color:var(--n5);margin-bottom:14px">Comparte las órdenes gestionadas mediante este código para que sea escaneado.</div>
+      <div style="display:flex;justify-content:center;margin-bottom:14px">${iconSvg('qr', 96, 'var(--n7)')}</div>
+      ${mBtn('Cerrar', 'primary', 'default', 'width:100%')}
+    </div>`;
+    const bulkStage = mStage(`
+      ${wrap('Selección múltiple', bulk, 320)}
+      ${wrap('Comprobante QR', qrModal, 260)}
+    `);
+
+    /* Cash collection */
+    const cash = sheet(`
+      <div style="padding:16px">
+        <div style="background:var(--b1);border-radius:8px;padding:14px;text-align:center;margin-bottom:14px">
+          <div style="font:400 12px var(--font-sans);color:var(--n6)">Total a recaudar</div>
+          <div style="font:700 22px var(--font-sans);color:var(--b7)">$134.500 <span style="font:400 12px var(--font-sans)">CLP</span></div>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font:400 13px var(--font-sans);color:var(--n7)"><span style="width:18px;height:18px;border:1.5px solid var(--n4);border-radius:4px;display:inline-block"></span>Considerar saldo anterior</label>
+        ${mInput('*Medio de transacción', 'Efectivo', 'filled', '', { rightIcon: 'chevron--down' })}
+        <div style="font:500 12px var(--font-sans);color:var(--n6);margin:4px 0 10px">Detalle billetes/monedas recibidos</div>
+        ${['2.000', '5.000', '10.000', '20.000'].map(v => `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font:400 14px var(--font-sans);color:var(--n7)">${v}</span>${mStepper(0)}</div>`).join('')}
+      </div>
+      <div style="padding:12px;display:flex;gap:10px;border-top:1px solid var(--n2)">${mBtn('Cancelar', 'outline', 'default', 'flex:1')}${mBtn('Confirmar', 'primary', 'default', 'flex:1')}</div>
+    `);
+    const confirmAmount = `<div style="background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(19,32,69,.2);padding:20px;width:260px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font:700 15px var(--font-sans);color:var(--n7)">Confirmar monto</span>${iconSvg('close-filled', 16, 'var(--n5)')}</div>
+      <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:8px">El monto recaudado no coincide con los precios de los ítems.</div>
+      <div style="font:700 18px var(--font-sans);color:var(--r6);text-align:center;margin-bottom:16px">$35.000 / $245.000 CLP</div>
+      <div style="display:flex;gap:10px">${mBtn('Finalizar', 'danger', 'default', 'flex:1')}${mBtn('Cancelar', 'outline', 'default', 'flex:1')}</div>
+    </div>`;
+    const cashStage = mStage(`
+      ${wrap('Recaudo (cash on delivery)', cash, 320)}
+      ${wrap('Confirmar monto (discrepancia)', confirmAmount, 280)}
+    `);
+
+    /* Success screen */
+    const success = mPhone(`<div style="background:var(--b6);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:420px;gap:20px">
+      <span style="width:64px;height:64px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center">${iconSvg('checkmark-filled', 40, '#fff')}</span>
+      <div style="font:700 22px var(--font-sans);color:#fff">Gestión finalizada</div>
+    </div>`, { width: 240 });
+    const successStage = mStage(wrap('Pantalla de éxito', success, 240));
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.statusSelector.name, 'NEW', status, c.statusSelector.specs,
+        'El color del estado seleccionado es semántico: verde entregado, amber parcial, rojo no entregado.')}
+      ${mComponentCard(c.substatus.name, 'NEW', substatus, c.substatus.specs)}
+      ${mComponentCard(c.managementAccordion.name, 'NEW', accordionStage, c.managementAccordion.specs)}
+      ${mComponentCard(c.milestones.name, 'NEW', milestonesStage, c.milestones.specs)}
+      ${mComponentCard(c.bulkManagement.name, 'NEW', bulkStage, c.bulkManagement.specs)}
+      ${mComponentCard(c.cashCollection.name, 'NEW', cashStage, c.cashCollection.specs)}
+      ${mComponentCard(c.successScreen.name, 'NEW', successStage, c.successScreen.specs)}
       ${mRules(data.rules)}`;
   },
 
