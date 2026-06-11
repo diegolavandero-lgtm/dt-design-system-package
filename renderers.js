@@ -6675,7 +6675,7 @@ Object.assign(renderers, {
 
     /* Drawer al 75% del viewport + overlay 25% (rgba indigo .45) */
     const drawer = (groups, cta, expanded) => mPhone(`
-      <div style="display:flex;height:560px;background:rgba(19,32,69,.45)">
+      <div style="display:flex;height:640px;background:rgba(19,32,69,.45)">
         <div style="width:76.94%;background:#fff;display:flex;flex-direction:column">
           ${profile(expanded)}
           <div style="flex:1;padding:4px 0;overflow:hidden">${menuBody(groups)}</div>
