@@ -729,8 +729,8 @@ const SANTIAGO = [-33.4489, -70.6693];
 const TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 const TILE_OPTS = {attribution:'© CARTO', subdomains:'abcd', maxZoom:19};
 const DC_LATLNG = [-33.4672, -70.6420];
-/* map pin fill per status — DS palette (#0C47C7 asignado / #8FA0BA sin asignar) + success green */
-const PIN_FILL = {ruta:'#0C47C7', fin:'#00875A'};
+/* DS map pin assets — literal SVG resources from sections/assets/pins/ */
+const PIN_DIR = '../sections/assets/pins/';
 
 let fleetMap = null, driverMarkers = {}, dcMarker = null;
 const layerVisible = {ruta:true, fin:true, dc:true};
@@ -738,40 +738,22 @@ const layerVisible = {ruta:true, fin:true, dc:true};
 /* Map each driver's x/y (0–100) to a latlng across Santiago */
 function gpsToLatLng(g){ return [ -33.405 - (g.y/100)*0.095, -70.725 + (g.x/100)*0.125 ]; }
 
-/* ── DS map pin (pinSVG — copied verbatim from dt-design-system.html #mappins) ── */
-function pinSVG({fill='#0C47C7', selected=false, inner=null, badge=null, size=58}){
-  const h = Math.round(size * 1.3);
-  const gnd = selected
-    ? `<ellipse cx="${size*.46}" cy="${h*.94}" rx="${size*.42}" ry="${size*.09}" fill="#2D2926"/>`
-    : `<ellipse cx="${size*.45}" cy="${h*.92}" rx="${size*.18}" ry="${size*.05}" fill="rgba(0,0,0,.12)" filter="url(#blur${size})"/>`;
-  let innerContent = '';
-  if(inner === 'circle') innerContent = `<circle cx="${size*.455}" cy="${h*.44}" r="${size*.21}" fill="white"/>`;
-  else if(inner === 'x'){ const cx=size*.455, cy=h*.44, s=size*.14; innerContent = `<path d="M${cx-s} ${cy-s} L${cx+s} ${cy+s} M${cx+s} ${cy-s} L${cx-s} ${cy+s}" stroke="white" stroke-width="${size*.04}" stroke-linecap="round"/>`; }
-  else if(inner === 'plus'){ const cx=size*.455, cy=h*.44, s=size*.15; innerContent = `<path d="M${cx} ${cy-s} V${cy+s} M${cx-s} ${cy} H${cx+s}" stroke="white" stroke-width="${size*.04}" stroke-linecap="round"/>`; }
-  const badgePart = badge !== null ? `
-    <circle cx="${size*.83}" cy="${h*.04}" r="${size*.18}" fill="#4B82FA" stroke="white" stroke-width="${size*.04}"/>
-    <text x="${size*.83}" y="${h*.04}" text-anchor="middle" dominant-baseline="central" fill="white" font-family="DM Sans,sans-serif" font-weight="700" font-size="${size*.13}">${badge}</text>` : '';
-  const dpath = `M${size*.455} ${h*.03} C${size*.7} ${h*.03} ${size*.91} ${h*.18} ${size*.91} ${h*.38} C${size*.91} ${h*.54} ${size*.83} ${h*.67} ${size*.73} ${h*.73} C${size*.65} ${h*.79} ${size*.54} ${h*.87} ${size*.515} ${h*.93} C${size*.508} ${h*.94} ${size*.503} ${h*.95} ${size*.455} ${h*.95} C${size*.41} ${h*.95} ${size*.40} ${h*.94} ${size*.395} ${h*.93} C${size*.37} ${h*.87} ${size*.26} ${h*.79} ${size*.18} ${h*.73} C${size*.08} ${h*.67} ${size*.0} ${h*.54} ${size*.0} ${h*.38} C${size*.0} ${h*.18} ${size*.21} ${h*.03} ${size*.455} ${h*.03} Z`;
-  return `<svg width="${size}" height="${h}" viewBox="0 0 ${size} ${h}" overflow="visible">
-    <defs><filter id="blur${size}"><feGaussianBlur stdDeviation="${size*.03}"/></filter>
-    <linearGradient id="grad${fill.replace('#','')}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="white" stop-opacity="1"/><stop offset="1" stop-color="white" stop-opacity=".35"/></linearGradient></defs>
-    ${gnd}
-    <path d="${dpath}" fill="${fill}"/>
-    <path d="${dpath}" fill="none" stroke="url(#grad${fill.replace('#','')})" stroke-width="${size*.03}"/>
-    ${innerContent}${badgePart}</svg>`;
-}
-function makeIcon(opts){
-  const size = opts.selected ? 50 : 40;
-  const h = Math.round(size * 1.3);
-  return L.divIcon({ className:'', html:pinSVG({...opts, size}), iconSize:[size,h], iconAnchor:[size*0.455, h*0.95], popupAnchor:[0,-h*0.9] });
+/* ── DS map pin: use the actual exported SVG assets as Leaflet icons ──
+   Natural sizes: unselected 33×49, selected 33×47 (tip at ~16.5,40.5).
+   Selected variant is scaled up slightly for emphasis (its hard dark
+   shadow already distinguishes it per the DS spec). */
+function pinIcon(base, sel){
+  return sel
+    ? L.icon({iconUrl:`${PIN_DIR}${base}-selected.svg`,   iconSize:[40,57], iconAnchor:[20,49],   popupAnchor:[0,-50]})
+    : L.icon({iconUrl:`${PIN_DIR}${base}-unselected.svg`, iconSize:[33,49], iconAnchor:[16.5,41], popupAnchor:[0,-42]});
 }
 
 function initFleetMap(){
   if(!window.L || fleetMap) return;
   fleetMap = L.map('dme-map-main', {center:SANTIAGO, zoom:12, zoomControl:true, scrollWheelZoom:false});
   L.tileLayer(TILE_URL, TILE_OPTS).addTo(fleetMap);
-  dcMarker = L.marker(DC_LATLNG, {icon:makeIcon({fill:'#8FA0BA'}), zIndexOffset:-100})
-    .bindTooltip('Centro de distribución', {className:'dme-pin-tip', direction:'top', offset:[0,-46]});
+  dcMarker = L.marker(DC_LATLNG, {icon:pinIcon('pin-distribution-center', false), zIndexOffset:-100})
+    .bindTooltip('Centro de distribución', {className:'dme-pin-tip', direction:'top', offset:[0,-44]});
   renderMarkers();
 }
 
@@ -784,11 +766,11 @@ function renderMarkers(){
   const drivers = filteredDrivers().filter(d => d.gps && STATUS[d.status].pin && layerVisible[d.status]);
   drivers.forEach(d => {
     const sel = d.id === selectedId;
-    const icon = makeIcon({ fill:PIN_FILL[d.status]||'#0C47C7', selected:sel, inner: sel?'circle':null, badge: d.done });
+    const icon = pinIcon(STATUS[d.status].pin, sel);
     const mk = L.marker(gpsToLatLng(d.gps), {icon, zIndexOffset: sel?1000:0})
       .addTo(fleetMap)
       .bindTooltip(`${esc(d.name.split(' ').slice(0,2).join(' '))}<span>${d.plate}</span>`,
-                   {className:'dme-pin-tip', direction:'top', offset:[0, sel?-58:-46]})
+                   {className:'dme-pin-tip', direction:'top', offset:[0, sel?-52:-44]})
       .on('click', () => selectDriver(d.id, true));
     if(sel) mk.openTooltip();
     driverMarkers[d.id] = mk;
