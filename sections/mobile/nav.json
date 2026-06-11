@@ -6,7 +6,7 @@
     "drawer": {
       "name": "DTMNavDrawer",
       "specs": [
-        ["Ancho", "75% del viewport (3/4) · el 25% restante es overlay"],
+        ["Ancho", "76.94% del viewport (277/360) · el 23.06% restante es overlay — proporción fija en toda resolución"],
         ["Fondo", "#FFFFFF"],
         ["Overlay", "rgba(19,32,69,.45) sobre el 25% restante; tap cierra el drawer"],
         ["Logo", "sections/assets/logos/lastmile-desktop-color.svg · alto 18px"],
