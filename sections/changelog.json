@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T14:35:09.827Z",
+  "generated": "2026-06-11T15:45:51.937Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "3f8729e",
+          "type": "update",
+          "section": "General",
+          "message": "DES-828: replace custom SVG map with DS Map · Flexible component (Leaflet + CARTO Positron)",
+          "author": "Carlos"
+        },
         {
           "hash": "41fa9e2",
           "type": "update",
