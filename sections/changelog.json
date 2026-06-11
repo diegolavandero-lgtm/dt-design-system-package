@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T19:52:50.433Z",
+  "generated": "2026-06-11T20:01:33.324Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "10b72fb",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMItemCard escaneo — checkbox arriba-derecha + lapiz editar abajo-derecha",
+          "author": "Diego"
+        },
         {
           "hash": "274549a",
           "type": "fix",
