@@ -6483,6 +6483,27 @@ function mRouteHeader(opts = {}) {
     ${opts.meta !== false ? `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 12px 10px">${mMeta('package', '12 órdenes')}${mMeta('package', '200 items')}${mMeta('time', '8:00 – 17:00')}${mMeta('time', '4hrs 19min')}</div>` : ''}`;
 }
 
+/* ── Toast oscuro flotante ── */
+function mToast(text, tone = 'success', close = true) {
+  const C = { success: ['checkmark-filled', 'var(--g4)'], error: ['close-filled', 'var(--r4)'], warning: ['warning', 'var(--o5)'], info: ['help-circle', 'var(--b4)'] };
+  const c = C[tone] || C.success;
+  return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 4px 16px rgba(19,32,69,.24)">
+    ${iconSvg(c[0], 16, c[1])}
+    <span style="flex:1;font:400 12px/1.4 var(--font-sans);color:#fff">${escHtml(text)}</span>
+    ${close ? iconSvg('close-filled', 14, 'var(--n4)') : ''}
+  </div>`;
+}
+
+/* ── Banner inline (warning / info) ── */
+function mBanner(text, tone = 'warning') {
+  const C = { warning: ['var(--o1)', 'var(--o7)', 'warning', 'var(--o5)'], info: ['var(--b1)', 'var(--n7)', 'help-circle', 'var(--b6)'] };
+  const c = C[tone] || C.warning;
+  return `<div style="background:${c[0]};border-radius:6px;padding:12px;display:flex;align-items:flex-start;gap:8px">
+    ${iconSvg(c[2], 16, c[3])}
+    <span style="flex:1;font:400 12px/1.5 var(--font-sans);color:${c[1]}">${escHtml(text)}</span>
+  </div>`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6761,6 +6782,61 @@ Object.assign(renderers, {
       ${mComponentCard(c.collectCard.name, 'NEW', collect, c.collectCard.specs)}
       ${mComponentCard(c.groupCard.name, 'NEW', group, c.groupCard.specs)}
       ${mComponentCard(c.serviceUnit.name, 'NEW', serviceUnit, c.serviceUnit.specs)}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Toasts y banners ── */
+  mToasts(data) {
+    const c = data.components || {};
+    const wrap = (label, inner, w) => `<div style="width:${w || 320}px">${mLabel(label)}${inner}</div>`;
+
+    const toasts = mStage(`
+      ${wrap('Éxito', mToast('Orden agregada a la gestión masiva.', 'success'))}
+      ${wrap('Error', mToast('Código no encontrado dentro de tus órdenes.', 'error'))}
+      ${wrap('Bloqueo (no se puede finalizar)', mToast('No puedes finalizar ruta hasta que se sincronicen todas las órdenes.', 'warning'))}
+    `);
+
+    /* Barra de sincronización */
+    const syncBar = (label, barColor, fill, dark) => `<div style="border-radius:8px;overflow:hidden;${dark ? 'background:var(--n7)' : 'background:#fff;border:1px solid var(--n3)'}">
+      <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;font:600 12px var(--font-sans);color:${dark ? '#fff' : 'var(--n7)'}">
+        <span style="display:flex;align-items:center;gap:6px">${iconSvg(dark ? 'ban' : 'refresh', 14, dark ? '#fff' : barColor)}${label}</span>
+      </div>
+      <div style="height:4px;background:${dark ? 'rgba(255,255,255,.2)' : 'var(--n2)'}"><div style="height:100%;width:${fill};background:${barColor}"></div></div>
+    </div>`;
+    const sync = mStage(`
+      ${wrap('Sin conexión', syncBar('Estás desconectado. Las órdenes se actualizarán al reconectar.', 'var(--n4)', '0%', true))}
+      ${wrap('Conexión intermitente', syncBar('Conexión intermitente · Pendientes 7/10', 'var(--o5)', '30%', false))}
+      ${wrap('En línea', syncBar('Sincronizando órdenes', 'var(--g6)', '75%', false))}
+    `);
+
+    const banners = mStage(`
+      ${wrap('Advertencia (acción requerida)', mBanner('Debes escanear para acceder a los estados Parcial y Entregado. Por defecto solo podrás seleccionar No entregado.', 'warning'))}
+      ${wrap('Info (neutra)', mBanner('Sin items faltantes, entrega completa.', 'info'))}
+    `);
+
+    /* Modal de confirmación */
+    const confirmModal = (title, body, btns) => `<div style="background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(19,32,69,.2);padding:20px;width:300px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div style="font:700 15px var(--font-sans);color:var(--n7)">${title}</div>
+        ${iconSvg('close-filled', 18, 'var(--n5)')}
+      </div>
+      <div style="font:400 14px/1.5 var(--font-sans);color:var(--n5);margin-bottom:18px">${body}</div>
+      <div style="display:flex;gap:10px">${btns}</div>
+    </div>`;
+    const modals = mStage(`
+      <div>${mLabel('Confirmación (VoLTE)')}${confirmModal('Modo VoLTE activado', 'Para que la aplicación funcione correctamente, necesitas desactivar el modo VoLTE en la configuración de tu teléfono.', mBtn('Ahora no', 'outline', 'default', 'flex:1') + mBtn('Ir a ajustes', 'primary', 'default', 'flex:1'))}</div>
+      <div>${mLabel('Destructiva (nombra el item)')}${confirmModal('Eliminar orden', 'Al eliminar la orden, perderás su información y no se podrá recuperar. ¿Estás seguro de querer eliminarla?', mBtn('Cancelar', 'outline', 'default', 'flex:1') + mBtn('Confirmar', 'danger', 'default', 'flex:1'))}</div>
+    `);
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.toast.name, 'NEW', toasts, c.toast.specs,
+        'Confirma acciones puntuales. Éxito en verde, error en rojo; nunca un toast de advertencia para una acción exitosa.')}
+      ${mComponentCard(c.syncBar.name, 'NEW', sync, c.syncBar.specs,
+        'Comunica el estado de conexión y el progreso de sincronización. No se puede finalizar ruta con órdenes sin sincronizar.')}
+      ${mComponentCard(c.warningBanner.name, 'EXTENDED', banners, c.warningBanner.specs)}
+      ${mComponentCard(c.confirmModal.name, 'EXTENDED', modals, c.confirmModal.specs,
+        'Siempre nombra la acción o el item específico. Nunca usa copy genérico como «¿Estás seguro?».')}
       ${mRules(data.rules)}`;
   },
 

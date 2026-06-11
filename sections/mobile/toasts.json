@@ -1,0 +1,60 @@
+{
+  "title": "Toasts y banners",
+  "titleKey": "nav.mobile.toasts",
+  "description": "Mensajería de feedback de la app móvil. Los toasts oscuros confirman acciones puntuales; la barra de sincronización comunica el estado de conexión; los banners inline (amarillo y azul) entregan contexto persistente dentro de un formulario; el modal de confirmación protege acciones sensibles.",
+  "components": {
+    "toast": {
+      "name": "DTMToast",
+      "specs": [
+        ["Fondo", "#39414D (var(--n7)) · texto #fff · radio 8px"],
+        ["Posición", "flotante inferior, sobre los CTAs, con margen 16dp"],
+        ["Icono", "16px a la izquierda — success var(--g4) · error var(--r4) · warning var(--o5)"],
+        ["Cerrar", "close 14px var(--n4) a la derecha (opcional)"],
+        ["Texto", "small 400 12px / 1.4"],
+        ["Duración", "3–4s auto-dismiss (los de error pueden requerir cierre manual)"]
+      ]
+    },
+    "syncBar": {
+      "name": "DTMSyncBar",
+      "specs": [
+        ["Sin conexión", "snackbar oscuro + barra de progreso gris · «Estás desconectado. Las órdenes se actualizarán cuando el dispositivo se vuelva a conectar.»"],
+        ["Intermitente / lenta", "barra amber var(--o5) · «Conexión intermitente · Pendientes 7/10»"],
+        ["En línea", "barra verde var(--g6) · progreso completándose"],
+        ["Comportamiento", "etiquetas por orden: Sin sincronizar → Sincronizando → desaparece"]
+      ]
+    },
+    "warningBanner": {
+      "name": "DTMWarningBanner",
+      "specs": [
+        ["Fondo", "var(--o1) · texto var(--o7) · icono warning 16px var(--o5)"],
+        ["Radio", "6px · padding 12dp"],
+        ["Uso", "advertencia accionable dentro de un formulario (ej. «Debes escanear para acceder a los estados…»)"],
+        ["Regla", "ámbar solo para acción requerida o riesgo, nunca para info neutra"]
+      ]
+    },
+    "infoBanner": {
+      "name": "DTMInfoBanner",
+      "specs": [
+        ["Fondo", "var(--b1) · texto var(--n7) · icono help-circle 16px var(--b6)"],
+        ["Uso", "información neutra del sistema (ej. «Sin items faltantes, entrega completa.»)"],
+        ["Radio", "6px · padding 12dp"]
+      ]
+    },
+    "confirmModal": {
+      "name": "DTMConfirmModal",
+      "specs": [
+        ["Fondo", "#fff · radio 12px · overlay rgba(19,32,69,.45)"],
+        ["Título", "subheading 700 15px — nombra la acción o el item específico"],
+        ["Cuerpo", "body 400 14px var(--n5) — explica la consecuencia"],
+        ["Cerrar", "close 18px arriba a la derecha"],
+        ["Acciones", "par de botones; afirmativa a la derecha (danger si destructiva)"]
+      ]
+    }
+  },
+  "rules": [
+    "Éxito siempre en verde, error en rojo; nunca un toast de advertencia para una acción exitosa.",
+    "No se puede finalizar la ruta hasta que todas las órdenes estén sincronizadas — se comunica con toast oscuro.",
+    "El modal de confirmación nombra el item específico; nunca usa copy genérico como «¿Estás seguro?».",
+    "El banner azul es para información pasiva; el amarillo, para acción requerida ahora."
+  ]
+}
