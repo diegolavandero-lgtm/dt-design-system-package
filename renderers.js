@@ -125,6 +125,10 @@ const ICON_PATHS = {
   'refresh':           '<path d="M12 10H6.78A11 11 0 0 1 27 16h2A13 13 0 0 0 6 6.68V2H4v8h8zM20 22h5.22A11 11 0 0 1 5 16H3a13 13 0 0 0 23 9.32V30h2v-8H20z"/>',
   'warning':           '<path d="M16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z"/><path d="M15 12H17V21H15z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/>',
   'arrow-right':       '<path d="M18 6L16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.607 18 26 28 16 18 6z"/>',
+  'arrow-left':        '<path d="M14 26l1.41-1.41L7.83 17H28V15H7.83l7.58-7.59L14 6 4 16l10 10z"/>',
+  'camera':            '<path d="M16,11a5,5,0,1,0,5,5A5,5,0,0,0,16,11Zm0,8a3,3,0,1,1,3-3A3,3,0,0,1,16,19Z"/><path d="M28,7H22.39L20.79,4.21A2,2,0,0,0,19.06,3H12.94a2,2,0,0,0-1.73,1.21L9.61,7H4a2,2,0,0,0-2,2V25a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V9A2,2,0,0,0,28,7Zm0,18H4V9h6.76l1.6-3h7.28l1.6,3H28Z"/>',
+  'pen':               '<path d="M27.87,7.86,23.14,3.13a1,1,0,0,0-1.41,0L4.15,20.71a1,1,0,0,0-.29.71V26a1,1,0,0,0,1,1h4.59a1,1,0,0,0,.7-.29L27.87,9.27A1,1,0,0,0,27.87,7.86ZM9,25H6V22l11-11,3,3ZM21,12.59,18,9.59l4.43-4.43,3,3Z"/>',
+  'qr':                '<path d="M2 2h12v12H2zm2 2v8h8V4zm2 2h4v4H6zM18 2h12v12H18zm2 2v8h8V4zm2 2h4v4h-4zM2 18h12v12H2zm2 2v8h8v-8zm2 2h4v4H6zM18 18h4v4h-4zM26 18h4v4h-4zM22 22h4v4h-4zM18 26h4v4h-4zM26 26h4v4h-4z"/>',
   // PlannerPro icons
   'planner-route':     '<path d="M28.78,8.22,23.56,3,22.14,4.41,25.73,8H4v2H25.73l-3.59,3.59,1.42,1.41,5.22-5.22A1,1,0,0,0,28.78,8.22Z"/><path d="M6.27,22H28V20H6.27l3.59-3.59L8.44,15,3.22,20.22a1,1,0,0,0,0,1.36L8.44,27l1.41-1.41Z"/>',
   'time':              '<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/><polygon points="17 8 15 8 15 17 23 17 23 15 17 15 17 8"/>',
@@ -6434,6 +6438,51 @@ function mSyncLabel(state) {
   return `<span style="display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:4px;background:var(--n2);color:var(--n5);font:600 11px var(--font-sans)">${iconSvg('ban', 12, 'var(--n5)')}Sin sincronizar</span>`;
 }
 
+/* ── Fondo de mapa simulado (reutilizado en sheets y maps) ── */
+function mMapBg(h = 160) {
+  return `<div style="height:${h}px;background:
+    repeating-linear-gradient(0deg,#E8EAED 0 1px,transparent 1px 28px),
+    repeating-linear-gradient(90deg,#E8EAED 0 1px,transparent 1px 28px),
+    linear-gradient(135deg,#EDEFF2,#E3E6EB);position:relative;overflow:hidden">
+    <div style="position:absolute;top:30%;left:-5%;width:60%;height:5px;background:var(--b5);border-radius:3px;transform:rotate(18deg)"></div>
+    <div style="position:absolute;top:55%;left:25%;width:55%;height:5px;background:var(--b5);border-radius:3px;transform:rotate(-12deg)"></div>
+    <div style="position:absolute;top:40%;left:35%;width:30%;height:5px;background:var(--o5);border-radius:3px;transform:rotate(40deg)"></div>
+  </div>`;
+}
+
+/* ── Pin de mapa en forma de gota (numerado / estado) ── */
+function mMapPin(label, opts = {}) {
+  const bg = opts.bg || 'var(--b6)';
+  const sel = opts.selected;
+  const size = sel ? 34 : 26;
+  return `<span style="position:relative;display:inline-flex;flex-direction:column;align-items:center">
+    <span style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${bg};border:2px solid #fff;box-shadow:0 1px 3px rgba(19,32,69,.3);display:flex;align-items:center;justify-content:center">
+      <span style="transform:rotate(45deg);color:#fff;font:700 ${sel ? 13 : 11}px var(--font-sans);display:flex;align-items:center;justify-content:center">${opts.icon ? iconSvg(opts.icon, 14, '#fff') : label}</span>
+    </span>
+  </span>`;
+}
+
+/* ── Toggle switch ── */
+function mToggle(on) {
+  return `<span style="width:36px;height:20px;border-radius:99px;background:${on ? 'var(--b6)' : 'var(--n4)'};position:relative;display:inline-block;flex-shrink:0">
+    <span style="position:absolute;top:2px;${on ? 'right:2px' : 'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff"></span>
+  </span>`;
+}
+
+/* ── Header de ruta del bottom sheet ── */
+function mRouteHeader(opts = {}) {
+  const handle = `<div style="display:flex;justify-content:center;padding:8px 0 4px"><span style="width:36px;height:4px;border-radius:99px;background:var(--n3)"></span></div>`;
+  const lead = opts.back
+    ? iconSvg('arrow-left', 20, 'var(--n7)')
+    : `<div><div style="font:400 11px var(--font-sans);color:var(--n5)">Ruta</div><div style="font:700 14px var(--font-sans);color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px">${escHtml(opts.title || '332131491204912')}</div></div>`;
+  return `${handle}
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0 12px 8px;gap:8px">
+      <div style="flex:1;min-width:0;display:flex;align-items:center;gap:10px">${opts.back ? lead + `<span style="font:700 14px var(--font-sans);color:var(--n7)">${escHtml(opts.title || '')}</span>` : lead}</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">${iconSvg('search', 20, 'var(--n6)')}${iconSvg('overflow-menu-vertical', 20, 'var(--n6)')}</div>
+    </div>
+    ${opts.meta !== false ? `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 12px 10px">${mMeta('package', '12 órdenes')}${mMeta('package', '200 items')}${mMeta('time', '8:00 – 17:00')}${mMeta('time', '4hrs 19min')}</div>` : ''}`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6712,6 +6761,89 @@ Object.assign(renderers, {
       ${mComponentCard(c.collectCard.name, 'NEW', collect, c.collectCard.specs)}
       ${mComponentCard(c.groupCard.name, 'NEW', group, c.groupCard.specs)}
       ${mComponentCard(c.serviceUnit.name, 'NEW', serviceUnit, c.serviceUnit.specs)}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Bottom sheets ── */
+  mBottomSheets(data) {
+    const c = data.components || {};
+    const addr = 'Martín de Zamora 5760, 7560969, Las Condes, Región Metropolitana';
+    const wrap = (label, inner) => `<div style="width:300px">${mLabel(label)}${inner}</div>`;
+
+    /* Teléfono con mapa de fondo + sheet a una altura dada */
+    const phoneSheet = (sheetInner, mapH) => mPhone(`
+      <div style="position:relative">
+        ${mMapBg(mapH)}
+        <div style="position:relative;margin-top:-16px;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.10)">${sheetInner}</div>
+      </div>`, { width: 300 });
+
+    const collapsed = phoneSheet(mRouteHeader({ title: '332131491204912' }), 360);
+
+    const mid = phoneSheet(`${mRouteHeader({ title: '332131491204912' })}
+      ${mChipRow([mChip('Group A', { selected: true }), mChip('Grupo B'), mChip('Grupo C')].join(''))}
+      <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px">
+        ${mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 })}
+      </div>`, 150);
+
+    const full = mPhone(`${mRouteHeader({ title: '332131491204912' })}
+      ${mRouteTabs(0, 12, 0)}
+      ${mChipRow([mChip('Group A'), mChip('Grupo B'), mChip('Grupo C'), mChip('Grupo D')].join(''))}
+      <div style="padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--n1)">
+        ${mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 })}
+        ${mOrderCard({ num: 2, addr: 'Av. Las Condes 8977 Casa A, Las Condes', order: 'Orden #3829183901840564', person: 'Ana López', time: '9:00 – 9:30', items: 1 })}
+      </div>`, { width: 300 });
+
+    const heights = mStage(`
+      ${wrap('Colapsado', collapsed)}
+      ${wrap('Media (default)', mid)}
+      ${wrap('Completa', full)}
+    `);
+
+    /* Header solo */
+    const headerOnly = mStage(`
+      ${wrap('Header de ruta', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;overflow:hidden">${mRouteHeader({ title: 'Sector oriente 2040 mañana' })}</div>`)}
+      ${wrap('Header en detalle de orden (back)', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;overflow:hidden">${mRouteHeader({ back: true, title: 'Martín de Zamora 5760, Las Condes', meta: false })}</div>`)}
+    `);
+
+    /* Menú de acciones */
+    const menuItem = (icon, label) => `<div style="height:44px;display:flex;align-items:center;gap:12px;padding:0 14px;font:400 14px var(--font-sans);color:var(--n7)">${iconSvg(icon, 18, 'var(--n6)')}${label}</div>`;
+    const menuToggle = (label, on) => `<div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font:400 14px var(--font-sans);color:var(--n7)"><span style="display:flex;align-items:center;gap:12px">${iconSvg('route', 18, 'var(--n6)')}${label}</span>${mToggle(on)}</div>`;
+    const menuCard = `<div style="background:#fff;border:1px solid var(--n3);border-radius:10px;box-shadow:0 4px 16px rgba(19,32,69,.14);overflow:hidden;width:240px">
+      ${menuItem('refresh', 'Actualizar')}
+      ${menuItem('planner-route', 'Optimizar ruta')}
+      ${menuItem('group', 'Gestión masiva')}
+      ${menuItem('phone', 'Llamada de emergencia')}
+      ${menuItem('message', 'Mensaje de emergencia')}
+      <div style="border-top:1px solid var(--n2)"></div>
+      ${menuToggle('Línea del mapa', true)}
+      ${menuToggle('Dígitos del mapa', true)}
+    </div>`;
+    const menu = mStage(`<div>${mLabel('Menú contextual (versión mapa)')}${menuCard}</div>`);
+
+    /* Modal cambios sin guardar */
+    const modal = (title, body, btns) => `<div style="background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(19,32,69,.2);padding:20px;width:280px">
+      <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:6px">${title}</div>
+      <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:16px">${body}</div>
+      <div style="display:flex;gap:10px">${btns}</div>
+    </div>`;
+    const modals = mStage(`
+      <div>${mLabel('Variante salir')}${modal('Cambios sin guardar', '¿Estás seguro de cerrar la gestión y perder los cambios?', mBtn('Cancelar', 'outline', 'default', 'flex:1') + mBtn('Salir', 'danger', 'default', 'flex:1'))}</div>
+      <div>${mLabel('Variante seguir')}${modal('Cambios sin guardar', '¿Estás seguro de cerrar la gestión y perder los cambios?', mBtn('Confirmar', 'outline', 'default', 'flex:1') + mBtn('Seguir gestionando', 'primary', 'default', 'flex:1'))}</div>
+    `);
+
+    const navRules = `<div class="card" style="margin-bottom:20px">
+      <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 10px">Reglas de navegación</h3>
+      <ul style="margin:0;padding-left:18px">${(data.navigationRules || []).map(r => `<li style="font:400 13px/1.7 var(--font-sans);color:var(--n6);margin-bottom:4px">${escHtml(r)}</li>`).join('')}</ul>
+    </div>`;
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.sheet.name, 'NEW', heights, c.sheet.specs,
+        'Tres alturas con snap: colapsada (máximo mapa), media (default) y completa (lista con scroll).')}
+      ${mComponentCard(c.routeHeader.name, 'NEW', headerOnly, c.routeHeader.specs)}
+      ${mComponentCard(c.actionMenu.name, 'NEW', menu, c.actionMenu.specs)}
+      ${mComponentCard(c.unsavedModal.name, 'NEW', modals, c.unsavedModal.specs)}
+      ${navRules}
       ${mRules(data.rules)}`;
   },
 

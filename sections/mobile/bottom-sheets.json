@@ -1,0 +1,59 @@
+{
+  "title": "Bottom sheets",
+  "titleKey": "nav.mobile.bottomSheets",
+  "description": "La hoja inferior es el contenedor principal de la operación en ruta: muestra la lista de órdenes sobre el mapa y se arrastra entre tres alturas. Incluye el header de ruta, el menú contextual de acciones y las reglas de navegación entre vistas.",
+  "components": {
+    "sheet": {
+      "name": "DTMBottomSheet",
+      "specs": [
+        ["Fondo", "#FFFFFF · radio superior 16px · sombra 0 -2px 12px rgba(19,32,69,.10)"],
+        ["Handle", "barra 36×4dp, var(--n3), centrada, margen 8dp"],
+        ["Altura colapsada", "~96dp — solo header + metadata, máximo de mapa visible"],
+        ["Altura media (default)", "~50% del viewport — header + lista parcial"],
+        ["Altura completa", "~92% — lista completa, mapa apenas visible"],
+        ["Gesto", "swipe up/down alterna entre las tres alturas con snap"],
+        ["Scroll", "el contenido interno hace scroll una vez en altura completa"]
+      ]
+    },
+    "routeHeader": {
+      "name": "DTMRouteHeader",
+      "specs": [
+        ["Eyebrow", "«Ruta» small 400 11px var(--n5)"],
+        ["Título", "ID o nombre de ruta — body-bold 700 14px var(--n7), trunca con ellipsis"],
+        ["Acciones", "search 20px + overflow-menu-vertical 20px (kebab) a la derecha"],
+        ["Metadata", "N órdenes · N items · horario · duración — small con iconos 14px"],
+        ["Back", "en detalle de orden, flecha atrás reemplaza el eyebrow"]
+      ]
+    },
+    "actionMenu": {
+      "name": "DTMSheetActionMenu",
+      "specs": [
+        ["Origen", "kebab del header o FAB del mapa"],
+        ["Ítems", "Actualizar · Optimizar ruta · Gestión masiva · Llamada de emergencia · Mensaje de emergencia"],
+        ["Toggles", "Línea del mapa · Dígitos del mapa (switches al pie)"],
+        ["Ítem", "alto 44dp · icono 18px var(--n6) · label body 400 14px var(--n7)"],
+        ["Variación lista vs mapa", "la lista omite los toggles de mapa"]
+      ]
+    },
+    "unsavedModal": {
+      "name": "DTMUnsavedChangesModal",
+      "specs": [
+        ["Título", "«Cambios sin guardar» — subheading 700 15px"],
+        ["Cuerpo", "«¿Estás seguro de cerrar la gestión y perder los cambios?»"],
+        ["Variante salir", "Cancelar (outline) + Salir (danger)"],
+        ["Variante seguir", "Confirmar (outline) + Seguir gestionando (primario)"]
+      ]
+    }
+  },
+  "navigationRules": [
+    "Swipe up/down alterna entre las tres alturas; un tap en un pin del mapa abre la card de esa orden.",
+    "Al iniciar la gestión de una orden, el sheet pasa a pantalla completa y la única salida es el botón Cancelar.",
+    "Si el usuario hace swipe up sin cambios, entra a vista completa sin modal; si hubo cambios, se muestra el modal de cambios sin guardar.",
+    "El menú contextual del mapa incluye dos toggles extra (Línea del mapa, Dígitos del mapa) que la versión en lista no muestra."
+  ],
+  "rules": [
+    "La altura media es el estado por defecto al entrar a la ruta.",
+    "El header de ruta es persistente: nunca hace scroll con el contenido de la lista.",
+    "El handle siempre está presente como afordancia de arrastre, incluso en altura completa."
+  ]
+}
