@@ -28,6 +28,9 @@
     "tabs.mobile":  { "es": "App móvil", "en": "Mobile app" },
     "nav.mobile":   { "es": "App móvil — Drivers", "en": "Mobile app — Drivers" },
     "nav.mobile.overview": { "es": "Introducción", "en": "Overview" },
+    "nav.mobile.components": { "es": "Componentes móviles", "en": "Mobile components" },
+    "nav.mobile.topbar": { "es": "Top app bar", "en": "Top app bar" },
+    "section.mobile.topbar.desc": { "es": "Barra superior de la app móvil de conductores. Contiene el acceso al menú lateral, el logo del producto y la acción de sincronización. Bajo la barra pueden anclarse el navegador de fecha y el selector de punto de retiro.", "en": "Top bar of the drivers mobile app. It holds the side menu trigger, the product logo and the sync action. The date navigator and pickup point selector can be anchored below it." },
     "section.mobile.overview.desc": { "es": "Design system de la app móvil de conductores DispatchTrack (iOS y Android). Reutiliza los tokens del DS de escritorio — colores, tipografía DM Sans, radios y sombras — y define los componentes nativos propios de la app: navegación, gestión de órdenes, pruebas de entrega, mapas y recaudo.", "en": "Design system for the DispatchTrack drivers mobile app (iOS and Android). It reuses the desktop DS tokens — colors, DM Sans typography, radii and shadows — and defines the app's native components: navigation, order management, proof of delivery, maps and cash collection." },
 
     /* ── Changelog ── */

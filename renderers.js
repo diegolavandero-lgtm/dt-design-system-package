@@ -91,6 +91,11 @@ const ICON_PATHS = {
   'bell':          '<path d="M28.7071,19.293,26,16.5859V13a10.0136,10.0136,0,0,0-9-9.9492V1H15V3.0508A10.0136,10.0136,0,0,0,6,13v3.5859L3.2929,19.293A1,1,0,0,0,3,20v3a1,1,0,0,0,1,1h7v.7768a5.152,5.152,0,0,0,4.5,5.1987A5.0057,5.0057,0,0,0,21,25V24h7a1,1,0,0,0,1-1V20A1,1,0,0,0,28.7071,19.293ZM19,25a3,3,0,0,1-6,0V24h6Zm8-3H5V20.4141L7.707,17.707A1,1,0,0,0,8,17V13a8,8,0,0,1,16,0v4a1,1,0,0,0,.293.707L27,20.4141Z"/>',
   'overflow-menu-vertical': '<circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/>',
   'chevron--down':  '<path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/>',
+  'chevron--left':  '<path d="M10,16,20,6l1.4,1.4L12.8,16l8.6,8.6L20,26Z"/>',
+  'chevron--right': '<path d="M22,16,12,26l-1.4-1.4,8.6-8.6L10.6,7.4,12,6Z"/>',
+  'menu':           '<rect x="4" y="6" width="24" height="2"/><rect x="4" y="12" width="24" height="2"/><rect x="4" y="18" width="24" height="2"/><rect x="4" y="24" width="24" height="2"/>',
+  'phone':          '<path d="M26,29h-.17C6.18,27.87,3.39,11.29,3,6.23A3,3,0,0,1,5.76,3h5.51a2,2,0,0,1,1.86,1.26L14.65,8a2,2,0,0,1-.44,2.16l-2.13,2.15a9.37,9.37,0,0,0,7.58,7.6l2.17-2.15A2,2,0,0,1,24,17.35l3.77,1.51A2,2,0,0,1,29,20.72V26A3,3,0,0,1,26,29ZM6,5A1,1,0,0,0,5,6c.46,5.92,3.41,19.92,20.92,20.92A1,1,0,0,0,27,26V20.72l-3.77-1.51-2.87,2.85L19.88,22A11.36,11.36,0,0,1,10,12.12l-.06-.48,2.84-2.87L11.28,5Z"/>',
+  'add':            '<path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/>',
   'filter--add':    '<polygon points="29.7,18.7 29.7,16.7 23.2,16.7 23.2,10.2 21.2,10.2 21.2,16.7 14.8,16.7 14.8,18.7 21.2,18.7 21.2,25.2 23.2,25.2 23.2,18.7"/><path d="M4,4C2.9,4,2,4.9,2,6v3.2c0,0.5,0.2,1,0.6,1.4L10,18v8c0,1.1,0.9,2,2,2h4c1.1,0,2-0.9,2-2v-2h-2v2h-4v-8.8l-0.6-0.6L4,9.2V6h20v2h2V6c0-1.1-0.9-2-2-2H4z"/>',
   'filter--remove': '<path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="29 15 27.586 13.586 25 16.172 22.414 13.586 21 15 23.586 17.586 21 20.172 22.414 21.586 25 19 27.586 21.586 29 20.172 26.414 17.586 29 15"/>',
   'filter--reset': '<path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="22,12 17,16 22,20 22,18 27,18 27,14 22,14"/>',
@@ -6252,6 +6257,44 @@ function mComponentCard(name, tag, previewHtml, specRows, notes) {
   </div>`;
 }
 
+/* ── Piezas móviles reutilizables entre previews ── */
+function mIconBtn(icon, size = 20, color = 'var(--n7)') {
+  return `<button style="width:48px;height:48px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">${iconSvg(icon, size, color)}</button>`;
+}
+
+function mTopAppBar() {
+  return `<div style="height:56px;background:#fff;border-bottom:1px solid var(--n3);display:flex;align-items:center;padding:0 4px;flex-shrink:0">
+    ${mIconBtn('menu')}
+    <div style="flex:1;display:flex;justify-content:center;min-width:0"><img src="sections/assets/logos/lastmile-mobile-color.svg" height="20" alt="LastMile"></div>
+    ${mIconBtn('refresh')}
+  </div>`;
+}
+
+function mDateNav(label) {
+  const chev = (ic) => `<button style="width:24px;height:24px;border:none;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(19,32,69,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">${iconSvg(ic, 14, 'var(--n6)')}</button>`;
+  return `<div style="margin:12px;height:32px;background:var(--n2);border-radius:99px;display:flex;align-items:center;justify-content:space-between;padding:0 4px">
+    ${chev('chevron--left')}
+    <span style="font:500 12px var(--font-sans);color:var(--n7)">${escHtml(label)}</span>
+    ${chev('chevron--right')}
+  </div>`;
+}
+
+function mPickupSelect(label) {
+  return `<div style="margin:12px 12px 0;height:40px;background:#fff;border:1px solid var(--n3);border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer">
+    <span style="font:400 14px var(--font-sans);color:var(--n6)">${escHtml(label)}</span>
+    ${iconSvg('chevron--down', 16, 'var(--n5)')}
+  </div>`;
+}
+
+/* Lista de reglas (viñetas) para secciones móviles */
+function mRules(rules) {
+  if (!rules || !rules.length) return '';
+  return `<div class="card" style="margin-bottom:20px">
+    <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 10px">Reglas de uso</h3>
+    <ul style="margin:0;padding-left:18px">${rules.map(r => `<li style="font:400 13px/1.7 var(--font-sans);color:var(--n6);margin-bottom:4px">${escHtml(r)}</li>`).join('')}</ul>
+  </div>`;
+}
+
 Object.assign(renderers, {
 
   /* ── App móvil · Introducción ── */
@@ -6293,6 +6336,28 @@ Object.assign(renderers, {
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">${platforms}</div>
       ${mLabel('Secciones del DS móvil')}
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:24px">${sections}</div>`;
+  },
+
+  /* ── App móvil · Top app bar ── */
+  mTopbar(data) {
+    const c = data.components || {};
+    const phoneBody = (extra) => mPhone(`${mTopAppBar()}${extra || ''}<div style="height:120px"></div>`, { width: 300 });
+
+    const variants = mStage(`
+      <div>${mLabel('Base')}${phoneBody('')}</div>
+      <div>${mLabel('Con navegador de fecha')}${phoneBody(mDateNav('Rutas de hoy 01-01-24'))}</div>
+      <div>${mLabel('Con punto de retiro')}${phoneBody(mPickupSelect('Selecciona tu punto de retiro') + mDateNav('Rutas de hoy 01-01-24'))}</div>
+    `);
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.appBar.name, 'NEW', variants, c.appBar.specs,
+        'El app bar vive solo en el Home de rutas y pantallas de primer nivel. Dentro de una ruta, el header del bottom sheet toma su lugar.')}
+      ${mComponentCard(c.dateNav.name, 'NEW', mStage(`<div style="width:300px;background:var(--n1)">${mDateNav('Rutas de hoy 01-01-24')}</div>`), c.dateNav.specs,
+        'Navega entre días de operación. El label siempre indica el contexto: «Rutas de hoy» + fecha corta.')}
+      ${mComponentCard(c.pickupSelect.name, 'EXTENDED', mStage(`<div style="width:300px;background:var(--n1);padding-bottom:12px">${mPickupSelect('Selecciona tu punto de retiro')}</div>`), c.pickupSelect.specs,
+        'Variante móvil del dropdown del DS (dt-drop-wrap). Aparece solo en cuentas con múltiples puntos de retiro.')}
+      ${mRules(data.rules)}`;
   },
 
 });

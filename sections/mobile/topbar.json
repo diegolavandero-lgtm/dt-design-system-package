@@ -1,0 +1,47 @@
+{
+  "title": "Top app bar",
+  "titleKey": "nav.mobile.topbar",
+  "description": "Barra superior de la app móvil de conductores. Contiene el acceso al menú lateral, el logo del producto y la acción de sincronización. Bajo la barra pueden anclarse el navegador de fecha y el selector de punto de retiro.",
+  "components": {
+    "appBar": {
+      "name": "DTMTopAppBar",
+      "specs": [
+        ["Alto", "56dp (Android) / 56pt (iOS)"],
+        ["Fondo", "#FFFFFF"],
+        ["Borde inferior", "1px solid var(--n3) #E1E6ED"],
+        ["Icono izquierdo", "menu (IBM Carbon) 20px, color var(--n7)"],
+        ["Logo", "sections/assets/logos/lastmile-mobile-color.svg · alto 20px, centrado"],
+        ["Icono derecho", "refresh (IBM Carbon) 20px, color var(--n7)"],
+        ["Target táctil de iconos", "48×48dp mínimo"],
+        ["Elevación", "0 — separación solo por borde"]
+      ]
+    },
+    "dateNav": {
+      "name": "DTMDateNavigator",
+      "specs": [
+        ["Alto", "32dp"],
+        ["Fondo", "var(--n2) #F0F2F5, border-radius 99px"],
+        ["Label", "small-medium · 500 12px DM Sans · var(--n7)"],
+        ["Chevrons", "botones circulares 24×24, fondo #fff, sombra 0 1px 2px rgba(19,32,69,.12)"],
+        ["Iconos", "chevron--left / chevron--right (IBM Carbon) 14px"],
+        ["Margen", "12px horizontal bajo el app bar"]
+      ]
+    },
+    "pickupSelect": {
+      "name": "DTMPickupSelector",
+      "specs": [
+        ["Alto", "40dp"],
+        ["Fondo", "#fff, border 1px solid var(--n3), border-radius 6px"],
+        ["Placeholder", "body · 400 14px DM Sans · var(--n6)"],
+        ["Icono", "chevron--down (IBM Carbon) 16px var(--n5)"],
+        ["Posición", "sobre el navegador de fecha, margen 12px"]
+      ]
+    }
+  },
+  "rules": [
+    "El logo siempre es el asset oficial del producto (lastmile-mobile-color.svg). Nunca texto plano ni logos recreados.",
+    "El icono de sincronización rota mientras hay datos pendientes de sincronizar (ver Toasts y banners → barra de sincronización).",
+    "El app bar nunca incluye más de dos iconos de acción. Acciones adicionales viven en el menú lateral.",
+    "En pantallas internas (bottom sheet de ruta, gestión de orden) el app bar se reemplaza por el header del sheet — no se duplican barras."
+  ]
+}
