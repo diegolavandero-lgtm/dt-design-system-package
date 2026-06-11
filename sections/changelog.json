@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T18:59:34.417Z",
+  "generated": "2026-06-11T19:02:15.131Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "49aff6c",
+          "type": "update",
+          "section": "Modal",
+          "message": "feat(mobile-ds): seccion Mapa (DTMMapPin, DTMRouteLine, DTMMapFABs, DTMNavWidget, DTMGeorefModal)",
+          "author": "Diego"
+        },
         {
           "hash": "9060ac1",
           "type": "update",
