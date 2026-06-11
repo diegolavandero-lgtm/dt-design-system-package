@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T18:42:29.127Z",
+  "generated": "2026-06-11T18:45:43.248Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "6c85bfb",
+          "type": "update",
+          "section": "General",
+          "message": "feat(mobile-ds): seccion Cards (DTMOrderCard, DTMRouteCard, DTMItemCard, DTMCollectCard, DTMGroupCard, DTMServiceUnitCard)",
+          "author": "Diego"
+        },
         {
           "hash": "b5b6e4c",
           "type": "update",
