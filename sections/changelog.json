@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T20:21:08.022Z",
+  "generated": "2026-06-11T20:33:56.917Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "a394cdd",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMOrderCard — campo personalizado pill gris, orden caption-semibold, pin actual vs otras",
+          "author": "Diego"
+        },
         {
           "hash": "f47505d",
           "type": "fix",
