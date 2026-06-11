@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T21:33:11.819Z",
+  "generated": "2026-06-11T21:46:20.801Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "f239abe",
+          "type": "update",
+          "section": "General",
+          "message": "DES-828: fleet summary strip, rich driver detail (KPIs + stop timeline), route trace on map",
+          "author": "Carlos"
+        },
         {
           "hash": "980515f",
           "type": "update",
