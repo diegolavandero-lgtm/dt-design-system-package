@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T18:45:43.248Z",
+  "generated": "2026-06-11T18:48:18.208Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "591e512",
+          "type": "update",
+          "section": "General",
+          "message": "feat(mobile-ds): seccion Listas y filtros (DTMRouteTabs, DTMGroupChips, DTMStatusFilterChips, DTMListDivider, DTMSyncLabel, DTMEmptyState)",
+          "author": "Diego"
+        },
         {
           "hash": "6c85bfb",
           "type": "update",
