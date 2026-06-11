@@ -762,6 +762,13 @@ function findRoute(id) {
   return null;
 }
 
+/* Resuelve una ruta relativa a URL absoluta para fetch.
+   Evita "Failed to parse URL" en entornos que no auto-resuelven rutas relativas. */
+function dsUrl(p) {
+  try { return new URL(p, document.baseURI).href; }
+  catch (e) { return p; }
+}
+
 async function navigate(id) {
   history.replaceState(null, '', '#' + id);
 
@@ -792,7 +799,7 @@ async function navigate(id) {
 
   try {
     if (!cache[id]) {
-      const res = await fetch(route.path);
+      const res = await fetch(dsUrl(route.path));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       cache[id] = await res.json();
     }
@@ -1001,7 +1008,7 @@ async function preIndexAllSections() {
       if (_indexedSections.has(item.id) || !item.path || !item.renderer) continue;
       try {
         if (!cache[item.id]) {
-          const res = await fetch(item.path);
+          const res = await fetch(dsUrl(item.path));
           if (!res.ok) continue;
           cache[item.id] = await res.json();
         }
@@ -2038,7 +2045,7 @@ async function initOverviewDashboard() {
   const el = document.getElementById('dash-activity');
   if (!el) return;
   try {
-    const res = await fetch('sections/changelog.json');
+    const res = await fetch(dsUrl('sections/changelog.json'));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
