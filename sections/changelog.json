@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T20:01:33.324Z",
+  "generated": "2026-06-11T20:21:08.022Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "f47505d",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMStatusSelector segmented conectado 64px texto en linea + DTMSuccessScreen 360x640",
+          "author": "Diego"
+        },
         {
           "hash": "10b72fb",
           "type": "fix",
