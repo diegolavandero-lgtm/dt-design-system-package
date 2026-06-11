@@ -1,0 +1,72 @@
+{
+  "title": "Pruebas de entrega",
+  "titleKey": "nav.mobile.pod",
+  "description": "Componentes para capturar evidencia de entrega y recepción: filas de requisito con estado, captura de foto, firma del receptor, escáneres de código de barras y QR, validación de carga con semáforo por orden, y el formulario de inicio por pasos. Toda evidencia es obligatoria u opcional según la configuración del cliente.",
+  "components": {
+    "requirementRow": {
+      "name": "DTMRequirementRow",
+      "specs": [
+        ["Estructura", "icono + label + badge de estado + chevron/preview"],
+        ["Pendiente", "badge «Requerido» amber (var(--o1)/var(--o7))"],
+        ["Completo", "check verde var(--g6) a la derecha + preview (foto, firma, contador)"],
+        ["Contador", "«0 de 3 entregado» / «4/10 ítems escaneados» small var(--n5)"],
+        ["Alto", "56dp · separador 1px var(--n2) entre filas"]
+      ]
+    },
+    "photoCapture": {
+      "name": "DTMPhotoCapture",
+      "specs": [
+        ["Trigger", "botón «Agregar foto» con icono camera, dashed o card"],
+        ["Cámara", "vista fullscreen con shutter circular + cierre"],
+        ["Thumbnails", "fila de miniaturas 48×48 radio 6px con contador «4/10»"],
+        ["Validación AI", "detección de foto borrosa (modal de reintento) y verificación de imagen de PoD"],
+        ["Check", "check verde sobre el último thumbnail al completar el mínimo"]
+      ]
+    },
+    "signature": {
+      "name": "DTMSignaturePad",
+      "specs": [
+        ["Vacío", "área dashed con icono pen + «Firma acá» + instrucción"],
+        ["Firmado", "trazo azul sobre fondo blanco + botón «Borrar» (texto rojo)"],
+        ["RUT", "DTMTextInput «RUT de quien recibe» bajo la firma"],
+        ["Acciones", "«Continuar sin firma» (outline) + «Confirmar firma» (primario) cuando es opcional"]
+      ]
+    },
+    "scanner": {
+      "name": "DTMScanner",
+      "specs": [
+        ["Vista", "cámara fullscreen oscura con marco de escaneo central"],
+        ["Tipos", "código de barras (ítems) y QR (rutas / entrega de comprobante)"],
+        ["Header", "timer (30s), contador y linterna"],
+        ["Resultado OK", "toast verde inferior «Código 9AS-345345 -234234 exitoso»"],
+        ["Resultado error", "toast rojo «Código no encontrado»"],
+        ["Acciones", "Cancelar (outline) + «Fin del escaneo» (primario) · «Agregar manualmente» para verificación manual"]
+      ]
+    },
+    "loadValidation": {
+      "name": "DTMLoadValidation",
+      "specs": [
+        ["Estado", "«Estado · 64 de 64 completado» con check verde global"],
+        ["Fila por orden", "semáforo (verde 40/40 · amber 39/40 · rojo 0/40) + contador + chevron"],
+        ["Desglose", "al expandir, ítems con cantidad verificada (14/15, 25/25)"],
+        ["Firma supervisor", "DTMSignaturePad al pie · «Continuar sin firma» / «Confirmar» según config"]
+      ]
+    },
+    "startForm": {
+      "name": "DTMStartForm",
+      "specs": [
+        ["Stepper", "indicador de progreso «1/9 … 9/9» en el header"],
+        ["Filas requeridas", "Foto de facturas · Escanear ítems · Agregar firma · Agregar hora · Escanear factura"],
+        ["Colapso", "cada fila completada colapsa con check verde y preview"],
+        ["Campos", "texto, RUT, número, correo, selección múltiple — DTMTextInput / DTMDropdown"],
+        ["CTA", "«Continuar» / «Finalizar validación» fijo al fondo"]
+      ]
+    }
+  },
+  "rules": [
+    "Cada requisito muestra su badge «Requerido» mientras esté pendiente; al completarse, badge → check verde.",
+    "Los selectores de hora usan el time picker nativo del SO; el DS solo provee el campo disparador.",
+    "El escaneo puede ser obligatorio: en ese caso los estados Parcial/Entregado se desbloquean solo tras escanear.",
+    "La firma puede ser opcional (Continuar sin firma) u obligatoria (solo Confirmar) según la configuración del cliente."
+  ]
+}

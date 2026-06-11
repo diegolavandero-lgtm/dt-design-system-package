@@ -6504,6 +6504,38 @@ function mBanner(text, tone = 'warning') {
   </div>`;
 }
 
+/* ── Fila de requisito (acordeón de gestión / PoD) ──
+   o = {icon, label, sub, state:'required'|'done'|'default', preview} */
+function mReqRow(o = {}) {
+  const right = o.state === 'done'
+    ? iconSvg('checkmark-filled', 18, 'var(--g6)')
+    : (o.state === 'required' ? badgeHtml('Requerido', 'warning') : iconSvg('chevron--right', 16, 'var(--n5)'));
+  return `<div style="display:flex;align-items:center;gap:12px;padding:14px 12px;border-bottom:1px solid var(--n2)">
+    ${o.icon ? iconSvg(o.icon, 18, 'var(--n6)') : ''}
+    <div style="flex:1;min-width:0">
+      <div style="font:700 14px var(--font-sans);color:var(--n7)">${escHtml(o.label || '')}</div>
+      ${o.sub ? `<div style="font:400 12px var(--font-sans);color:var(--n5);margin-top:2px">${escHtml(o.sub)}</div>` : ''}
+    </div>
+    ${o.preview || ''}
+    ${right}
+  </div>`;
+}
+
+/* ── Tira de thumbnails de foto con contador ── */
+function mPhotoStrip(count = 4, max = 10) {
+  const thumbs = Array.from({ length: count }, (_, i) => `<span style="width:44px;height:44px;border-radius:6px;background:linear-gradient(135deg,#C8D0DC,#9aa7b8);position:relative;flex-shrink:0">${i === count - 1 ? `<span style="position:absolute;top:-4px;right:-4px">${iconSvg('checkmark-filled', 14, 'var(--g6)')}</span>` : ''}</span>`).join('');
+  return `<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+    <span style="width:44px;height:44px;border-radius:6px;border:1.5px dashed var(--n4);display:flex;align-items:center;justify-content:center;flex-shrink:0">${iconSvg('camera', 18, 'var(--n5)')}</span>
+    ${thumbs}
+    <span style="font:600 12px var(--font-sans);color:var(--n5);margin-left:4px">${count}/${max}</span>
+  </div>`;
+}
+
+/* ── Trazo de firma simulado ── */
+function mSignatureStroke(color = 'var(--b6)') {
+  return `<svg viewBox="0 0 200 70" style="width:140px;height:50px"><path d="M8,50 C20,10 30,60 42,38 C52,20 60,55 72,40 C88,20 96,58 110,35 C120,18 128,52 140,40 C150,30 160,46 175,22 L172,40 L185,30" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6782,6 +6814,93 @@ Object.assign(renderers, {
       ${mComponentCard(c.collectCard.name, 'NEW', collect, c.collectCard.specs)}
       ${mComponentCard(c.groupCard.name, 'NEW', group, c.groupCard.specs)}
       ${mComponentCard(c.serviceUnit.name, 'NEW', serviceUnit, c.serviceUnit.specs)}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Pruebas de entrega ── */
+  mPod(data) {
+    const c = data.components || {};
+    const wrap = (label, inner, w) => `<div style="width:${w || 300}px">${mLabel(label)}${inner}</div>`;
+    const sheet = (inner) => `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;overflow:hidden">${inner}</div>`;
+
+    /* Requirement rows */
+    const reqRows = sheet(`
+      ${mReqRow({ icon: 'package', label: 'Escanea ítems', sub: '0 de 64 entregado', state: 'required' })}
+      ${mReqRow({ icon: 'pen', label: 'Agregar firma', state: 'required' })}
+      ${mReqRow({ icon: 'camera', label: 'Foto de entrega', sub: '4/10', state: 'done', preview: mPhotoStrip(4) })}
+      ${mReqRow({ icon: 'time', label: 'Agregar hora', sub: '18:00', state: 'done' })}
+    `);
+    const requirements = mStage(wrap('Filas de requisito (pendiente / completo)', reqRows));
+
+    /* Photo capture */
+    const cameraView = mPhone(`
+      <div style="background:#1b1b1f;flex:1;display:flex;flex-direction:column;height:380px">
+        <div style="display:flex;justify-content:space-between;padding:12px 14px">${iconSvg('arrow-left', 20, '#fff')}<span style="font:600 13px var(--font-sans);color:#fff">Agregar foto</span>${iconSvg('camera', 20, '#fff')}</div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center"><div style="width:200px;height:130px;background:linear-gradient(135deg,#3a3a40,#26262b);border-radius:6px"></div></div>
+        <div style="display:flex;justify-content:center;padding:20px"><span style="width:56px;height:56px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.4)"></span></div>
+      </div>`, { width: 240 });
+    const photo = mStage(`
+      ${wrap('Cámara', cameraView, 240)}
+      ${wrap('Tira de evidencia (en formulario)', sheet(`<div style="padding:16px">${mPhotoStrip(4)}</div>`), 300)}
+    `);
+
+    /* Signature */
+    const sigEmpty = sheet(`<div style="padding:24px;text-align:center">${iconSvg('pen', 28, 'var(--n5)')}<div style="font:700 15px var(--font-sans);color:var(--n7);margin:10px 0 4px">Firma acá</div><div style="font:400 12px/1.5 var(--font-sans);color:var(--n5)">Después de firmar, puedes apretar el botón para intentarlo de nuevo.</div></div>`);
+    const sigDone = sheet(`<div style="padding:24px 16px;text-align:center"><div style="display:flex;justify-content:center;margin-bottom:10px">${mSignatureStroke()}</div><button style="background:none;border:none;color:var(--r6);font:500 13px var(--font-sans);cursor:pointer;display:inline-flex;align-items:center;gap:5px">${iconSvg('delete', 14, 'var(--r6)')}Borrar</button></div><div style="padding:0 16px 16px">${mInput('*RUT de quien recibe', '16.999.999-9', 'filled')}</div>`);
+    const signature = mStage(`
+      ${wrap('Vacío', sigEmpty)}
+      ${wrap('Firmado + RUT', sigDone)}
+    `);
+
+    /* Scanner */
+    const scannerView = mPhone(`
+      <div style="background:#1b1b1f;flex:1;display:flex;flex-direction:column;height:380px;position:relative">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px">${iconSvg('arrow-left', 20, '#fff')}<span style="background:rgba(255,255,255,.15);border-radius:99px;padding:3px 10px;font:600 12px var(--font-sans);color:#fff">30s</span><span style="color:#fff;font:600 12px var(--font-sans)">⚡</span></div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center"><div style="width:170px;height:110px;border:2px solid #fff;border-radius:10px;box-shadow:0 0 0 2000px rgba(0,0,0,.35)"></div></div>
+        <div style="padding:0 14px 10px">${mToast('Código 9AS-345345 -234234 exitoso.', 'success', false)}</div>
+        <div style="display:flex;gap:10px;padding:12px 14px;background:#fff">${mBtn('Cancelar', 'outline', 'default', 'flex:1')}${mBtn('Fin del escaneo', 'primary', 'default', 'flex:1')}</div>
+      </div>`, { width: 240 });
+    const scanner = mStage(`
+      ${wrap('Escáner (código de barras)', scannerView, 240)}
+      ${wrap('Resultados', `<div style="display:flex;flex-direction:column;gap:10px">${mToast('Código 9AS-345345 -234234 exitoso.', 'success', false)}${mToast('Código no encontrado dentro de tus órdenes.', 'error', false)}</div>`, 300)}
+    `);
+
+    /* Load validation */
+    const lvRow = (label, count, tone) => `<div style="display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--n2)">
+      ${iconSvg(tone === 'g' ? 'checkmark-filled' : tone === 'o' ? 'warning' : 'close-filled', 18, tone === 'g' ? 'var(--g6)' : tone === 'o' ? 'var(--o5)' : 'var(--r6)')}
+      <span style="flex:1;font:400 14px var(--font-sans);color:var(--n7)">${label}</span>
+      <span style="font:600 13px var(--font-sans);color:var(--n6)">${count}</span>
+      ${iconSvg('chevron--down', 16, 'var(--n5)')}
+    </div>`;
+    const loadVal = sheet(`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--n1)"><span style="font:700 14px var(--font-sans);color:var(--n7)">Estado</span><span style="display:flex;align-items:center;gap:6px;font:400 12px var(--font-sans);color:var(--n5)">64 de 64 completado ${iconSvg('checkmark-filled', 16, 'var(--g6)')}</span></div>
+      ${lvRow('Orden #12321312', '40/40', 'g')}
+      ${lvRow('Orden #22321312', '39/40', 'o')}
+      ${lvRow('Orden #22321312', '0/40', 'r')}
+    `);
+    const loadValidation = mStage(wrap('Validación de carga (semáforo por orden)', loadVal));
+
+    /* Start form */
+    const startForm = sheet(`
+      <div style="display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--n2)">${iconSvg('arrow-left', 20, 'var(--n7)')}<span style="flex:1;font:700 14px var(--font-sans);color:var(--n7)">Formulario de inicio</span><span style="font:400 12px var(--font-sans);color:var(--n5)">4/9</span></div>
+      ${mReqRow({ icon: 'camera', label: 'Foto de facturas', sub: '4/10', state: 'done', preview: mPhotoStrip(4) })}
+      ${mReqRow({ icon: 'package', label: 'Escanear ítems', sub: '8/10 ítems escaneados', state: 'done' })}
+      ${mReqRow({ icon: 'pen', label: 'Agregar firma', state: 'done', preview: `<span style="margin-right:8px">${mSignatureStroke()}</span>` })}
+      ${mReqRow({ icon: 'time', label: 'Agregar hora', state: 'required' })}
+      ${mReqRow({ icon: 'receipt', label: 'Escanear la factura', state: 'required' })}
+      <div style="padding:12px">${mBtn('Continuar', 'primary', 'default', 'width:100%')}</div>
+    `);
+    const start = mStage(wrap('Formulario de inicio (stepper)', startForm));
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.requirementRow.name, 'NEW', requirements, c.requirementRow.specs,
+        'Base de todos los formularios de gestión y PoD. Badge «Requerido» mientras está pendiente; check verde + preview al completar.')}
+      ${mComponentCard(c.photoCapture.name, 'NEW', photo, c.photoCapture.specs)}
+      ${mComponentCard(c.signature.name, 'NEW', signature, c.signature.specs)}
+      ${mComponentCard(c.scanner.name, 'NEW', scanner, c.scanner.specs)}
+      ${mComponentCard(c.loadValidation.name, 'NEW', loadValidation, c.loadValidation.specs)}
+      ${mComponentCard(c.startForm.name, 'NEW', start, c.startForm.specs)}
       ${mRules(data.rules)}`;
   },
 
