@@ -6649,10 +6649,11 @@ Object.assign(renderers, {
       <span style="font:400 14px var(--font-sans);color:var(--n7)">${escHtml(label)}</span>
       ${dot ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--r6)"></span>' : ''}
     </div>`;
+    const groupDivider = '<div style="height:1px;background:var(--n2);margin:8px 0"></div>';
 
     const profile = (expanded) => `
       <div style="padding:16px;border-bottom:1px solid var(--n2)">
-        <img src="sections/assets/logos/lastmile-mobile-color.svg" height="16" alt="LastMile" style="margin-bottom:14px">
+        <img src="sections/assets/logos/lastmile-desktop-color.svg" height="18" alt="DispatchTrack LastMile" style="margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:40px;height:40px;border-radius:50%;background:var(--b1);display:flex;align-items:center;justify-content:center;font:700 13px var(--font-sans);color:var(--b7);flex-shrink:0">DT</div>
           <div style="flex:1;min-width:0">
@@ -6667,18 +6668,29 @@ Object.assign(renderers, {
           </div>` : ''}
       </div>`;
 
-    const drawer = (menuItems, cta, expanded) => mPhone(`
-      ${profile(expanded)}
-      <div style="flex:1;padding:4px 0">${menuItems.map(l => item(l, l === 'Solicitudes co-piloto')).join('')}</div>
-      <div style="padding:16px">
-        <button style="width:100%;height:40px;border-radius:99px;border:1px solid var(--b6);background:#fff;color:var(--b6);font:700 14px var(--font-sans);cursor:pointer">${cta}</button>
-      </div>`, { width: 290 });
+    /* groups = array de grupos (cada grupo es un array de labels); divider entre grupos */
+    const menuBody = (groups) => groups.map(g =>
+      g.map(l => item(l, l === 'Solicitudes co-piloto')).join('')
+    ).join(groupDivider) + groupDivider;
+
+    /* Drawer al 75% del viewport + overlay 25% (rgba indigo .45) */
+    const drawer = (groups, cta, expanded) => mPhone(`
+      <div style="display:flex;height:560px;background:rgba(19,32,69,.45)">
+        <div style="width:75%;background:#fff;display:flex;flex-direction:column">
+          ${profile(expanded)}
+          <div style="flex:1;padding:4px 0;overflow:hidden">${menuBody(groups)}</div>
+          <div style="padding:16px">
+            <button style="width:100%;height:40px;border-radius:99px;border:1px solid var(--b6);background:#fff;color:var(--b6);font:700 14px var(--font-sans);cursor:pointer">${cta}</button>
+          </div>
+        </div>
+        <div style="flex:1"></div>
+      </div>`, { width: 340 });
 
     const menus = data.menus || {};
     const variants = mStage(`
       <div>${mLabel('Sin ruta iniciada')}${drawer(menus.noRoute || [], 'Cerrar sesión', false)}</div>
       <div>${mLabel('Con ruta activa')}${drawer(menus.onRoute || [], 'Finalizar ruta', false)}</div>
-      <div>${mLabel('Perfil expandido')}${drawer((menus.onRoute || []).slice(0, 4), 'Finalizar ruta', true)}</div>
+      <div>${mLabel('Perfil expandido')}${drawer((menus.onRoute || []).slice(0, 2), 'Finalizar ruta', true)}</div>
     `);
 
     return `

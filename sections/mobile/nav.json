@@ -6,11 +6,13 @@
     "drawer": {
       "name": "DTMNavDrawer",
       "specs": [
-        ["Ancho", "304dp (Android) / 304pt (iOS), máx. 85% del viewport"],
+        ["Ancho", "75% del viewport (3/4) · el 25% restante es overlay"],
         ["Fondo", "#FFFFFF"],
-        ["Overlay", "rgba(19,32,69,.45) sobre el contenido"],
+        ["Overlay", "rgba(19,32,69,.45) sobre el 25% restante; tap cierra el drawer"],
+        ["Logo", "sections/assets/logos/lastmile-desktop-color.svg · alto 18px"],
         ["Ítem", "alto 48dp · icono 20px var(--n6) · label body 400 14px var(--n7)"],
         ["Ítem con notificación", "dot 8px var(--r6) junto al label"],
+        ["Dividers", "1px var(--n2) entre cada grupo de ítems (tras perfil, tras Historial de recaudo, tras Solicitudes co-piloto, tras Configuración)"],
         ["CTA inferior", "DTMButton variante outline, ancho completo, margen 16px"],
         ["Animación", "slide-in desde la izquierda, 250ms ease-out"]
       ]
@@ -27,8 +29,16 @@
     }
   },
   "menus": {
-    "noRoute": ["Agregar ruta", "Crear ruta", "Chat supervisor", "Sincronizar datos", "Historial de recaudo", "Configuración"],
-    "onRoute": ["Agregar orden", "Sincronizar datos", "Historial de recaudo", "Historial de rutas por recepcionar", "Chat supervisor", "Llamada de emergencia", "Solicitudes co-piloto", "Configuración"]
+    "noRoute": [
+      ["Agregar ruta", "Crear ruta", "Sincronizar datos", "Historial de recaudo"],
+      ["Chat supervisor", "Llamada de emergencia"],
+      ["Configuración"]
+    ],
+    "onRoute": [
+      ["Agregar orden", "Sincronizar datos", "Historial de recaudo"],
+      ["Chat supervisor", "Llamada de emergencia", "Solicitudes co-piloto"],
+      ["Configuración"]
+    ]
   },
   "rules": [
     "Los ítems del menú dependen del estado de la ruta — nunca se muestran acciones de operación sin ruta activa.",
