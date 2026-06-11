@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T15:57:51.265Z",
+  "generated": "2026-06-11T16:00:39.470Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "5b20aff",
+          "type": "update",
+          "section": "Buttons",
+          "message": "feat(mobile-ds): sección Botones (DTMButton, DTMButtonPair, DTMIconCircleButton, DTMQuickActionChip)",
+          "author": "Diego"
+        },
         {
           "hash": "448ad04",
           "type": "update",
