@@ -173,23 +173,6 @@
     .flt-def,.flt-hov{line-height:0;display:inline-flex}
 
     /* ════════════════════════
-       STATUS CHIPS — replaces legacy "Estado" dropdown
-       DS chip: radius 4px, fw 600 (chips.json)
-    ════════════════════════ */
-    .chips-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .stat-chip{
-      height:26px;border-radius:4px;border:1px solid var(--n3);background:#fff;
-      padding:0 10px;font:600 12px var(--font-sans);color:var(--n6);
-      display:inline-flex;gap:6px;align-items:center;cursor:pointer;
-      transition:background .12s,border-color .12s,color .12s;
-    }
-    .stat-chip:hover{background:var(--n1)}
-    .stat-chip[aria-pressed="true"]{background:var(--b1);border-color:var(--b6);color:var(--b7)}
-    .stat-chip:focus-visible{outline:2px solid var(--b6);outline-offset:2px}
-    .stat-chip .sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-    .stat-chip .cnt{font-weight:700}
-
-    /* ════════════════════════
        WORKSPACE — driver panel + map
     ════════════════════════ */
     .workspace{flex:1;min-height:0;display:flex;gap:0;padding:16px 24px}
@@ -515,7 +498,15 @@
           <div class="dt-dopt" onclick="pickGroup(this,'Sur')">Zona Sur</div>
         </div>
       </div>
-      <div class="inp-wrap" style="flex:1;max-width:300px">
+      <!-- Status filter (DS dropdown) -->
+      <div class="dt-drop-wrap" id="status-drop" style="width:190px">
+        <div class="dt-dtrigger" onclick="dtToggle('status-drop')">
+          <span class="dt-dlabel" id="status-label">Todos los estados</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="dt-dmenu" id="status-menu" role="listbox"></div>
+      </div>
+      <div class="inp-wrap" style="flex:1;min-width:170px">
         <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
         <input id="f-search" type="text" placeholder="Buscar por nombre o patente" aria-label="Buscar por nombre o patente" oninput="renderAll()">
       </div>
@@ -531,8 +522,6 @@
         <span class="flt-def"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg></span>
         <span class="flt-hov" style="display:none"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" fill="#FFEBE6" stroke="#DE350B"/><path d="M21 8.5C21.3315 8.5 21.6494 8.63179 21.8838 8.86621C22.1182 9.10063 22.25 9.41848 22.25 9.75V11H21V9.75H8.5V11.7314L13.1338 16.3662L13.5 16.7314V22.25H16V21H17.25V22.25C17.25 22.5815 17.1182 22.8994 16.8838 23.1338C16.6494 23.3682 16.3315 23.5 16 23.5H13.5C13.1685 23.5 12.8506 23.3682 12.6162 23.1338C12.3818 22.8994 12.25 22.5815 12.25 22.25V17.25L7.61621 12.6162C7.5001 12.5001 7.40756 12.3617 7.34473 12.21C7.28201 12.0584 7.24999 11.8955 7.25 11.7314V9.75C7.25 9.41848 7.38179 9.10063 7.61621 8.86621C7.85063 8.63179 8.16848 8.5 8.5 8.5H21ZM24.75 13.1338L21.8838 16L24.75 18.8672L23.8672 19.75L21 16.8838L18.1348 19.75L17.25 18.8652L20.1162 16L17.25 13.1338L18.1338 12.25L21 15.1162L23.8662 12.25L24.75 13.1338Z" fill="#DE350B"/></svg></span>
       </button>
-      <!-- Status chips — reemplaza el dropdown "Estado" del legacy -->
-      <div class="chips-bar" id="chips-bar" style="width:100%;margin-top:2px"></div>
     </div>
 
     <!-- Workspace -->
@@ -628,7 +617,8 @@ const DRIVERS = [
   {id:12, name:'Sandra Milena Ortiz Vega',            plate:'TWQ18D', phone:'315 990 2237', status:'nodisp', done:0, total:0, items:0,  group:'Sur',    gps:null, last:'fuera de turno'}
 ];
 
-const CHIP_ORDER = ['all','ruta','prog','fin','disp','nodisp'];
+const STATUS_ORDER = ['all','ruta','prog','fin','disp','nodisp'];
+const STATUS_LABEL = {all:'Todos los estados', ruta:'En ruta', prog:'Programado', fin:'Finalizado', disp:'Disponible', nodisp:'No disponible'};
 let stateFilter = 'all';
 let groupFilter = 'all';
 let selectedId = null;
@@ -646,18 +636,26 @@ function filteredDrivers(){
   );
 }
 
-/* ════════════════════════ RENDER — chips ════════════════════════ */
-function renderChips(){
+/* ════════════════════════ RENDER — status dropdown ════════════════════════ */
+function renderStatusMenu(){
   const base = DRIVERS.filter(d => groupFilter==='all' || d.group===groupFilter);
-  const bar = document.getElementById('chips-bar');
-  bar.innerHTML = CHIP_ORDER.map(k=>{
+  const menu = document.getElementById('status-menu');
+  menu.innerHTML = STATUS_ORDER.map(k=>{
     const count = k==='all' ? base.length : base.filter(d=>d.status===k).length;
-    const label = k==='all' ? 'Todos' : STATUS[k].label;
-    const dot = k==='all' ? '' : `<span class="sdot" style="background:${STATUS[k].dot}"></span>`;
-    return `<button class="stat-chip" aria-pressed="${stateFilter===k}" onclick="setStateFilter('${k}')">${dot}${label} <span class="cnt">${count}</span></button>`;
+    const dot = k==='all' ? '' : `<span style="width:7px;height:7px;border-radius:50%;background:${STATUS[k].dot};flex-shrink:0;margin-right:8px"></span>`;
+    const sel = stateFilter===k ? ' selected' : '';
+    return `<div class="dt-dopt${sel}" role="option" aria-selected="${stateFilter===k}" onclick="pickStatus('${k}')" style="justify-content:space-between">
+      <span style="display:flex;align-items:center">${dot}${STATUS_LABEL[k]}</span>
+      <span style="color:var(--n5);font-weight:400">${count}</span>
+    </div>`;
   }).join('');
+  document.getElementById('status-label').textContent = STATUS_LABEL[stateFilter];
 }
-function setStateFilter(k){ stateFilter=k; renderAll(); }
+function pickStatus(k){
+  stateFilter = k;
+  document.getElementById('status-drop').classList.remove('open');
+  renderAll();
+}
 
 /* ════════════════════════ RENDER — list ════════════════════════ */
 function renderList(){
@@ -806,7 +804,7 @@ function renderMarkers(){
 /* Ver dropdown layer toggles */
 function toggleLayer(key, on){ layerVisible[key] = on; renderMarkers(); }
 
-function renderAll(){ renderChips(); renderList(); renderMarkers(); }
+function renderAll(){ renderStatusMenu(); renderList(); renderMarkers(); }
 
 /* ════════════════════════ INTERACTIONS ════════════════════════ */
 function selectDriver(id, fromMap){
@@ -1142,7 +1140,7 @@ function showToast(msg){
 }
 
 /* init */
-renderChips();
+renderStatusMenu();
 renderList();
 function bootMap(){
   if(fleetMap) return;
