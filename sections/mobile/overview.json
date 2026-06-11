@@ -1,0 +1,42 @@
+{
+  "title": "App móvil — Drivers",
+  "titleKey": "nav.mobile.overview",
+  "description": "Design system de la app móvil de conductores DispatchTrack (iOS y Android). Reutiliza los tokens del DS de escritorio — colores, tipografía DM Sans, radios y sombras — y define los componentes nativos propios de la app: navegación, gestión de órdenes, pruebas de entrega, mapas y recaudo.",
+  "principles": [
+    { "title": "Mismos tokens, otra plataforma", "desc": "Todos los colores, tipografías y radios provienen de colors_and_type.css. Nunca se inventan valores nuevos para móvil." },
+    { "title": "Targets táctiles", "desc": "Área mínima de toque: 48dp en Android y 44pt en iOS. Los botones móviles miden 40px de alto y los ítems de lista 48px mínimo." },
+    { "title": "Una mano, en terreno", "desc": "Las acciones principales viven en la parte inferior de la pantalla (bottom sheets, CTAs fijos). El conductor opera con guantes, sol directo y apuro." },
+    { "title": "Offline primero", "desc": "Cada acción funciona sin conexión. Los componentes comunican el estado de sincronización (Sin sincronizar / Sincronizando)." },
+    { "title": "Naming portable", "desc": "Cada componente tiene un nombre único con prefijo DTM (DispatchTrack Mobile) usable como clase en Swift/Kotlin: DTMButton, DTMOrderCard, DTMBottomSheet." }
+  ],
+  "tokens": [
+    { "use": "Fondo de pantalla de la app", "token": "--n1", "value": "#F5F6FA" },
+    { "use": "Superficies / cards", "token": "#fff", "value": "#FFFFFF" },
+    { "use": "Bordes de cards e inputs", "token": "--n3", "value": "#E1E6ED" },
+    { "use": "Texto primario", "token": "--n7", "value": "#39414D" },
+    { "use": "Texto secundario / metadata", "token": "--n5", "value": "#67768D" },
+    { "use": "Acción primaria / seleccionado", "token": "--b6", "value": "#1F60ED" },
+    { "use": "Links / pressed", "token": "--b7", "value": "#0052CC" },
+    { "use": "Fondo seleccionado / focus", "token": "--b1", "value": "#EDF5FF" },
+    { "use": "Éxito / Entregado", "token": "--g6", "value": "#00875A" },
+    { "use": "Advertencia / Parcial", "token": "--o5", "value": "#FFAB00" },
+    { "use": "Error / No entregado", "token": "--r6", "value": "#DE350B" }
+  ],
+  "platformNotes": [
+    { "platform": "Android", "notes": "Material 3 como base de comportamiento (ripple, bottom sheets, time/date pickers nativos). Tipografía DM Sans vía Google Fonts. Unidad: dp." },
+    { "platform": "iOS", "notes": "UIKit/SwiftUI con los mismos tokens. Pickers y teclados nativos de iOS. Tipografía DM Sans embebida. Unidad: pt." }
+  ],
+  "sections": [
+    { "id": "mobile-topbar", "label": "Top app bar", "desc": "Barra superior: menú, logo y sincronización" },
+    { "id": "mobile-nav", "label": "Menú lateral", "desc": "Drawer del conductor con perfil multi-cuenta" },
+    { "id": "mobile-buttons", "label": "Botones", "desc": "Pills, full-width, iconos y chips de acción" },
+    { "id": "mobile-inputs", "label": "Inputs", "desc": "Texto, búsqueda, PIN, steppers y dropdowns" },
+    { "id": "mobile-cards", "label": "Cards", "desc": "Order, route, item, collect y grupos" },
+    { "id": "mobile-lists", "label": "Listas y filtros", "desc": "Tabs, chips de grupo y estados de lista" },
+    { "id": "mobile-bottom-sheets", "label": "Bottom sheets", "desc": "Alturas, header de ruta y navegación" },
+    { "id": "mobile-toasts", "label": "Toasts y banners", "desc": "Feedback, sincronización y advertencias" },
+    { "id": "mobile-pod", "label": "Pruebas de entrega", "desc": "Foto, firma, escáner y validación de carga" },
+    { "id": "mobile-order-management", "label": "Gestión de órdenes", "desc": "Estados, hitos, gestión masiva y recaudo" },
+    { "id": "mobile-maps", "label": "Mapa", "desc": "Pins, rutas, FABs y widget de navegación" }
+  ]
+}

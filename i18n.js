@@ -23,6 +23,13 @@
     /* ── Búsqueda ── */
     "search.placeholder": { "es": "Buscar tokens, componentes…", "en": "Search tokens, components…" },
 
+    /* ── Pestañas del DS (Escritorio / App móvil) ── */
+    "tabs.desktop": { "es": "Escritorio", "en": "Desktop" },
+    "tabs.mobile":  { "es": "App móvil", "en": "Mobile app" },
+    "nav.mobile":   { "es": "App móvil — Drivers", "en": "Mobile app — Drivers" },
+    "nav.mobile.overview": { "es": "Introducción", "en": "Overview" },
+    "section.mobile.overview.desc": { "es": "Design system de la app móvil de conductores DispatchTrack (iOS y Android). Reutiliza los tokens del DS de escritorio — colores, tipografía DM Sans, radios y sombras — y define los componentes nativos propios de la app: navegación, gestión de órdenes, pruebas de entrega, mapas y recaudo.", "en": "Design system for the DispatchTrack drivers mobile app (iOS and Android). It reuses the desktop DS tokens — colors, DM Sans typography, radii and shadows — and defines the app's native components: navigation, order management, proof of delivery, maps and cash collection." },
+
     /* ── Changelog ── */
     "changelog.title":                  { "es": "Cambios",                                              "en": "Changelog" },
     "changelog.description":            { "es": "Versiones publicadas. Los cambios incompatibles se marcan en rojo.", "en": "Versioned releases. Breaking changes flagged in red." },

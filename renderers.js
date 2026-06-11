@@ -6207,3 +6207,92 @@ async function downloadAllPins() {
   },
 
 };
+
+/* ================================================================
+   MOBILE DS (Drivers App) — helpers + renderers
+   Prefijo de componentes: DTM (DispatchTrack Mobile)
+================================================================ */
+
+/* Marco de teléfono para previews móviles (360px de ancho de referencia) */
+function mPhone(content, opts = {}) {
+  const w = opts.width || 360;
+  return `<div style="width:${w}px;max-width:100%;flex-shrink:0;background:var(--n1);border:1px solid var(--n3);border-radius:18px;overflow:hidden;box-shadow:0 1px 3px rgba(19,32,69,.08);display:flex;flex-direction:column${opts.height ? `;height:${opts.height}px` : ''}">${content}</div>`;
+}
+
+/* Escenario gris para mostrar componentes sueltos */
+function mStage(inner, opts = {}) {
+  return `<div style="background:var(--n1);border:1px solid var(--n3);border-radius:8px;padding:${opts.pad || '20px'};display:flex;gap:${opts.gap || '16px'};flex-wrap:wrap;align-items:${opts.align || 'flex-start'};${opts.col ? 'flex-direction:column;' : ''}margin-bottom:14px">${inner}</div>`;
+}
+
+/* Etiqueta de bloque (caption uppercase) */
+function mLabel(t) {
+  return `<div style="font:700 11px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);margin:18px 0 10px">${t}</div>`;
+}
+
+/* Tabla de especificaciones para developers iOS/Android */
+function mSpecTable(rows) {
+  const tr = rows.map(r => `<tr>
+    <td style="padding:7px 12px;border-bottom:1px solid var(--n2);font:600 12px var(--font-sans);color:var(--n7);white-space:nowrap">${escHtml(r[0])}</td>
+    <td style="padding:7px 12px;border-bottom:1px solid var(--n2);font:400 12px/1.5 var(--font-mono,monospace);color:var(--n6)">${escHtml(r[1])}</td>
+  </tr>`).join('');
+  return `<div style="border:1px solid var(--n3);border-radius:8px;overflow:hidden;margin-bottom:14px"><table style="width:100%;border-collapse:collapse;background:#fff">${tr}</table></div>`;
+}
+
+/* Card de componente: título + tag + preview + specs */
+function mComponentCard(name, tag, previewHtml, specRows, notes) {
+  const TAGS = { NEW: ['#E3FCEF', '#006844'], EXTENDED: ['#EDF5FF', '#0052CC'], RULE: ['#FFFAE6', '#7A4A00'] };
+  const tc = TAGS[tag] || TAGS.NEW;
+  return `<div class="card" style="margin-bottom:20px">
+    <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 12px;display:flex;align-items:center;gap:8px">${escHtml(name)}
+      <span style="background:${tc[0]};color:${tc[1]};font:700 9px/1 var(--font-sans);letter-spacing:.04em;border-radius:99px;padding:4px 8px">${tag}</span>
+    </h3>
+    ${previewHtml}
+    ${specRows && specRows.length ? mSpecTable(specRows) : ''}
+    ${notes ? `<div style="font:400 12px/1.6 var(--font-sans);color:var(--n5)">${notes}</div>` : ''}
+  </div>`;
+}
+
+Object.assign(renderers, {
+
+  /* ── App móvil · Introducción ── */
+  mOverview(data) {
+    const principles = (data.principles || []).map(p => `
+      <div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px">
+        <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:5px">${escHtml(p.title)}</div>
+        <div style="font:400 12px/1.6 var(--font-sans);color:var(--n5)">${escHtml(p.desc)}</div>
+      </div>`).join('');
+
+    const tokenRows = (data.tokens || []).map(t => `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid var(--n2);font:400 12px var(--font-sans);color:var(--n7)">${escHtml(t.use)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid var(--n2);font:500 12px var(--font-mono,monospace);color:var(--b7)">${escHtml(t.token)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid var(--n2)"><span style="display:inline-flex;align-items:center;gap:7px;font:400 12px var(--font-mono,monospace);color:var(--n6)"><span style="width:14px;height:14px;border-radius:4px;border:1px solid var(--n3);background:${t.value}"></span>${escHtml(t.value)}</span></td>
+    </tr>`).join('');
+
+    const platforms = (data.platformNotes || []).map(p => `
+      <div style="flex:1;min-width:260px;background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px">
+        <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:5px">${escHtml(p.platform)}</div>
+        <div style="font:400 12px/1.6 var(--font-sans);color:var(--n5)">${escHtml(p.notes)}</div>
+      </div>`).join('');
+
+    const sections = (data.sections || []).map(s => `
+      <a href="#${s.id}" onclick="navigate('${s.id}');return false" style="display:block;background:#fff;border:1px solid var(--n3);border-radius:8px;padding:14px 16px;text-decoration:none;transition:border-color .12s" onmouseenter="this.style.borderColor='var(--b6)'" onmouseleave="this.style.borderColor='var(--n3)'">
+        <div style="font:700 13px var(--font-sans);color:var(--b7);margin-bottom:3px">${escHtml(s.label)}</div>
+        <div style="font:400 12px/1.5 var(--font-sans);color:var(--n5)">${escHtml(s.desc)}</div>
+      </a>`).join('');
+
+    return `
+      ${sectionHeader(data)}
+      ${mLabel('Principios')}
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:10px">${principles}</div>
+      ${mLabel('Tokens — uso en móvil')}
+      <div style="border:1px solid var(--n3);border-radius:8px;overflow:hidden;margin-bottom:10px"><table style="width:100%;border-collapse:collapse;background:#fff">
+        <tr><th style="text-align:left;padding:8px 12px;background:var(--n1);font:700 11px var(--font-sans);color:var(--n5);letter-spacing:.05em">USO</th><th style="text-align:left;padding:8px 12px;background:var(--n1);font:700 11px var(--font-sans);color:var(--n5);letter-spacing:.05em">TOKEN</th><th style="text-align:left;padding:8px 12px;background:var(--n1);font:700 11px var(--font-sans);color:var(--n5);letter-spacing:.05em">VALOR</th></tr>
+        ${tokenRows}
+      </table></div>
+      ${mLabel('Plataformas')}
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">${platforms}</div>
+      ${mLabel('Secciones del DS móvil')}
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:24px">${sections}</div>`;
+  },
+
+});
