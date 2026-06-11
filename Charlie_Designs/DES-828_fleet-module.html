@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fleet — DispatchTrack</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <!-- DS Map · Flexible component — Leaflet + CARTO Positron -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     :root {
       --indigo:#132045;
@@ -286,56 +289,60 @@
     @keyframes spin{to{transform:rotate(360deg)}}
 
     /* ════════════════════════
-       MAP
+       MAP · Flexible component (DS — dt-design-system.html #mapelements)
+       Leaflet + CARTO Positron · Ver/Lasso terciarios overlay top-right
     ════════════════════════ */
     .map-wrap{
       flex:1;min-width:0;position:relative;border-radius:8px;
       border:1px solid var(--n3);overflow:hidden;background:#E9EDF2;
     }
-    .map-stage{position:absolute;inset:0;transition:transform .25s ease;transform-origin:center center}
-    .map-stage svg.map-bg{position:absolute;inset:0;width:100%;height:100%}
-    .pin{
-      position:absolute;transform:translate(-50%,-100%);
-      transition:left 1s ease,top 1s ease;cursor:pointer;z-index:10;
-      border:none;background:none;padding:0;
+    .dme-map{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+    .leaflet-container{font-family:var(--font-sans)!important;background:#E9EDF2}
+    /* Controls overlay */
+    .dme-ctrls{position:absolute;top:12px;right:12px;display:flex;gap:6px;z-index:1000}
+    .dme-btn{
+      height:32px;padding:0 14px;border-radius:50px;font:700 13px/1 var(--font-sans);
+      background:rgba(255,255,255,.96);color:var(--n7);border:1px solid var(--n3);cursor:pointer;
+      display:inline-flex;align-items:center;gap:6px;box-shadow:0 1px 4px rgba(19,32,69,.12);
+      white-space:nowrap;position:relative;
     }
-    .pin:focus-visible{outline:2px solid var(--b6);outline-offset:2px;border-radius:6px}
-    .pin img{display:block;width:33px;height:47px;pointer-events:none}
-    .pin.sel{z-index:20}
-    .pin-lbl{
-      position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
-      white-space:nowrap;background:#132045;color:#fff;
-      font:600 11px/1 var(--font-sans);padding:5px 9px;border-radius:4px;
-      display:none;pointer-events:none;
+    .dme-btn:hover{background:#fff;border-color:var(--n4)}
+    .dme-btn.active{background:var(--b1);border-color:var(--b5);color:var(--b7)}
+    /* Ver dropdown */
+    .dme-ver-menu{
+      display:none;position:absolute;top:calc(100% + 6px);right:0;background:#fff;
+      border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);
+      z-index:100;padding:4px 0;min-width:210px;
     }
-    .pin-lbl span{font-weight:400;color:rgba(255,255,255,.75);margin-left:5px}
-    .pin.sel .pin-lbl,.pin:hover .pin-lbl{display:block}
-
-    .map-ctrl{
-      position:absolute;top:14px;right:14px;z-index:50;
-      display:flex;flex-direction:column;gap:6px;
+    .dme-ver-menu.on{display:block}
+    .dme-ver-opt{
+      height:36px;padding:0 12px;display:flex;align-items:center;gap:9px;
+      font:400 13px/1 var(--font-sans);color:var(--n7);cursor:pointer;
     }
-    .map-ctrl button{
-      width:32px;height:32px;border-radius:6px;border:1px solid var(--n3);
-      background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
-      color:var(--n6);box-shadow:0 1px 3px rgba(19,32,69,.12);transition:background .12s;
+    .dme-ver-opt:hover{background:var(--b1);color:var(--b7)}
+    .dme-ver-opt input{width:14px;height:14px;accent-color:var(--b5);cursor:pointer;flex-shrink:0}
+    /* Lasso */
+    .dme-lasso-banner{
+      display:none;position:absolute;top:0;left:0;right:0;height:40px;background:var(--b6);
+      color:#fff;font:400 12px var(--font-sans);align-items:center;gap:10px;padding:0 16px;z-index:1001;
     }
-    .map-ctrl button:hover{background:var(--n1);color:var(--n7)}
-    .map-ctrl button svg{width:16px;height:16px;fill:currentColor}
-
-    .map-legend{
-      position:absolute;left:14px;bottom:14px;z-index:50;
-      background:#fff;border:1px solid var(--n3);border-radius:8px;
-      padding:10px 14px;box-shadow:0 1px 4px rgba(19,32,69,.10);
-      display:flex;flex-direction:column;gap:6px;
+    .dme-lasso-banner.on{display:flex}
+    .dme-lasso-banner b{font-weight:700;cursor:pointer;margin-left:auto;text-decoration:underline}
+    .dme-lasso-layer{display:none;position:absolute;inset:0;cursor:crosshair;z-index:999}
+    .dme-lasso-layer.on{display:block}
+    .dme-lasso-svg{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:998}
+    .dme-lasso-svg.on{display:block}
+    /* DS pin divIcon — name+plate tooltip on hover/selection */
+    .dme-pin-tip{
+      background:#132045;color:#fff;border:none;border-radius:4px;
+      font:600 11px/1 var(--font-sans);padding:5px 9px;box-shadow:0 2px 8px rgba(19,32,69,.25);
     }
-    .map-legend-ttl{font:700 11px var(--font-sans);color:var(--n7);margin-bottom:2px}
-    .map-legend-row{display:flex;align-items:center;gap:7px;font:400 11px var(--font-sans);color:var(--n6)}
-    .map-legend-row .ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .dme-pin-tip span{font-weight:400;color:rgba(255,255,255,.75);margin-left:5px}
+    .dme-pin-tip::before{display:none}
 
     .map-empty{
-      position:absolute;inset:0;z-index:40;display:none;
-      align-items:center;justify-content:center;background:rgba(233,237,242,.82);
+      position:absolute;inset:0;z-index:1100;display:none;
+      align-items:center;justify-content:center;background:rgba(233,237,242,.92);
     }
     .map-empty.show{display:flex}
 
@@ -502,55 +509,39 @@
         <div class="drv-list" id="drv-list"></div>
       </section>
 
-      <!-- Map -->
+      <!-- Map · Flexible component (DS) — Leaflet + CARTO Positron -->
       <div class="map-wrap">
-        <div class="map-stage" id="map-stage">
-          <svg class="map-bg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <rect width="1000" height="700" fill="#E9EDF2"/>
-            <!-- parques -->
-            <path d="M70,90 Q160,40 250,95 L235,210 Q150,240 80,195 Z" fill="#DCEDDC"/>
-            <path d="M700,470 Q790,430 880,480 L860,590 Q760,620 690,570 Z" fill="#DCEDDC"/>
-            <!-- río -->
-            <path d="M-20,560 C200,520 320,640 560,600 C760,565 860,660 1020,620" fill="none" stroke="#CFE0F2" stroke-width="26" stroke-linecap="round"/>
-            <!-- vías principales -->
-            <g stroke="#FFFFFF" fill="none" stroke-linecap="round">
-              <path d="M-20,330 C240,300 520,360 1020,310" stroke-width="14"/>
-              <path d="M310,-20 C330,200 290,480 340,720" stroke-width="14"/>
-              <path d="M650,-20 C630,220 690,420 660,720" stroke-width="11"/>
-              <path d="M-20,150 C300,170 700,120 1020,160" stroke-width="9"/>
-              <path d="M-20,480 C260,460 540,500 1020,450" stroke-width="9"/>
-              <path d="M120,-20 C140,240 100,460 150,720" stroke-width="7"/>
-              <path d="M840,-20 C820,200 870,480 830,720" stroke-width="7"/>
-              <path d="M460,-20 C470,180 450,420 480,720" stroke-width="6"/>
-              <path d="M-20,240 C320,260 680,230 1020,250" stroke-width="5"/>
-              <path d="M-20,400 C300,390 700,415 1020,395" stroke-width="5"/>
-              <path d="M-20,60 C300,80 700,50 1020,75" stroke-width="4"/>
-            </g>
-            <!-- nombres de calles -->
-            <g fill="#9AA7B8" font-family="DM Sans,sans-serif" font-size="11">
-              <text x="500" y="325">Av. Libertador</text>
-              <text x="318" y="100" transform="rotate(88 318 100)">Av. Central</text>
-              <text x="60" y="470">Calle 80</text>
-              <text x="860" y="148">Av. del Puerto</text>
-            </g>
-          </svg>
-          <div id="pins-layer"></div>
+        <div id="dme-map-main" class="dme-map"></div>
+
+        <!-- Controles terciarios overlay (DS) -->
+        <div class="dme-ctrls">
+          <div style="position:relative" id="dme-ver-wrap">
+            <button class="dme-btn" id="dme-btn-ver" onclick="dmeToggleVer(event,this,'dme-ver-menu-main')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Ver
+            </button>
+            <div class="dme-ver-menu" id="dme-ver-menu-main">
+              <label class="dme-ver-opt"><input type="checkbox" data-layer="ruta" checked onchange="toggleLayer('ruta',this.checked)"> En ruta</label>
+              <label class="dme-ver-opt"><input type="checkbox" data-layer="fin" checked onchange="toggleLayer('fin',this.checked)"> Rutas finalizadas</label>
+              <label class="dme-ver-opt"><input type="checkbox" data-layer="dc" checked onchange="toggleLayer('dc',this.checked)"> Centro de distribución</label>
+            </div>
+          </div>
+          <button class="dme-btn" id="dme-btn-lasso-main" onclick="dmeToggleLasso('main')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
+            Seleccionar con lazo
+          </button>
         </div>
 
-        <!-- Controles de zoom -->
-        <div class="map-ctrl">
-          <button title="Acercar" aria-label="Acercar" onclick="mapZoom(1)"><svg viewBox="0 0 32 32"><polygon points="17 15 17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15 17 15"/></svg></button>
-          <button title="Alejar" aria-label="Alejar" onclick="mapZoom(-1)"><svg viewBox="0 0 32 32"><rect x="8" y="15" width="16" height="2"/></svg></button>
-          <button title="Centrar flota" aria-label="Centrar flota" onclick="mapZoomReset()"><svg viewBox="0 0 32 32"><path d="M16,11a5,5,0,1,0,5,5A5.0057,5.0057,0,0,0,16,11Zm0,8a3,3,0,1,1,3-3A3.0033,3.0033,0,0,1,16,19Z"/><path d="M30,15H27.9492A11.0125,11.0125,0,0,0,17,4.0508V2H15V4.0508A11.0125,11.0125,0,0,0,4.0508,15H2v2H4.0508A11.0125,11.0125,0,0,0,15,27.9492V30h2V27.9492A11.0125,11.0125,0,0,0,27.9492,17H30ZM16,26a10,10,0,1,1,10-10A10.0114,10.0114,0,0,1,16,26Z"/></svg></button>
+        <!-- Lasso mode (DS) -->
+        <div class="dme-lasso-banner" id="dme-banner-main">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7"/></svg>
+          <span>Estás en modo lazo. Dibuja alrededor de las paradas para seleccionarlas.</span>
+          <b onclick="dmeExitLasso('main')">Cancelar</b>
         </div>
-
-        <!-- Leyenda -->
-        <div class="map-legend" aria-hidden="true">
-          <div class="map-legend-ttl">Leyenda</div>
-          <div class="map-legend-row"><span class="ldot" style="background:#0C47C7"></span>En ruta</div>
-          <div class="map-legend-row"><span class="ldot" style="background:var(--g6)"></span>Ruta finalizada</div>
-          <div class="map-legend-row"><span class="ldot" style="background:var(--n6)"></span>Centro de distribución</div>
-        </div>
+        <svg class="dme-lasso-svg" id="dme-svg-main" xmlns="http://www.w3.org/2000/svg">
+          <path id="dme-path-main" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" d=""></path>
+        </svg>
+        <div class="dme-lasso-layer" id="dme-layer-main" onmousedown="dmeLassoStart(event,'main')"></div>
 
         <!-- Empty overlay -->
         <div class="map-empty" id="map-empty">
@@ -577,7 +568,6 @@
 
 <script>
 /* ════════════════════════ DATA ════════════════════════ */
-const PIN = s => '../sections/assets/pins/' + s + '.svg';
 const STATUS = {
   ruta:   {label:'En ruta',        badge:'info',    dot:'#1F60ED', pin:'pin-en-ruta'},
   prog:   {label:'Programado',     badge:'neutral', dot:'#8FA0BA', pin:null},
@@ -605,7 +595,6 @@ const CHIP_ORDER = ['all','ruta','prog','fin','disp','nodisp'];
 let stateFilter = 'all';
 let groupFilter = 'all';
 let selectedId = null;
-let zoomLevel = 1;
 
 /* ════════════════════════ HELPERS ════════════════════════ */
 const initials = n => n.split(' ').filter(Boolean).slice(0,2).map(p=>p[0]).join('').toUpperCase();
@@ -701,39 +690,77 @@ function renderList(){
   }).join('');
 }
 
-/* ════════════════════════ RENDER — map pins ════════════════════════ */
-function renderPins(){
-  const layer = document.getElementById('pins-layer');
-  const drivers = filteredDrivers().filter(d=>d.gps && STATUS[d.status].pin);
-  let html = `
-    <button class="pin" style="left:18%;top:70%" aria-label="Centro de distribución" onclick="event.stopPropagation()">
-      <span class="pin-lbl">Centro de distribución</span>
-      <img src="${PIN('pin-distribution-center-unselected')}" alt="">
-    </button>`;
-  html += drivers.map(d=>{
-    const sel = d.id===selectedId;
-    const pin = STATUS[d.status].pin + (sel?'-selected':'-unselected');
-    return `
-    <button class="pin${sel?' sel':''}" style="left:${d.gps.x}%;top:${d.gps.y}%"
-            aria-label="${esc(d.name)} — ${STATUS[d.status].label}"
-            onclick="selectDriver(${d.id},true)">
-      <span class="pin-lbl">${esc(d.name.split(' ').slice(0,2).join(' '))}<span>${d.plate}</span></span>
-      <img src="${PIN(pin)}" alt="">
-    </button>`;
-  }).join('');
-  layer.innerHTML = html;
+/* ════════════════════════ DS MAP · Flexible — Leaflet + CARTO Positron ════════════════════════ */
+const SANTIAGO = [-33.4489, -70.6693];
+const TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+const TILE_OPTS = {attribution:'© CARTO', subdomains:'abcd', maxZoom:19};
+const PIN_BODY = 'M16.5 1.5C24.78 1.5 31.5 8.22 31.5 16.5C31.5 21.44 29.11 25.82 25.43 28.55C22.61 30.67 18.58 34.04 17.66 39.48C17.56 40.05 17.08 40.5 16.5 40.5C15.92 40.5 15.44 40.05 15.34 39.48C14.42 34.04 10.39 30.67 7.56 28.55C3.88 25.82 1.5 21.44 1.5 16.5C1.5 8.22 8.22 1.5 16.5 1.5Z';
+const DC_LATLNG = [-33.4672, -70.6420];
+
+let fleetMap = null, driverMarkers = {}, dcMarker = null;
+const layerVisible = {ruta:true, fin:true, dc:true};
+
+/* Map each driver's x/y (0–100) to a latlng across Santiago */
+function gpsToLatLng(g){ return [ -33.405 - (g.y/100)*0.095, -70.725 + (g.x/100)*0.125 ]; }
+
+/* DS pin divIcon — body shape + numbered label, colored by status */
+function pinDivIcon(color, n, sel){
+  const s = sel ? 38 : 28, h = Math.round(s*49/33);
+  const num = (n!=null)
+    ? `<text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#fff">${n}</text>`
+    : `<circle cx="16.5" cy="16.5" r="4.5" fill="#fff"/>`;
+  const html = `<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.3))"><svg width="${s}" height="${h}" viewBox="0 0 33 49"><path d="${PIN_BODY}" fill="${color}" stroke="#fff" stroke-width="2"/>${num}</svg></div>`;
+  return L.divIcon({html, className:'', iconSize:[s,h], iconAnchor:[s/2,h]});
+}
+
+function initFleetMap(){
+  if(!window.L || fleetMap) return;
+  fleetMap = L.map('dme-map-main', {center:SANTIAGO, zoom:12, zoomControl:true, scrollWheelZoom:false});
+  L.tileLayer(TILE_URL, TILE_OPTS).addTo(fleetMap);
+  dcMarker = L.marker(DC_LATLNG, {icon:pinDivIcon('#67768D', null, false), zIndexOffset:-100})
+    .bindTooltip('Centro de distribución', {className:'dme-pin-tip', direction:'top', offset:[0,-30]});
+  renderMarkers();
+}
+
+/* (Re)draw all driver markers from the current filter + layer state */
+function renderMarkers(){
+  if(!fleetMap) return;
+  Object.values(driverMarkers).forEach(m => fleetMap.removeLayer(m));
+  driverMarkers = {};
+
+  const drivers = filteredDrivers().filter(d => d.gps && STATUS[d.status].pin && layerVisible[d.status]);
+  drivers.forEach(d => {
+    const sel = d.id === selectedId;
+    const color = STATUS[d.status].dot;
+    const mk = L.marker(gpsToLatLng(d.gps), {icon:pinDivIcon(color, d.done, sel), zIndexOffset: sel?1000:0})
+      .addTo(fleetMap)
+      .bindTooltip(`${esc(d.name.split(' ').slice(0,2).join(' '))}<span>${d.plate}</span>`,
+                   {className:'dme-pin-tip', direction:'top', offset:[0, sel?-40:-30]})
+      .on('click', () => selectDriver(d.id, true));
+    if(sel) mk.openTooltip();
+    driverMarkers[d.id] = mk;
+  });
+
+  // distribution center layer
+  if(dcMarker){ layerVisible.dc ? dcMarker.addTo(fleetMap) : fleetMap.removeLayer(dcMarker); }
+
   document.getElementById('map-empty').classList.toggle('show', drivers.length===0);
 }
 
-function renderAll(){ renderChips(); renderList(); renderPins(); }
+/* Ver dropdown layer toggles */
+function toggleLayer(key, on){ layerVisible[key] = on; renderMarkers(); }
+
+function renderAll(){ renderChips(); renderList(); renderMarkers(); }
 
 /* ════════════════════════ INTERACTIONS ════════════════════════ */
 function selectDriver(id, fromMap){
   selectedId = (selectedId===id && !fromMap) ? null : id;
-  renderList(); renderPins();
+  renderList(); renderMarkers();
   if(selectedId!==null){
     const el = document.getElementById('drv-'+selectedId);
     if(el) el.scrollIntoView({block:'nearest',behavior:'smooth'});
+    const d = DRIVERS.find(x=>x.id===selectedId);
+    if(fleetMap && d && d.gps) fleetMap.panTo(gpsToLatLng(d.gps), {animate:true});
   }
 }
 
@@ -773,7 +800,7 @@ function refreshFleet(btn){
       }
     });
     agoMin = 0; updateAgo();
-    renderPins();
+    renderMarkers();
     ico.classList.remove('spin');
     showToast('Posiciones actualizadas');
   }, 600);
@@ -783,14 +810,100 @@ function updateAgo(){
 }
 setInterval(()=>{ agoMin++; updateAgo(); }, 60000);
 
-/* map zoom */
-function mapZoom(dir){
-  zoomLevel = Math.min(2, Math.max(1, zoomLevel + dir*0.25));
-  document.getElementById('map-stage').style.transform = 'scale('+zoomLevel+')';
+/* ════════════════════════ DS Map controls — Ver dropdown + Lasso ════════════════════════ */
+function dmeToggleVer(e, btn, menuId){
+  e.stopPropagation();
+  const m = document.getElementById(menuId);
+  const open = m.classList.contains('on');
+  m.classList.toggle('on', !open);
+  btn.classList.toggle('active', !open);
+  if(!open){
+    setTimeout(()=>document.addEventListener('click', function h(ev){
+      if(!btn.parentElement.contains(ev.target)){ m.classList.remove('on'); btn.classList.remove('active'); document.removeEventListener('click',h); }
+    }),0);
+  }
 }
-function mapZoomReset(){
-  zoomLevel = 1;
-  document.getElementById('map-stage').style.transform = 'scale(1)';
+
+let dmeDrawing = {}, dmePts = {};
+const _dmeMove = {}, _dmeEnd = {};
+function dmeToggleLasso(key){
+  const btn = document.getElementById('dme-btn-lasso-'+key);
+  if(btn.classList.contains('active')){ dmeExitLasso(key); return; }
+  btn.classList.add('active');
+  document.getElementById('dme-banner-'+key).classList.add('on');
+  document.getElementById('dme-svg-'+key).classList.add('on');
+  document.getElementById('dme-layer-'+key).classList.add('on');
+  if(fleetMap){ fleetMap.dragging.disable(); fleetMap.scrollWheelZoom.disable(); }
+}
+function dmeExitLasso(key){
+  const btn = document.getElementById('dme-btn-lasso-'+key);
+  if(btn) btn.classList.remove('active');
+  document.getElementById('dme-banner-'+key).classList.remove('on');
+  document.getElementById('dme-svg-'+key).classList.remove('on');
+  document.getElementById('dme-path-'+key).setAttribute('d','');
+  document.getElementById('dme-layer-'+key).classList.remove('on');
+  if(fleetMap){ fleetMap.dragging.enable(); }
+  dmeDrawing[key]=false; dmePts[key]=[];
+  document.removeEventListener('mousemove', _dmeMove[key], {capture:true});
+  document.removeEventListener('mouseup', _dmeEnd[key], {capture:true});
+}
+function dmeLassoStart(e, key){
+  e.preventDefault(); e.stopPropagation();
+  dmeDrawing[key]=true; dmePts[key]=[];
+  const layer = document.getElementById('dme-layer-'+key);
+  const r = layer.getBoundingClientRect();
+  dmePts[key].push([e.clientX-r.left, e.clientY-r.top]);
+  _dmeDraw(key,false);
+  _dmeMove[key] = ev => {
+    if(!dmeDrawing[key]) return;
+    ev.preventDefault();
+    const r2 = layer.getBoundingClientRect();
+    dmePts[key].push([ev.clientX-r2.left, ev.clientY-r2.top]);
+    _dmeDraw(key,false);
+  };
+  _dmeEnd[key] = ev => {
+    document.removeEventListener('mousemove', _dmeMove[key], {capture:true});
+    document.removeEventListener('mouseup', _dmeEnd[key], {capture:true});
+    if(!dmeDrawing[key]) return;
+    dmeDrawing[key]=false;
+    if(dmePts[key].length<3){ return; }
+    const r3 = layer.getBoundingClientRect();
+    dmePts[key].push([ev.clientX-r3.left, ev.clientY-r3.top]);
+    _dmeDraw(key,true);
+    const hits = countLassoHits(key);
+    showToast(hits ? `${hits} conductor${hits>1?'es':''} seleccionado${hits>1?'s':''} con lazo` : 'Ningún conductor dentro del área');
+    setTimeout(()=>dmeExitLasso(key), 700);
+  };
+  document.addEventListener('mousemove', _dmeMove[key], {capture:true, passive:false});
+  document.addEventListener('mouseup', _dmeEnd[key], {capture:true});
+}
+function _dmeDraw(key, close){
+  const pts = dmePts[key]; if(!pts||pts.length<2) return;
+  let d = 'M'+pts[0][0]+','+pts[0][1];
+  for(let i=1;i<pts.length;i++) d+=' L'+pts[i][0]+','+pts[i][1];
+  if(close) d+='Z';
+  document.getElementById('dme-path-'+key).setAttribute('d', d);
+}
+/* count driver markers whose screen point falls inside the lasso polygon */
+function countLassoHits(key){
+  if(!fleetMap) return 0;
+  const pts = dmePts[key];
+  const layer = document.getElementById('dme-layer-'+key);
+  const r = layer.getBoundingClientRect();
+  let count = 0;
+  Object.entries(driverMarkers).forEach(([id, mk]) => {
+    const p = fleetMap.latLngToContainerPoint(mk.getLatLng());
+    if(pointInPoly([p.x, p.y], pts)) count++;
+  });
+  return count;
+}
+function pointInPoly(pt, poly){
+  let inside=false;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+    const xi=poly[i][0], yi=poly[i][1], xj=poly[j][0], yj=poly[j][1];
+    if(((yi>pt[1])!==(yj>pt[1])) && (pt[0] < (xj-xi)*(pt[1]-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
 }
 
 /* dropdowns */
@@ -827,7 +940,19 @@ function showToast(msg){
 }
 
 /* init */
-renderAll();
+renderChips();
+renderList();
+function bootMap(){
+  if(fleetMap) return;
+  if(window.L){
+    initFleetMap();
+    setTimeout(()=>{ if(fleetMap) fleetMap.invalidateSize(); }, 60);
+  } else {
+    const t = setInterval(()=>{ if(window.L){ clearInterval(t); bootMap(); } }, 50);
+  }
+}
+bootMap();
+window.addEventListener('load', ()=>{ bootMap(); if(fleetMap) fleetMap.invalidateSize(); });
 </script>
 </body>
 </html>
