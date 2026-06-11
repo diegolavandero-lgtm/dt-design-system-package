@@ -6394,6 +6394,46 @@ function mOrderCard(o = {}) {
   </div>`;
 }
 
+/* ── Pestañas En ruta / Terminadas ── */
+function mRouteTabs(active = 0, enroute = 12, done = 0) {
+  const tab = (on, icon, label) => `<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:40px;font:${on ? 700 : 400} 14px var(--font-sans);color:${on ? 'var(--b6)' : 'var(--n5)'};border-bottom:2px solid ${on ? 'var(--b6)' : 'transparent'}">${iconSvg(icon, 16, on ? 'var(--b6)' : 'var(--n5)')}${label}</div>`;
+  return `<div style="display:flex;border-bottom:1px solid var(--n2);background:#fff">
+    ${tab(active === 0, 'truck', `En ruta: ${enroute}`)}
+    ${tab(active === 1, 'task-complete', `Terminadas: ${done}`)}
+  </div>`;
+}
+
+/* ── Chip genérico (grupo / filtro) ── */
+function mChip(label, opts = {}) {
+  const sel = opts.selected;
+  const colors = {
+    blue:  ['var(--b6)', '#fff'],
+    amber: ['var(--o1)', 'var(--o7)'],
+  };
+  if (sel) {
+    const [bg, fg] = colors[opts.tone || 'blue'];
+    return `<span style="height:28px;padding:0 10px;border-radius:6px;background:${bg};color:${fg};font:500 12px var(--font-sans);display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0">${escHtml(label)}<span style="opacity:.8">✕</span></span>`;
+  }
+  return `<span style="height:28px;padding:0 10px;border-radius:6px;background:#fff;border:1px solid var(--n3);color:var(--n6);font:500 12px var(--font-sans);display:inline-flex;align-items:center;white-space:nowrap;flex-shrink:0">${escHtml(label)}</span>`;
+}
+
+/* fila scrolleable de chips */
+function mChipRow(chips) {
+  return `<div style="display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:#fff">${chips}</div>`;
+}
+
+/* separador de lista */
+function mDivider(text, tone = 'gray') {
+  const bg = tone === 'blue' ? 'var(--b1)' : 'var(--n1)';
+  return `<div style="padding:6px 12px;background:${bg};font:700 12px var(--font-sans);color:var(--n6)">${text}</div>`;
+}
+
+/* etiqueta de sincronización */
+function mSyncLabel(state) {
+  if (state === 'syncing') return `<span style="display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:4px;background:var(--g1);color:var(--g7);font:600 11px var(--font-sans)">${iconSvg('refresh', 12, 'var(--g7)')}Sincronizando</span>`;
+  return `<span style="display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:4px;background:var(--n2);color:var(--n5);font:600 11px var(--font-sans)">${iconSvg('ban', 12, 'var(--n5)')}Sin sincronizar</span>`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6672,6 +6712,65 @@ Object.assign(renderers, {
       ${mComponentCard(c.collectCard.name, 'NEW', collect, c.collectCard.specs)}
       ${mComponentCard(c.groupCard.name, 'NEW', group, c.groupCard.specs)}
       ${mComponentCard(c.serviceUnit.name, 'NEW', serviceUnit, c.serviceUnit.specs)}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Listas y filtros ── */
+  mLists(data) {
+    const c = data.components || {};
+    const addr = 'Martín de Zamora 5760, 7560969, Las Condes, Región Metropolitana';
+    const wrap = (label, inner, w) => `<div style="width:${w || 320}px">${mLabel(label)}${inner}</div>`;
+    const sheetTop = (inner) => `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;overflow:hidden">${inner}</div>`;
+
+    const tabs = mStage(`
+      ${wrap('En ruta activa', sheetTop(mRouteTabs(0, 12, 0)))}
+      ${wrap('Terminadas activa', sheetTop(mRouteTabs(1, 8, 4)))}
+    `);
+
+    const groupChips = mStage(wrap('Chips de grupo (scroll horizontal)', sheetTop(
+      mChipRow([mChip('Group A', { selected: true }), mChip('Grupo B'), mChip('Grupo C'), mChip('Grupo D'), mChip('Grupo E')].join(''))
+    )));
+
+    const statusChips = mStage(wrap('Filtros de estado (pestaña Terminadas)', sheetTop(
+      mChipRow([
+        `<span style="height:28px;padding:0 10px;border-radius:6px;background:#fff;border:1px solid var(--n3);color:var(--n6);font:500 12px var(--font-sans);display:inline-flex;align-items:center;gap:6px;flex-shrink:0">${iconSvg('checkmark-filled', 13, 'var(--g6)')}Entregado (1)</span>`,
+        mChip('Parcial (1)', { selected: true, tone: 'amber' }),
+        `<span style="height:28px;padding:0 10px;border-radius:6px;background:#fff;border:1px solid var(--n3);color:var(--n6);font:500 12px var(--font-sans);display:inline-flex;align-items:center;gap:6px;flex-shrink:0">${iconSvg('close-filled', 13, 'var(--r6)')}No entregado (1)</span>`,
+      ].join(''))
+    )));
+
+    const dividers = mStage(`
+      ${wrap('Separador de conteo', sheetTop(mDivider('3 órdenes') + `<div style="padding:12px">${mOrderCard({ num: 3, addr, order: 'Orden #3829183954324', custom: false })}</div>`))}
+      ${wrap('Banner tienda solicitante', sheetTop(mDivider('Tienda solicitante: Bodega 1', 'blue') + `<div style="padding:12px">${mOrderCard({ num: 1, addr, order: 'Orden #3829183901471454571', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 })}</div>`))}
+    `);
+
+    const syncCard = (label) => `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:12px;display:flex;gap:10px;align-items:flex-start">
+      ${mPin(1)}
+      <div style="flex:1;min-width:0">${label}
+        <div style="font:700 14px/1.35 var(--font-sans);color:var(--n7);margin-top:4px">${addr}</div>
+        <div style="font:400 12px var(--font-sans);color:var(--n5)">Orden #3829183901234564</div>
+      </div>
+    </div>`;
+    const sync = mStage(`
+      ${wrap('Sin sincronizar', syncCard(mSyncLabel('idle')))}
+      ${wrap('Sincronizando', syncCard(mSyncLabel('syncing')))}
+    `);
+
+    const empty = mStage(wrap('Estado vacío — Terminadas', sheetTop(`
+      <div style="padding:40px 24px;text-align:center">
+        ${iconSvg('location', 32, 'var(--n5)')}
+        <div style="font:400 14px/1.5 var(--font-sans);color:var(--n6);margin-top:12px">Aquí podrás encontrar y ver el detalle de tus órdenes ya gestionadas.</div>
+      </div>`)));
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.tabs.name, 'NEW', tabs, c.tabs.specs)}
+      ${mComponentCard(c.groupChips.name, 'NEW', groupChips, c.groupChips.specs)}
+      ${mComponentCard(c.statusFilters.name, 'NEW', statusChips, c.statusFilters.specs)}
+      ${mComponentCard(c.sectionDivider.name, 'NEW', dividers, c.sectionDivider.specs)}
+      ${mComponentCard(c.syncLabel.name, 'NEW', sync, c.syncLabel.specs,
+        'Comunican el estado offline de cada orden. Ver detalle del flujo completo en Toasts y banners → barra de sincronización.')}
+      ${mComponentCard(c.emptyState.name, 'NEW', empty, c.emptyState.specs)}
       ${mRules(data.rules)}`;
   },
 

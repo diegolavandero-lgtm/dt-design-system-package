@@ -1,0 +1,66 @@
+{
+  "title": "Listas y filtros",
+  "titleKey": "nav.mobile.lists",
+  "description": "Estructura de las listas de órdenes dentro del bottom sheet de ruta. Define las pestañas En ruta / Terminadas, los chips de grupo y de filtro de estado, los separadores de sección, los estados vacíos y las etiquetas de sincronización por orden.",
+  "components": {
+    "tabs": {
+      "name": "DTMRouteTabs",
+      "specs": [
+        ["Pestañas", "En ruta: N · Terminadas: N"],
+        ["Activa", "texto var(--b6) 700 14px + subrayado 2px var(--b6) + icono"],
+        ["Inactiva", "texto var(--n5) 400 14px"],
+        ["Iconos", "truck (En ruta) · task-complete (Terminadas)"],
+        ["Contador", "número anexo al label, mismo peso"]
+      ]
+    },
+    "groupChips": {
+      "name": "DTMGroupChips",
+      "specs": [
+        ["Fila", "scroll horizontal, gap 6dp, sin wrap"],
+        ["Chip", "alto 28dp · radio 6px · borde 1px var(--n3) · fondo #fff"],
+        ["Texto", "small-medium 500 12px var(--n6)"],
+        ["Seleccionado", "fondo var(--b6) · texto #fff · botón × para quitar"],
+        ["Uso", "Group A · Grupo B · Grupo C … filtran la lista por agrupación"]
+      ]
+    },
+    "statusFilters": {
+      "name": "DTMStatusFilterChips",
+      "specs": [
+        ["Aparecen en", "pestaña Terminadas"],
+        ["Chips", "Entregado (N) · Parcial (N) · No entregado (N)"],
+        ["Icono", "punto/estado a la izquierda del label"],
+        ["Seleccionado Parcial", "fondo amber claro var(--o1) · texto var(--o7) · ×"],
+        ["Default", "fondo #fff · borde 1px var(--n3)"]
+      ]
+    },
+    "sectionDivider": {
+      "name": "DTMListDivider",
+      "specs": [
+        ["Separador de conteo", "«N órdenes» — small-bold 700 12px var(--n6) sobre fondo var(--n1)"],
+        ["Banner tienda", "«Tienda solicitante: Bodega 1» — sobre fondo var(--b1), texto var(--n7)"]
+      ]
+    },
+    "syncLabel": {
+      "name": "DTMSyncLabel",
+      "specs": [
+        ["Sin sincronizar", "fondo var(--n2) · texto var(--n5) · icono ban/cloud-off"],
+        ["Sincronizando", "fondo var(--g1) · texto var(--g7) · icono refresh"],
+        ["Comportamiento", "la etiqueta desaparece cuando la orden termina de sincronizar"]
+      ]
+    },
+    "emptyState": {
+      "name": "DTMEmptyState",
+      "specs": [
+        ["Icono", "ilustrativo 32px var(--n5), centrado"],
+        ["Texto", "body 400 14px var(--n6), centrado, máx. 2 líneas"],
+        ["Acción", "DTMButton outline opcional"]
+      ]
+    }
+  },
+  "rules": [
+    "Los chips de filtro de estado solo existen en la pestaña Terminadas.",
+    "El banner «Tienda solicitante» (azul) agrupa órdenes de un mismo origen — no es un filtro.",
+    "Las etiquetas de sincronización son temporales: comunican estado offline y se ocultan al sincronizar.",
+    "El estado vacío de Terminadas explica el propósito: «Aquí podrás encontrar y ver el detalle de tus órdenes ya gestionadas.»"
+  ]
+}
