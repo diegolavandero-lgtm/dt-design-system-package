@@ -6341,15 +6341,17 @@ function mStepper(value, opts = {}) {
   return `<span style="display:inline-flex;align-items:center;gap:0;border-radius:6px">${minus}<span style="min-width:40px;text-align:center;font:500 14px var(--font-sans);color:var(--n7)">${value}</span>${btn('+')}</span>`;
 }
 
-/* ── Pin numerado de orden (pastilla cuadrada) ── */
+/* ── Pin numerado de orden (pastilla cuadrada, radio 4) ──
+   default  = orden actual: fondo var(--b6), número blanco
+   outline  = otras órdenes: fondo blanco, borde 1px var(--b6), número var(--b6) */
 function mPin(num, variant = 'default') {
   const V = {
-    default: 'background:var(--b6);color:#fff',
-    error:   'background:var(--r6);color:#fff',
-    muted:   'background:var(--n4);color:#fff',
+    default: 'background:var(--b6);color:#fff;border:1px solid var(--b6)',
+    outline: 'background:#fff;color:var(--b6);border:1px solid var(--b6)',
+    muted:   'background:var(--n4);color:#fff;border:1px solid var(--n4)',
   };
-  if (variant === 'error') return `<span style="width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--r6)">${iconSvg('close-filled', 14, '#fff')}</span>`;
-  return `<span style="width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font:700 12px var(--font-sans);${V[variant] || V.default}">${num}</span>`;
+  if (variant === 'error') return `<span style="width:22px;height:22px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--r6)">${iconSvg('close-filled', 14, '#fff')}</span>`;
+  return `<span style="width:22px;height:22px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font:700 12px var(--font-sans);${V[variant] || V.default}">${num}</span>`;
 }
 
 /* ── Icono de estado de gestión (círculo) ── */
@@ -6369,20 +6371,28 @@ function mMeta(icon, text) {
   return `<span style="display:inline-flex;align-items:center;gap:3px;color:var(--n5);font:400 12px var(--font-sans)">${iconSvg(icon, 14, 'var(--n5)')}${escHtml(text)}</span>`;
 }
 
+/* ── Chip de campo personalizado (pill gris con dot) ── */
+function mCustomFieldChip(label = 'Campo personalizado') {
+  return `<span style="display:inline-flex;align-items:center;gap:5px;height:22px;padding:2px 8px;border-radius:4px;background:var(--n2);font:600 11px var(--font-sans);color:var(--n6);white-space:nowrap">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--n5)"></span>${escHtml(label)}</span>`;
+}
+
 /* ── DTMOrderCard ──
-   o = {num, addr, order, person, time, items, custom, state, selected, statusLabel} */
+   o = {num, addr, order, person, time, items, custom, state, selected, pin} ·
+   pin: 'default' (orden actual, azul) | 'outline' (otras órdenes) */
 function mOrderCard(o = {}) {
   const state = o.state || 'default';
   const errored = state === 'error';
   const selected = o.selected;
   const border = selected ? '2px solid var(--b6)' : '1px solid var(--n3)';
-  const leftIcon = ['delivered', 'partial', 'failed'].includes(state) ? mStatusIcon(state) : mPin(o.num != null ? o.num : 1, errored ? 'error' : 'default');
+  const pinVariant = errored ? 'error' : (o.pin || 'default');
+  const leftIcon = ['delivered', 'partial', 'failed'].includes(state) ? mStatusIcon(state) : mPin(o.num != null ? o.num : 1, pinVariant);
   const checkbox = selected != null
     ? `<span style="width:18px;height:18px;border-radius:4px;flex-shrink:0;${selected ? 'background:var(--b6);border:none' : 'background:#fff;border:1.5px solid var(--n4)'};display:inline-flex;align-items:center;justify-content:center">${selected ? iconSvg('check', 12, '#fff') : ''}</span>`
     : '';
   const badges = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0">
     ${o.statusBadge !== false ? badgeHtml('Entrega', 'info') : ''}
-    ${o.custom !== false ? `<span style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n6)"><span style="width:6px;height:6px;border-radius:50%;background:var(--n5)"></span>Campo personalizado</span>` : ''}
+    ${o.custom !== false ? mCustomFieldChip() : ''}
   </div>`;
   const meta = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     ${o.person ? mMeta('user', o.person) : ''}
@@ -6393,7 +6403,7 @@ function mOrderCard(o = {}) {
     ${leftIcon}
     <div style="flex:1;min-width:0">
       <div style="font:700 14px/1.35 var(--font-sans);color:${errored ? 'var(--r6)' : 'var(--n7)'}">${escHtml(o.addr || '')}</div>
-      ${o.order ? `<div style="font:400 12px var(--font-sans);color:var(--n5);margin-top:2px">${escHtml(o.order)}</div>` : ''}
+      ${o.order ? `<div style="font:600 11px var(--font-sans);color:var(--n6);margin-top:2px">${escHtml(o.order)}</div>` : ''}
       ${errored ? `<div style="font:600 12px var(--font-sans);color:var(--r6);margin-top:4px;display:flex;align-items:center;gap:5px">${iconSvg('warning', 14, 'var(--r6)')}Dirección no verificada</div>` : badges}
       ${!errored ? meta : ''}
     </div>
@@ -6766,10 +6776,18 @@ Object.assign(renderers, {
 
     /* Order card — estados */
     const orderStates = mStage(`
-      ${wrap('Default', mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 }))}
-      ${wrap('Seleccionada', mOrderCard({ num: 2, addr, order: 'Orden #3829183901234564', person: 'Ana Álvarez', time: '8:00 – 17:00', items: 3, selected: true }))}
+      ${wrap('Orden actual (pin azul)', mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 }))}
+      ${wrap('Otra orden (pin borde azul)', mOrderCard({ num: 2, pin: 'outline', addr, order: 'Orden #3829183901234564', person: 'Ana López', time: '9:00 – 9:30', items: 1 }))}
+      ${wrap('Seleccionada', mOrderCard({ num: 3, pin: 'outline', addr, order: 'Orden #3829183901234564', person: 'Ana Álvarez', time: '8:00 – 17:00', items: 3, selected: true }))}
       ${wrap('Sin georeferencia (error)', mOrderCard({ addr: 'Lux 45, Las Condes, Región Metropolitana', order: 'Orden #3829183901234564', state: 'error' }))}
     `);
+
+    /* Lista de órdenes — gap 8 entre cards, orden actual + otras */
+    const orderList = mStage(wrap('Lista de órdenes (gap 8 · 1 actual + otras)', `<div style="display:flex;flex-direction:column;gap:8px">
+      ${mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 })}
+      ${mOrderCard({ num: 2, pin: 'outline', addr: 'Av. Las Condes 8977 Casa A, Las Condes, Región Metropolitana', order: 'Orden #3829183901840564', person: 'Ana López', time: '9:00 – 9:30', items: 1 })}
+      ${mOrderCard({ num: 3, pin: 'outline', addr, order: 'Orden #3829183901471454571', person: 'Pedro Gómez', time: '9:00 – 10:00', items: 3 })}
+    </div>`));
     const orderStatus = mStage(`
       ${wrap('Terminada · Entregado', mOrderCard({ state: 'delivered', addr, order: 'Orden #3829183901234564', person: 'Ana Álvarez', time: '8:00 – 17:00', items: 3 }))}
       ${wrap('Terminada · Parcial', mOrderCard({ state: 'partial', addr, order: 'Orden #3829183901234564', person: 'Pedro Pérez', time: '8:00 – 17:00', items: 10 }))}
@@ -6833,9 +6851,8 @@ Object.assign(renderers, {
       <div style="background:var(--b1);padding:6px 12px;font:700 12px var(--font-sans);color:var(--n7)">4 órdenes</div>
       <div style="padding:12px">
         <div style="font:700 13px var(--font-sans);color:var(--n7);margin-bottom:6px">Categoría A</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
-          <span style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n6)"><span style="width:6px;height:6px;border-radius:50%;background:var(--n5)"></span>Campo personalizado</span>
-          <span style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n6)"><span style="width:6px;height:6px;border-radius:50%;background:var(--n5)"></span>Otro campo</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          ${mCustomFieldChip()}${mCustomFieldChip('Otro campo')}
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between">
           ${mMeta('user', 'Raúl Ríos, Marta Morales, Camilo C…')}
@@ -6861,7 +6878,7 @@ Object.assign(renderers, {
 
     return `
       ${sectionHeader(data)}
-      ${mComponentCard(c.orderCard.name, 'NEW', orderStates + orderStatus, c.orderCard.specs,
+      ${mComponentCard(c.orderCard.name, 'NEW', orderStates + orderList + orderStatus, c.orderCard.specs,
         'Unidad base de la operación. El pin refleja la parada; el icono de estado solo aparece en órdenes ya gestionadas. La selección usa checkbox + borde azul.')}
       ${mComponentCard(c.routeCard.name, 'NEW', routes, c.routeCard.specs)}
       ${mComponentCard(c.itemCard.name, 'NEW', items, c.itemCard.specs)}
