@@ -198,11 +198,12 @@
     /* ════════════════════════
        WORKSPACE — driver panel + map
     ════════════════════════ */
-    .workspace{flex:1;min-height:0;display:flex;gap:16px;padding:16px 24px}
+    .workspace{flex:1;min-height:0;display:flex;gap:0;padding:16px 24px}
 
     .fleet-panel{
       width:340px;flex-shrink:0;display:flex;flex-direction:column;
-      background:#fff;border:1px solid var(--n3);border-radius:8px;overflow:hidden;
+      background:#fff;border:1px solid var(--n3);border-right:none;
+      border-radius:8px 0 0 8px;overflow:hidden;
     }
     .fleet-panel-hdr{padding:12px;border-bottom:1px solid var(--n3);display:flex;flex-direction:column;gap:8px}
     .fleet-panel-count{font:700 13px var(--font-sans);color:var(--n7)}
@@ -293,7 +294,7 @@
        Leaflet + CARTO Positron · Ver/Lasso terciarios overlay top-right
     ════════════════════════ */
     .map-wrap{
-      flex:1;min-width:0;position:relative;border-radius:8px;
+      flex:1;min-width:0;position:relative;border-radius:0 8px 8px 0;
       border:1px solid var(--n3);overflow:hidden;background:#E9EDF2;
     }
     .dme-map{position:absolute;inset:0;width:100%;height:100%;z-index:1}
@@ -381,8 +382,8 @@
     /* ════ Responsive — desktop breakpoint 960px ════ */
     @media (max-width:960px){
       .workspace{flex-direction:column;padding:12px 16px}
-      .fleet-panel{width:100%;max-height:42vh}
-      .map-wrap{min-height:320px}
+      .fleet-panel{width:100%;max-height:42vh;border:1px solid var(--n3);border-bottom:none;border-radius:8px 8px 0 0}
+      .map-wrap{min-height:320px;border-radius:0 0 8px 8px}
       .filter-bar{padding:10px 16px}
       .page-header{padding:12px 16px}
     }
