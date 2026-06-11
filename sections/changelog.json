@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T16:42:18.401Z",
+  "generated": "2026-06-11T16:54:16.682Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "3b53121",
+          "type": "feat",
+          "section": "General",
+          "message": "DES-828: add Status dropdown filter — 4-filter row (date range · groups · status · search)",
+          "author": "Carlos"
+        },
         {
           "hash": "fb47314",
           "type": "update",
