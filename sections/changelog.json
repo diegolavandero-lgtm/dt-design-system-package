@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T21:25:01.522Z",
+  "generated": "2026-06-11T21:33:11.819Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "980515f",
+          "type": "update",
+          "section": "Badges",
+          "message": "DES-828: subtle shadow on selected pin + center numbers (pin & badge)",
+          "author": "Carlos"
+        },
         {
           "hash": "6f4aa04",
           "type": "update",
