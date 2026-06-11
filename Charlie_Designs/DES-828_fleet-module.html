@@ -648,7 +648,7 @@ const STATUS = {
 const DRIVERS = [
   {id:1,  name:'Cristian Yobani Cuervo Arguello',     plate:'DIM52H', phone:'323 246 7828', status:'ruta', done:7,  total:12, items:18, parc:0, fail:0, group:'Norte',  gps:{x:38,y:24}, last:'hace 1 min',
    dist:'12,4 km', rmin:'2 h 05 min', idle:'8 min', start:'08:30',
-   route:[[66.4,65.5],[55,52],[44,36],[38,24]],
+   route:[[66,66],[55,52],[44,36],[38,24]],
    stops:[
      {r:'10:42', e:'10:55', order:'400003843463', cust:'Alejandra Figueroa', st:'ent'},
      {r:'11:10', e:'11:18', order:'400003843502', cust:'Marcos Peña Soto',   st:'ent'},
@@ -657,7 +657,7 @@ const DRIVERS = [
    ]},
   {id:2,  name:'David Antonio Marin Castrillon',      plate:'CBK53D', phone:'300 791 9728', status:'ruta', done:4,  total:10, items:22, parc:0, fail:0, group:'Norte',  gps:{x:62,y:38}, last:'hace 2 min',
    dist:'8,9 km', rmin:'1 h 32 min', idle:'14 min', start:'09:15',
-   route:[[66.4,65.5],[68,54],[64,45],[62,38]],
+   route:[[66,66],[68,54],[64,45],[62,38]],
    stops:[
      {r:'10:05', e:'10:12', order:'400003844011', cust:'Valentina Cruz',  st:'ent'},
      {r:'10:48', e:null,    order:'400003844036', cust:'Rodrigo Salinas', st:'next'},
@@ -665,7 +665,7 @@ const DRIVERS = [
    ]},
   {id:3,  name:'Jesus David Charris Jacome',          plate:'UIU90G', phone:'304 413 0162', status:'ruta', done:6,  total:8,  items:9,  parc:0, fail:0, group:'Centro', gps:{x:47,y:55}, last:'hace 1 min',
    dist:'15,1 km', rmin:'2 h 40 min', idle:'5 min', start:'08:00',
-   route:[[66.4,65.5],[58,62],[51,58],[47,55]],
+   route:[[66,66],[58,62],[51,58],[47,55]],
    stops:[
      {r:'10:30', e:'10:41', order:'400003845120', cust:'Ignacio Fuentes',   st:'ent'},
      {r:'11:02', e:'11:09', order:'400003845133', cust:'Daniela Vergara',   st:'ent'},
@@ -673,7 +673,7 @@ const DRIVERS = [
    ]},
   {id:4,  name:'Jeferson Arley Giraldo Alvarez',      plate:'YDZ26D', phone:'300 484 8070', status:'ruta', done:2,  total:11, items:27, parc:0, fail:1, group:'Centro', gps:{x:75,y:62}, last:'hace 4 min',
    dist:'5,2 km', rmin:'58 min', idle:'21 min', start:'10:00',
-   route:[[66.4,65.5],[70,67],[73,64],[75,62]],
+   route:[[66,66],[70,67],[73,64],[75,62]],
    stops:[
      {r:'10:25', e:'10:33', order:'400003846207', cust:'Josefa Miranda',  st:'ent'},
      {r:'10:55', e:'11:02', order:'400003846219', cust:'Andrés Bustos',   st:'fail'},
@@ -681,7 +681,7 @@ const DRIVERS = [
    ]},
   {id:5,  name:'Rafael Santos Prens Polo',            plate:'YID16G', phone:'311 718 7732', status:'ruta', done:10, total:14, items:11, parc:1, fail:0, group:'Sur',    gps:{x:25,y:64}, last:'hace 1 min',
    dist:'18,7 km', rmin:'3 h 12 min', idle:'6 min', start:'07:45',
-   route:[[66.4,65.5],[52,69],[38,67],[25,64]],
+   route:[[66,66],[52,69],[38,67],[25,64]],
    stops:[
      {r:'10:15', e:'10:24', order:'400003847301', cust:'Beatriz Olivares', st:'ent'},
      {r:'10:50', e:'10:58', order:'400003847312', cust:'Hugo Saavedra',    st:'parc'},
@@ -843,15 +843,15 @@ function renderList(){
 const SANTIAGO = [-33.4489, -70.6693];
 const TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 const TILE_OPTS = {attribution:'© CARTO', subdomains:'abcd', maxZoom:19};
-const DC_LATLNG = [-33.4672, -70.6420];
+const DC_LATLNG = gpsToLatLng({x:66, y:66}); // centro de distribución en el mismo espacio porcentual
 /* DS map pin assets — literal SVG resources from sections/assets/pins/ */
 const PIN_DIR = '../sections/assets/pins/';
 
 let fleetMap = null, driverMarkers = {}, dcMarker = null;
 const layerVisible = {ruta:true, fin:true, dc:true};
 
-/* Map each driver's x/y (0–100) to a latlng across Santiago */
-function gpsToLatLng(g){ return [ -33.405 - (g.y/100)*0.095, -70.725 + (g.x/100)*0.125 ]; }
+/* Map each driver's x/y (0–100) to a latlng across central Santiago (compact spread) */
+function gpsToLatLng(g){ return [ -33.418 - (g.y/100)*0.05, -70.700 + (g.x/100)*0.06 ]; }
 
 /* ── DS map pin: use the actual exported SVG assets as Leaflet icons ──
    Natural sizes: unselected 33×49, selected 33×47 (tip at ~16.5,40.5).
@@ -906,11 +906,21 @@ function withOrderIcon(n, badge){
 
 function initFleetMap(){
   if(!window.L || fleetMap) return;
-  fleetMap = L.map('dme-map-main', {center:SANTIAGO, zoom:12, zoomControl:true, scrollWheelZoom:false});
+  fleetMap = L.map('dme-map-main', {center:SANTIAGO, zoom:12, zoomSnap:0.5, zoomControl:true, scrollWheelZoom:false});
   L.tileLayer(TILE_URL, TILE_OPTS).addTo(fleetMap);
   dcMarker = L.marker(DC_LATLNG, {icon:pinIcon('pin-distribution-center'), zIndexOffset:-100})
     .bindTooltip('Centro de distribución', {className:'dme-pin-tip', direction:'top', offset:[0,-44]});
   renderMarkers();
+  fitFleet();
+}
+
+/* Encuadre inicial: ajusta el viewport a todos los pines visibles (sin exagerar el zoom) */
+function fitFleet(){
+  if(!fleetMap) return;
+  const pts = DRIVERS.filter(d=>d.gps && STATUS[d.status].pin).map(d=>gpsToLatLng(d.gps));
+  pts.push(DC_LATLNG);
+  if(pts.length < 2) return;
+  fleetMap.fitBounds(L.latLngBounds(pts), {padding:[40,40], maxZoom:14, animate:false});
 }
 
 /* (Re)draw all driver markers from the current filter + layer state */
@@ -1329,13 +1339,13 @@ function bootMap(){
   if(fleetMap) return;
   if(window.L){
     initFleetMap();
-    setTimeout(()=>{ if(fleetMap) fleetMap.invalidateSize(); }, 60);
+    setTimeout(()=>{ if(fleetMap){ fleetMap.invalidateSize(); fitFleet(); } }, 60);
   } else {
     const t = setInterval(()=>{ if(window.L){ clearInterval(t); bootMap(); } }, 50);
   }
 }
 bootMap();
-window.addEventListener('load', ()=>{ bootMap(); if(fleetMap) fleetMap.invalidateSize(); });
+window.addEventListener('load', ()=>{ bootMap(); if(fleetMap){ fleetMap.invalidateSize(); fitFleet(); } });
 </script>
 </body>
 </html>
