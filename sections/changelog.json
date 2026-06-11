@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T19:47:32.691Z",
+  "generated": "2026-06-11T19:49:58.469Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "30e8d93",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): altura del drawer del menu lateral a 640px en los ejemplos",
+          "author": "Diego"
+        },
         {
           "hash": "7799ab4",
           "type": "fix",
