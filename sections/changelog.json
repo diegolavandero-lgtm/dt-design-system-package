@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T18:48:18.208Z",
+  "generated": "2026-06-11T18:51:36.755Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "cd7b7f6",
+          "type": "update",
+          "section": "Modal",
+          "message": "feat(mobile-ds): seccion Bottom sheets (DTMBottomSheet, DTMRouteHeader, DTMSheetActionMenu, DTMUnsavedChangesModal)",
+          "author": "Diego"
+        },
         {
           "hash": "591e512",
           "type": "update",
