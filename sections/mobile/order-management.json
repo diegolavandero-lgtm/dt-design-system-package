@@ -6,7 +6,8 @@
     "statusSelector": {
       "name": "DTMStatusSelector",
       "specs": [
-        ["Composición", "segmented de 3 opciones: No entregado · Parcial · Entregado"],
+        ["Composición", "segmented de 3 partes conectadas (tabs): No entregado · Parcial · Entregado"],
+        ["Alto", "64dp · texto en una sola línea · divisor 1px var(--n3) entre segmentos"],
         ["Default", "fondo #fff · borde 1px var(--n3) · icono + label var(--n6)"],
         ["Entregado (sel)", "fondo var(--g1) · borde var(--g5) · texto var(--g7) · check verde"],
         ["Parcial (sel)", "fondo var(--o1) · borde var(--o5) · texto var(--o7)"],
@@ -65,9 +66,10 @@
     "successScreen": {
       "name": "DTMSuccessScreen",
       "specs": [
-        ["Fondo", "fullscreen var(--b6) azul"],
-        ["Icono", "checkmark circular blanco 64px"],
-        ["Texto", "«Gestión finalizada» — title 700 22px #fff"],
+        ["Tamaño", "360×640 · fullscreen var(--b6) azul"],
+        ["Icono", "anillo blanco (circle stroke) con check blanco al centro, 120px"],
+        ["Texto", "«Gestión finalizada» — title 700 24px #fff"],
+        ["Layout", "ícono y texto centrados vertical y horizontalmente"],
         ["Comportamiento", "auto-retorno a la lista de ruta tras 1–2s"]
       ]
     }

@@ -6539,25 +6539,32 @@ function mSignatureStroke(color = 'var(--b6)') {
   return `<svg viewBox="0 0 200 70" style="width:140px;height:50px"><path d="M8,50 C20,10 30,60 42,38 C52,20 60,55 72,40 C88,20 96,58 110,35 C120,18 128,52 140,40 C150,30 160,46 175,22 L172,40 L185,30" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
-/* ── Selector de estado (segmented 3 o 2 opciones) ──
-   options = [{label, icon, tone}], selectedIndex ── */
+/* ── Selector de estado (segmented de 3/2 partes conectadas) ──
+   options = [{label, icon, tone}], selectedIndex · alto 64px, texto en una línea ── */
 function mStatusSelector(options, selectedIndex) {
   const TONE = {
     g: ['var(--g1)', 'var(--g5)', 'var(--g7)'],
     o: ['var(--o1)', 'var(--o5)', 'var(--o7)'],
     r: ['var(--r1)', 'var(--r6)', 'var(--r6)'],
   };
-  return `<div style="display:flex;gap:8px">${options.map((opt, i) => {
+  const seg = options.map((opt, i) => {
     const sel = i === selectedIndex;
     const t = TONE[opt.tone] || TONE.g;
-    const style = sel
-      ? `background:${t[0]};border:1px solid ${t[1]};color:${t[2]}`
-      : 'background:#fff;border:1px solid var(--n3);color:var(--n6)';
-    return `<div style="flex:1;border-radius:8px;${style};padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px">
-      ${iconSvg(opt.icon, 16, sel ? t[2] : 'var(--n5)')}
-      <span style="font:${sel ? 600 : 400} 12px var(--font-sans)">${escHtml(opt.label)}</span>
+    // divisor entre segmentos: solo si ni este ni el siguiente están seleccionados
+    const showDivider = i < options.length - 1 && !sel && (i + 1) !== selectedIndex;
+    const base = 'flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;box-sizing:border-box';
+    if (sel) {
+      return `<div style="${base};margin:-1px;border:1.5px solid ${t[1]};background:${t[0]};border-radius:12px">
+        ${iconSvg(opt.icon, 18, t[2])}
+        <span style="font:600 13px/1 var(--font-sans);color:${t[2]};white-space:nowrap">${escHtml(opt.label)}</span>
+      </div>`;
+    }
+    return `<div style="${base};${showDivider ? 'border-right:1px solid var(--n3)' : ''}">
+      ${iconSvg(opt.icon, 18, 'var(--n4)')}
+      <span style="font:400 13px/1 var(--font-sans);color:var(--n6);white-space:nowrap">${escHtml(opt.label)}</span>
     </div>`;
-  }).join('')}</div>`;
+  }).join('');
+  return `<div style="display:flex;height:64px;border:1px solid var(--n3);border-radius:12px;background:#fff">${seg}</div>`;
 }
 
 /* Lista de reglas (viñetas) para secciones móviles */
@@ -6952,10 +6959,10 @@ Object.assign(renderers, {
 
     /* Status selector */
     const status = mStage(`
-      ${wrap('Entrega · Entregado', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 2)}</div>`)}
-      ${wrap('Entrega · Parcial', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 1)}</div>`)}
-      ${wrap('Entrega · No entregado', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 0)}</div>`)}
-      ${wrap('Recogida (variante)', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(pickup, 2)}</div>`)}
+      ${wrap('Entrega · Entregado', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 2)}</div>`, 360)}
+      ${wrap('Entrega · Parcial', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 1)}</div>`, 360)}
+      ${wrap('Entrega · No entregado', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(delivery, 0)}</div>`, 360)}
+      ${wrap('Recogida (variante)', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${mStatusSelector(pickup, 2)}</div>`, 360)}
     `);
 
     /* Substatus */
@@ -7042,12 +7049,16 @@ Object.assign(renderers, {
       ${wrap('Confirmar monto (discrepancia)', confirmAmount, 280)}
     `);
 
-    /* Success screen */
-    const success = mPhone(`<div style="background:var(--b6);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:420px;gap:20px">
-      <span style="width:64px;height:64px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center">${iconSvg('checkmark-filled', 40, '#fff')}</span>
-      <div style="font:700 22px var(--font-sans);color:#fff">Gestión finalizada</div>
-    </div>`, { width: 240 });
-    const successStage = mStage(wrap('Pantalla de éxito', success, 240));
+    /* Success screen — 360×640, icono y texto centrados */
+    const successCheck = `<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="52" stroke="#fff" stroke-width="6"/>
+      <path d="M38 61 L53 77 L83 43" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+    const success = mPhone(`<div style="background:var(--b6);width:360px;height:640px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px">
+      ${successCheck}
+      <div style="font:700 24px var(--font-sans);color:#fff">Gestión finalizada</div>
+    </div>`, { width: 360 });
+    const successStage = mStage(wrap('Pantalla de éxito (360×640)', success, 360));
 
     return `
       ${sectionHeader(data)}
