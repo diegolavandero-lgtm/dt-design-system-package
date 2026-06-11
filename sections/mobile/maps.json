@@ -1,0 +1,60 @@
+{
+  "title": "Mapa",
+  "titleKey": "nav.mobile.maps",
+  "description": "Elementos del mapa de la app de conductores: pins de parada y de estado, líneas de ruta, controles flotantes (FABs) y el widget de navegación que se superpone sobre Waze o Google Maps. El mapa es la capa base de la operación en ruta, sobre la que se monta el bottom sheet.",
+  "components": {
+    "pins": {
+      "name": "DTMMapPin",
+      "specs": [
+        ["Forma", "gota (border-radius 50% 50% 50% 0, rotada -45°) con borde blanco 2px"],
+        ["Numerado", "fondo var(--b6) · número #fff — refleja el orden de la parada"],
+        ["Seleccionado", "mismo pin escalado (34px) y elevado"],
+        ["Inactivo", "fondo var(--n4) gris — orden fuera del foco actual"],
+        ["Actual", "fondo var(--o5) naranja — parada en gestión"],
+        ["Start", "pin con icono de bandera/inicio"],
+        ["Estado", "verde entregado · amber parcial · rojo no entregado (en tab Terminadas)"],
+        ["Cluster", "círculo con contador cuando hay pins agrupados por zoom"]
+      ]
+    },
+    "routeLine": {
+      "name": "DTMRouteLine",
+      "specs": [
+        ["Tramo recorrido", "línea var(--b5) azul, 5px, redondeada"],
+        ["Tramo activo / desvío", "línea var(--o5) naranja"],
+        ["Toggle", "«Línea del mapa» en el menú contextual la muestra/oculta"]
+      ]
+    },
+    "fabs": {
+      "name": "DTMMapFABs",
+      "specs": [
+        ["Ubicación", "FAB blanco con sombra · icono location · centra en el conductor"],
+        ["Vista completa", "FAB blanco · icono expand · alterna full map"],
+        ["Capas / acciones", "FAB azul var(--b6) · icono de acción principal del mapa"],
+        ["Tamaño", "44×44dp circular · gap 10dp · esquina inferior derecha"]
+      ]
+    },
+    "navWidget": {
+      "name": "DTMNavWidget",
+      "specs": [
+        ["Contexto", "card flotante sobre la app de navegación (Waze / Google Maps)"],
+        ["Contenido", "dirección + nº orden + chips Llamar/Llegando/Atrasado + CTA Llegué"],
+        ["Colapsado", "solo dirección y persona; expande al tocar"],
+        ["Abrir app", "enlace «Abrir DT Conductores» para volver a la app"]
+      ]
+    },
+    "georefModal": {
+      "name": "DTMGeorefModal",
+      "specs": [
+        ["Título", "«Órdenes sin georeferencia»"],
+        ["Cuerpo", "«Tienes N órdenes sin georeferencia. Al continuar considera que no aparecerán dentro del mapa.»"],
+        ["Acciones", "Cancelar (outline) + Continuar (primario)"]
+      ]
+    }
+  },
+  "rules": [
+    "El color del pin es semántico igual que en las cards: azul activo, gris inactivo, naranja en gestión, verde/amber/rojo según resultado.",
+    "El pin numerado refleja el orden de la parada en la ruta, nunca un identificador arbitrario.",
+    "El widget de navegación permite operar la orden sin salir de la app de mapas externa.",
+    "Las órdenes sin georeferencia se advierten con modal antes de iniciar u optimizar la ruta."
+  ]
+}

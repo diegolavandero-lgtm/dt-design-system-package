@@ -129,6 +129,9 @@ const ICON_PATHS = {
   'camera':            '<path d="M16,11a5,5,0,1,0,5,5A5,5,0,0,0,16,11Zm0,8a3,3,0,1,1,3-3A3,3,0,0,1,16,19Z"/><path d="M28,7H22.39L20.79,4.21A2,2,0,0,0,19.06,3H12.94a2,2,0,0,0-1.73,1.21L9.61,7H4a2,2,0,0,0-2,2V25a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V9A2,2,0,0,0,28,7Zm0,18H4V9h6.76l1.6-3h7.28l1.6,3H28Z"/>',
   'pen':               '<path d="M27.87,7.86,23.14,3.13a1,1,0,0,0-1.41,0L4.15,20.71a1,1,0,0,0-.29.71V26a1,1,0,0,0,1,1h4.59a1,1,0,0,0,.7-.29L27.87,9.27A1,1,0,0,0,27.87,7.86ZM9,25H6V22l11-11,3,3ZM21,12.59,18,9.59l4.43-4.43,3,3Z"/>',
   'qr':                '<path d="M2 2h12v12H2zm2 2v8h8V4zm2 2h4v4H6zM18 2h12v12H18zm2 2v8h8V4zm2 2h4v4h-4zM2 18h12v12H2zm2 2v8h8v-8zm2 2h4v4H6zM18 18h4v4h-4zM26 18h4v4h-4zM22 22h4v4h-4zM18 26h4v4h-4zM26 26h4v4h-4z"/>',
+  'maximize':          '<path d="M30 18v8a4 4 0 0 1-4 4h-8v-2h8a2 2 0 0 0 2-2v-8zM6 14V6a2 2 0 0 1 2-2h8V2H8a4 4 0 0 0-4 4v8z"/>',
+  'gps':               '<path d="M16 9a7 7 0 1 0 7 7 7 7 0 0 0-7-7zm0 12a5 5 0 1 1 5-5 5 5 0 0 1-5 5z"/><path d="M17 2h-2v4h2zM17 26h-2v4h2zM6 15H2v2h4zM30 15h-4v2h4z"/><circle cx="16" cy="16" r="2"/>',
+  'navigation':        '<path d="M16 2 4 28l12-6 12 6z"/>',
   // PlannerPro icons
   'planner-route':     '<path d="M28.78,8.22,23.56,3,22.14,4.41,25.73,8H4v2H25.73l-3.59,3.59,1.42,1.41,5.22-5.22A1,1,0,0,0,28.78,8.22Z"/><path d="M6.27,22H28V20H6.27l3.59-3.59L8.44,15,3.22,20.22a1,1,0,0,0,0,1.36L8.44,27l1.41-1.41Z"/>',
   'time':              '<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/><polygon points="17 8 15 8 15 17 23 17 23 15 17 15 17 8"/>',
@@ -6835,6 +6838,76 @@ Object.assign(renderers, {
       ${mComponentCard(c.collectCard.name, 'NEW', collect, c.collectCard.specs)}
       ${mComponentCard(c.groupCard.name, 'NEW', group, c.groupCard.specs)}
       ${mComponentCard(c.serviceUnit.name, 'NEW', serviceUnit, c.serviceUnit.specs)}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Mapa ── */
+  mMaps(data) {
+    const c = data.components || {};
+    const wrap = (label, inner, w) => `<div style="width:${w || 300}px">${mLabel(label)}${inner}</div>`;
+
+    /* Pins */
+    const pinStage = mStage(`
+      <div style="display:flex;align-items:flex-end;gap:18px">
+        <div style="text-align:center">${mMapPin('3')}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Numerado</div></div>
+        <div style="text-align:center">${mMapPin('1', { selected: true })}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Seleccionado</div></div>
+        <div style="text-align:center">${mMapPin('5', { bg: 'var(--n4)' })}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Inactivo</div></div>
+        <div style="text-align:center">${mMapPin('2', { bg: 'var(--o5)' })}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Actual</div></div>
+        <div style="text-align:center">${mMapPin('', { icon: 'location' })}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Start</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:18px;margin-top:18px">
+        <div style="text-align:center">${mMapPin('', { bg: 'var(--g6)', icon: 'checkmark-filled' })}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Entregado</div></div>
+        <div style="text-align:center">${mMapPin('', { bg: 'var(--o5)', icon: 'ban' })}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Parcial</div></div>
+        <div style="text-align:center">${mMapPin('', { bg: 'var(--r6)', icon: 'close-filled' })}<div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">No entregado</div></div>
+        <div style="text-align:center"><span style="width:30px;height:30px;border-radius:50%;background:var(--b6);border:2px solid #fff;box-shadow:0 1px 3px rgba(19,32,69,.3);color:#fff;font:700 12px var(--font-sans);display:inline-flex;align-items:center;justify-content:center">12</span><div style="font:400 11px var(--font-sans);color:var(--n5);margin-top:6px">Cluster</div></div>
+      </div>
+    `, { align: 'flex-start', col: true });
+
+    /* FABs sobre mapa */
+    const fab = (bg, icon, color) => `<span style="width:44px;height:44px;border-radius:50%;background:${bg};box-shadow:0 2px 6px rgba(19,32,69,.2);display:flex;align-items:center;justify-content:center">${iconSvg(icon, 20, color)}</span>`;
+    const mapWithFabs = mPhone(`<div style="position:relative">${mMapBg(280)}
+      <div style="position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:10px">
+        ${fab('#fff', 'gps', 'var(--n6)')}
+        ${fab('#fff', 'maximize', 'var(--n6)')}
+        ${fab('var(--b6)', 'navigation', '#fff')}
+      </div>
+      <div style="position:absolute;left:30%;top:35%">${mMapPin('1', { selected: true })}</div>
+      <div style="position:absolute;left:55%;top:25%">${mMapPin('2')}</div>
+      <div style="position:absolute;left:45%;top:60%">${mMapPin('3', { bg: 'var(--n4)' })}</div>
+    </div>`, { width: 280 });
+    const fabsStage = mStage(wrap('FABs y pins sobre el mapa', mapWithFabs, 280));
+
+    /* Nav widget */
+    const navWidget = `<div style="background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(19,32,69,.18);overflow:hidden">
+      <div style="padding:12px;display:flex;gap:10px;align-items:flex-start">
+        ${mPin(1)}
+        <div style="flex:1;min-width:0">
+          <div style="font:700 13px/1.35 var(--font-sans);color:var(--n7)">Av. Las Condes 8977 Casa A, Las Condes, 7753425, Región Metro…</div>
+          <div style="display:flex;gap:8px;margin-top:6px">${badgeHtml('Entrega', 'info')}<span style="display:inline-flex;align-items:center;gap:4px;font:400 12px var(--font-sans);color:var(--n6)"><span style="width:6px;height:6px;border-radius:50%;background:var(--r6)"></span>Prioridad: Alta</span></div>
+          <div style="display:flex;gap:10px;margin-top:6px">${mMeta('time', '8:00 – 9:00')}${mMeta('package', '3')}</div>
+        </div>
+        ${iconSvg('overflow-menu-vertical', 18, 'var(--n5)')}
+      </div>
+      <div style="padding:0 12px 12px">${mBtn('Llegué', 'primary', 'default', 'width:100%')}</div>
+    </div>`;
+    const navStage = mStage(wrap('Widget de navegación (sobre Waze / Google Maps)', `<div style="background:#cfe0c8;border-radius:12px;padding:14px">${navWidget}</div>`, 320));
+
+    /* Georef modal */
+    const georef = `<div style="background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(19,32,69,.2);padding:20px;width:280px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font:700 15px var(--font-sans);color:var(--n7)">Órdenes sin georeferencia</span>${iconSvg('close-filled', 16, 'var(--n5)')}</div>
+      <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:18px">Tienes 2 órdenes sin georeferencia. Al continuar considera que no aparecerán dentro del mapa.</div>
+      <div style="display:flex;gap:10px">${mBtn('Cancelar', 'outline', 'default', 'flex:1')}${mBtn('Continuar', 'primary', 'default', 'flex:1')}</div>
+    </div>`;
+    const georefStage = mStage(wrap('Modal — órdenes sin georeferencia', georef, 300));
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.pins.name, 'NEW', pinStage, c.pins.specs,
+        'El color del pin es semántico, igual que en las cards: azul activo, gris inactivo, naranja en gestión, verde/amber/rojo según resultado.')}
+      ${mComponentCard(c.routeLine.name, 'NEW', mStage(wrap('Línea de ruta (azul recorrido / naranja activo)', mPhone(mMapBg(180), { width: 280 }), 280)), c.routeLine.specs)}
+      ${mComponentCard(c.fabs.name, 'NEW', fabsStage, c.fabs.specs)}
+      ${mComponentCard(c.navWidget.name, 'NEW', navStage, c.navWidget.specs)}
+      ${mComponentCard(c.georefModal.name, 'NEW', georefStage, c.georefModal.specs)}
       ${mRules(data.rules)}`;
   },
 
