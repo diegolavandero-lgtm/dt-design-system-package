@@ -1,0 +1,78 @@
+{
+  "title": "Inputs",
+  "titleKey": "nav.mobile.inputs",
+  "description": "Campos de entrada de la app móvil. Heredan los tokens del input de escritorio (radio 6px, focus azul con fondo claro) con alto 44dp para uso táctil. Incluyen la barra de búsqueda con escáner, el PIN de verificación, los steppers de cantidad y el dropdown móvil.",
+  "components": {
+    "textInput": {
+      "name": "DTMTextInput",
+      "specs": [
+        ["Alto", "44dp"],
+        ["Radio", "6px"],
+        ["Borde", "1px var(--n3) · con valor 1px var(--n5)"],
+        ["Focus", "2px var(--b6) + fondo var(--b1)"],
+        ["Error", "1px var(--r6) + mensaje small 12px var(--r6) debajo"],
+        ["Válido", "1px var(--g5) + check verde a la derecha"],
+        ["Label", "small-medium 500 12px var(--n6), arriba · obligatorio con * inicial"],
+        ["Helper", "small 400 12px var(--n5), debajo"],
+        ["Tipografía", "body 400 14px var(--n7) · placeholder var(--n6)"]
+      ]
+    },
+    "searchBar": {
+      "name": "DTMSearchBar",
+      "specs": [
+        ["Alto", "44dp"],
+        ["Iconos", "search 16px var(--n5) izquierda · close-filled 16px (limpiar) + escáner 18px derecha"],
+        ["Focus", "2px var(--b6)"],
+        ["Contexto", "vive en la parte superior del bottom sheet de búsqueda"],
+        ["Búsqueda por", "dirección, número de orden, cliente o ítem"]
+      ]
+    },
+    "pinInput": {
+      "name": "DTMPinInput",
+      "specs": [
+        ["Casillas", "6 · 44×52dp · radio 6px · gap 8dp"],
+        ["Dígito", "title 700 22px var(--n7), centrado"],
+        ["Vacío / focus", "borde 1px var(--n3) · casilla activa 2px var(--b6)"],
+        ["Error", "borde 1px var(--r6) + mensaje «Código incorrecto» small-medium var(--r6)"],
+        ["Correcto", "borde 1px var(--g5) + mensaje «Ingresado correctamente» small-medium var(--g6)"],
+        ["Supervisor", "borde var(--g5) con asteriscos — «Desbloqueado por supervisor»"],
+        ["Teclado", "numérico nativo · avance automático entre casillas"]
+      ]
+    },
+    "stepper": {
+      "name": "DTMStepper",
+      "specs": [
+        ["Composición", "botón − · valor · botón +"],
+        ["Botones", "32×32dp · borde 1px var(--n3) · radio 6px · icono 14px var(--n6)"],
+        ["Valor", "body-medium 500 14px var(--n7) · ancho mínimo 40dp centrado"],
+        ["Mínimo", "cuando el valor llega al mínimo eliminable, − se reemplaza por basurero var(--r6)"],
+        ["Disabled", "iconos y borde var(--n4)"]
+      ]
+    },
+    "dropdown": {
+      "name": "DTMDropdown",
+      "specs": [
+        ["Alto", "44dp · mismo patrón visual que DTMTextInput"],
+        ["Icono", "chevron--down 16px var(--n5)"],
+        ["Menú", "hoja inferior u overlay nativo con ítems de 44dp"],
+        ["Buscable", "variante con campo «Buscar subestado» dentro del menú"],
+        ["Regla", "nunca usar <select> en web embebida — siempre el componente DS"]
+      ]
+    },
+    "textarea": {
+      "name": "DTMTextarea",
+      "specs": [
+        ["Alto", "4 líneas visibles (~96dp), scroll interno después"],
+        ["Tokens", "idénticos a DTMTextInput"],
+        ["Uso", "campo «Observaciones» en recaudo y pruebas de entrega"]
+      ]
+    }
+  },
+  "nativeRule": "Los selectores de fecha y hora usan SIEMPRE los pickers nativos del sistema operativo (Material en Android, ruedas/calendario en iOS). El DS no define pickers propios — solo el campo disparador, que es un DTMTextInput con icono calendar o time.",
+  "rules": [
+    "Los campos obligatorios marcan el label con * inicial y muestran helper «*Requerido…» cuando aplica.",
+    "La validación es inline y por campo — nunca un toast genérico de formulario.",
+    "El teclado se ajusta al tipo de dato: numérico para montos y PIN, email para correos.",
+    "El campo de monto siempre indica el formato esperado en el helper (ej. $500,67)."
+  ]
+}

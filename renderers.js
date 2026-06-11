@@ -6306,6 +6306,34 @@ function mBtn(label, variant = 'primary', state = 'default', extra = '') {
   return `<button style="height:40px;padding:0 20px;border-radius:100px;font:700 14px/1 var(--font-sans);${s};cursor:${state === 'disabled' ? 'not-allowed' : 'pointer'};display:inline-flex;align-items:center;justify-content:center;gap:6px;box-sizing:border-box;${extra}">${label}</button>`;
 }
 
+/* ── DTMTextInput (estático para previews): state = default|focus|filled|error|valid|disabled ── */
+function mInput(label, value, state = 'default', helper = '', opts = {}) {
+  const S = {
+    default: 'border:1px solid var(--n3);background:#fff',
+    focus:   'border:2px solid var(--b6);background:var(--b1)',
+    filled:  'border:1px solid var(--n5);background:#fff',
+    error:   'border:1px solid var(--r6);background:#fff',
+    valid:   'border:1px solid var(--g5);background:#fff',
+    disabled:'border:1px solid var(--n3);background:var(--n1)',
+  };
+  const isPlaceholder = state === 'default' || state === 'focus' || state === 'disabled';
+  const right = state === 'valid' ? iconSvg('checkmark-filled', 16, 'var(--g6)') : (opts.rightIcon ? iconSvg(opts.rightIcon, 16, 'var(--n5)') : '');
+  return `<div style="margin-bottom:14px">
+    ${label ? `<div style="font:500 12px var(--font-sans);color:var(--n6);margin-bottom:5px">${escHtml(label)}</div>` : ''}
+    <div style="height:44px;border-radius:6px;${S[state] || S.default};display:flex;align-items:center;justify-content:space-between;padding:0 12px;box-sizing:border-box">
+      <span style="font:400 14px var(--font-sans);color:${isPlaceholder ? 'var(--n6)' : 'var(--n7)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(value)}</span>${right}
+    </div>
+    ${helper ? `<div style="font:400 12px var(--font-sans);color:${state === 'error' ? 'var(--r6)' : 'var(--n5)'};margin-top:4px">${escHtml(helper)}</div>` : ''}
+  </div>`;
+}
+
+/* ── DTMStepper: trash=true muestra basurero en el mínimo ── */
+function mStepper(value, opts = {}) {
+  const btn = (inner, danger) => `<button style="width:32px;height:32px;border:1px solid ${danger ? 'var(--r6)' : 'var(--n3)'};border-radius:6px;background:${danger ? 'var(--r6)' : '#fff'};display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font:500 16px var(--font-sans);color:var(--n6)">${inner}</button>`;
+  const minus = opts.trash ? btn(iconSvg('delete', 14, '#fff'), true) : btn('−');
+  return `<span style="display:inline-flex;align-items:center;gap:0;border-radius:6px">${minus}<span style="min-width:40px;text-align:center;font:500 14px var(--font-sans);color:var(--n7)">${value}</span>${btn('+')}</span>`;
+}
+
 /* Lista de reglas (viñetas) para secciones móviles */
 function mRules(rules) {
   if (!rules || !rules.length) return '';
@@ -6482,6 +6510,100 @@ Object.assign(renderers, {
         'De izquierda a derecha: primario relleno, outline, ghost con sombra (sobre mapa), danger y disabled.')}
       ${mComponentCard(c.quickChip.name, 'NEW', chips, c.quickChip.specs,
         'Viven bajo la información de entrega en el detalle de orden. Disparan acciones de un toque sin abrir formularios.')}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Inputs ── */
+  mInputs(data) {
+    const c = data.components || {};
+    const col = (inner, w) => `<div style="width:${w || 260}px;background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${inner}</div>`;
+
+    /* Estados del input de texto */
+    const textStates = mStage(`
+      ${col(`
+        ${mInput('Texto', 'Escribir', 'default')}
+        ${mInput('*Monto', 'Ingresa monto', 'focus', '*Requerido. Valor con opción decimal, ej. $500,67')}
+        ${mInput('*Monto', '$35.000', 'filled')}
+      `)}
+      ${col(`
+        ${mInput('*RUT de quien recibe', '16.999.99-9', 'error', 'RUT inválido')}
+        ${mInput('Dirección', 'Av. Las Condes 8977, Región Met…', 'valid')}
+        ${mInput('Número', 'No editable', 'disabled')}
+      `)}
+    `);
+
+    /* Search bar */
+    const searchBar = (content, focus) => `<div style="height:44px;border-radius:6px;border:${focus ? '2px solid var(--b6)' : '1px solid var(--n3)'};background:#fff;display:flex;align-items:center;gap:8px;padding:0 12px;box-sizing:border-box">
+      ${iconSvg('search', 16, 'var(--n5)')}
+      <span style="flex:1;font:400 14px var(--font-sans);color:${content ? 'var(--n7)' : 'var(--n6)'}">${content || ''}</span>
+      ${content ? iconSvg('close-filled', 16, 'var(--n5)') : ''}
+      ${iconSvg('document-import', 18, 'var(--n6)')}
+    </div>`;
+    const search = mStage(`
+      ${col(`${mLabel('Default')}${searchBar('', false)}${mLabel('Con búsqueda activa')}${searchBar('5544', true)}`, 280)}
+      ${col(`${mLabel('Estado vacío del sheet de búsqueda')}
+        <div style="text-align:center;padding:18px 10px">
+          ${iconSvg('location', 24, 'var(--n5)')}
+          <div style="font:400 13px/1.5 var(--font-sans);color:var(--n6);margin:10px 0 14px">Puedes buscar una orden por dirección, número de orden, cliente o ítem.</div>
+          ${mBtn(`${iconSvg('document-import', 16, 'var(--b6)')} Abrir escáner`, 'outline')}
+        </div>`, 280)}
+    `);
+
+    /* PIN input */
+    const pinRow = (digits, state) => {
+      const B = { empty: 'var(--n3)', focus: 'var(--b6)', error: 'var(--r6)', ok: 'var(--g5)' };
+      return `<div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px">${digits.map((d, i) => {
+        const isFocus = state === 'empty' && i === 0;
+        return `<div style="width:40px;height:50px;border-radius:6px;border:${isFocus ? '2px solid var(--b6)' : `1px solid ${B[state]}`};background:#fff;display:flex;align-items:center;justify-content:center;font:700 20px var(--font-sans);color:var(--n7)">${d}</div>`;
+      }).join('')}</div>`;
+    };
+    const pinMsg = (t, color) => `<div style="text-align:center;font:500 12px var(--font-sans);color:${color};margin-bottom:14px">${t}</div>`;
+    const pin = mStage(col(`
+      ${mLabel('Vacío / focus')}${pinRow(['', '', '', '', '', ''], 'empty')}
+      ${mLabel('Error')}${pinRow(['3', '2', '1', '4', '8', '0'], 'error')}${pinMsg('Código incorrecto', 'var(--r6)')}
+      ${mLabel('Desbloqueado por supervisor')}${pinRow(['*', '*', '*', '*', '*', '*'], 'ok')}${pinMsg('Desbloqueado por supervisor', 'var(--g6)')}
+      ${mLabel('Ingresado correctamente')}${pinRow(['3', '2', '1', '4', '8', '0'], 'ok')}${pinMsg('Ingresado correctamente', 'var(--g6)')}
+      <div style="text-align:center;font:400 12px var(--font-sans);color:var(--n6)">Si el cliente no puede proporcionar el código contacta a tu <span style="font-weight:700;color:var(--b6)">Supervisor.</span></div>
+    `, 320));
+
+    /* Stepper */
+    const stepRow = (label, stepper) => `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font:400 14px var(--font-sans);color:var(--n7)">${label}</span>${stepper}</div>`;
+    const steppers = mStage(col(`
+      ${stepRow('Entregado', mStepper(0))}
+      ${stepRow('Ítem A', mStepper(1, { trash: true }))}
+      ${mInput('Razón (etiqueta)', 'Selecciona razón', 'default', '', { rightIcon: 'chevron--down' })}
+    `, 300));
+
+    /* Dropdown + textarea */
+    const dropTextarea = mStage(`
+      ${col(`
+        ${mInput('*Medio de transacción', 'Selecciona medio de transacción', 'default', '', { rightIcon: 'chevron--down' })}
+        ${mInput('Medio de transacción', 'Efectivo', 'filled', '', { rightIcon: 'chevron--down' })}
+        <div style="border:1px solid var(--n3);border-radius:6px;background:#fff;margin-top:2px;box-shadow:0 4px 16px rgba(0,0,0,.12);overflow:hidden">
+          ${['Efectivo', 'Transferencia', 'Cheque', 'Redcompra'].map((o, i) => `<div style="height:44px;display:flex;align-items:center;padding:0 12px;font:400 14px var(--font-sans);color:var(--n7);${i === 0 ? 'background:var(--b1);color:var(--b7)' : ''}">${o}</div>`).join('')}
+        </div>
+      `, 270)}
+      ${col(`
+        <div style="font:500 12px var(--font-sans);color:var(--n6);margin-bottom:5px">Observaciones</div>
+        <div style="height:96px;border:1px solid var(--n3);border-radius:6px;background:#fff;padding:10px 12px;font:400 14px var(--font-sans);color:var(--n6);box-sizing:border-box">Texto adicional</div>
+      `, 270)}
+    `);
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.textInput.name, 'EXTENDED', textStates, c.textInput.specs,
+        'Mismos tokens que el input de escritorio, con alto 44dp. La validación es por campo, inline, nunca en toast.')}
+      ${mComponentCard(c.searchBar.name, 'NEW', search, c.searchBar.specs)}
+      ${mComponentCard(c.pinInput.name, 'NEW', pin, c.pinInput.specs,
+        'Verificación de identidad del receptor. El link «Supervisor» abre el chat para solicitar desbloqueo remoto.')}
+      ${mComponentCard(c.stepper.name, 'NEW', steppers, c.stepper.specs,
+        'Para cantidades de ítems entregados y detalle de billetes en recaudo. Al combinarse con razones, cada razón lleva su propio stepper.')}
+      ${mComponentCard(c.dropdown.name, 'EXTENDED', dropTextarea, c.dropdown.specs)}
+      ${mComponentCard(c.textarea.name, 'EXTENDED', '', c.textarea.specs)}
+      <div class="card" style="margin-bottom:20px;background:var(--b1);border-color:var(--b3)">
+        <h3 style="font:700 14px var(--font-sans);color:var(--b7);margin:0 0 6px">Regla — pickers nativos</h3>
+        <div style="font:400 13px/1.6 var(--font-sans);color:var(--n7)">${escHtml(data.nativeRule || '')}</div>
+      </div>
       ${mRules(data.rules)}`;
   },
 
