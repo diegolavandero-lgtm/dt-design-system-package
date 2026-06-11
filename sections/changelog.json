@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T15:51:18.599Z",
+  "generated": "2026-06-11T15:55:27.910Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "4057f70",
+          "type": "update",
+          "section": "General",
+          "message": "feat(mobile-ds): sección Top app bar (DTMTopAppBar, DTMDateNavigator, DTMPickupSelector)",
+          "author": "Diego"
+        },
         {
           "hash": "c9687d9",
           "type": "update",
