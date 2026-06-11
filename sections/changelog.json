@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T21:46:20.801Z",
+  "generated": "2026-06-11T21:57:08.009Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "697a2a6",
+          "type": "update",
+          "section": "General",
+          "message": "DES-828: fit map viewport to fleet pins on load (no over-wide zoom)",
+          "author": "Carlos"
+        },
         {
           "hash": "f239abe",
           "type": "update",
