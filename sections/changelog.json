@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-11T19:30:44.955Z",
+  "generated": "2026-06-11T19:45:30.438Z",
   "days": [
     {
       "date": "2026-06-11",
       "entries": [
+        {
+          "hash": "381863b",
+          "type": "fix",
+          "section": "Logos",
+          "message": "fix(mobile-ds): menu lateral — drawer 75%+overlay, logo desktop, dividers entre grupos",
+          "author": "Diego"
+        },
         {
           "hash": "fb2f2d9",
           "type": "fix",
