@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-12T15:35:07.141Z",
+  "generated": "2026-06-12T15:53:44.373Z",
   "days": [
     {
       "date": "2026-06-12",
       "entries": [
+        {
+          "hash": "6fdd18c",
+          "type": "update",
+          "section": "General",
+          "message": "feat(mobile-ds): nueva sección Pantallas — Mapa + Lista y Lista de rutas",
+          "author": "Diego"
+        },
         {
           "hash": "7018762",
           "type": "fix",
