@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-12T15:11:17.909Z",
+  "generated": "2026-06-12T15:17:38.837Z",
   "days": [
     {
       "date": "2026-06-12",
       "entries": [
+        {
+          "hash": "6ae6adc",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMBottomSheet estáticos — 3 estados sincronizados con demo funcional (mapa+gris+tabs+chips)",
+          "author": "Diego"
+        },
         {
           "hash": "964648c",
           "type": "fix",
