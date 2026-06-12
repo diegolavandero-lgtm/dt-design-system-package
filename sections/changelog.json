@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-12T15:04:12.201Z",
+  "generated": "2026-06-12T15:11:17.909Z",
   "days": [
     {
       "date": "2026-06-12",
       "entries": [
+        {
+          "hash": "964648c",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMBottomSheet grab area — fondo gris var(--n1) igual que lista de órdenes",
+          "author": "Diego"
+        },
         {
           "hash": "b542dc0",
           "type": "fix",
