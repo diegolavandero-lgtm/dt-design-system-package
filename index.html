@@ -747,6 +747,14 @@ const NAV = [
       icon: 'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0zM12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0',
       path: 'sections/mobile/maps.json', renderer: 'mMaps' },
   ]},
+  { group: 'Pantallas', i18n: 'nav.mobile.screens', tab: 'mobile', items: [
+    { id: 'mobile-screen-map-list', label: 'Mapa + Lista', i18n: 'nav.mobile.screens.mapList', status: 'ready',
+      icon: 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM5 13h14',
+      path: 'sections/mobile/screens-map-list.json', renderer: 'mScreenMapList' },
+    { id: 'mobile-screen-route-list', label: 'Lista de rutas', i18n: 'nav.mobile.screens.routeList', status: 'ready',
+      icon: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+      path: 'sections/mobile/screens-route-list.json', renderer: 'mScreenRouteList' },
+  ]},
 ];
 
 /* ================================================================
@@ -808,7 +816,7 @@ async function navigate(id) {
     view.innerHTML = fn(cache[id]);
     if (id === 'overview') initOverviewDashboard();
     if (id === 'mappins')   initMapElements();
-    if (id === 'mobile-bottom-sheets') initMobileSheetDemo();
+    if (id === 'mobile-bottom-sheets' || id === 'mobile-screen-map-list') initMobileSheetDemo();
     if (id === 'pages-form') initFormPageMaps();
     if (id === 'inputs')    initDateTimePickers();
     if (window.DTi18n) window.DTi18n.apply(view);

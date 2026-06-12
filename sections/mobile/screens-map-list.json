@@ -1,0 +1,33 @@
+{
+  "title": "Mapa + Lista",
+  "titleKey": "nav.mobile.screens.mapList",
+  "description": "Plantilla de la pantalla principal de la operación en ruta: mapa a pantalla completa con la lista de órdenes montada sobre un bottom sheet de tres alturas. Es la pantalla donde el conductor pasa la mayor parte de la ruta.",
+  "components": {
+    "screen": {
+      "name": "Pantalla Mapa + Lista (360×640)",
+      "specs": [
+        ["Composición", "Mapa fullscreen (z-index 1) + DTMBottomSheet de 3 alturas montado encima (z-index 500)"],
+        ["Mapa", "Tiles CARTO light + pins de gota numerados + polilínea de ruta var(--b6) — mismo tipo que Map elements"],
+        ["Estado media (default)", "Sheet a 50% del viewport — header de ruta + tabs + chips + lista parcial"],
+        ["Estado lista completa", "Sheet a 92% — lista con scroll interno habilitado"],
+        ["Estado mapa completo", "Solo header de ruta visible (111dp) — tabs, chips y lista ocultos"],
+        ["Gestos", "Swipe up/down alterna alturas con snap 280ms; nunca salta dos estados"],
+        ["Umbral", "50dp de arrastre; si no se supera, el sheet vuelve a su altura actual"]
+      ]
+    }
+  },
+  "composition": [
+    ["DTMBottomSheet", "Contenedor arrastrable de 3 alturas con handle"],
+    ["DTMRouteHeader", "Header persistente: ID de ruta, metadata, búsqueda y kebab"],
+    ["DTMRouteTabs", "Pestañas En ruta / Terminadas"],
+    ["DTMChip", "Chips de grupo con scroll horizontal"],
+    ["DTMOrderCard", "Una card por orden — pin numerado según la parada"],
+    ["Map elements", "Pins de gota numerados, pin de depósito y polilínea de ruta"]
+  ],
+  "rules": [
+    "La altura media es el estado por defecto al entrar a la ruta.",
+    "El header de ruta es persistente: nunca hace scroll con la lista.",
+    "El scroll interno de la lista solo se habilita en lista completa; en las otras alturas el arrastre mueve el sheet.",
+    "Un tap en un pin del mapa abre la card de esa orden."
+  ]
+}

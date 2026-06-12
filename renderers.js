@@ -6411,6 +6411,22 @@ function mOrderCard(o = {}) {
   </div>`;
 }
 
+/* ── DTMRouteCard ──
+   opts = {title, cta, muted, plus24} ·
+   muted = sin iniciar (gris + badge + distancia) · plus24 = chip "+24 hrs" */
+function mRouteCard(opts = {}) {
+  const muted = opts.muted;
+  const tc = muted ? 'var(--n5)' : 'var(--n7)';
+  return `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:14px">
+    <div style="font:400 11px var(--font-sans);color:var(--n5)">Ruta</div>
+    <div style="font:700 14px var(--font-sans);color:${tc};display:flex;align-items:center;gap:8px">${escHtml(opts.title || '')}${muted ? badgeHtml('Sin iniciar', 'neutral') : ''}</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 ${opts.cta ? '14px' : '0'}">
+      ${mMeta('truck', 'VEH 123')}${mMeta('package', '12 órdenes')}${mMeta('package', '200 items')}${muted ? mMeta('location', '50 km') : ''}${mMeta('time', '8:00 – 17:00')}${opts.plus24 ? mMeta('calendar', '+24 hrs') : ''}
+    </div>
+    ${opts.cta ? mBtn('Iniciar ruta', 'primary', 'default', 'width:100%') : ''}
+  </div>`;
+}
+
 /* ── Pestañas En ruta / Terminadas ── */
 function mRouteTabs(active = 0, enroute = 12, done = 0) {
   const tab = (on, icon, label) => `<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:40px;font:${on ? 700 : 400} 14px var(--font-sans);color:${on ? 'var(--b6)' : 'var(--n5)'};border-bottom:2px solid ${on ? 'var(--b6)' : 'transparent'}">${iconSvg(icon, 16, on ? 'var(--b6)' : 'var(--n5)')}${label}</div>`;
@@ -6494,6 +6510,37 @@ function mRouteHeader(opts = {}) {
       <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">${iconSvg('search', 20, 'var(--n6)')}${iconSvg('overflow-menu-vertical', 20, 'var(--n6)')}</div>
     </div>
     ${opts.meta !== false ? `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 12px 10px">${mMeta('package', '12 órdenes')}${mMeta('package', '200 items')}${mMeta('time', '8:00 – 17:00')}${mMeta('time', '4hrs 19min')}</div>` : ''}`;
+}
+
+/* ── Pantalla Mapa + Lista (demo funcional 360×640) ──
+   Mapa Leaflet + DTMBottomSheet arrastrable de 3 estados.
+   Los IDs dtm-sheet* los inicializa initMobileSheetDemo() (index.html).
+   Se usa en Bottom sheets (demo) y en Pantallas → Mapa + Lista. */
+function mMapListDemoPhone() {
+  const addr = 'Martín de Zamora 5760, 7560969, Las Condes, Región Metropolitana';
+  const demoOrders = [
+    { num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 },
+    { num: 2, addr: 'Av. Las Condes 8977 Casa A, Las Condes', order: 'Orden #3829183901840564', person: 'Ana López', time: '9:00 – 9:30', items: 1, pin: 'outline' },
+    { num: 3, addr: 'Av. Apoquindo 4501, Las Condes', order: 'Orden #3829183901112233', person: 'Pedro Soto', time: '9:30 – 10:00', items: 2, pin: 'outline' },
+    { num: 4, addr: 'Camino El Alba 9500, Las Condes', order: 'Orden #3829183901445566', person: 'María Pérez', time: '10:00 – 11:00', items: 5, pin: 'outline' },
+    { num: 5, addr: 'Av. Kennedy 5413, Las Condes', order: 'Orden #3829183901778899', person: 'Jorge Díaz', time: '11:00 – 11:30', items: 1, pin: 'outline' },
+    { num: 6, addr: 'Isidora Goyenechea 3000, Las Condes', order: 'Orden #3829183901990011', person: 'Carla Muñoz', time: '11:30 – 12:00', items: 4, pin: 'outline' },
+  ].map(o => mOrderCard(o)).join('');
+
+  return `<div style="width:360px;height:640px;max-width:100%;flex-shrink:0;position:relative;overflow:hidden;background:var(--n1);border:1px solid var(--n3);border-radius:18px;box-shadow:0 1px 3px rgba(19,32,69,.08)">
+    <div id="dtm-sheet-map" style="position:absolute;inset:0;z-index:1"></div>
+    <div id="dtm-sheet-badge" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:600;background:var(--n7);color:#fff;font:600 11px var(--font-sans);padding:4px 10px;border-radius:99px;pointer-events:none;opacity:.92;white-space:nowrap">Media (default)</div>
+    <div id="dtm-sheet" style="position:absolute;left:0;right:0;top:0;height:640px;z-index:500;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.18);transform:translateY(320px);transition:transform .28s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;overflow:hidden;user-select:none;-webkit-user-select:none">
+      <div id="dtm-sheet-grab" style="cursor:grab;touch-action:none;flex-shrink:0;background:#fff">
+        ${mRouteHeader({ title: '332131491204912' })}
+        ${mRouteTabs(0, 12, 0)}
+        ${mChipRow([mChip('Group A', { selected: true }), mChip('Grupo B'), mChip('Grupo C')].join(''))}
+      </div>
+      <div id="dtm-sheet-list" style="flex:1;overflow-y:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--n1);touch-action:pan-y">
+        ${demoOrders}
+      </div>
+    </div>
+  </div>`;
 }
 
 /* ── Toast oscuro flotante ── */
@@ -6794,19 +6841,8 @@ Object.assign(renderers, {
       ${wrap('Terminada · No entregado', mOrderCard({ state: 'failed', addr, order: 'Orden #3829183901234564', person: 'Pedro Pérez', time: '8:00 – 17:00', items: 10 }))}
     `);
 
-    /* Route card */
-    const routeCard = (opts) => {
-      const muted = opts.muted;
-      const tc = muted ? 'var(--n5)' : 'var(--n7)';
-      return `<div style="background:#fff;border:1px solid var(--n3);border-radius:8px;padding:14px">
-        <div style="font:400 11px var(--font-sans);color:var(--n5)">Ruta</div>
-        <div style="font:700 14px var(--font-sans);color:${tc};display:flex;align-items:center;gap:8px">${escHtml(opts.title)}${muted ? badgeHtml('Sin iniciar', 'neutral') : ''}</div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 ${opts.cta ? '14px' : '0'}">
-          ${mMeta('truck', 'VEH 123')}${mMeta('package', '12 órdenes')}${mMeta('package', '200 items')}${muted ? mMeta('location', '50 km') : ''}${mMeta('time', '8:00 – 17:00')}
-        </div>
-        ${opts.cta ? mBtn('Iniciar ruta', 'primary', 'default', 'width:100%') : ''}
-      </div>`;
-    };
+    /* Route card — componente módulo mRouteCard() */
+    const routeCard = mRouteCard;
     const routes = mStage(`
       ${wrap('Con CTA Iniciar', routeCard({ title: '332131491204912', cta: true }))}
       ${wrap('Nombre asignado', routeCard({ title: 'Sector oriente 2040 mañana', cta: true }))}
@@ -7292,31 +7328,10 @@ Object.assign(renderers, {
     `);
 
     /* ── Demo funcional: mapa real + sheet arrastrable de 3 estados ──
+       HTML compartido con Pantallas → Mapa + Lista (mMapListDemoPhone).
        La lógica de gestos y el mapa Leaflet se inicializan en
        initMobileSheetDemo() (index.html) tras el render. */
-    const demoOrders = [
-      { num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 },
-      { num: 2, addr: 'Av. Las Condes 8977 Casa A, Las Condes', order: 'Orden #3829183901840564', person: 'Ana López', time: '9:00 – 9:30', items: 1, pin: 'outline' },
-      { num: 3, addr: 'Av. Apoquindo 4501, Las Condes', order: 'Orden #3829183901112233', person: 'Pedro Soto', time: '9:30 – 10:00', items: 2, pin: 'outline' },
-      { num: 4, addr: 'Camino El Alba 9500, Las Condes', order: 'Orden #3829183901445566', person: 'María Pérez', time: '10:00 – 11:00', items: 5, pin: 'outline' },
-      { num: 5, addr: 'Av. Kennedy 5413, Las Condes', order: 'Orden #3829183901778899', person: 'Jorge Díaz', time: '11:00 – 11:30', items: 1, pin: 'outline' },
-      { num: 6, addr: 'Isidora Goyenechea 3000, Las Condes', order: 'Orden #3829183901990011', person: 'Carla Muñoz', time: '11:30 – 12:00', items: 4, pin: 'outline' },
-    ].map(o => mOrderCard(o)).join('');
-
-    const demoPhone = `<div style="width:360px;height:640px;max-width:100%;flex-shrink:0;position:relative;overflow:hidden;background:var(--n1);border:1px solid var(--n3);border-radius:18px;box-shadow:0 1px 3px rgba(19,32,69,.08)">
-      <div id="dtm-sheet-map" style="position:absolute;inset:0;z-index:1"></div>
-      <div id="dtm-sheet-badge" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:600;background:var(--n7);color:#fff;font:600 11px var(--font-sans);padding:4px 10px;border-radius:99px;pointer-events:none;opacity:.92;white-space:nowrap">Media (default)</div>
-      <div id="dtm-sheet" style="position:absolute;left:0;right:0;top:0;height:640px;z-index:500;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.18);transform:translateY(320px);transition:transform .28s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;overflow:hidden;user-select:none;-webkit-user-select:none">
-        <div id="dtm-sheet-grab" style="cursor:grab;touch-action:none;flex-shrink:0;background:#fff">
-          ${mRouteHeader({ title: '332131491204912' })}
-          ${mRouteTabs(0, 12, 0)}
-          ${mChipRow([mChip('Group A', { selected: true }), mChip('Grupo B'), mChip('Grupo C')].join(''))}
-        </div>
-        <div id="dtm-sheet-list" style="flex:1;overflow-y:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--n1);touch-action:pan-y">
-          ${demoOrders}
-        </div>
-      </div>
-    </div>`;
+    const demoPhone = mMapListDemoPhone();
     const demoHint = `<div style="font:400 12px/1.6 var(--font-sans);color:var(--n5);max-width:280px">
       <div style="font:700 11px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);margin-bottom:10px">Cómo probarlo</div>
       Arrastra el sheet hacia arriba o abajo (mouse o touch).<br><br>
@@ -7527,6 +7542,92 @@ Object.assign(renderers, {
         <h3 style="font:700 14px var(--font-sans);color:var(--b7);margin:0 0 6px">Regla — pickers nativos</h3>
         <div style="font:400 13px/1.6 var(--font-sans);color:var(--n7)">${escHtml(data.nativeRule || '')}</div>
       </div>
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Pantallas · Mapa + Lista ── */
+  mScreenMapList(data) {
+    const c = data.components || {};
+
+    const demoHint = `<div style="font:400 12px/1.6 var(--font-sans);color:var(--n5);max-width:280px">
+      <div style="font:700 11px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);margin-bottom:10px">Cómo probarlo</div>
+      Arrastra el sheet hacia arriba o abajo (mouse o touch).<br><br>
+      · Inicia en altura <b>media</b> (default).<br>
+      · Swipe up → <b>lista completa</b>.<br>
+      · Swipe down → <b>mapa completo</b>.<br>
+      · Desde lista completa o mapa completo, el gesto contrario vuelve a la altura media — nunca salta dos estados.</div>`;
+    const demo = mStage(`${mMapListDemoPhone()}${demoHint}`, { gap: '24px' });
+
+    const compCard = (data.composition && data.composition.length)
+      ? `<div class="card" style="margin-bottom:20px">
+          <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 12px">Componentes del DS utilizados</h3>
+          ${mSpecTable(data.composition)}
+        </div>`
+      : '';
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.screen.name, 'NEW', demo, c.screen.specs,
+        'Plantilla funcional: el sheet responde a arrastre con snap entre las tres alturas. El mapa y los gestos se inicializan al cargar la sección.')}
+      ${compCard}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── App móvil · Pantallas · Lista de rutas ── */
+  mScreenRouteList(data) {
+    const c = data.components || {};
+    const H = 560;
+    const wrap = (label, inner) => `<div style="width:300px">${mLabel(label)}${inner}</div>`;
+
+    /* Pantalla completa: topbar + (punto de retiro) + fecha + cards/vacío + footer Disponible */
+    const screen = (opts = {}) => {
+      const cards = [
+        mRouteCard({ title: '332131491204912', muted: opts.muted, plus24: !opts.muted }),
+        mRouteCard({ title: '332131491204913', muted: opts.muted, plus24: !opts.muted }),
+        mRouteCard({ title: '332131491204914', muted: opts.muted, plus24: !opts.muted }),
+      ].join('');
+      const body = opts.empty
+        ? `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px">
+            ${iconSvg('route', 36, 'var(--n4)')}
+            <span style="font:400 13px var(--font-sans);color:var(--n5)">No hay rutas disponibles</span>
+          </div>`
+        : `<div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px;overflow:hidden">${cards}</div>`;
+      const footer = `<div style="margin-top:auto;background:#fff;border-top:1px solid var(--n3);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+        ${mToggle(opts.available)}<span style="font:500 14px var(--font-sans);color:var(--n7)">Disponible</span>
+      </div>`;
+      const toast = opts.toast
+        ? `<div style="position:absolute;top:8px;left:8px;right:8px;z-index:10">${mToast('Para completar la acción debes activar el botón «Disponible».', 'warning')}</div>`
+        : '';
+      return mPhone(`
+        <div style="position:relative;display:flex;flex-direction:column;height:${H}px">
+          ${toast}
+          ${mTopAppBar()}
+          ${opts.pickup ? mPickupSelect('Selecciona tu punto de retiro') : ''}
+          ${mDateNav('Rutas de hoy 01-01-24')}
+          ${body}
+          ${footer}
+        </div>`, { width: 300, height: H });
+    };
+
+    const variants = mStage(`
+      ${wrap('Rutas disponibles (default)', screen({ available: true }))}
+      ${wrap('Con punto de retiro', screen({ available: true, pickup: true }))}
+      ${wrap('No disponible (toggle apagado)', screen({ muted: true, toast: true }))}
+      ${wrap('Sin rutas', screen({ available: true, empty: true }))}
+    `);
+
+    const compCard = (data.composition && data.composition.length)
+      ? `<div class="card" style="margin-bottom:20px">
+          <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 12px">Componentes del DS utilizados</h3>
+          ${mSpecTable(data.composition)}
+        </div>`
+      : '';
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard(c.screen.name, 'NEW', variants, c.screen.specs,
+        'Home del conductor. El toggle «Disponible» habilita la operación: apagado, las rutas se muestran en gris («Sin iniciar») y al intentar iniciar se muestra el toast de bloqueo.')}
+      ${compCard}
       ${mRules(data.rules)}`;
   },
 

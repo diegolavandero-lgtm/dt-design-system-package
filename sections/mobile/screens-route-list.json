@@ -1,0 +1,34 @@
+{
+  "title": "Lista de rutas",
+  "titleKey": "nav.mobile.screens.routeList",
+  "description": "Pantalla de inicio del conductor: lista las rutas asignadas del día y permite declararse disponible para operar. Con el toggle «Disponible» apagado las rutas se muestran deshabilitadas y no se pueden iniciar.",
+  "components": {
+    "screen": {
+      "name": "Pantalla Lista de rutas (variantes)",
+      "specs": [
+        ["Estructura", "DTMTopAppBar + navegador de fecha + lista de DTMRouteCard + footer «Disponible»"],
+        ["Navegador de fecha", "Pill var(--n2) con chevrones — «Rutas de hoy 01-01-24»"],
+        ["Punto de retiro", "DTMDropdown «Selecciona tu punto de retiro» sobre el navegador de fecha — solo con múltiples puntos"],
+        ["Card de ruta", "DTMRouteCard: ID + VEH + órdenes + items + horario + «+24 hrs»"],
+        ["Footer", "Barra blanca con borde superior var(--n3) — toggle + label «Disponible» body-medium"],
+        ["No disponible", "Cards en gris con badge «Sin iniciar» + distancia (50 km); toggle apagado"],
+        ["Toast de bloqueo", "«Para completar la acción debes activar el botón Disponible» al intentar iniciar sin disponibilidad"],
+        ["Estado vacío", "Icono de ruta var(--n4) + «No hay rutas disponibles» centrados"]
+      ]
+    }
+  },
+  "composition": [
+    ["DTMTopAppBar", "Menú hamburguesa + logo + sincronizar"],
+    ["DTMDateNav", "Navegador de fecha con chevrones"],
+    ["DTMDropdown", "Selector de punto de retiro (variante con múltiples puntos)"],
+    ["DTMRouteCard", "Una card por ruta — variante normal y «Sin iniciar» (gris)"],
+    ["DTMToggle", "Switch de disponibilidad en el footer"],
+    ["DTMToast", "Toast de bloqueo cuando la disponibilidad está apagada"]
+  ],
+  "rules": [
+    "El toggle «Disponible» habilita la operación: apagado, las rutas se ven en gris y no se pueden iniciar.",
+    "Al intentar iniciar una ruta sin estar disponible se muestra el toast de bloqueo — nunca un modal.",
+    "El selector de punto de retiro solo aparece cuando el cliente tiene múltiples puntos de retiro.",
+    "Sin rutas asignadas se muestra el estado vacío «No hay rutas disponibles» manteniendo el footer visible."
+  ]
+}
