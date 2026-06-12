@@ -1239,6 +1239,9 @@ function initMobileSheetDemo() {
   var list=document.getElementById('dtm-sheet-list');
   var state='mid';
 
+  // Forzar fondo gris en todos los hijos del grab (tabs y chips tienen background:#fff hardcoded)
+  Array.from(grab.children).forEach(function(c){c.style.background='var(--n1)';});
+
   function apply(s){
     state=s;
     sheet.style.transition=EASE;
