@@ -7239,18 +7239,12 @@ Object.assign(renderers, {
     const wrap = (label, inner) => `<div style="width:300px">${mLabel(label)}${inner}</div>`;
 
     /* ── Estáticos sincronizados con el demo funcional ──
-       W=300, H=533 (300/360 × 640). Offsets escalados desde los valores del demo live. */
+       W=300, H=533 (300/360 × 640).
+       Los mapas se inicializan con Leaflet real en initMobileSheetDemo (index.html). */
     const W = 300, H = 533;
 
-    // Mapa fake posicionado absolutamente (cubre todo el fondo del teléfono)
-    const staticMap = `<div style="position:absolute;inset:0;z-index:1;background:
-        repeating-linear-gradient(0deg,#E8EAED 0 1px,transparent 1px 28px),
-        repeating-linear-gradient(90deg,#E8EAED 0 1px,transparent 1px 28px),
-        linear-gradient(135deg,#EDEFF2,#E3E6EB)">
-      <div style="position:absolute;top:30%;left:-5%;width:60%;height:5px;background:var(--b5);border-radius:3px;transform:rotate(18deg)"></div>
-      <div style="position:absolute;top:55%;left:25%;width:55%;height:5px;background:var(--b5);border-radius:3px;transform:rotate(-12deg)"></div>
-      <div style="position:absolute;top:40%;left:35%;width:30%;height:5px;background:var(--o5);border-radius:3px;transform:rotate(40deg)"></div>
-    </div>`;
+    // Contenedor de mapa vacío — Leaflet lo llenará tras el render (mismo CARTO light)
+    const sMapDiv = (id) => `<div id="${id}" style="position:absolute;inset:0;z-index:1"></div>`;
 
     // Tabs y chips con fondo gris (igual que el demo funcional tras aplicar override JS)
     const sTabs = `<div style="display:flex;border-bottom:1px solid var(--n3);background:var(--n1)">
@@ -7260,29 +7254,29 @@ Object.assign(renderers, {
     const sChips = `<div style="display:flex;gap:6px;overflow:hidden;padding:10px 12px;background:var(--n1)">${[mChip('Group A',{selected:true}),mChip('Grupo B'),mChip('Grupo C')].join('')}</div>`;
     const sList = (cards) => `<div style="padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--n1)">${cards}</div>`;
 
-    // Frame genérico: mapa absoluto + sheet desde `top` px
-    const sPhone = (top, inner) => mPhone(`
+    // Frame genérico: div de mapa con ID + sheet desde `top` px
+    const sPhone = (mapId, top, inner) => mPhone(`
       <div style="position:relative;height:${H}px">
-        ${staticMap}
+        ${sMapDiv(mapId)}
         <div style="position:absolute;left:0;right:0;top:${top}px;bottom:0;z-index:2;background:var(--n1);border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.18);overflow:hidden">
           ${inner}
         </div>
       </div>`, {width:W, height:H});
 
-    // Offsets escalados: live 640px → estático ${H}px
-    const COL_TOP  = Math.round(H * 529 / 640); // ~440px → solo route header visible
-    const MID_TOP  = Math.round(H * 320 / 640); // ~267px → mitad del teléfono
-    const FULL_TOP = Math.round(H * 48  / 640); // ~40px  → lista completa
+    // COL_TOP: el route header mide 106px reales (no escala con el ancho) → usar H-111 fijo
+    const COL_TOP  = H - 111;             // 422px → 111px visibles = route header completo + 5px gap
+    const MID_TOP  = Math.round(H / 2);  // 267px → mitad del teléfono
+    const FULL_TOP = Math.round(H * 48 / 640); // ~40px → lista completa
 
-    const collapsed = sPhone(COL_TOP, mRouteHeader({ title: '332131491204912' }));
+    const collapsed = sPhone('dtm-smap-col', COL_TOP, mRouteHeader({ title: '332131491204912' }));
 
-    const mid = sPhone(MID_TOP, `
+    const mid = sPhone('dtm-smap-mid', MID_TOP, `
       ${mRouteHeader({ title: '332131491204912' })}
       ${sTabs}
       ${sChips}
       ${sList(mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 }))}`);
 
-    const full = sPhone(FULL_TOP, `
+    const full = sPhone('dtm-smap-full', FULL_TOP, `
       ${mRouteHeader({ title: '332131491204912' })}
       ${sTabs}
       ${sChips}

@@ -1203,12 +1203,11 @@ function initMobileSheetDemo() {
     var tipY=Math.round(h*40.5/49);
     return L.divIcon({html:html,className:'',iconSize:[sz,h],iconAnchor:[Math.round(sz/2),tipY]});
   }
-  function buildSheetMap(){
-    var el=document.getElementById('dtm-sheet-map');
+  var STOPS=[[-33.405,-70.575],[-33.412,-70.560],[-33.418,-70.547],[-33.398,-70.553],[-33.392,-70.566],[-33.401,-70.582]];
+  var DEPOT=[-33.420,-70.585];
+  function buildSheetMap(el, zoom){
     if(!el || el._leaflet_id) return;
-    var STOPS=[[-33.405,-70.575],[-33.412,-70.560],[-33.418,-70.547],[-33.398,-70.553],[-33.392,-70.566],[-33.401,-70.582]];
-    var DEPOT=[-33.420,-70.585];
-    var m=L.map(el,{center:[-33.405,-70.565],zoom:13,scrollWheelZoom:false,zoomControl:false,attributionControl:false});
+    var m=L.map(el,{center:[-33.405,-70.565],zoom:zoom||13,scrollWheelZoom:false,zoomControl:false,attributionControl:false});
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
       {subdomains:'abcd',maxZoom:19}).addTo(m);
     L.marker(DEPOT,{icon:mkIcon(depotPin(),34),zIndexOffset:200}).addTo(m);
@@ -1217,7 +1216,12 @@ function initMobileSheetDemo() {
     setTimeout(function(){m.invalidateSize();},120);
   }
   function runMapInit(){
-    requestAnimationFrame(function(){requestAnimationFrame(buildSheetMap);});
+    setTimeout(function(){
+      buildSheetMap(document.getElementById('dtm-sheet-map'), 13);
+      buildSheetMap(document.getElementById('dtm-smap-col'),  13);
+      buildSheetMap(document.getElementById('dtm-smap-mid'),  13);
+      buildSheetMap(document.getElementById('dtm-smap-full'), 14);
+    }, 80);
   }
   if(typeof L!=='undefined'){runMapInit();}
   else{
