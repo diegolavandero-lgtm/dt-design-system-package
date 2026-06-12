@@ -20,7 +20,7 @@
       "specs": [
         ["Estado inicial", "Media — sheet a 50% del viewport (translateY 320dp en 640dp)"],
         ["Swipe up desde media", "→ Lista completa — sheet a 92% (translateY 48dp)"],
-        ["Swipe down desde media", "→ Mapa completo — sheet colapsado a 96dp visibles (translateY 544dp)"],
+        ["Swipe down desde media", "→ Mapa completo — 201dp visibles (translateY 439dp): header + tabs + chips completos, corte en el gap antes de la primera card"],
         ["Swipe down en lista completa", "→ vuelve a media (nunca salta a mapa completo)"],
         ["Swipe up en mapa completo", "→ vuelve a media (nunca salta a lista completa)"],
         ["Umbral de gesto", "50dp de arrastre · si no se supera, el sheet vuelve a su estado actual"],

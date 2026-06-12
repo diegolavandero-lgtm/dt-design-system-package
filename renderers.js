@@ -7283,7 +7283,7 @@ Object.assign(renderers, {
       <div id="dtm-sheet-map" style="position:absolute;inset:0;z-index:1"></div>
       <div id="dtm-sheet-badge" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:600;background:var(--n7);color:#fff;font:600 11px var(--font-sans);padding:4px 10px;border-radius:99px;pointer-events:none;opacity:.92;white-space:nowrap">Media (default)</div>
       <div id="dtm-sheet" style="position:absolute;left:0;right:0;top:0;height:640px;z-index:500;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.18);transform:translateY(320px);transition:transform .28s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;overflow:hidden;user-select:none;-webkit-user-select:none">
-        <div id="dtm-sheet-grab" style="cursor:grab;touch-action:none;flex-shrink:0">
+        <div id="dtm-sheet-grab" style="cursor:grab;touch-action:none;flex-shrink:0;background:#fff">
           ${mRouteHeader({ title: '332131491204912' })}
           ${mRouteTabs(0, 12, 0)}
           ${mChipRow([mChip('Group A', { selected: true }), mChip('Grupo B'), mChip('Grupo C')].join(''))}
