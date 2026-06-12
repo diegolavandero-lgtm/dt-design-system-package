@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-12T15:17:38.837Z",
+  "generated": "2026-06-12T15:35:07.141Z",
   "days": [
     {
       "date": "2026-06-12",
       "entries": [
+        {
+          "hash": "7018762",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMBottomSheet — mapas Leaflet auto-inicializan en los 3 estados estáticos",
+          "author": "Diego"
+        },
         {
           "hash": "6ae6adc",
           "type": "fix",
