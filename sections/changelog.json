@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-12T14:49:23.643Z",
+  "generated": "2026-06-12T15:00:37.834Z",
   "days": [
     {
       "date": "2026-06-12",
       "entries": [
+        {
+          "hash": "f4d0dc9",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMBottomSheet — fondo blanco en grab area + mapa completo muestra header+tabs+chips completos",
+          "author": "Diego"
+        },
         {
           "hash": "0250d20",
           "type": "update",
