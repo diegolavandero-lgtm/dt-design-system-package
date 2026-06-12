@@ -7238,28 +7238,58 @@ Object.assign(renderers, {
     const addr = 'Martín de Zamora 5760, 7560969, Las Condes, Región Metropolitana';
     const wrap = (label, inner) => `<div style="width:300px">${mLabel(label)}${inner}</div>`;
 
-    /* Teléfono con mapa de fondo + sheet a una altura dada */
-    const phoneSheet = (sheetInner, mapH) => mPhone(`
-      <div style="position:relative">
-        ${mMapBg(mapH)}
-        <div style="position:relative;margin-top:-16px;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.10)">${sheetInner}</div>
-      </div>`, { width: 300 });
+    /* ── Estáticos sincronizados con el demo funcional ──
+       W=300, H=533 (300/360 × 640). Offsets escalados desde los valores del demo live. */
+    const W = 300, H = 533;
 
-    const collapsed = phoneSheet(mRouteHeader({ title: '332131491204912' }), 360);
+    // Mapa fake posicionado absolutamente (cubre todo el fondo del teléfono)
+    const staticMap = `<div style="position:absolute;inset:0;z-index:1;background:
+        repeating-linear-gradient(0deg,#E8EAED 0 1px,transparent 1px 28px),
+        repeating-linear-gradient(90deg,#E8EAED 0 1px,transparent 1px 28px),
+        linear-gradient(135deg,#EDEFF2,#E3E6EB)">
+      <div style="position:absolute;top:30%;left:-5%;width:60%;height:5px;background:var(--b5);border-radius:3px;transform:rotate(18deg)"></div>
+      <div style="position:absolute;top:55%;left:25%;width:55%;height:5px;background:var(--b5);border-radius:3px;transform:rotate(-12deg)"></div>
+      <div style="position:absolute;top:40%;left:35%;width:30%;height:5px;background:var(--o5);border-radius:3px;transform:rotate(40deg)"></div>
+    </div>`;
 
-    const mid = phoneSheet(`${mRouteHeader({ title: '332131491204912' })}
-      ${mChipRow([mChip('Group A', { selected: true }), mChip('Grupo B'), mChip('Grupo C')].join(''))}
-      <div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px">
-        ${mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 })}
-      </div>`, 150);
+    // Tabs y chips con fondo gris (igual que el demo funcional tras aplicar override JS)
+    const sTabs = `<div style="display:flex;border-bottom:1px solid var(--n3);background:var(--n1)">
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:40px;font:700 14px var(--font-sans);color:var(--b6);border-bottom:2px solid var(--b6)">${iconSvg('truck',16,'var(--b6)')}En ruta: 12</div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:40px;font:400 14px var(--font-sans);color:var(--n5)">${iconSvg('task-complete',16,'var(--n5)')}Terminadas: 0</div>
+    </div>`;
+    const sChips = `<div style="display:flex;gap:6px;overflow:hidden;padding:10px 12px;background:var(--n1)">${[mChip('Group A',{selected:true}),mChip('Grupo B'),mChip('Grupo C')].join('')}</div>`;
+    const sList = (cards) => `<div style="padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--n1)">${cards}</div>`;
 
-    const full = mPhone(`${mRouteHeader({ title: '332131491204912' })}
-      ${mRouteTabs(0, 12, 0)}
-      ${mChipRow([mChip('Group A'), mChip('Grupo B'), mChip('Grupo C'), mChip('Grupo D')].join(''))}
-      <div style="padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--n1)">
-        ${mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 })}
-        ${mOrderCard({ num: 2, addr: 'Av. Las Condes 8977 Casa A, Las Condes', order: 'Orden #3829183901840564', person: 'Ana López', time: '9:00 – 9:30', items: 1 })}
-      </div>`, { width: 300 });
+    // Frame genérico: mapa absoluto + sheet desde `top` px
+    const sPhone = (top, inner) => mPhone(`
+      <div style="position:relative;height:${H}px">
+        ${staticMap}
+        <div style="position:absolute;left:0;right:0;top:${top}px;bottom:0;z-index:2;background:var(--n1);border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.18);overflow:hidden">
+          ${inner}
+        </div>
+      </div>`, {width:W, height:H});
+
+    // Offsets escalados: live 640px → estático ${H}px
+    const COL_TOP  = Math.round(H * 529 / 640); // ~440px → solo route header visible
+    const MID_TOP  = Math.round(H * 320 / 640); // ~267px → mitad del teléfono
+    const FULL_TOP = Math.round(H * 48  / 640); // ~40px  → lista completa
+
+    const collapsed = sPhone(COL_TOP, mRouteHeader({ title: '332131491204912' }));
+
+    const mid = sPhone(MID_TOP, `
+      ${mRouteHeader({ title: '332131491204912' })}
+      ${sTabs}
+      ${sChips}
+      ${sList(mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 }))}`);
+
+    const full = sPhone(FULL_TOP, `
+      ${mRouteHeader({ title: '332131491204912' })}
+      ${sTabs}
+      ${sChips}
+      ${sList([
+        mOrderCard({ num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 }),
+        mOrderCard({ num: 2, addr: 'Av. Las Condes 8977 Casa A, Las Condes', order: 'Orden #3829183901840564', person: 'Ana López', time: '9:00 – 9:30', items: 1, pin: 'outline' }),
+      ].join(''))}`);
 
     const heights = mStage(`
       ${wrap('Colapsado', collapsed)}
