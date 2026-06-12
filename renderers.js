@@ -7267,6 +7267,42 @@ Object.assign(renderers, {
       ${wrap('Completa', full)}
     `);
 
+    /* ── Demo funcional: mapa real + sheet arrastrable de 3 estados ──
+       La lógica de gestos y el mapa Leaflet se inicializan en
+       initMobileSheetDemo() (index.html) tras el render. */
+    const demoOrders = [
+      { num: 1, addr, order: 'Orden #3829183901234564', person: 'Raúl Ríos', time: '8:00 – 9:00', items: 3 },
+      { num: 2, addr: 'Av. Las Condes 8977 Casa A, Las Condes', order: 'Orden #3829183901840564', person: 'Ana López', time: '9:00 – 9:30', items: 1, pin: 'outline' },
+      { num: 3, addr: 'Av. Apoquindo 4501, Las Condes', order: 'Orden #3829183901112233', person: 'Pedro Soto', time: '9:30 – 10:00', items: 2, pin: 'outline' },
+      { num: 4, addr: 'Camino El Alba 9500, Las Condes', order: 'Orden #3829183901445566', person: 'María Pérez', time: '10:00 – 11:00', items: 5, pin: 'outline' },
+      { num: 5, addr: 'Av. Kennedy 5413, Las Condes', order: 'Orden #3829183901778899', person: 'Jorge Díaz', time: '11:00 – 11:30', items: 1, pin: 'outline' },
+      { num: 6, addr: 'Isidora Goyenechea 3000, Las Condes', order: 'Orden #3829183901990011', person: 'Carla Muñoz', time: '11:30 – 12:00', items: 4, pin: 'outline' },
+    ].map(o => mOrderCard(o)).join('');
+
+    const demoPhone = `<div style="width:360px;height:640px;max-width:100%;flex-shrink:0;position:relative;overflow:hidden;background:var(--n1);border:1px solid var(--n3);border-radius:18px;box-shadow:0 1px 3px rgba(19,32,69,.08)">
+      <div id="dtm-sheet-map" style="position:absolute;inset:0;z-index:1"></div>
+      <div id="dtm-sheet-badge" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:600;background:var(--n7);color:#fff;font:600 11px var(--font-sans);padding:4px 10px;border-radius:99px;pointer-events:none;opacity:.92;white-space:nowrap">Media (default)</div>
+      <div id="dtm-sheet" style="position:absolute;left:0;right:0;top:0;height:640px;z-index:500;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 12px rgba(19,32,69,.18);transform:translateY(320px);transition:transform .28s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;overflow:hidden;user-select:none;-webkit-user-select:none">
+        <div id="dtm-sheet-grab" style="cursor:grab;touch-action:none;flex-shrink:0">
+          ${mRouteHeader({ title: '332131491204912' })}
+          ${mRouteTabs(0, 12, 0)}
+          ${mChipRow([mChip('Group A', { selected: true }), mChip('Grupo B'), mChip('Grupo C')].join(''))}
+        </div>
+        <div id="dtm-sheet-list" style="flex:1;overflow-y:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--n1);touch-action:pan-y">
+          ${demoOrders}
+        </div>
+      </div>
+    </div>`;
+    const demoHint = `<div style="font:400 12px/1.6 var(--font-sans);color:var(--n5);max-width:280px">
+      <div style="font:700 11px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);margin-bottom:10px">Cómo probarlo</div>
+      Arrastra el sheet hacia arriba o abajo (mouse o touch).<br><br>
+      · Inicia en altura <b>media</b> (default).<br>
+      · Swipe up → <b>lista completa</b>.<br>
+      · Swipe down → <b>mapa completo</b>.<br>
+      · Desde lista completa o mapa completo, el gesto contrario vuelve a la altura media — nunca salta dos estados.<br><br>
+      El mapa es el mismo tipo de Map elements (CARTO light) con pins de gota numerados.</div>`;
+    const demo = mStage(`${demoPhone}${demoHint}`, { gap: '24px' });
+
     /* Header solo */
     const headerOnly = mStage(`
       ${wrap('Header de ruta', `<div style="background:#fff;border:1px solid var(--n3);border-radius:12px;overflow:hidden">${mRouteHeader({ title: 'Sector oriente 2040 mañana' })}</div>`)}
@@ -7308,6 +7344,8 @@ Object.assign(renderers, {
       ${sectionHeader(data)}
       ${mComponentCard(c.sheet.name, 'NEW', heights, c.sheet.specs,
         'Tres alturas con snap: colapsada (máximo mapa), media (default) y completa (lista con scroll).')}
+      ${c.sheetDemo ? mComponentCard(c.sheetDemo.name, 'NEW', demo, c.sheetDemo.specs,
+        'Demo interactivo: el sheet responde a arrastre con mouse o touch y hace snap a la altura siguiente según la dirección del gesto.') : ''}
       ${mComponentCard(c.routeHeader.name, 'NEW', headerOnly, c.routeHeader.specs)}
       ${mComponentCard(c.actionMenu.name, 'NEW', menu, c.actionMenu.specs)}
       ${mComponentCard(c.unsavedModal.name, 'NEW', modals, c.unsavedModal.specs)}

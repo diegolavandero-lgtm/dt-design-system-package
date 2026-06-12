@@ -808,6 +808,7 @@ async function navigate(id) {
     view.innerHTML = fn(cache[id]);
     if (id === 'overview') initOverviewDashboard();
     if (id === 'mappins')   initMapElements();
+    if (id === 'mobile-bottom-sheets') initMobileSheetDemo();
     if (id === 'pages-form') initFormPageMaps();
     if (id === 'inputs')    initDateTimePickers();
     if (window.DTi18n) window.DTi18n.apply(view);
@@ -1174,6 +1175,120 @@ document.addEventListener('mousedown', function(e) {
     if (kbd) kbd.style.display = '';
   }
 });
+
+/* ================================================================
+   MOBILE BOTTOM SHEET DEMO — called after mobile-bottom-sheets renders
+================================================================ */
+function initMobileSheetDemo() {
+  var sheet = document.getElementById('dtm-sheet');
+  if (!sheet) return;
+
+  /* ── Mapa real (mismo tipo que Map elements: CARTO light + pins de gota) ── */
+  var PB='M16.5 1.5C24.78 1.5 31.5 8.22 31.5 16.5C31.5 21.44 29.11 25.82 25.43 28.55C22.61 30.67 18.58 34.04 17.66 39.48C17.56 40.05 17.08 40.5 16.5 40.5C15.92 40.5 15.44 40.05 15.34 39.48C14.42 34.04 10.39 30.67 7.56 28.55C3.88 25.82 1.5 21.44 1.5 16.5C1.5 8.22 8.22 1.5 16.5 1.5Z';
+  function pinSvg(fill,inner,sz){
+    var h=Math.round(sz*49/33);
+    return '<div style="line-height:0;filter:drop-shadow(0 2px 3px rgba(19,32,69,.3))"><svg width="'+sz+'" height="'+h+'" viewBox="0 0 33 49"><path d="'+PB+'" fill="'+fill+'" stroke="#fff" stroke-width="2"/>'+inner+'</svg></div>';
+  }
+  function orderPin(stopNum){
+    var inner = '<circle cx="16.5" cy="16.5" r="10.5" fill="#fff"/>' +
+      '<text x="16.5" y="16.5" text-anchor="middle" dominant-baseline="central" ' +
+      'font-family="DM Sans,sans-serif" font-weight="700" font-size="11" fill="#39414D">' + stopNum + '</text>';
+    return pinSvg('#1F60ED', inner, 30);
+  }
+  function depotPin(){
+    return pinSvg('#132045','<path d="M24 18.17V16.5L22.75 10.67H9.83L9 16.5V18.17H9.83V23.17H18.17V18.17H21.5V23.17H23.17V18.17H24ZM16.5 21.5H11.5V18.17H16.5V21.5Z" fill="#fff"/>',34);
+  }
+  function mkIcon(html,sz){
+    var h=Math.round(sz*49/33);
+    var tipY=Math.round(h*40.5/49);
+    return L.divIcon({html:html,className:'',iconSize:[sz,h],iconAnchor:[Math.round(sz/2),tipY]});
+  }
+  function buildSheetMap(){
+    var el=document.getElementById('dtm-sheet-map');
+    if(!el || el._leaflet_id) return;
+    var STOPS=[[-33.405,-70.575],[-33.412,-70.560],[-33.418,-70.547],[-33.398,-70.553],[-33.392,-70.566],[-33.401,-70.582]];
+    var DEPOT=[-33.420,-70.585];
+    var m=L.map(el,{center:[-33.405,-70.565],zoom:13,scrollWheelZoom:false,zoomControl:false,attributionControl:false});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      {subdomains:'abcd',maxZoom:19}).addTo(m);
+    L.marker(DEPOT,{icon:mkIcon(depotPin(),34),zIndexOffset:200}).addTo(m);
+    L.polyline(STOPS,{color:'#1F60ED',weight:3,opacity:0.5}).addTo(m);
+    STOPS.forEach(function(pos,i){L.marker(pos,{icon:mkIcon(orderPin(i+1),30)}).addTo(m);});
+    setTimeout(function(){m.invalidateSize();},120);
+  }
+  function runMapInit(){
+    requestAnimationFrame(function(){requestAnimationFrame(buildSheetMap);});
+  }
+  if(typeof L!=='undefined'){runMapInit();}
+  else{
+    var css=document.createElement('link');css.rel='stylesheet';
+    css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(css);
+    var s=document.createElement('script');
+    s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload=runMapInit; document.head.appendChild(s);
+  }
+
+  /* ── Máquina de estados del sheet: map ↔ mid ↔ full ── */
+  var OFF={full:48,mid:320,map:544};
+  var LBL={full:'Lista completa',mid:'Media (default)',map:'Mapa completo'};
+  var EASE='transform .28s cubic-bezier(.2,.8,.3,1)';
+  var THRESHOLD=50;
+  var badge=document.getElementById('dtm-sheet-badge');
+  var grab=document.getElementById('dtm-sheet-grab');
+  var list=document.getElementById('dtm-sheet-list');
+  var state='mid';
+
+  function apply(s){
+    state=s;
+    sheet.style.transition=EASE;
+    sheet.style.transform='translateY('+OFF[s]+'px)';
+    if(badge) badge.textContent=LBL[s];
+    if(list) list.style.overflowY = s==='full' ? 'auto' : 'hidden';
+  }
+  apply('mid');
+
+  // Un swipe mueve un solo estado: desde full o map siempre se vuelve a mid.
+  function targetFor(dy){
+    if(Math.abs(dy)<THRESHOLD) return state;
+    if(dy<0) return state==='mid' ? 'full' : (state==='map' ? 'mid' : 'full');
+    return state==='mid' ? 'map' : (state==='full' ? 'mid' : 'map');
+  }
+
+  var startY=null;
+  function dragStart(e){
+    startY=e.clientY;
+    sheet.style.transition='none';
+    grab.style.cursor='grabbing';
+    if(e.target.setPointerCapture){try{e.target.setPointerCapture(e.pointerId);}catch(_){/* noop */}}
+  }
+  function dragMove(e){
+    if(startY===null) return;
+    var dy=e.clientY-startY;
+    var y=Math.min(OFF.map,Math.max(OFF.full,OFF[state]+dy));
+    sheet.style.transform='translateY('+y+'px)';
+  }
+  function dragEnd(e){
+    if(startY===null) return;
+    var dy=e.clientY-startY;
+    startY=null;
+    grab.style.cursor='grab';
+    apply(targetFor(dy));
+  }
+  grab.addEventListener('pointerdown',function(e){e.preventDefault();dragStart(e);});
+  grab.addEventListener('pointermove',dragMove);
+  grab.addEventListener('pointerup',dragEnd);
+  grab.addEventListener('pointercancel',dragEnd);
+
+  // En media/colapsado la lista no scrollea: arrastrar sobre ella también mueve el sheet.
+  list.addEventListener('pointerdown',function(e){
+    if(state==='full') return;
+    e.preventDefault();dragStart(e);
+  });
+  list.addEventListener('pointermove',function(e){if(state!=='full'||startY!==null)dragMove(e);});
+  list.addEventListener('pointerup',dragEnd);
+  list.addEventListener('pointercancel',dragEnd);
+}
 
 /* ================================================================
    MAP ELEMENTS — called after mappins section renders via innerHTML

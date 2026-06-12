@@ -15,6 +15,20 @@
         ["Scroll", "el contenido interno hace scroll una vez en altura completa"]
       ]
     },
+    "sheetDemo": {
+      "name": "DTMBottomSheet — Demo funcional (mapa + lista)",
+      "specs": [
+        ["Estado inicial", "Media — sheet a 50% del viewport (translateY 320dp en 640dp)"],
+        ["Swipe up desde media", "→ Lista completa — sheet a 92% (translateY 48dp)"],
+        ["Swipe down desde media", "→ Mapa completo — sheet colapsado a 96dp visibles (translateY 544dp)"],
+        ["Swipe down en lista completa", "→ vuelve a media (nunca salta a mapa completo)"],
+        ["Swipe up en mapa completo", "→ vuelve a media (nunca salta a lista completa)"],
+        ["Umbral de gesto", "50dp de arrastre · si no se supera, el sheet vuelve a su estado actual"],
+        ["Snap", "transición 280ms cubic-bezier(.2,.8,.3,1)"],
+        ["Scroll de lista", "solo habilitado en lista completa; en media y colapsado el arrastre mueve el sheet"],
+        ["Mapa", "mismo tipo que Map elements desktop — tiles CARTO light + pins de gota numerados + polilínea de ruta"]
+      ]
+    },
     "routeHeader": {
       "name": "DTMRouteHeader",
       "specs": [
