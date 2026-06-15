@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T16:16:16.419Z",
+  "generated": "2026-06-15T16:26:16.001Z",
   "days": [
     {
       "date": "2026-06-15",
       "entries": [
+        {
+          "hash": "05f6119",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): Login screen — fondo neutral-2 en todas las variantes",
+          "author": "Diego"
+        },
         {
           "hash": "ae82f5f",
           "type": "update",
