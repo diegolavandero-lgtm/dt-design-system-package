@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T14:45:09.528Z",
+  "generated": "2026-06-15T14:55:23.513Z",
   "days": [
     {
       "date": "2026-06-15",
       "entries": [
+        {
+          "hash": "46ae7a9",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMToast — borde 1.5px para mejor visibilidad en fondo oscuro",
+          "author": "Diego"
+        },
         {
           "hash": "c2351f6",
           "type": "update",
