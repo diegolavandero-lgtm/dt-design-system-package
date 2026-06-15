@@ -124,6 +124,8 @@ const ICON_PATHS = {
   'ban':               '<path d="M16 2A14 14 0 1 0 30 16 14 14 0 0 0 16 2zm-12 14A12 12 0 0 1 22.9 5.41L5.41 22.9A11.93 11.93 0 0 1 4 16zm12 12a11.93 11.93 0 0 1-6.9-2.41L26.59 9.1A11.93 11.93 0 0 1 28 16 12 12 0 0 1 16 28z"/>',
   'refresh':           '<path d="M12 10H6.78A11 11 0 0 1 27 16h2A13 13 0 0 0 6 6.68V2H4v8h8zM20 22h5.22A11 11 0 0 1 5 16H3a13 13 0 0 0 23 9.32V30h2v-8H20z"/>',
   'warning':           '<path d="M16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z"/><path d="M15 12H17V21H15z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/>',
+  'warning-filled':    '<path fill-rule="evenodd" d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM15,12H17V21H15ZM16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z"/>',
+  'close':             '<path d="M24,9.4L22.6,8L16,14.6L9.4,8L8,9.4L14.6,16L8,22.6L9.4,24L16,17.4L22.6,24L24,22.6L17.4,16Z"/>',
   'arrow-right':       '<path d="M18 6L16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.607 18 26 28 16 18 6z"/>',
   'arrow-left':        '<path d="M14 26l1.41-1.41L7.83 17H28V15H7.83l7.58-7.59L14 6 4 16l10 10z"/>',
   'camera':            '<path d="M16,11a5,5,0,1,0,5,5A5,5,0,0,0,16,11Zm0,8a3,3,0,1,1,3-3A3,3,0,0,1,16,19Z"/><path d="M28,7H22.39L20.79,4.21A2,2,0,0,0,19.06,3H12.94a2,2,0,0,0-1.73,1.21L9.61,7H4a2,2,0,0,0-2,2V25a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V9A2,2,0,0,0,28,7Zm0,18H4V9h6.76l1.6-3h7.28l1.6,3H28Z"/>',
@@ -6544,13 +6546,24 @@ function mMapListDemoPhone() {
 }
 
 /* ── Toast oscuro flotante ── */
+/* tone: 'info'|'error'|'warning'|'success'
+   close: true → X button  |  false → none  |  string → action link (e.g. 'AGREGAR') */
 function mToast(text, tone = 'success', close = true) {
-  const C = { success: ['checkmark-filled', 'var(--g4)'], error: ['close-filled', 'var(--r4)'], warning: ['warning', 'var(--o5)'], info: ['help-circle', 'var(--b4)'] };
+  const C = {
+    success: ['checkmark-filled', 'var(--g4)'],
+    error:   ['close-filled',     'var(--r4)'],
+    warning: ['warning-filled',   'var(--o3)'],
+    info:    [null, null],
+  };
   const c = C[tone] || C.success;
-  return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 4px 16px rgba(19,32,69,.24)">
-    ${iconSvg(c[0], 16, c[1])}
+  const border = c[1] ? `border:1px solid ${c[1]};` : '';
+  const closeBtn = `<span style="cursor:pointer;display:flex;align-items:center;flex-shrink:0;opacity:.7" onclick="this.parentElement.style.display='none'">${iconSvg('close', 16, '#fff')}</span>`;
+  const actionBtn = (label) => `<span style="font:700 11px/1 var(--font-sans);color:#fff;text-decoration:underline;text-transform:uppercase;cursor:pointer;flex-shrink:0;letter-spacing:.04em;white-space:nowrap">${escHtml(label)}</span>`;
+  const right = close === false ? '' : (typeof close === 'string' ? actionBtn(close) : closeBtn);
+  return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;${border}box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">
+    ${c[0] ? iconSvg(c[0], 20, c[1]) : ''}
     <span style="flex:1;font:400 12px/1.4 var(--font-sans);color:#fff">${escHtml(text)}</span>
-    ${close ? iconSvg('close-filled', 14, 'var(--n4)') : ''}
+    ${right}
   </div>`;
 }
 
@@ -7218,11 +7231,24 @@ Object.assign(renderers, {
     const c = data.components || {};
     const wrap = (label, inner, w) => `<div style="width:${w || 320}px">${mLabel(label)}${inner}</div>`;
 
-    const toasts = mStage(`
-      ${wrap('Éxito', mToast('Orden agregada a la gestión masiva.', 'success'))}
-      ${wrap('Error', mToast('Código no encontrado dentro de tus órdenes.', 'error'))}
-      ${wrap('Bloqueo (no se puede finalizar)', mToast('No puedes finalizar ruta hasta que se sincronicen todas las órdenes.', 'warning'))}
-    `);
+    /* 4×3 toast grid — tono × (sin acción · botón × · enlace acción) */
+    const TOAST_ROWS = [
+      { tone:'info',    label:'Información', text:'Tu solicitud está siendo procesada en segundo plano.' },
+      { tone:'error',   label:'Error',       text:'Código no encontrado dentro de tus órdenes.' },
+      { tone:'warning', label:'Advertencia', text:'No puedes finalizar ruta hasta que se sincronicen todas las órdenes.' },
+      { tone:'success', label:'Éxito',       text:'Orden agregada a la gestión masiva correctamente.' },
+    ];
+    const colLabel = (txt) => `<div style="font:700 11px var(--font-sans);color:var(--n5);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">${txt}</div>`;
+    const gridRow = (r) => `
+      <div style="width:100%;margin-bottom:20px">
+        <div style="font:700 12px var(--font-sans);color:var(--n6);margin-bottom:10px">${r.label}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div>${colLabel('Sin acción')}${mToast(r.text, r.tone, false)}</div>
+          <div>${colLabel('Con cierre')}${mToast(r.text, r.tone, true)}</div>
+          <div>${colLabel('Con acción')}${mToast(r.text, r.tone, 'AGREGAR')}</div>
+        </div>
+      </div>`;
+    const toasts = `<div style="background:var(--n2);border-radius:8px;padding:20px">${TOAST_ROWS.map(gridRow).join('')}</div>`;
 
     /* Barra de sincronización */
     const syncBar = (label, barColor, fill, dark) => `<div style="border-radius:8px;overflow:hidden;${dark ? 'background:var(--n7)' : 'background:#fff;border:1px solid var(--n3)'}">
