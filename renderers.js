@@ -8040,7 +8040,7 @@ Object.assign(renderers, {
       style="width:100%;height:44px;border-radius:50px;font:700 14px/1 var(--font-sans);background:${disabled ? 'var(--n3)' : 'var(--b6)'};color:#fff;border:none;cursor:${disabled ? 'not-allowed' : 'pointer'};box-sizing:border-box">${label}</button>`;
 
     /* ===== Variante estática: paso 1 (Código de negocio) ===== */
-    const screenStep1 = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+    const screenStep1 = `<div style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box">
       <div style="text-align:center;margin-bottom:48px">
         <img src="${LOGO}" alt="DispatchTrack" style="height:28px">
       </div>
@@ -8050,7 +8050,7 @@ Object.assign(renderers, {
     </div>`;
 
     /* ===== Variante estática: error de código activación ===== */
-    const screenStep1Error = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+    const screenStep1Error = `<div style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box">
       <div style="text-align:center;margin-bottom:48px">
         <img src="${LOGO}" alt="DispatchTrack" style="height:28px;opacity:.4">
       </div>
@@ -8069,7 +8069,7 @@ Object.assign(renderers, {
     /* ===== FUNCIONAL: pantalla de login con flujo completo ===== */
     const I = 'lg';  // prefix de IDs
 
-    const loginScreen = `<div id="${I}-root" style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box;overflow:hidden">
+    const loginScreen = `<div id="${I}-root" style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box;overflow:hidden">
       <!-- Logo -->
       <div style="text-align:center;margin-bottom:40px">
         <img src="${LOGO}" alt="DispatchTrack" style="height:26px">
@@ -8112,7 +8112,7 @@ Object.assign(renderers, {
        (ver bloque al inicio del archivo). Aquí solo se compone el HTML. */
 
     /* ===== Variantes estáticas (mockups del flujo) ===== */
-    const screenLoginEmpty = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+    const screenLoginEmpty = `<div style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box">
       <div style="text-align:center;margin-bottom:40px"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
       <div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
       <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input placeholder="Ingresa tu usuario" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
@@ -8121,7 +8121,7 @@ Object.assign(renderers, {
       ${lFooter}
     </div>`;
 
-    const screenLoginToast = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+    const screenLoginToast = `<div style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box">
       <div style="text-align:center;margin-bottom:40px"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
       <div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
       <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--r6);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
@@ -8133,7 +8133,7 @@ Object.assign(renderers, {
       ${lFooter}
     </div>`;
 
-    const screenLoginModal = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+    const screenLoginModal = `<div style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box">
       <div style="text-align:center;margin-bottom:40px;opacity:.4"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
       <div style="margin-bottom:14px;opacity:.4">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
       <div style="margin-bottom:14px;opacity:.4">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--r6);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
@@ -8151,7 +8151,7 @@ Object.assign(renderers, {
       </div>
     </div>`;
 
-    const screenLoginPerma = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+    const screenLoginPerma = `<div style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box">
       <div style="text-align:center;margin-bottom:40px;opacity:.4"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
       <div style="opacity:.4"><div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
       <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
@@ -8166,7 +8166,7 @@ Object.assign(renderers, {
       </div>
     </div>`;
 
-    const screenLoginBlocked = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+    const screenLoginBlocked = `<div style="position:relative;background:var(--n2);height:${H}px;padding:60px 20px 0;box-sizing:border-box">
       <div style="text-align:center;margin-bottom:40px;opacity:.4"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
       <div style="opacity:.4"><div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
       <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
