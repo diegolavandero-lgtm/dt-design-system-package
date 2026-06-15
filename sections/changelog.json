@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T14:24:36.379Z",
+  "generated": "2026-06-15T14:45:09.528Z",
   "days": [
     {
       "date": "2026-06-15",
       "entries": [
+        {
+          "hash": "c2351f6",
+          "type": "update",
+          "section": "General",
+          "message": "feat(mobile-ds): DTMToast — grilla 4×3 (info/error/warning/success × sin acción/cierre/acción)",
+          "author": "Diego"
+        },
         {
           "hash": "4a25227",
           "type": "fix",
