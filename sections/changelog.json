@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T15:32:41.385Z",
+  "generated": "2026-06-15T16:16:16.419Z",
   "days": [
     {
       "date": "2026-06-15",
       "entries": [
+        {
+          "hash": "ae82f5f",
+          "type": "update",
+          "section": "General",
+          "message": "feat(mobile-ds): pantalla Login con flujo funcional de fuerza bruta",
+          "author": "Diego"
+        },
         {
           "hash": "aa585ad",
           "type": "fix",
