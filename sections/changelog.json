@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T15:07:10.813Z",
+  "generated": "2026-06-15T15:23:58.630Z",
   "days": [
     {
       "date": "2026-06-15",
       "entries": [
+        {
+          "hash": "44aba57",
+          "type": "fix",
+          "section": "Colors",
+          "message": "fix(mobile-ds): DTMToast — íconos Carbon correctos con fill-rule evenodd y colores hex",
+          "author": "Diego"
+        },
         {
           "hash": "e69f01d",
           "type": "fix",
