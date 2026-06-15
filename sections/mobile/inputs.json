@@ -14,7 +14,9 @@
         ["Válido", "1px var(--g5) + check verde a la derecha"],
         ["Label", "small-medium 500 12px var(--n6), arriba · obligatorio con * inicial"],
         ["Helper", "small 400 12px var(--n5), debajo"],
-        ["Tipografía", "body 400 14px var(--n7) · placeholder var(--n6)"]
+        ["Tipografía", "body 400 14px var(--n7) · placeholder var(--n6)"],
+        ["Variante password", "type=password · ícono view/view--off 18px var(--n5) a la derecha · padding-right 40px"],
+        ["Mostrar contraseña", "toca el ícono para alternar entre password (oculto) y text (visible)"]
       ]
     },
     "searchBar": {

@@ -1,0 +1,38 @@
+{
+  "title": "Login",
+  "titleKey": "nav.mobile.screens.login",
+  "description": "Flujo de ingreso a la app móvil. Combina el logo institucional de DispatchTrack, el campo Código de negocio (paso 1) y las credenciales Usuario + Contraseña (paso 2). Incluye toda la lógica de defensa contra ataques de fuerza bruta: avisos progresivos en toast, bloqueos temporales con cuenta regresiva en modal y bloqueo definitivo.",
+  "components": {
+    "screen": {
+      "name": "DTMLoginScreen",
+      "specs": [
+        ["Fondo", "#fff · sin top app bar (pantalla previa a la app)"],
+        ["Logo", "dispatchtrack-brand-color.svg · 180dp ancho · centrado vertical superior"],
+        ["Paso 1", "Código de negocio · DTMTextInput numérico"],
+        ["Paso 2", "Usuario + Contraseña · DTMTextInput (variante password)"],
+        ["CTA", "Botón Ingresar primario 44dp ancho completo"],
+        ["Footer", "small 12px var(--n5) · «Al usar DispatchTrack, estás de acuerdo con nuestros [Términos y condiciones | Políticas de privacidad]»"]
+      ]
+    }
+  },
+  "demo": {
+    "credentials": {
+      "businessCode": "1234",
+      "user": "Pedro Perez",
+      "pin": "0000"
+    },
+    "intro": "Prueba el flujo real: ingresa cualquier código de negocio para avanzar, luego juega con el botón «Ingresar» para disparar la lógica de fuerza bruta. El PIN correcto es 0000."
+  },
+  "bruteForceLogic": [
+    ["1–4 intentos fallidos", "Toast oscuro · «Credenciales incorrectas. Intentos N/5»"],
+    ["5° intento fallido", "Modal «Alerta de seguridad» con cuenta regresiva de 60s · botón Continuar deshabilitado hasta que termine el contador"],
+    ["10° intento fallido (segundo bloqueo)", "Modal con cuenta regresiva de 5 min (300s)"],
+    ["15° intento fallido (bloqueo definitivo)", "Modal «Has excedido el número de intentos» · botón Entendido · solo el admin puede reactivar"]
+  ],
+  "rules": [
+    "La cuenta regresiva siempre arranca al mostrar el modal. El botón Continuar se habilita en 0s.",
+    "Después de un desbloqueo temporal el contador de intentos no se reinicia — se suma al total acumulado.",
+    "El estado se mantiene en memoria de la pantalla (no en localStorage) para evitar persistencia entre demos.",
+    "El logo es siempre el institucional DispatchTrack — nunca el logo del producto Last Mile en esta pantalla."
+  ]
+}

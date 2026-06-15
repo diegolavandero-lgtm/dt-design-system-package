@@ -127,6 +127,8 @@ const ICON_PATHS = {
   'warning':           '<path d="M16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z"/><path d="M15 12H17V21H15z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/>',
   'warning-filled':    '<path fill-rule="evenodd" d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2ZM15,8H17V20H15ZM16,22a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,22Z"/>',
   'close':             '<path d="M24,9.4L22.6,8L16,14.6L9.4,8L8,9.4L14.6,16L8,22.6L9.4,24L16,17.4L22.6,24L24,22.6L17.4,16Z"/>',
+  'view':              '<path d="M16,6C8.4,6,2.1,12.6,1.8,12.9c-0.3,0.4-0.3,0.9,0,1.3C2.1,14.4,8.4,21,16,21s13.9-6.6,14.2-6.9c0.3-0.4,0.3-0.9,0-1.3C29.9,12.6,23.6,6,16,6z M16,19c-5.4,0-10.3-4.3-12.2-6c1.9-1.7,6.8-6,12.2-6s10.3,4.3,12.2,6C26.3,14.7,21.4,19,16,19z"/><path d="M16,9.5c-2.5,0-4.5,2-4.5,4.5s2,4.5,4.5,4.5s4.5-2,4.5-4.5S18.5,9.5,16,9.5z M16,16.5c-1.4,0-2.5-1.1-2.5-2.5s1.1-2.5,2.5-2.5s2.5,1.1,2.5,2.5S17.4,16.5,16,16.5z"/>',
+  'view--off':         '<path d="M5.2,3.8L3.8,5.2L7.4,8.8C4.2,11.1,2.1,13.6,2,13.7c-0.3,0.4-0.3,0.9,0,1.3C2.3,15.4,8.6,22,16,22c2.2,0,4.3-0.6,6.1-1.4l4.7,4.7l1.4-1.4L5.2,3.8z M16,20c-5.4,0-10.3-4.3-12.2-6c0.7-0.6,2.4-2.2,4.7-3.6l2.3,2.3c-0.5,0.7-0.8,1.5-0.8,2.4c0,2.5,2,4.5,4.5,4.5c0.9,0,1.7-0.3,2.4-0.8l1.9,1.9C18.1,19.8,17.1,20,16,20z M14.4,15.8c-0.3-0.3-0.4-0.7-0.4-1.2c0-1.1,0.9-2,2-2c0.4,0,0.8,0.1,1.1,0.4L14.4,15.8z"/><path d="M16,7c5.4,0,10.3,4.3,12.2,6c-0.5,0.4-1.4,1.3-2.7,2.2l1.4,1.4c2-1.6,3.2-3,3.3-3.2c0.3-0.4,0.3-0.9,0-1.3C29.9,11.6,23.6,5,16,5c-1.5,0-2.9,0.3-4.3,0.7l1.7,1.7C14.2,7.2,15.1,7,16,7z"/>',
   'arrow-right':       '<path d="M18 6L16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.607 18 26 28 16 18 6z"/>',
   'arrow-left':        '<path d="M14 26l1.41-1.41L7.83 17H28V15H7.83l7.58-7.59L14 6 4 16l10 10z"/>',
   'camera':            '<path d="M16,11a5,5,0,1,0,5,5A5,5,0,0,0,16,11Zm0,8a3,3,0,1,1,3-3A3,3,0,0,1,16,19Z"/><path d="M28,7H22.39L20.79,4.21A2,2,0,0,0,19.06,3H12.94a2,2,0,0,0-1.73,1.21L9.61,7H4a2,2,0,0,0-2,2V25a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V9A2,2,0,0,0,28,7Zm0,18H4V9h6.76l1.6-3h7.28l1.6,3H28Z"/>',
@@ -6570,6 +6572,156 @@ function mToast(text, tone = 'success', close = true) {
   </div>`;
 }
 
+/* ── Login functional helpers (módulo-level para que los inline onclick funcionen) ── */
+window.dtLoginState = window.dtLoginState || { attempts: 0, blockTier: 0 };
+
+window.dtLoginClearErr = function() {
+  ['lg-user', 'lg-pin'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.dataset.err === '1') {
+      el.style.border = el.value ? '1px solid var(--n5)' : '1px solid var(--n3)';
+      el.dataset.err = '';
+    }
+  });
+};
+
+window.dtLoginToastShow = function(text, tone) {
+  var t = document.getElementById('lg-toast');
+  if (!t) return;
+  var color = tone === 'success' ? '#57D9A3' : '#FF7452';
+  var iconPath = tone === 'success'
+    ? '<path fill-rule="evenodd" d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/>'
+    : '<path fill-rule="evenodd" d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M21.4,23L16,17.6L10.6,23L9,21.4L14.4,16L9,10.6L10.6,9L16,14.4L21.4,9L23,10.6L17.6,16L23,21.4L21.4,23z"/>';
+  t.innerHTML =
+    '<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;border:1.5px solid ' + color + ';box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">' +
+      '<span style="flex-shrink:0;display:flex"><svg width="20" height="20" viewBox="0 0 32 32" fill="' + color + '">' + iconPath + '</svg></span>' +
+      '<span style="flex:1;font:400 12px/1.4 var(--font-sans);color:#fff">' + text + '</span>' +
+      '<span style="cursor:pointer;display:flex;flex-shrink:0;opacity:.6" onclick="document.getElementById(\'lg-toast\').style.display=\'none\'"><svg width="18" height="18" viewBox="0 0 32 32" fill="#fff"><path d="M24,9.4L22.6,8L16,14.6L9.4,8L8,9.4L14.6,16L8,22.6L9.4,24L16,17.4L22.6,24L24,22.6L17.4,16Z"/></svg></span>' +
+    '</div>';
+  t.style.display = 'block';
+  if (window.dtToastTimer) clearTimeout(window.dtToastTimer);
+  window.dtToastTimer = setTimeout(function() { t.style.display = 'none'; }, 5000);
+};
+
+window.dtLoginShowModal = function(title, body, btnLabel, withCountdown, seconds, onClose) {
+  var m = document.getElementById('lg-modal');
+  if (!m) return;
+  var btnId = 'lg-modal-btn', cdId = 'lg-modal-cd';
+  var html = '<div style="background:#fff;border-radius:12px;padding:20px;width:100%;max-width:260px;box-shadow:0 8px 32px rgba(19,32,69,.24)">' +
+    '<div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:8px">' + title + '</div>' +
+    '<div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:14px">' + body + '</div>';
+  if (withCountdown) {
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">' +
+      '<span id="' + cdId + '" style="font:500 12px var(--font-sans);color:var(--n6)">Desbloqueado en ' + seconds + ' segundos…</span>' +
+      '<button id="' + btnId + '" disabled style="height:36px;padding:0 18px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--n3);color:#fff;border:none;cursor:not-allowed">Continuar</button>' +
+      '</div>';
+  } else {
+    html += '<button id="' + btnId + '" style="width:100%;height:40px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">' + btnLabel + '</button>';
+  }
+  html += '</div>';
+  m.innerHTML = html;
+  m.style.display = 'flex';
+
+  if (withCountdown) {
+    var remain = seconds;
+    if (window.dtLoginCdTimer) clearInterval(window.dtLoginCdTimer);
+    window.dtLoginCdTimer = setInterval(function() {
+      remain--;
+      var cd = document.getElementById(cdId);
+      var btn = document.getElementById(btnId);
+      if (!cd || !btn) { clearInterval(window.dtLoginCdTimer); return; }
+      if (remain <= 0) {
+        clearInterval(window.dtLoginCdTimer);
+        cd.textContent = 'Desbloqueado';
+        cd.style.color = 'var(--g6)';
+        btn.disabled = false;
+        btn.style.background = 'var(--b6)';
+        btn.style.cursor = 'pointer';
+        btn.onclick = function() {
+          m.style.display = 'none';
+          if (onClose) onClose();
+        };
+      } else {
+        cd.textContent = 'Desbloqueado en ' + remain + ' segundos…';
+      }
+    }, 1000);
+  } else {
+    var b = document.getElementById(btnId);
+    if (b) b.onclick = function() {
+      m.style.display = 'none';
+      if (onClose) onClose();
+    };
+  }
+};
+
+window.dtLoginAttempt = function(prefix, correctPin) {
+  var s = window.dtLoginState;
+  if (s.blockTier >= 3) return;
+  var pinInput = document.getElementById(prefix + '-pin');
+  var userInput = document.getElementById(prefix + '-user');
+  if (!pinInput || !userInput) return;
+  var pin = pinInput.value;
+  if (pin === correctPin) {
+    s.attempts = 0;
+    window.dtLoginToastShow('Ingreso exitoso. Bienvenido, ' + (userInput.value || 'conductor') + '.', 'success');
+    return;
+  }
+  s.attempts++;
+  [userInput, pinInput].forEach(function(el) { el.style.border = '1px solid var(--r6)'; el.dataset.err = '1'; });
+
+  var inCycle = ((s.attempts - 1) % 5) + 1;
+  if (inCycle < 5) {
+    if (inCycle === 4) {
+      window.dtLoginToastShow('Credenciales incorrectas. Intentos 4/5. 1 falla más y serás bloqueado.', 'error');
+    } else {
+      window.dtLoginToastShow('Credenciales incorrectas. Intentos ' + inCycle + '/5.', 'error');
+    }
+  } else {
+    s.blockTier++;
+    if (s.blockTier === 1) {
+      window.dtLoginShowModal(
+        'Alerta de seguridad',
+        'Has excedido el número de intentos de ingreso. Por favor vuelve a intentarlo en 1 minuto y contacta a tu supervisor para verificar que tu PIN es correcto.',
+        'Continuar', true, 60,
+        function() { pinInput.value = ''; window.dtLoginClearErr(); }
+      );
+    } else if (s.blockTier === 2) {
+      window.dtLoginShowModal(
+        'Alerta de seguridad',
+        'Has excedido el número de intentos de ingreso. Por favor vuelve a intentarlo en 5 minutos y contacta a tu supervisor para verificar que tu PIN es correcto.',
+        'Continuar', true, 300,
+        function() { pinInput.value = ''; window.dtLoginClearErr(); }
+      );
+    } else {
+      window.dtLoginShowModal(
+        'Alerta de seguridad',
+        'Has excedido el número de intentos de inicio de sesión. Por favor contacta a tu supervisor para saber cómo proceder.',
+        'Entendido', false, 0,
+        function() { /* permanente */ }
+      );
+    }
+  }
+};
+
+window.dtLoginReset = function() {
+  window.dtLoginState = { attempts: 0, blockTier: 0 };
+  if (window.dtLoginCdTimer) clearInterval(window.dtLoginCdTimer);
+  if (window.dtToastTimer) clearTimeout(window.dtToastTimer);
+  var t = document.getElementById('lg-toast'); if (t) t.style.display = 'none';
+  var m = document.getElementById('lg-modal'); if (m) m.style.display = 'none';
+  var pin = document.getElementById('lg-pin'); if (pin) { pin.value = ''; pin.style.border = '1px solid var(--n3)'; pin.dataset.err = ''; }
+  var u = document.getElementById('lg-user'); if (u) { u.style.border = u.value ? '1px solid var(--n5)' : '1px solid var(--n3)'; u.dataset.err = ''; }
+};
+
+window.dtLoginPwToggle = function(id) {
+  var i = document.getElementById(id);
+  var on = document.getElementById(id + '-on');
+  var off = document.getElementById(id + '-off');
+  if (!i || !on || !off) return;
+  if (i.type === 'password') { i.type = 'text'; on.style.display = 'none'; off.style.display = 'flex'; }
+  else { i.type = 'password'; on.style.display = 'flex'; off.style.display = 'none'; }
+};
+
 /* ── Banner inline (warning / info) ── */
 function mBanner(text, tone = 'warning') {
   const C = { warning: ['var(--o1)', 'var(--o7)', 'warning', 'var(--o5)'], info: ['var(--b1)', 'var(--n7)', 'help-circle', 'var(--b6)'] };
@@ -7522,6 +7674,38 @@ Object.assign(renderers, {
             style="${IS};border:1px solid var(--n3);color:var(--n5);background:var(--n1);cursor:not-allowed">
         </div>
       `)}
+      ${col(`
+        ${mLabel('Variante password')}
+        <div style="margin-bottom:14px">
+          ${fldLbl('Contraseña', true)}
+          <div id="mi-pw1-w" style="position:relative">
+            <input id="mi-pw1" type="password" placeholder="Ingresa tu contraseña"
+              style="${IS};border:1px solid var(--n3);padding-right:40px"
+              onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+              onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'">
+            <span id="mi-pw1-eye" onclick="(function(){var i=document.getElementById('mi-pw1');var on=document.getElementById('mi-pw1-eon');var off=document.getElementById('mi-pw1-eoff');if(i.type==='password'){i.type='text';on.style.display='none';off.style.display='flex'}else{i.type='password';on.style.display='flex';off.style.display='none'}})()"
+              style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;display:flex">
+              <span id="mi-pw1-eon" style="display:flex">${iconSvg('view', 18, 'var(--n5)')}</span>
+              <span id="mi-pw1-eoff" style="display:none">${iconSvg('view--off', 18, 'var(--n5)')}</span>
+            </span>
+          </div>
+        </div>
+        <div>
+          ${fldLbl('Contraseña (con valor)', true)}
+          <div style="position:relative">
+            <input id="mi-pw2" type="password" value="MyPass123!"
+              style="${IS};border:1px solid var(--n5);padding-right:40px"
+              onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+              onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'">
+            <span onclick="(function(){var i=document.getElementById('mi-pw2');var on=document.getElementById('mi-pw2-eon');var off=document.getElementById('mi-pw2-eoff');if(i.type==='password'){i.type='text';on.style.display='none';off.style.display='flex'}else{i.type='password';on.style.display='flex';off.style.display='none'}})()"
+              style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;display:flex">
+              <span id="mi-pw2-eon" style="display:flex">${iconSvg('view', 18, 'var(--n5)')}</span>
+              <span id="mi-pw2-eoff" style="display:none">${iconSvg('view--off', 18, 'var(--n5)')}</span>
+            </span>
+          </div>
+          <div style="font:400 12px var(--font-sans);color:var(--n5);margin-top:4px">Toca el ojo para mostrar/ocultar</div>
+        </div>
+      `)}
     `);
 
     /* ── 2. DTMSearchBar — live ── */
@@ -7814,6 +7998,227 @@ Object.assign(renderers, {
       ${mComponentCard(c.screen.name, 'NEW', variants, c.screen.specs,
         'Home del conductor. El toggle «Disponible» habilita la operación: apagado, las rutas se muestran en gris («Sin iniciar») y al intentar iniciar se muestra el toast de bloqueo.')}
       ${compCard}
+      ${mRules(data.rules)}`;
+  },
+
+  /* ── Pantalla · Login (funcional con lógica de fuerza bruta) ── */
+  mScreenLogin(data) {
+    const c = data.components || {};
+    const demo = data.demo || {};
+    const creds = demo.credentials || {};
+    const wrap = (label, inner) => `<div style="width:320px">${mLabel(label)}${inner}</div>`;
+    const W = 300, H = 600;
+    const LOGO = 'sections/assets/logos/dispatchtrack-brand-color.svg';
+    const PIN = creds.pin || '0000';
+
+    const lFieldLbl = (t, req) => `<div style="font:500 12px var(--font-sans);color:var(--n6);margin-bottom:5px">${req ? '*' : ''}${t}</div>`;
+    const lInput = (id, type, ph, val) => `<input id="${id}" type="${type}" placeholder="${ph}" value="${val || ''}"
+      style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);color:var(--n7);background:#fff;box-sizing:border-box;outline:none;padding:0 12px"
+      onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+      onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';if(window.dtLoginClearErr)dtLoginClearErr();">`;
+
+    const lPwField = (id) => `<div style="position:relative">
+      <input id="${id}" type="password" placeholder="Ingresa tu PIN"
+        style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);color:var(--n7);background:#fff;box-sizing:border-box;outline:none;padding:0 40px 0 12px"
+        onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+        onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff';if(window.dtLoginClearErr)dtLoginClearErr();">
+      <span onclick="dtLoginPwToggle('${id}')"
+        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;display:flex">
+        <span id="${id}-on" style="display:flex">${iconSvg('view', 18, 'var(--n5)')}</span>
+        <span id="${id}-off" style="display:none">${iconSvg('view--off', 18, 'var(--n5)')}</span>
+      </span>
+    </div>`;
+
+    const lFooter = `<div style="position:absolute;bottom:14px;left:20px;right:20px;text-align:center;font:400 11px/1.5 var(--font-sans);color:var(--n5)">
+      Al usar DispatchTrack, estás de acuerdo con nuestras:<br>
+      <span style="color:var(--b6);font-weight:500">Términos y condiciones</span> | <span style="color:var(--b6);font-weight:500">Políticas de privacidad</span>
+    </div>`;
+
+    const lBtn = (id, label, disabled, onclick) => `<button id="${id}"
+      onclick="${onclick || ''}"
+      ${disabled ? 'disabled' : ''}
+      style="width:100%;height:44px;border-radius:50px;font:700 14px/1 var(--font-sans);background:${disabled ? 'var(--n3)' : 'var(--b6)'};color:#fff;border:none;cursor:${disabled ? 'not-allowed' : 'pointer'};box-sizing:border-box">${label}</button>`;
+
+    /* ===== Variante estática: paso 1 (Código de negocio) ===== */
+    const screenStep1 = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+      <div style="text-align:center;margin-bottom:48px">
+        <img src="${LOGO}" alt="DispatchTrack" style="height:28px">
+      </div>
+      <div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}${lInput('lg-s1-bc','text','',creds.businessCode || '1234')}</div>
+      ${lBtn('lg-s1-btn','Siguiente', false, '')}
+      ${lFooter}
+    </div>`;
+
+    /* ===== Variante estática: error de código activación ===== */
+    const screenStep1Error = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+      <div style="text-align:center;margin-bottom:48px">
+        <img src="${LOGO}" alt="DispatchTrack" style="height:28px;opacity:.4">
+      </div>
+      <div style="margin-bottom:14px;opacity:.4">${lFieldLbl('Código de negocio')}<input value="9999" disabled style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff"></div>
+      <div style="opacity:.4">${lBtn('','Siguiente', false, '')}</div>
+      <!-- Modal centrado -->
+      <div style="position:absolute;inset:0;background:rgba(19,32,69,.4);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box">
+        <div style="background:#fff;border-radius:12px;padding:20px;width:100%">
+          <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:8px">Código de activación incorrecto</div>
+          <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:18px">Por ahora podrás ingresar a la app, pero próximamente si no ingresas tu código correcto no podrás ingresar a tu cuenta. Para obtener tu código de negocio correcto, contacta a tu agente de soporte o administrador en tu empresa.</div>
+          ${lBtn('','Siguiente', false, '')}
+        </div>
+      </div>
+    </div>`;
+
+    /* ===== FUNCIONAL: pantalla de login con flujo completo ===== */
+    const I = 'lg';  // prefix de IDs
+
+    const loginScreen = `<div id="${I}-root" style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box;overflow:hidden">
+      <!-- Logo -->
+      <div style="text-align:center;margin-bottom:40px">
+        <img src="${LOGO}" alt="DispatchTrack" style="height:26px">
+      </div>
+
+      <!-- Código de negocio (precargado, sólo lectura) -->
+      <div style="margin-bottom:14px">
+        ${lFieldLbl('Código de negocio')}
+        <input id="${I}-bc" type="text" value="${creds.businessCode || '1234'}" readonly
+          style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);color:var(--n7);background:#fff;box-sizing:border-box;outline:none;padding:0 12px">
+      </div>
+
+      <!-- Usuario -->
+      <div style="margin-bottom:14px">
+        ${lFieldLbl('Usuario')}
+        ${lInput(I + '-user','text','Ingresa tu usuario',creds.user || 'Pedro Perez')}
+      </div>
+
+      <!-- Contraseña -->
+      <div style="margin-bottom:18px">
+        ${lFieldLbl('PIN')}
+        ${lPwField(I + '-pin')}
+      </div>
+
+      <!-- CTA -->
+      <button id="${I}-btn"
+        onclick="dtLoginAttempt('${I}','${PIN}')"
+        style="width:100%;height:44px;border-radius:50px;font:700 14px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;box-sizing:border-box">Ingresar</button>
+
+      <!-- Toast area -->
+      <div id="${I}-toast" style="position:absolute;left:16px;right:16px;bottom:80px;display:none;z-index:5"></div>
+
+      <!-- Modal area -->
+      <div id="${I}-modal" style="position:absolute;inset:0;background:rgba(19,32,69,.5);display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;z-index:10"></div>
+
+      ${lFooter}
+    </div>`;
+
+    /* Las funciones window.dtLogin* están definidas a nivel de módulo en renderers.js
+       (ver bloque al inicio del archivo). Aquí solo se compone el HTML. */
+
+    /* ===== Variantes estáticas (mockups del flujo) ===== */
+    const screenLoginEmpty = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+      <div style="text-align:center;margin-bottom:40px"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
+      <div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input placeholder="Ingresa tu usuario" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:18px">${lFieldLbl('PIN')}<input type="password" placeholder="Ingresa tu PIN" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);padding:0 40px 0 12px;background:#fff;box-sizing:border-box"></div>
+      ${lBtn('','Ingresar', false, '')}
+      ${lFooter}
+    </div>`;
+
+    const screenLoginToast = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+      <div style="text-align:center;margin-bottom:40px"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
+      <div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--r6);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:18px">${lFieldLbl('PIN')}<input type="password" value="••••" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--r6);font:400 14px/1 var(--font-sans);padding:0 40px 0 12px;background:#fff;box-sizing:border-box"></div>
+      ${lBtn('','Ingresar', false, '')}
+      <div style="position:absolute;left:16px;right:16px;bottom:80px;z-index:5">
+        ${mToast('Credenciales incorrectas. Intentos 4/5. 1 falla más y serás bloqueado.', 'error')}
+      </div>
+      ${lFooter}
+    </div>`;
+
+    const screenLoginModal = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+      <div style="text-align:center;margin-bottom:40px;opacity:.4"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
+      <div style="margin-bottom:14px;opacity:.4">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:14px;opacity:.4">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--r6);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:18px;opacity:.4">${lFieldLbl('PIN')}<input type="password" value="••••" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--r6);font:400 14px/1 var(--font-sans);padding:0 40px 0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="opacity:.4">${lBtn('','Ingresar', false, '')}</div>
+      <div style="position:absolute;inset:0;background:rgba(19,32,69,.5);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box">
+        <div style="background:#fff;border-radius:12px;padding:20px;width:100%;max-width:260px">
+          <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:8px">Alerta de seguridad</div>
+          <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:14px">Has excedido el número de intentos de ingreso. Por favor vuelve a intentarlo en 1 minuto y contacta a tu supervisor para verificar que tu PIN es correcto.</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <span style="font:500 12px var(--font-sans);color:var(--n6)">Desbloqueado en 47 segundos…</span>
+            <button disabled style="height:36px;padding:0 18px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--n3);color:#fff;border:none;cursor:not-allowed">Continuar</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    const screenLoginPerma = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+      <div style="text-align:center;margin-bottom:40px;opacity:.4"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
+      <div style="opacity:.4"><div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:18px">${lFieldLbl('PIN')}<input type="password" value="••••" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);padding:0 40px 0 12px;background:#fff;box-sizing:border-box"></div>
+      ${lBtn('','Ingresar', false, '')}</div>
+      <div style="position:absolute;inset:0;background:rgba(19,32,69,.5);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box">
+        <div style="background:#fff;border-radius:12px;padding:20px;width:100%;max-width:260px">
+          <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:8px">Alerta de seguridad</div>
+          <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:14px">Has excedido el número de intentos de inicio de sesión. Por favor contacta a tu supervisor para saber cómo proceder.</div>
+          <button style="width:100%;height:40px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Entendido</button>
+        </div>
+      </div>
+    </div>`;
+
+    const screenLoginBlocked = `<div style="position:relative;background:#fff;height:${H}px;padding:60px 20px 0;box-sizing:border-box">
+      <div style="text-align:center;margin-bottom:40px;opacity:.4"><img src="${LOGO}" alt="DispatchTrack" style="height:26px"></div>
+      <div style="opacity:.4"><div style="margin-bottom:14px">${lFieldLbl('Código de negocio')}<input value="1234" readonly style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:14px">${lFieldLbl('Usuario')}<input value="Pedro Perez" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n5);font:400 14px/1 var(--font-sans);color:var(--n7);padding:0 12px;background:#fff;box-sizing:border-box"></div>
+      <div style="margin-bottom:18px">${lFieldLbl('PIN')}<input type="password" placeholder="Ingresa tu PIN" style="width:100%;height:44px;border-radius:6px;border:1px solid var(--n3);font:400 14px/1 var(--font-sans);padding:0 40px 0 12px;background:#fff;box-sizing:border-box"></div>
+      ${lBtn('','Ingresar', false, '')}</div>
+      <div style="position:absolute;inset:0;background:rgba(19,32,69,.5);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box">
+        <div style="background:#fff;border-radius:12px;padding:20px;width:100%;max-width:260px">
+          <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:8px">Usuario bloqueado</div>
+          <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-bottom:14px">Este usuario móvil ha sido bloqueado. Por favor contacta a tu supervisor si quieres ingresar.</div>
+          <button style="width:100%;height:40px;border-radius:50px;font:700 13px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer">Cerrar</button>
+        </div>
+      </div>
+    </div>`;
+
+    /* ===== Demo funcional ===== */
+    const liveStage = `<div style="background:var(--n1);border:1px solid var(--n3);border-radius:8px;padding:20px;display:flex;flex-direction:column;gap:14px;align-items:center;margin-bottom:14px">
+      <div style="width:100%;max-width:380px;font:400 13px/1.5 var(--font-sans);color:var(--n6);text-align:center">
+        ${escHtml(demo.intro || 'Prueba el flujo real ingresando un PIN incorrecto repetidamente.')}
+      </div>
+      ${mPhone(loginScreen, { width: W, height: H })}
+      <button onclick="window.dtLoginReset && window.dtLoginReset()"
+        style="height:32px;padding:0 16px;border-radius:50px;font:700 12px/1 var(--font-sans);background:#fff;color:var(--n6);border:1px solid var(--n4);cursor:pointer;display:inline-flex;align-items:center;gap:6px">
+        ${iconSvg('refresh', 14, 'var(--n6)')} Reiniciar demo
+      </button>
+    </div>`;
+
+    /* Galería de variantes estáticas */
+    const variantsStage = mStage(`
+      ${wrap('Paso 1 · Código de negocio', mPhone(screenStep1, { width: W, height: H }))}
+      ${wrap('Paso 1 · Error de código activación', mPhone(screenStep1Error, { width: W, height: H }))}
+      ${wrap('Paso 2 · Login vacío', mPhone(screenLoginEmpty, { width: W, height: H }))}
+      ${wrap('Toast de error (intentos 4/5)', mPhone(screenLoginToast, { width: W, height: H }))}
+      ${wrap('Modal bloqueo temporal (1 min)', mPhone(screenLoginModal, { width: W, height: H }))}
+      ${wrap('Modal bloqueo permanente', mPhone(screenLoginPerma, { width: W, height: H }))}
+      ${wrap('Usuario bloqueado por admin', mPhone(screenLoginBlocked, { width: W, height: H }))}
+    `);
+
+    /* Tabla con la lógica de fuerza bruta */
+    const bfTable = (data.bruteForceLogic && data.bruteForceLogic.length)
+      ? `<div class="card" style="margin-bottom:20px">
+          <h3 style="font:700 15px var(--font-sans);color:var(--n7);margin:0 0 12px">Lógica de fuerza bruta</h3>
+          ${mSpecTable(data.bruteForceLogic)}
+        </div>`
+      : '';
+
+    return `
+      ${sectionHeader(data)}
+      ${mComponentCard('DTMLoginScreen — demo funcional', 'NEW', liveStage, c.screen.specs,
+        'Demo en vivo del flujo de login. PIN correcto: ' + PIN + '. Después de 5 fallas se activa el bloqueo de 1 minuto, después de 10 el de 5 minutos, y a la falla 15 el bloqueo es permanente.')}
+      ${mComponentCard('DTMLoginScreen — variantes estáticas', 'NEW', variantsStage, [],
+        'Galería de las 7 pantallas del flujo: paso 1, paso 1 con modal de error, paso 2 vacío, paso 2 con toast, modal de bloqueo temporal, modal permanente y usuario bloqueado por admin.')}
+      ${bfTable}
       ${mRules(data.rules)}`;
   },
 

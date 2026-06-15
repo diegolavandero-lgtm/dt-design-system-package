@@ -4,6 +4,11 @@
   "description": "Product logo assets — SVG only. Usar la versión white en fondos oscuros (#132045), la versión color en fondos claros. Nunca escalar por debajo de 18px de altura.",
   "keywords": ["logos", "brand", "svg", "assets", "lastmile", "plannerpro", "ondemand"],
   "dtWordmark": "sections/assets/logos/dt-wordmark-white.svg",
+  "dtBrand": {
+    "name": "DispatchTrack (brand)",
+    "description": "Logo institucional. Usar en pantallas de login y splash de la app móvil.",
+    "color": "sections/assets/logos/dispatchtrack-brand-color.svg"
+  },
   "products": [
     {
       "id": "lastmile",
