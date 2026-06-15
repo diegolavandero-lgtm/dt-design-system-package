@@ -6556,8 +6556,8 @@ function mToast(text, tone = 'success', close = true) {
     info:    [null, null],
   };
   const c = C[tone] || C.success;
-  const border = c[1] ? `border:1px solid ${c[1]};` : '';
-  const closeBtn = `<span style="cursor:pointer;display:flex;align-items:center;flex-shrink:0;opacity:.7" onclick="this.parentElement.style.display='none'">${iconSvg('close', 16, '#fff')}</span>`;
+  const border = c[1] ? `border:1.5px solid ${c[1]};` : '';
+  const closeBtn = `<span style="cursor:pointer;display:flex;align-items:center;flex-shrink:0;opacity:.55" onclick="this.parentElement.style.display='none'">${iconSvg('close', 16, '#fff')}</span>`;
   const actionBtn = (label) => `<span style="font:700 11px/1 var(--font-sans);color:#fff;text-decoration:underline;text-transform:uppercase;cursor:pointer;flex-shrink:0;letter-spacing:.04em;white-space:nowrap">${escHtml(label)}</span>`;
   const right = close === false ? '' : (typeof close === 'string' ? actionBtn(close) : closeBtn);
   return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;${border}box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">
