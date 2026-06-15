@@ -120,11 +120,12 @@ const ICON_PATHS = {
   // status / pill icons
   'calendar':          '<path d="M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z"/>',
   'check':             '<path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>',
-  'checkmark-filled':  '<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/>',
+  'checkmark-filled':  '<path fill-rule="evenodd" d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/>',
+  'misuse':            '<path fill-rule="evenodd" d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M21.4,23L16,17.6L10.6,23L9,21.4L14.4,16L9,10.6L10.6,9L16,14.4L21.4,9L23,10.6L17.6,16L23,21.4L21.4,23z"/>',
   'ban':               '<path d="M16 2A14 14 0 1 0 30 16 14 14 0 0 0 16 2zm-12 14A12 12 0 0 1 22.9 5.41L5.41 22.9A11.93 11.93 0 0 1 4 16zm12 12a11.93 11.93 0 0 1-6.9-2.41L26.59 9.1A11.93 11.93 0 0 1 28 16 12 12 0 0 1 16 28z"/>',
   'refresh':           '<path d="M12 10H6.78A11 11 0 0 1 27 16h2A13 13 0 0 0 6 6.68V2H4v8h8zM20 22h5.22A11 11 0 0 1 5 16H3a13 13 0 0 0 23 9.32V30h2v-8H20z"/>',
   'warning':           '<path d="M16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z"/><path d="M15 12H17V21H15z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/>',
-  'warning-filled':    '<path fill-rule="evenodd" d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM15,12H17V21H15ZM16,23a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,23Z"/>',
+  'warning-filled':    '<path fill-rule="evenodd" d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2ZM15,8H17V20H15ZM16,22a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,22Z"/>',
   'close':             '<path d="M24,9.4L22.6,8L16,14.6L9.4,8L8,9.4L14.6,16L8,22.6L9.4,24L16,17.4L22.6,24L24,22.6L17.4,16Z"/>',
   'arrow-right':       '<path d="M18 6L16.57 7.393 24.15 15 4 15 4 17 24.15 17 16.57 24.607 18 26 28 16 18 6z"/>',
   'arrow-left':        '<path d="M14 26l1.41-1.41L7.83 17H28V15H7.83l7.58-7.59L14 6 4 16l10 10z"/>',
@@ -6548,20 +6549,18 @@ function mMapListDemoPhone() {
 /* ── Toast oscuro flotante ── */
 /* tone: 'info'|'error'|'warning'|'success'
    close: true → X button  |  false → none  |  string → action link (e.g. 'AGREGAR')
-   Icon rendered as explicit <circle> + white symbol to avoid fill-cascade issues. */
+   Uses hardcoded hex (not CSS vars) so fill resolves correctly inside inline SVG. */
 function mToast(text, tone = 'success', close = true) {
   const TONE = {
-    success: { bg: 'var(--g4)', sym: (ICON_PATHS['check']  || '').replace(/<path/g, '<path fill="#fff" ') },
-    error:   { bg: 'var(--r4)', sym: (ICON_PATHS['close']  || '').replace(/<path/g, '<path fill="#fff" ') },
-    warning: { bg: 'var(--o3)', sym: '<path fill="#fff" d="M15,9H17V20H15ZM16,22a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,22Z"/>' },
+    success: { icon: 'checkmark-filled', color: '#57D9A3' },
+    error:   { icon: 'misuse',           color: '#FF7452' },
+    warning: { icon: 'warning-filled',   color: '#FFE380' },
     info:    null,
   };
   const t = TONE[tone] || null;
-  const border = t ? `border:1.5px solid ${t.bg};` : '';
-  const icon = t
-    ? `<svg width="20" height="20" viewBox="0 0 32 32" style="flex-shrink:0;margin-top:1px"><circle cx="16" cy="16" r="14" fill="${t.bg}"/>${t.sym}</svg>`
-    : '';
-  const closeBtn = `<span style="cursor:pointer;display:flex;align-items:center;flex-shrink:0;opacity:.55" onclick="this.parentElement.style.display='none'">${iconSvg('close', 16, '#fff')}</span>`;
+  const border = t ? `border:1.5px solid ${t.color};` : '';
+  const icon = t ? `<span style="flex-shrink:0;margin-top:1px;display:flex">${iconSvg(t.icon, 20, t.color)}</span>` : '';
+  const closeBtn = `<span style="cursor:pointer;display:flex;align-items:center;flex-shrink:0;opacity:.6" onclick="this.parentElement.style.display='none'">${iconSvg('close', 18, '#fff')}</span>`;
   const actionBtn = (label) => `<span style="font:700 11px/1 var(--font-sans);color:#fff;text-decoration:underline;text-transform:uppercase;cursor:pointer;flex-shrink:0;letter-spacing:.04em;white-space:nowrap">${escHtml(label)}</span>`;
   const right = close === false ? '' : (typeof close === 'string' ? actionBtn(close) : closeBtn);
   return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;${border}box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">
