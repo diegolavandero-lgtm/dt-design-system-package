@@ -7725,17 +7725,41 @@ Object.assign(renderers, {
             <span style="font:400 13px var(--font-sans);color:var(--n5)">No hay rutas disponibles</span>
           </div>`
         : `<div style="padding:0 12px 12px;display:flex;flex-direction:column;gap:8px;overflow:hidden">${cards}</div>`;
-      const footer = `<div style="margin-top:auto;background:#fff;border-top:1px solid var(--n3);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+      const footer = `<div style="margin-top:auto;background:#fff;border-top:1px solid var(--n3);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0">
         ${mToggle(opts.available)}<span style="font:500 14px var(--font-sans);color:var(--n7)">Disponible</span>
       </div>`;
+      const toastId = 'srl-toast-' + (opts.muted ? 'b' : 'a');
       const toast = opts.toast
-        ? `<div style="position:absolute;top:8px;left:8px;right:8px;z-index:10">${mToast('Para completar la acción debes activar el botón «Disponible».', 'warning')}</div>`
+        ? `<div id="${toastId}" style="position:absolute;top:8px;left:8px;right:8px;z-index:10">
+            <div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 4px 16px rgba(19,32,69,.24)">
+              ${iconSvg('warning', 16, 'var(--o5)')}
+              <span style="flex:1;font:400 12px/1.4 var(--font-sans);color:#fff">Para completar la acción debes activar el botón «Disponible».</span>
+              <span style="cursor:pointer;flex-shrink:0;display:flex;align-items:center" onclick="document.getElementById('${toastId}').style.display='none'">${iconSvg('close-filled', 14, 'var(--n4)')}</span>
+            </div>
+          </div>`
+        : '';
+      const pickupDd = opts.pickup
+        ? `<div id="srl-pu" style="position:relative;margin:12px 12px 0;z-index:20">
+            <div id="srl-pu-trig"
+              onclick="(function(){var open=document.getElementById('srl-pu').dataset.open==='1';document.getElementById('srl-pu').dataset.open=open?'':'1';document.getElementById('srl-pu-menu').style.display=open?'none':'block';document.getElementById('srl-pu-trig').style.border=open?'1px solid var(--n3)':'2px solid var(--b6)';document.getElementById('srl-pu-chev').style.transform=open?'rotate(0)':'rotate(180deg)'})()"
+              style="height:40px;background:#fff;border:1px solid var(--n3);border-radius:6px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box">
+              <span id="srl-pu-label" style="font:400 14px var(--font-sans);color:var(--n6)">Selecciona tu punto de retiro</span>
+              <span id="srl-pu-chev" style="display:flex;transition:transform .15s">${iconSvg('chevron--down', 16, 'var(--n5)')}</span>
+            </div>
+            <div id="srl-pu-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:50;overflow:hidden">
+              ${['Ejemplo 1', 'Ejemplo 2', 'Ejemplo 3'].map(o =>
+                `<div onclick="document.getElementById('srl-pu-label').textContent='${o}';document.getElementById('srl-pu-label').style.color='var(--n7)';document.getElementById('srl-pu-trig').style.border='1px solid var(--n5)';document.getElementById('srl-pu-menu').style.display='none';document.getElementById('srl-pu').dataset.open='';document.getElementById('srl-pu-chev').style.transform='rotate(0)'"
+                  onmouseenter="this.style.background='var(--b1)'" onmouseleave="this.style.background=''"
+                  style="height:44px;display:flex;align-items:center;padding:0 12px;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer">${o}</div>`
+              ).join('')}
+            </div>
+          </div>`
         : '';
       return mPhone(`
         <div style="position:relative;display:flex;flex-direction:column;height:${H}px">
           ${toast}
           ${mTopAppBar()}
-          ${opts.pickup ? mPickupSelect('Selecciona tu punto de retiro') : ''}
+          ${pickupDd}
           ${mDateNav('Rutas de hoy 01-01-24')}
           ${body}
           ${footer}
