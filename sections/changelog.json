@@ -2,8 +2,20 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-12T15:53:44.373Z",
+  "generated": "2026-06-15T13:33:24.244Z",
   "days": [
+    {
+      "date": "2026-06-15",
+      "entries": [
+        {
+          "hash": "19d040c",
+          "type": "update",
+          "section": "Inputs",
+          "message": "feat(mobile-ds): DTMInputs — live interactive previews para los 6 componentes",
+          "author": "Diego"
+        }
+      ]
+    },
     {
       "date": "2026-06-12",
       "entries": [
