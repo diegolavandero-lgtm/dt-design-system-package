@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T15:23:58.630Z",
+  "generated": "2026-06-15T15:32:41.385Z",
   "days": [
     {
       "date": "2026-06-15",
       "entries": [
+        {
+          "hash": "aa585ad",
+          "type": "fix",
+          "section": "General",
+          "message": "fix(mobile-ds): DTMToast — align-items:center para centrado vertical en 1 línea",
+          "author": "Diego"
+        },
         {
           "hash": "44aba57",
           "type": "fix",
