@@ -7454,90 +7454,223 @@ Object.assign(renderers, {
   /* ── App móvil · Inputs ── */
   mInputs(data) {
     const c = data.components || {};
-    const col = (inner, w) => `<div style="width:${w || 260}px;background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${inner}</div>`;
+    const col = (inner, w) => `<div style="width:${w||260}px;background:#fff;border:1px solid var(--n3);border-radius:12px;padding:16px">${inner}</div>`;
+    const fldLbl = (t, req) => `<div style="font:500 12px var(--font-sans);color:var(--n6);margin-bottom:5px">${req?'*':''}${t}</div>`;
+    const IS = 'width:100%;height:44px;border-radius:6px;font:400 14px/1 var(--font-sans);color:var(--n7);background:#fff;box-sizing:border-box;outline:none;padding:0 12px';
 
-    /* Estados del input de texto */
-    const textStates = mStage(`
+    /* ── 1. DTMTextInput — live ── */
+    const textLive = mStage(`
       ${col(`
-        ${mInput('Texto', 'Escribir', 'default')}
-        ${mInput('*Monto', 'Ingresa monto', 'focus', '*Requerido. Valor con opción decimal, ej. $500,67')}
-        ${mInput('*Monto', '$35.000', 'filled')}
-      `)}
-      ${col(`
-        ${mInput('*RUT de quien recibe', '16.999.99-9', 'error', 'RUT inválido')}
-        ${mInput('Dirección', 'Av. Las Condes 8977, Región Met…', 'valid')}
-        ${mInput('Número', 'No editable', 'disabled')}
-      `)}
-    `);
-
-    /* Search bar */
-    const searchBar = (content, focus) => `<div style="height:44px;border-radius:6px;border:${focus ? '2px solid var(--b6)' : '1px solid var(--n3)'};background:#fff;display:flex;align-items:center;gap:8px;padding:0 12px;box-sizing:border-box">
-      ${iconSvg('search', 16, 'var(--n5)')}
-      <span style="flex:1;font:400 14px var(--font-sans);color:${content ? 'var(--n7)' : 'var(--n6)'}">${content || ''}</span>
-      ${content ? iconSvg('close-filled', 16, 'var(--n5)') : ''}
-      ${iconSvg('document-import', 18, 'var(--n6)')}
-    </div>`;
-    const search = mStage(`
-      ${col(`${mLabel('Default')}${searchBar('', false)}${mLabel('Con búsqueda activa')}${searchBar('5544', true)}`, 280)}
-      ${col(`${mLabel('Estado vacío del sheet de búsqueda')}
-        <div style="text-align:center;padding:18px 10px">
-          ${iconSvg('location', 24, 'var(--n5)')}
-          <div style="font:400 13px/1.5 var(--font-sans);color:var(--n6);margin:10px 0 14px">Puedes buscar una orden por dirección, número de orden, cliente o ítem.</div>
-          ${mBtn(`${iconSvg('document-import', 16, 'var(--b6)')} Abrir escáner`, 'outline')}
-        </div>`, 280)}
-    `);
-
-    /* PIN input */
-    const pinRow = (digits, state) => {
-      const B = { empty: 'var(--n3)', focus: 'var(--b6)', error: 'var(--r6)', ok: 'var(--g5)' };
-      return `<div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px">${digits.map((d, i) => {
-        const isFocus = state === 'empty' && i === 0;
-        return `<div style="width:40px;height:50px;border-radius:6px;border:${isFocus ? '2px solid var(--b6)' : `1px solid ${B[state]}`};background:#fff;display:flex;align-items:center;justify-content:center;font:700 20px var(--font-sans);color:var(--n7)">${d}</div>`;
-      }).join('')}</div>`;
-    };
-    const pinMsg = (t, color) => `<div style="text-align:center;font:500 12px var(--font-sans);color:${color};margin-bottom:14px">${t}</div>`;
-    const pin = mStage(col(`
-      ${mLabel('Vacío / focus')}${pinRow(['', '', '', '', '', ''], 'empty')}
-      ${mLabel('Error')}${pinRow(['3', '2', '1', '4', '8', '0'], 'error')}${pinMsg('Código incorrecto', 'var(--r6)')}
-      ${mLabel('Desbloqueado por supervisor')}${pinRow(['*', '*', '*', '*', '*', '*'], 'ok')}${pinMsg('Desbloqueado por supervisor', 'var(--g6)')}
-      ${mLabel('Ingresado correctamente')}${pinRow(['3', '2', '1', '4', '8', '0'], 'ok')}${pinMsg('Ingresado correctamente', 'var(--g6)')}
-      <div style="text-align:center;font:400 12px var(--font-sans);color:var(--n6)">Si el cliente no puede proporcionar el código contacta a tu <span style="font-weight:700;color:var(--b6)">Supervisor.</span></div>
-    `, 320));
-
-    /* Stepper */
-    const stepRow = (label, stepper) => `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span style="font:400 14px var(--font-sans);color:var(--n7)">${label}</span>${stepper}</div>`;
-    const steppers = mStage(col(`
-      ${stepRow('Entregado', mStepper(0))}
-      ${stepRow('Ítem A', mStepper(1, { trash: true }))}
-      ${mInput('Razón (etiqueta)', 'Selecciona razón', 'default', '', { rightIcon: 'chevron--down' })}
-    `, 300));
-
-    /* Dropdown + textarea */
-    const dropTextarea = mStage(`
-      ${col(`
-        ${mInput('*Medio de transacción', 'Selecciona medio de transacción', 'default', '', { rightIcon: 'chevron--down' })}
-        ${mInput('Medio de transacción', 'Efectivo', 'filled', '', { rightIcon: 'chevron--down' })}
-        <div style="border:1px solid var(--n3);border-radius:6px;background:#fff;margin-top:2px;box-shadow:0 4px 16px rgba(0,0,0,.12);overflow:hidden">
-          ${['Efectivo', 'Transferencia', 'Cheque', 'Redcompra'].map((o, i) => `<div style="height:44px;display:flex;align-items:center;padding:0 12px;font:400 14px var(--font-sans);color:var(--n7);${i === 0 ? 'background:var(--b1);color:var(--b7)' : ''}">${o}</div>`).join('')}
+        <div style="margin-bottom:14px">
+          ${fldLbl('Texto')}
+          <input type="text" placeholder="Escribir"
+            style="${IS};border:1px solid var(--n3)"
+            onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+            onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'">
         </div>
-      `, 270)}
+        <div style="margin-bottom:0">
+          ${fldLbl('Monto', true)}
+          <input type="text" placeholder="Ingresa monto"
+            style="${IS};border:1px solid var(--n3)"
+            onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+            onblur="this.style.border=this.value?'1px solid var(--n5)':'1px solid var(--n3)';this.style.background='#fff'">
+          <div style="font:400 12px var(--font-sans);color:var(--n5);margin-top:4px">*Requerido. Valor con opción decimal, ej. $500,67</div>
+        </div>
+      `)}
       ${col(`
-        <div style="font:500 12px var(--font-sans);color:var(--n6);margin-bottom:5px">Observaciones</div>
-        <div style="height:96px;border:1px solid var(--n3);border-radius:6px;background:#fff;padding:10px 12px;font:400 14px var(--font-sans);color:var(--n6);box-sizing:border-box">Texto adicional</div>
-      `, 270)}
+        <div style="margin-bottom:14px">
+          ${fldLbl('RUT de quien recibe', true)}
+          <input type="text" placeholder="16.999.999-9" maxlength="12"
+            style="${IS};border:1px solid var(--n3)"
+            onfocus="this.style.border='2px solid var(--b6)';this.style.background='var(--b1)'"
+            onblur="this.style.background='#fff'"
+            oninput="(function(el){var v=el.value,ok=/^[0-9]{7,8}-[0-9kK]$/.test(v.replace(/[.]/g,''));var m=document.getElementById('mi-rut-msg');if(v.length>=9){el.style.border=ok?'1px solid var(--g5)':'1px solid var(--r6)';m.textContent=ok?'RUT válido':'RUT inválido';m.style.color=ok?'var(--g6)':'var(--r6)'}else{el.style.border='2px solid var(--b6)';m.textContent=''}})(this)">
+          <div id="mi-rut-msg" style="font:400 12px var(--font-sans);margin-top:4px;min-height:16px"></div>
+        </div>
+        <div>
+          ${fldLbl('Número')}
+          <input type="text" value="No editable" disabled
+            style="${IS};border:1px solid var(--n3);color:var(--n5);background:var(--n1);cursor:not-allowed">
+        </div>
+      `)}
+    `);
+
+    /* ── 2. DTMSearchBar — live ── */
+    const searchLive = mStage(`
+      ${col(`
+        ${mLabel('Barra de búsqueda')}
+        <div id="mi-sb" style="height:44px;border-radius:6px;border:1px solid var(--n3);background:#fff;display:flex;align-items:center;gap:8px;padding:0 12px;box-sizing:border-box;margin-bottom:16px">
+          ${iconSvg('search', 16, 'var(--n5)')}
+          <input type="text" id="mi-sb-inp" placeholder="Buscar por orden, dirección, cliente…"
+            style="flex:1;border:none;outline:none;font:400 14px var(--font-sans);color:var(--n7);background:transparent;min-width:0"
+            onfocus="document.getElementById('mi-sb').style.border='2px solid var(--b6)'"
+            onblur="document.getElementById('mi-sb').style.border='1px solid var(--n3)'"
+            oninput="document.getElementById('mi-sb-x').style.display=this.value?'flex':'none'">
+          <span id="mi-sb-x" style="display:none;cursor:pointer;flex-shrink:0;align-items:center"
+            onclick="document.getElementById('mi-sb-inp').value='';this.style.display='none';document.getElementById('mi-sb-inp').focus()">
+            ${iconSvg('close-filled', 16, 'var(--n5)')}
+          </span>
+          <span style="display:flex;flex-shrink:0;color:var(--n6)">${iconSvg('document-import', 18, 'var(--n6)')}</span>
+        </div>
+        ${mLabel('Estado vacío del sheet de búsqueda')}
+        <div style="text-align:center;padding:18px 10px;background:var(--n1);border-radius:8px">
+          ${iconSvg('location', 24, 'var(--n5)')}
+          <div style="font:400 13px/1.5 var(--font-sans);color:var(--n6);margin:10px 0 14px">Puedes buscar por dirección, número de orden, cliente o ítem.</div>
+          <button style="height:36px;padding:0 14px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:var(--b6);border:1px solid var(--b6);cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+            ${iconSvg('document-import', 16, 'var(--b6)')} Abrir escáner
+          </button>
+        </div>
+      `, 300)}
+    `);
+
+    /* ── 3. DTMPinInput — live ── */
+    const CORRECT = '321480';
+    const pinBoxes = [0,1,2,3,4,5].map(i =>
+      `<input id="mi-pin-${i}" type="text" maxlength="1" inputmode="numeric"
+        style="width:40px;height:52px;border-radius:6px;border:${i===0?'2px solid var(--b6)':'1px solid var(--n3)'};background:#fff;text-align:center;font:700 20px var(--font-sans);color:var(--n7);outline:none;box-sizing:border-box"
+        onfocus="this.style.border='2px solid var(--b6)'"
+        onblur="if(!this.value)this.style.border='1px solid var(--n3)'"
+        onkeydown="if(event.key==='Backspace'&&!this.value){var p=document.getElementById('mi-pin-'+(${i}-1));if(p){p.value='';p.focus();p.style.border='2px solid var(--b6)';}document.getElementById('mi-pin-msg').textContent='';for(var j=0;j<6;j++){var b2=document.getElementById('mi-pin-'+j);if(b2&&j!==${i}-1&&!b2.value)b2.style.border='1px solid var(--n3)';}event.preventDefault();}"
+        oninput="(function(el,i){el.value=el.value.replace(/[^0-9]/g,'').slice(-1);if(el.value){var nxt=document.getElementById('mi-pin-'+(i+1));if(nxt)nxt.focus();var code='',all=true;for(var j=0;j<6;j++){var b=document.getElementById('mi-pin-'+j);if(!b.value){all=false;break;}code+=b.value;}if(all){var ok=code==='${CORRECT}',cl=ok?'var(--g5)':'var(--r6)';for(var j=0;j<6;j++)document.getElementById('mi-pin-'+j).style.border='1px solid '+cl;var m=document.getElementById('mi-pin-msg');m.textContent=ok?'Ingresado correctamente':'Código incorrecto';m.style.color=ok?'var(--g6)':'var(--r6)';}}else{document.getElementById('mi-pin-msg').textContent='';for(var j=0;j<6;j++){var b=document.getElementById('mi-pin-'+j);if(!b.value)b.style.border='1px solid var(--n3)';}el.style.border='2px solid var(--b6)'}})(this,${i})">`
+    ).join('');
+
+    const pinLive = mStage(col(`
+      ${mLabel('Prueba: ingresa 321480 (correcto) o cualquier otro (error)')}
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px">${pinBoxes}</div>
+      <div id="mi-pin-msg" style="text-align:center;font:500 12px var(--font-sans);min-height:18px;margin-bottom:14px"></div>
+      <button onclick="for(var i=0;i<6;i++){var b=document.getElementById('mi-pin-'+i);b.value='';b.style.border='1px solid var(--n3)';}document.getElementById('mi-pin-msg').textContent='';document.getElementById('mi-pin-0').style.border='2px solid var(--b6)';document.getElementById('mi-pin-0').focus();"
+        style="width:100%;height:40px;border-radius:50px;font:700 13px/1 var(--font-sans);background:#fff;color:var(--n5);border:1px solid var(--n3);cursor:pointer">Limpiar / reintentar</button>
+      <div style="margin-top:14px;font:400 12px var(--font-sans);color:var(--n6);text-align:center">Si el cliente no puede proporcionar el código contacta a tu <span style="font-weight:700;color:var(--b6)">Supervisor.</span></div>
+    `, 336));
+
+    /* ── 4. DTMStepper — live ── */
+    const lStepper = (id, label, val, trash) => {
+      const showTrash = trash && val === 1;
+      const decStyle = `width:32px;height:32px;border:1px solid ${showTrash?'var(--r6)':'var(--n3)'};border-radius:6px;background:${showTrash?'var(--r6)':'#fff'};display:inline-flex;align-items:center;justify-content:center;cursor:pointer`;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <span style="font:400 14px var(--font-sans);color:var(--n7)">${label}</span>
+        <span style="display:inline-flex;align-items:center;border-radius:6px">
+          <button id="mi-st-${id}-dec" data-trash="${trash?'1':'0'}"
+            onclick="(function(btn){var id='${id}',vEl=document.getElementById('mi-st-'+id+'-val'),v=parseInt(vEl.textContent)||0;if(v===0)return;v--;vEl.textContent=v;var t=btn.dataset.trash==='1'&&v<=1;btn.style.border='1px solid '+(t?'var(--r6)':'var(--n3)');btn.style.background=t?'var(--r6)':'#fff';btn.querySelector('[data-t]').style.display=t?'flex':'none';btn.querySelector('[data-m]').style.display=t?'none':'flex';})(this)"
+            style="${decStyle}">
+            <span data-t style="display:${showTrash?'flex':'none'};align-items:center;pointer-events:none">${iconSvg('delete', 14, '#fff')}</span>
+            <span data-m style="display:${showTrash?'none':'flex'};align-items:center;font:500 16px var(--font-sans);color:var(--n6);pointer-events:none">−</span>
+          </button>
+          <span id="mi-st-${id}-val" style="min-width:40px;text-align:center;font:500 14px var(--font-sans);color:var(--n7)">${val}</span>
+          <button onclick="(function(btn){var id='${id}',vEl=document.getElementById('mi-st-'+id+'-val'),v=parseInt(vEl.textContent)||0;v++;vEl.textContent=v;var dec=document.getElementById('mi-st-'+id+'-dec'),t=dec.dataset.trash==='1'&&v<=1;dec.style.border='1px solid '+(t?'var(--r6)':'var(--n3)');dec.style.background=t?'var(--r6)':'#fff';dec.querySelector('[data-t]').style.display=t?'flex':'none';dec.querySelector('[data-m]').style.display=t?'none':'flex';})(this)"
+            style="width:32px;height:32px;border:1px solid var(--n3);border-radius:6px;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font:500 16px var(--font-sans);color:var(--n6)">+</button>
+        </span>
+      </div>`;
+    };
+
+    const stepperLive = mStage(`
+      ${col(`
+        ${mLabel('Con basurero (trash=true)')}
+        ${lStepper('a', 'Entregado', 1, true)}
+        ${lStepper('b', 'Ítem A', 2, true)}
+        ${lStepper('c', 'Ítem B', 3, true)}
+      `, 280)}
+      ${col(`
+        ${mLabel('Estándar')}
+        ${lStepper('d', 'Cantidad', 0, false)}
+        ${lStepper('e', 'Adultos', 1, false)}
+        <div style="margin-top:4px">
+          ${fldLbl('Razón')}
+          <div style="height:44px;border-radius:6px;border:1px solid var(--n3);background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font:400 14px var(--font-sans);color:var(--n6)">
+            <span>Selecciona razón</span>${iconSvg('chevron--down', 16, 'var(--n5)')}
+          </div>
+        </div>
+      `, 280)}
+    `);
+
+    /* ── 5. DTMDropdown — live ── */
+    const ddOpts = ['Efectivo', 'Transferencia', 'Cheque', 'Redcompra'];
+    const ddSOpts = ['No entregado', 'Cliente ausente', 'Dirección errónea', 'Rechazo del cliente', 'Sin tiempo'];
+    const dropLive = mStage(`
+      ${col(`
+        ${mLabel('Dropdown estándar')}
+        <div id="mi-dd" style="position:relative;margin-bottom:16px">
+          <div id="mi-dd-trig"
+            onclick="(function(){var open=document.getElementById('mi-dd').dataset.open==='1';document.getElementById('mi-dd').dataset.open=open?'':'1';document.getElementById('mi-dd-menu').style.display=open?'none':'block';document.getElementById('mi-dd-trig').style.border=open?'1px solid var(--n3)':'2px solid var(--b6)';document.getElementById('mi-dd-chev').style.transform=open?'rotate(0)':'rotate(180deg)'})()"
+            style="height:44px;border-radius:6px;border:1px solid var(--n3);background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box">
+            <span id="mi-dd-label" style="font:400 14px var(--font-sans);color:var(--n6)">Selecciona medio de transacción</span>
+            <span id="mi-dd-chev" style="display:flex;transition:transform .15s">${iconSvg('chevron--down', 16, 'var(--n5)')}</span>
+          </div>
+          <div id="mi-dd-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:50;overflow:hidden">
+            ${ddOpts.map(o => `<div
+              onclick="document.getElementById('mi-dd-label').textContent='${o}';document.getElementById('mi-dd-label').style.color='var(--n7)';document.getElementById('mi-dd-trig').style.border='1px solid var(--n5)';document.getElementById('mi-dd-menu').style.display='none';document.getElementById('mi-dd').dataset.open='';document.getElementById('mi-dd-chev').style.transform='rotate(0)'"
+              onmouseenter="this.style.background='var(--b1)'" onmouseleave="this.style.background=''"
+              style="height:44px;display:flex;align-items:center;padding:0 12px;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer">${o}</div>`).join('')}
+          </div>
+        </div>
+        ${mLabel('Variante buscable')}
+        <div id="mi-dd2" style="position:relative">
+          <div id="mi-dd2-trig"
+            onclick="(function(){var open=document.getElementById('mi-dd2').dataset.open==='1';document.getElementById('mi-dd2').dataset.open=open?'':'1';document.getElementById('mi-dd2-menu').style.display=open?'none':'block';document.getElementById('mi-dd2-trig').style.border=open?'1px solid var(--n3)':'2px solid var(--b6)';document.getElementById('mi-dd2-chev').style.transform=open?'rotate(0)':'rotate(180deg)';if(!open)setTimeout(function(){document.getElementById('mi-dd2-search').focus()},40)})()"
+            style="height:44px;border-radius:6px;border:1px solid var(--n3);background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box">
+            <span id="mi-dd2-label" style="font:400 14px var(--font-sans);color:var(--n6)">Buscar subestado…</span>
+            <span id="mi-dd2-chev" style="display:flex;transition:transform .15s">${iconSvg('chevron--down', 16, 'var(--n5)')}</span>
+          </div>
+          <div id="mi-dd2-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:50;overflow:hidden">
+            <div style="padding:8px 8px 0">
+              <input type="text" id="mi-dd2-search" placeholder="Buscar…"
+                onclick="event.stopPropagation()"
+                style="width:100%;height:36px;border:1px solid var(--n3);border-radius:6px;font:400 13px var(--font-sans);color:var(--n7);background:#fff;box-sizing:border-box;outline:none;padding:0 10px"
+                onfocus="this.style.border='2px solid var(--b6)'" onblur="this.style.border='1px solid var(--n3)'"
+                oninput="(function(q){document.querySelectorAll('#mi-dd2-menu .mi-ddi').forEach(function(it){it.style.display=it.textContent.toLowerCase().includes(q.toLowerCase())||!q?'flex':'none'})})(this.value)">
+            </div>
+            ${ddSOpts.map(o => `<div class="mi-ddi"
+              onclick="document.getElementById('mi-dd2-label').textContent='${o}';document.getElementById('mi-dd2-label').style.color='var(--n7)';document.getElementById('mi-dd2-trig').style.border='1px solid var(--n5)';document.getElementById('mi-dd2-menu').style.display='none';document.getElementById('mi-dd2').dataset.open='';document.getElementById('mi-dd2-chev').style.transform='rotate(0)'"
+              onmouseenter="this.style.background='var(--b1)'" onmouseleave="this.style.background=''"
+              style="height:44px;display:flex;align-items:center;padding:0 12px;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer">${o}</div>`).join('')}
+          </div>
+        </div>
+      `, 280)}
+    `);
+
+    /* ── 6. DTMTextarea — live ── */
+    const textareaLive = mStage(`
+      ${col(`
+        ${mLabel('Vacío')}
+        ${fldLbl('Observaciones')}
+        <div id="mi-ta-w" style="border:1px solid var(--n3);border-radius:6px;background:#fff">
+          <textarea id="mi-ta" rows="4" placeholder="Agrega una observación…" maxlength="300"
+            style="width:100%;min-height:96px;border:none;outline:none;font:400 14px/1.5 var(--font-sans);color:var(--n7);background:transparent;box-sizing:border-box;resize:none;padding:10px 12px;display:block"
+            onfocus="document.getElementById('mi-ta-w').style.border='2px solid var(--b6)';document.getElementById('mi-ta-w').style.background='var(--b1)'"
+            onblur="document.getElementById('mi-ta-w').style.border=document.getElementById('mi-ta').value?'1px solid var(--n5)':'1px solid var(--n3)';document.getElementById('mi-ta-w').style.background='#fff'"
+            oninput="document.getElementById('mi-ta-c').textContent=this.value.length+'/300'"></textarea>
+        </div>
+        <div style="text-align:right;margin-top:4px"><span id="mi-ta-c" style="font:400 12px var(--font-sans);color:var(--n5)">0/300</span></div>
+      `, 280)}
+      ${col(`
+        ${mLabel('Con valor inicial (filled)')}
+        ${fldLbl('Observaciones')}
+        <div id="mi-ta2-w" style="border:1px solid var(--n5);border-radius:6px;background:#fff">
+          <textarea id="mi-ta2" rows="4" maxlength="300"
+            style="width:100%;min-height:96px;border:none;outline:none;font:400 14px/1.5 var(--font-sans);color:var(--n7);background:transparent;box-sizing:border-box;resize:none;padding:10px 12px;display:block"
+            onfocus="document.getElementById('mi-ta2-w').style.border='2px solid var(--b6)';document.getElementById('mi-ta2-w').style.background='var(--b1)'"
+            onblur="document.getElementById('mi-ta2-w').style.border='1px solid var(--n5)';document.getElementById('mi-ta2-w').style.background='#fff'"
+            oninput="document.getElementById('mi-ta2-c').textContent=this.value.length+'/300'"
+          >El cliente indicó que el portón lateral estará abierto.</textarea>
+        </div>
+        <div style="text-align:right;margin-top:4px"><span id="mi-ta2-c" style="font:400 12px var(--font-sans);color:var(--n5)">57/300</span></div>
+      `, 280)}
     `);
 
     return `
       ${sectionHeader(data)}
-      ${mComponentCard(c.textInput.name, 'EXTENDED', textStates, c.textInput.specs,
-        'Mismos tokens que el input de escritorio, con alto 44dp. La validación es por campo, inline, nunca en toast.')}
-      ${mComponentCard(c.searchBar.name, 'NEW', search, c.searchBar.specs)}
-      ${mComponentCard(c.pinInput.name, 'NEW', pin, c.pinInput.specs,
-        'Verificación de identidad del receptor. El link «Supervisor» abre el chat para solicitar desbloqueo remoto.')}
-      ${mComponentCard(c.stepper.name, 'NEW', steppers, c.stepper.specs,
-        'Para cantidades de ítems entregados y detalle de billetes en recaudo. Al combinarse con razones, cada razón lleva su propio stepper.')}
-      ${mComponentCard(c.dropdown.name, 'EXTENDED', dropTextarea, c.dropdown.specs)}
-      ${mComponentCard(c.textarea.name, 'EXTENDED', '', c.textarea.specs)}
+      ${mComponentCard(c.textInput.name, 'EXTENDED', textLive, c.textInput.specs,
+        'Mismos tokens que el input de escritorio con alto 44dp. Escribe para ver filled; el RUT valida el formato en tiempo real.')}
+      ${mComponentCard(c.searchBar.name, 'NEW', searchLive, c.searchBar.specs,
+        'Barra persistente en la parte superior del bottom sheet de búsqueda. La X aparece al escribir y limpia el campo.')}
+      ${mComponentCard(c.pinInput.name, 'NEW', pinLive, c.pinInput.specs,
+        'Ingresa 321480 para ver estado correcto; cualquier otro código activa el error. Backspace retrocede entre casillas.')}
+      ${mComponentCard(c.stepper.name, 'NEW', stepperLive, c.stepper.specs,
+        'El botón − se convierte en basurero rojo al llegar al mínimo eliminable (valor 1). Presiona + y − para probar.')}
+      ${mComponentCard(c.dropdown.name, 'EXTENDED', dropLive, c.dropdown.specs,
+        'Clic en el trigger para abrir/cerrar. La variante buscable filtra opciones en tiempo real.')}
+      ${mComponentCard(c.textarea.name, 'EXTENDED', textareaLive, c.textarea.specs,
+        'Foco con borde azul y fondo var(--b1). El contador de caracteres se actualiza mientras escribes.')}
       <div class="card" style="margin-bottom:20px;background:var(--b1);border-color:var(--b3)">
         <h3 style="font:700 14px var(--font-sans);color:var(--b7);margin:0 0 6px">Regla — pickers nativos</h3>
         <div style="font:400 13px/1.6 var(--font-sans);color:var(--n7)">${escHtml(data.nativeRule || '')}</div>
