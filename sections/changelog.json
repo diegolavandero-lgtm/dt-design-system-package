@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T14:55:23.513Z",
+  "generated": "2026-06-15T15:07:10.813Z",
   "days": [
     {
       "date": "2026-06-15",
       "entries": [
+        {
+          "hash": "e69f01d",
+          "type": "fix",
+          "section": "Colors",
+          "message": "fix(mobile-ds): DTMToast — íconos coloreados, advertencia en círculo, alineación top",
+          "author": "Diego"
+        },
         {
           "hash": "46ae7a9",
           "type": "fix",
