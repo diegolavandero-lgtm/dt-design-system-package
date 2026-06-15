@@ -6559,11 +6559,11 @@ function mToast(text, tone = 'success', close = true) {
   };
   const t = TONE[tone] || null;
   const border = t ? `border:1.5px solid ${t.color};` : '';
-  const icon = t ? `<span style="flex-shrink:0;margin-top:1px;display:flex">${iconSvg(t.icon, 20, t.color)}</span>` : '';
+  const icon = t ? `<span style="flex-shrink:0;display:flex">${iconSvg(t.icon, 20, t.color)}</span>` : '';
   const closeBtn = `<span style="cursor:pointer;display:flex;align-items:center;flex-shrink:0;opacity:.6" onclick="this.parentElement.style.display='none'">${iconSvg('close', 18, '#fff')}</span>`;
   const actionBtn = (label) => `<span style="font:700 11px/1 var(--font-sans);color:#fff;text-decoration:underline;text-transform:uppercase;cursor:pointer;flex-shrink:0;letter-spacing:.04em;white-space:nowrap">${escHtml(label)}</span>`;
   const right = close === false ? '' : (typeof close === 'string' ? actionBtn(close) : closeBtn);
-  return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;${border}box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">
+  return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;${border}box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">
     ${icon}
     <span style="flex:1;font:400 12px/1.4 var(--font-sans);color:#fff">${escHtml(text)}</span>
     ${right}
