@@ -6547,21 +6547,25 @@ function mMapListDemoPhone() {
 
 /* ── Toast oscuro flotante ── */
 /* tone: 'info'|'error'|'warning'|'success'
-   close: true → X button  |  false → none  |  string → action link (e.g. 'AGREGAR') */
+   close: true → X button  |  false → none  |  string → action link (e.g. 'AGREGAR')
+   Icon rendered as explicit <circle> + white symbol to avoid fill-cascade issues. */
 function mToast(text, tone = 'success', close = true) {
-  const C = {
-    success: ['checkmark-filled', 'var(--g4)'],
-    error:   ['close-filled',     'var(--r4)'],
-    warning: ['warning-filled',   'var(--o3)'],
-    info:    [null, null],
+  const TONE = {
+    success: { bg: 'var(--g4)', sym: (ICON_PATHS['check']  || '').replace(/<path/g, '<path fill="#fff" ') },
+    error:   { bg: 'var(--r4)', sym: (ICON_PATHS['close']  || '').replace(/<path/g, '<path fill="#fff" ') },
+    warning: { bg: 'var(--o3)', sym: '<path fill="#fff" d="M15,9H17V20H15ZM16,22a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,22Z"/>' },
+    info:    null,
   };
-  const c = C[tone] || C.success;
-  const border = c[1] ? `border:1.5px solid ${c[1]};` : '';
+  const t = TONE[tone] || null;
+  const border = t ? `border:1.5px solid ${t.bg};` : '';
+  const icon = t
+    ? `<svg width="20" height="20" viewBox="0 0 32 32" style="flex-shrink:0;margin-top:1px"><circle cx="16" cy="16" r="14" fill="${t.bg}"/>${t.sym}</svg>`
+    : '';
   const closeBtn = `<span style="cursor:pointer;display:flex;align-items:center;flex-shrink:0;opacity:.55" onclick="this.parentElement.style.display='none'">${iconSvg('close', 16, '#fff')}</span>`;
   const actionBtn = (label) => `<span style="font:700 11px/1 var(--font-sans);color:#fff;text-decoration:underline;text-transform:uppercase;cursor:pointer;flex-shrink:0;letter-spacing:.04em;white-space:nowrap">${escHtml(label)}</span>`;
   const right = close === false ? '' : (typeof close === 'string' ? actionBtn(close) : closeBtn);
-  return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;${border}box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">
-    ${c[0] ? iconSvg(c[0], 20, c[1]) : ''}
+  return `<div style="background:var(--n7);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;${border}box-shadow:0 2px 8px rgba(19,32,69,.32);box-sizing:border-box">
+    ${icon}
     <span style="flex:1;font:400 12px/1.4 var(--font-sans);color:#fff">${escHtml(text)}</span>
     ${right}
   </div>`;
