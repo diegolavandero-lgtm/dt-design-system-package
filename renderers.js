@@ -2916,6 +2916,97 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
       </script>`;
   },
 
+  /* ── EMPTY STATE ── */
+  emptyState(data) {
+    const tokens = data.tokens || {};
+    const tokenRows = Object.entries(tokens).map(([k,v]) => `
+      <tr style="border-bottom:1px solid var(--n3)">
+        <td style="padding:8px 12px;font:600 12px var(--font-sans);color:var(--n7)">${escHtml(k)}</td>
+        <td style="padding:8px 12px;font:400 12px var(--font-mono);color:var(--b6)">${escHtml(v)}</td>
+      </tr>`).join('');
+
+    const ICO = {
+      report: `<path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/>`,
+      clock: `<path d="M16,30A14,14,0,1,1,30,16,14,14,0,0,1,16,30ZM16,4A12,12,0,1,0,28,16,12,12,0,0,0,16,4Z"/><path d="M20.5859,22,15,16.4141V7h2v8.5859l5,5Z"/>`,
+      users: `<path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/>`,
+      list: `<path d="M4,4H28V8H4Zm0,8H28v4H4Zm0,8H20v4H4Z"/>`,
+      search: `<path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>`
+    };
+
+    function emptyBlock({ icon, title, desc, cta = '', compact = false }) {
+      const pad  = compact ? '28px 20px' : '48px 24px';
+      const gap  = compact ? '8px' : '10px';
+      const tile = compact ? '36px' : '44px';
+      const isz  = compact ? '18' : '22';
+      return `
+        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:${gap};padding:${pad};background:#fff;border:1px solid var(--n3);border-radius:8px">
+          <div style="width:${tile};height:${tile};border-radius:8px;background:var(--n2);display:flex;align-items:center;justify-content:center;color:var(--n45);flex-shrink:0">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="${isz}" height="${isz}">${icon}</svg>
+          </div>
+          <p style="font:700 14px var(--font-sans);color:var(--n7);margin:0">${title}</p>
+          <p style="font:400 13px/1.5 var(--font-sans);color:var(--n5);max-width:280px;margin:0">${desc}</p>
+          ${cta ? `<div style="margin-top:6px">${cta}</div>` : ''}
+        </div>`;
+    }
+
+    const varCard = (title, block) => `
+      <div class="card flush">
+        <div class="card-hdr"><span class="ttl">${title}</span></div>
+        <div style="padding:16px;background:var(--n2)">${block}</div>
+      </div>`;
+
+    return `
+      <div style="margin-bottom:24px">
+        <p style="font:400 14px/1.5 var(--font-sans);color:var(--n6);margin:0 0 24px">${escHtml(data.description||'')}</p>
+
+        <!-- Tokens -->
+        <div class="card flush" style="margin-bottom:24px">
+          <div class="card-hdr"><span class="ttl">Design tokens</span></div>
+          <table style="width:100%;border-collapse:collapse;font:400 12px var(--font-sans)">
+            <thead><tr style="background:var(--n2);border-bottom:1px solid var(--n3)">
+              <th style="text-align:left;padding:8px 12px;font:700 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Token</th>
+              <th style="text-align:left;padding:8px 12px;font:700 10px var(--font-sans);color:var(--n5);text-transform:uppercase;letter-spacing:.05em">Value</th>
+            </tr></thead>
+            <tbody>${tokenRows}</tbody>
+          </table>
+        </div>
+
+        <!-- Variants row 1 -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px">
+          ${varCard('Con CTA primario', emptyBlock({ icon: ICO.report, title: 'Sin reportes programados', desc: 'Crea un reporte programado para recibirlo automáticamente por correo según la frecuencia que elijas.', cta: '<button class="btn pri">Crear primer reporte</button>' }))}
+          ${varCard('Con CTA secundario', emptyBlock({ icon: ICO.clock, title: 'No hay actividad reciente', desc: 'Cuando se registren eventos en tu cuenta aparecerán aquí. Ajusta el rango para ver datos antiguos.', cta: '<button class="btn sec">Cambiar rango de fechas</button>' }))}
+          ${varCard('Sin CTA (informativo)', emptyBlock({ icon: ICO.users, title: 'Sin usuarios asociados', desc: 'Usa el formulario para asociar usuarios a tu cuenta.' }))}
+        </div>
+
+        <!-- Variants row 2 -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px">
+          ${varCard('Compacto (inline)', emptyBlock({ icon: ICO.list, title: 'Lista vacía', desc: 'Para paneles pequeños o secciones dentro de una tarjeta.', compact: true }))}
+          ${varCard('Sin resultados (búsqueda)', emptyBlock({ icon: ICO.search, title: 'No encontramos coincidencias', desc: 'Prueba con otros términos o limpia los filtros para ver todos los registros.', cta: '<button class="btn sub">Limpiar filtros</button>' }))}
+        </div>
+
+        <!-- Guidance -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:24px">
+          <div class="card-hdr"><span class="ttl">Cuándo usar CTA</span></div>
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;font:400 13px/1.6 var(--font-sans);color:var(--n6)">
+            <div>
+              <p style="font:700 12px var(--font-sans);color:var(--g6);margin:0 0 6px">CON CTA</p>
+              El usuario puede crear el primer ítem desde aquí mismo. Usa <code style="font:400 12px var(--font-mono);color:var(--b6)">.btn.pri</code> con un verbo de acción ("Crear primer reporte"). Una sola acción primaria por estado vacío.
+            </div>
+            <div>
+              <p style="font:700 12px var(--font-sans);color:var(--n5);margin:0 0 6px">SIN CTA</p>
+              Los datos se llenan en otra parte (otro formulario, un proceso automático, o un permiso que el usuario no tiene). Solo ícono + título + descripción que explique cómo se poblará.
+            </div>
+          </div>
+        </div>
+
+        <!-- Code snippet -->
+        <div class="card flush">
+          <div class="card-hdr"><span class="ttl">Snippet</span></div>
+          <div class="code" style="border-radius:0;margin:0"><button class="cp" onclick="copyCode(this)">Copy</button><pre>${escHtml(data.code||'')}</pre></div>
+        </div>
+      </div>`;
+  },
+
   /* ── ALERTS / TOASTS ── */
   alerts(data) {
     const TYPES = data.types || ['info', 'neutral', 'warning', 'error', 'success'];
