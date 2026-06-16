@@ -214,7 +214,8 @@
       font:400 11px/1 var(--font-sans);color:var(--n6);background:var(--n2);
       border-radius:4px;padding:2px 6px;letter-spacing:.04em;flex-shrink:0;
     }
-    .drv-phone{font:400 11px var(--font-sans);color:var(--n5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .drv-phone{font:400 11px var(--font-sans);color:var(--n5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-flex;align-items:center;gap:4px}
+    .drv-phone svg{width:12px;height:12px;fill:var(--n45);flex-shrink:0}
     .drv-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
     .drv-prog-txt{font:400 11px var(--font-sans);color:var(--n5)}
 
@@ -789,7 +790,7 @@ function renderList(){
         <div class="drv-av">${initials(d.name)}<span class="drv-dot" style="background:${st.dot}"></span></div>
         <div class="drv-info">
           <div class="drv-name" title="${esc(d.name)}">${esc(d.name)}</div>
-          <div class="drv-meta"><span class="plate-chip">${d.plate}</span><span class="drv-phone">${d.phone}</span></div>
+          <div class="drv-meta"><span class="plate-chip">${d.plate}</span><span class="drv-phone"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M26,29h-.17C6.18,27.87,3.39,11.29,3,6.23A3,3,0,0,1,5.76,3h5.51a2,2,0,0,1,1.86,1.26L14.65,8a2,2,0,0,1-.44,2.16l-2.13,2.15a9.37,9.37,0,0,0,7.58,7.6l2.17-2.15A2,2,0,0,1,23.82,17l3.77,1.51A2,2,0,0,1,28.85,20.4V26A3,3,0,0,1,26,29ZM6,5A1,1,0,0,0,5,6v.08C5.46,12,8.41,26,25.94,27A1,1,0,0,0,27,26.06V20.4l-3.77-1.51-2.87,2.85-.48-.06c-8.7-1.09-9.88-9.79-9.88-9.88l-.06-.48,2.84-2.87L11.27,5Z"/></svg>${d.phone}</span></div>
         </div>
         <div class="drv-right">
           <span class="badge ${st.badge}"><span class="dot"></span>${st.label}</span>
