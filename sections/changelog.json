@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T16:51:57.998Z",
+  "generated": "2026-06-16T18:30:52.686Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "2dbc3fc",
+          "type": "update",
+          "section": "General",
+          "message": "chore(onboarding): move help-center prototype to Diego_Designs/",
+          "author": "Diego"
+        },
         {
           "hash": "c06ae9f",
           "type": "update",
