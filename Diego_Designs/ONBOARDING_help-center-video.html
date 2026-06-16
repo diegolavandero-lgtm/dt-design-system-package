@@ -700,6 +700,55 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   .ann-video .fv-thumb{aspect-ratio:16/9}
   .ann-desc{font:400 14px/21px var(--font-sans);color:var(--n5);margin:14px 0 4px}
   .ann-foot{display:flex;gap:12px;justify-content:flex-end;padding:16px 20px 20px;flex-wrap:wrap}
+
+  /* ===== IN-DRAWER ARTICLE READER (opens help-center article inside the sidebar) ===== */
+  .art-head{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 12px 8px;border-bottom:1px solid var(--n3);flex-shrink:0}
+  .art-back{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 6px;border:0;background:transparent;border-radius:6px;font:700 13px/1 var(--font-sans);color:var(--b7);cursor:pointer}
+  .art-back:hover{background:var(--b1)}
+  .art-back svg{flex-shrink:0}
+  .art-crumb{display:flex;align-items:center;flex-wrap:wrap;gap:5px;font:500 11px/1.4 var(--font-sans);color:var(--n5);margin-bottom:14px}
+  .art-crumb .sep{color:var(--n4);font-weight:400}
+  .art-crumb .cur{color:var(--n6)}
+  .art-title{font:700 22px/28px var(--font-sans);color:var(--n7);margin:0 0 8px}
+  .art-sub{font:400 14px/21px var(--font-sans);color:var(--n5);margin:0 0 16px}
+  .art-author{display:flex;align-items:center;gap:10px;padding-bottom:18px;border-bottom:1px solid var(--n3);margin-bottom:18px}
+  .art-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font:700 12px/1 var(--font-sans);color:#fff}
+  .art-aname{font:700 13px/1.3 var(--font-sans);color:var(--n7)}
+  .art-adate{font:400 12px/1.3 var(--font-sans);color:var(--n5);margin-top:2px}
+  .art-h{font:700 16px/22px var(--font-sans);color:var(--n7);margin:22px 0 10px}
+  .art-p{font:400 14px/22px var(--font-sans);color:var(--n6);margin:0 0 12px}
+  .art-p b{color:var(--n7);font-weight:700}
+  .art-ol{margin:0 0 12px;padding-left:20px;list-style:decimal}
+  .art-ol>li{font:400 14px/22px var(--font-sans);color:var(--n6);margin-bottom:8px}
+  .art-ol>li b{color:var(--n7)}
+  .art-ul{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+  .art-uli{display:flex;align-items:flex-start;gap:9px;font:400 14px/22px var(--font-sans);color:var(--n6)}
+  .art-uli b{color:var(--n7)}
+  .art-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:7px;background:var(--n4)}
+  /* screenshot placeholder — faux product capture frame */
+  .art-shot{border:1px solid var(--n3);border-radius:8px;overflow:hidden;margin:4px 0 16px;background:#fff}
+  .art-shot-bar{height:26px;background:var(--n1);border-bottom:1px solid var(--n3);display:flex;align-items:center;gap:5px;padding:0 10px}
+  .art-shot-bar i{width:8px;height:8px;border-radius:50%;background:var(--n4)}
+  .art-shot-body{aspect-ratio:16/9;background:linear-gradient(135deg,var(--n1) 0%,var(--n2) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--n45)}
+  .art-shot-body svg{opacity:.7}
+  .art-shot-cap{font:500 11px/1.4 var(--font-sans);color:var(--n5);text-align:center;padding:0 16px;max-width:90%}
+  /* related articles */
+  .art-rel{margin-top:24px;border-top:1px solid var(--n3);padding-top:18px}
+  .art-rel-h{font:700 15px/1 var(--font-sans);color:var(--n7);margin-bottom:10px}
+  .art-rel-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 4px;border-bottom:1px solid var(--n2);cursor:pointer;color:var(--n7)}
+  .art-rel-item:last-child{border-bottom:0}
+  .art-rel-item:hover{color:var(--b7)}
+  .art-rel-item span:first-child{font:400 13px/18px var(--font-sans)}
+  .art-rel-item .ch{color:var(--n45);flex-shrink:0;display:flex}
+  .art-rel-item:hover .ch{color:var(--b6)}
+  /* feedback footer */
+  .art-fb{margin-top:22px;background:var(--n1);border:1px solid var(--n3);border-radius:10px;padding:18px 16px;text-align:center}
+  .art-fb-q{font:700 13px/18px var(--font-sans);color:var(--n7);margin-bottom:12px}
+  .art-fb-faces{display:flex;align-items:center;justify-content:center;gap:14px}
+  .art-face{width:40px;height:40px;border-radius:50%;border:1px solid var(--n3);background:#fff;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,border-color .12s,background .12s}
+  .art-face:hover{transform:scale(1.12);border-color:var(--b5);background:var(--b1)}
+  .art-face.picked{border-color:var(--b6);background:var(--b1);transform:scale(1.12)}
+  .art-fb-thanks{font:600 13px/18px var(--font-sans);color:var(--g6);display:flex;align-items:center;justify-content:center;gap:7px}
 </style>
 </head>
 <body>
@@ -1167,9 +1216,9 @@ const SECTION = {
   videoDur: '2:40',
   desc: 'La sección Órdenes/guías reúne todas tus órdenes y su estado de entrega. Desde aquí puedes filtrar, revisar el detalle de cada orden, exportarlas a Excel y crear nuevas órdenes.',
   articles: [
-    { t:'Trazabilidad de la guía', d:'Conoce el historial de una orden y todas las acciones relacionadas a ella.' },
-    { t:'¿Cómo desasociar guías o pedidos de una ruta?', d:'Pasos para quitar guías no deseadas de una ruta existente.' },
-    { t:'Bloqueo de guías', d:'Cuándo y por qué una guía se bloquea, y cómo desbloquearla.' },
+    { id:'trazabilidad', t:'Trazabilidad de la guía', d:'Conoce el historial de una orden y todas las acciones relacionadas a ella.' },
+    { id:'desasociar', t:'¿Cómo desasociar guías o pedidos de una ruta?', d:'Pasos para quitar guías no deseadas de una ruta existente.' },
+    { id:'bloqueo', t:'Bloqueo de guías', d:'Cuándo y por qué una guía se bloquea, y cómo desbloquearla.' },
   ],
   quiz: [
     { q:'¿Dónde ves el estado actual de una orden en esta sección?',
@@ -1181,6 +1230,78 @@ const SECTION = {
   ],
 };
 let videoSeen = false, sectionDone = false;
+
+/* ============ HELP-CENTER ARTICLES (full content, opens inside the drawer) ============ */
+/* Mirrors the public help center, rendered in-sidebar so the user never has to leave the app. */
+const ARTICLES = {
+  trazabilidad: {
+    crumb: ['LastMile', 'Órdenes/guías'],
+    title: 'Trazabilidad de la guía',
+    sub: 'La trazabilidad es el historial completo de una orden: cada acción y cada cambio de estado, con su responsable y su fecha.',
+    author: 'Mervin Rodríguez', date: '26 de junio de 2024',
+    blocks: [
+      { type:'p', text:'En esta vista puedes revisar todo lo que ocurrió con una orden desde que se creó: cambios de estado, reasignaciones, ediciones y eventos de entrega, registrados por los usuarios web y por la app móvil.' },
+      { type:'h', text:'Acceder al historial' },
+      { type:'ol', items:[
+        'En la tabla de <b>Órdenes/guías</b>, ubica la orden que quieres revisar.',
+        'Abre el menú de acciones (⋮) al final de la fila y selecciona <b>Trazabilidad</b>.',
+      ]},
+      { type:'shot', cap:'Tabla de Órdenes/guías → menú de acciones → Trazabilidad' },
+      { type:'h', text:'Vista del historial' },
+      { type:'p', text:'El historial se muestra como una línea de tiempo con los colores del semáforo según el tipo de evento:' },
+      { type:'ul', items:[
+        { dot:'g6', text:'<b>Verde</b>: la orden avanzó (creada, asignada o entregada).' },
+        { dot:'o5', text:'<b>Amarillo</b>: la orden fue editada (cambio de datos o de vehículo).' },
+        { dot:'r6', text:'<b>Rojo</b>: la orden fue anulada o marcada como no entregada.' },
+      ]},
+      { type:'shot', cap:'Línea de tiempo de la orden con eventos por color' },
+      { type:'h', text:'Detalle de cada evento' },
+      { type:'p', text:'Al expandir un evento ves el usuario que lo realizó, la fecha y hora exacta y, cuando aplica, el campo modificado con su valor anterior y el nuevo valor.' },
+    ],
+    related: ['desasociar', 'bloqueo'],
+  },
+  desasociar: {
+    crumb: ['LastMile', 'Órdenes/guías'],
+    title: '¿Cómo desasociar guías o pedidos de una ruta?',
+    sub: 'Quita una o varias guías de una ruta ya creada sin tener que rehacerla.',
+    author: 'Mervin Rodríguez', date: '12 de marzo de 2024',
+    blocks: [
+      { type:'p', text:'Si una guía quedó asignada a la ruta equivocada o ya no debe salir a reparto, puedes desasociarla en pocos pasos.' },
+      { type:'h', text:'Pasos' },
+      { type:'ol', items:[
+        'Selecciona la ruta y haz clic en <b>Editar</b>.',
+        'Marca las guías que quieres quitar y abre <b>Acciones</b> → <b>Desasociar</b>.',
+        'Confirma. Las guías vuelven al estado <b>sin ruta</b> y quedan disponibles para reasignar.',
+      ]},
+      { type:'shot', cap:'Ruta en modo edición → selección de guías → Acciones → Desasociar' },
+      { type:'p', text:'Luego pide al conductor que <b>refresque o sincronice</b> desde su celular. Si desasociaste todas las guías, la ruta quedará en 0 y podrá cerrarse; si fueron solo algunas, desaparecerán de la ruta que tiene el transportista.' },
+    ],
+    related: ['trazabilidad', 'bloqueo'],
+  },
+  bloqueo: {
+    crumb: ['LastMile', 'Órdenes/guías'],
+    title: 'Bloqueo de guías',
+    sub: 'Entiende por qué una guía aparece bloqueada y cómo desbloquearla.',
+    author: 'Mervin Rodríguez', date: '4 de abril de 2024',
+    blocks: [
+      { type:'p', text:'Una guía bloqueada no puede asignarse a una ruta ni editarse hasta resolver la causa del bloqueo. Es una protección para evitar mover órdenes con información incompleta o en revisión.' },
+      { type:'h', text:'Motivos más comunes' },
+      { type:'ul', items:[
+        { dot:'o5', text:'<b>Datos incompletos</b>: falta dirección, contacto o producto.' },
+        { dot:'o5', text:'<b>En revisión</b>: la orden está marcada para validación manual.' },
+        { dot:'r6', text:'<b>Bloqueo por regla</b>: una regla de negocio retiene la guía (por ejemplo, pago pendiente).' },
+      ]},
+      { type:'shot', cap:'Guía con indicador de bloqueo en la tabla' },
+      { type:'h', text:'Cómo desbloquear' },
+      { type:'ol', items:[
+        'Abre la guía y revisa el motivo indicado en el detalle.',
+        'Completa o corrige la información faltante.',
+        'Si el bloqueo proviene de una regla, contacta a tu administrador para liberarla.',
+      ]},
+    ],
+    related: ['trazabilidad', 'desasociar'],
+  },
+};
 
 /* Overall onboarding across all sections (Órdenes is one of N) */
 const ONBOARDING = { total: 8, doneBase: 2 }; // 2 sections already completed before this one
@@ -1303,7 +1424,7 @@ function renderDrawer(){
       </div>
 
       <div class="obd-lbl">Artículos sobre esta sección</div>
-      ${SECTION.articles.map(a=>`<div class="ac"><div class="ac-b"><div class="ac-t">${a.t}</div><div class="ac-d">${a.d}</div></div><span class="ac-a">${iconSvg('arrow-right',14,'var(--n45)')}</span></div>`).join('')}
+      ${SECTION.articles.map(a=>`<div class="ac" onclick="openArticleView('${a.id}')"><div class="ac-b"><div class="ac-t">${a.t}</div><div class="ac-d">${a.d}</div></div><span class="ac-a">${iconSvg('arrow-right',14,'var(--n45)')}</span></div>`).join('')}
 
       <div class="obd-ll">
         <div class="obd-li"><span class="ic">${iconSvg('document-text',16,'var(--n5)')}</span>Visita nuestro centro de soporte</div>
@@ -1315,8 +1436,67 @@ function renderDrawer(){
 }
 
 /* ============ DRAWER (overlay, non-interfering) ============ */
-function openDrawer(){ renderDrawer(); document.getElementById('drawer').classList.add('open'); document.getElementById('ob-main').classList.add('shifted'); }
+let drawerView = 'home';
+function openDrawer(){ drawerView='home'; renderDrawer(); document.getElementById('drawer').classList.add('open'); document.getElementById('ob-main').classList.add('shifted'); }
 function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('ob-main').classList.remove('shifted'); }
+
+/* ============ IN-DRAWER ARTICLE READER ============ */
+const DOT_VAR = { g6:'var(--g6)', o5:'var(--o5)', r6:'var(--r6)', b6:'var(--b6)', n5:'var(--n5)' };
+function artBlocks(blocks){
+  return blocks.map(b=>{
+    if(b.type==='p')  return `<p class="art-p">${b.text}</p>`;
+    if(b.type==='h')  return `<h4 class="art-h">${b.text}</h4>`;
+    if(b.type==='ol') return `<ol class="art-ol">${b.items.map(i=>`<li>${i}</li>`).join('')}</ol>`;
+    if(b.type==='ul') return `<div class="art-ul">${b.items.map(i=>`<div class="art-uli"><span class="art-dot" style="background:${DOT_VAR[i.dot]||'var(--n4)'}"></span><span>${i.text}</span></div>`).join('')}</div>`;
+    if(b.type==='shot') return `<div class="art-shot"><div class="art-shot-bar"><i></i><i></i><i></i></div><div class="art-shot-body">${iconSvg('image',28,'var(--n45)')}<div class="art-shot-cap">${b.cap}</div></div></div>`;
+    return '';
+  }).join('');
+}
+function openArticleView(id){ drawerView='article'; renderArticle(id);
+  if(!document.getElementById('drawer').classList.contains('open')) openDrawer();
+}
+function renderArticle(id){
+  const a = ARTICLES[id]; if(!a) return;
+  drawerView = 'article';
+  const initials = a.author.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  const crumb = [...a.crumb.map(c=>`<span>${c}</span>`), `<span class="cur">${a.title}</span>`]
+    .join('<span class="sep">›</span>');
+  const related = (a.related||[]).map(rid=>{
+    const r = ARTICLES[rid]; if(!r) return '';
+    return `<div class="art-rel-item" onclick="openArticleView('${rid}')"><span>${r.title}</span><span class="ch">${iconSvg('chevron--right',16,'currentColor')}</span></div>`;
+  }).join('');
+  document.getElementById('drawer').innerHTML = `
+    <div class="art-head">
+      <button class="art-back" onclick="backToHome()">${iconSvg('arrow-left',16,'var(--b7)')}Centro de ayuda</button>
+      <button class="obd-close" onclick="closeDrawer()">${dsCloseIcon(18,'var(--n5)')}</button>
+    </div>
+    <div class="obd-content" id="artScroll">
+      <div class="art-crumb">${crumb}</div>
+      <h2 class="art-title">${a.title}</h2>
+      <p class="art-sub">${a.sub}</p>
+      <div class="art-author">
+        <span class="art-avatar" style="background:${authorColor(a.author)}">${initials}</span>
+        <div><div class="art-aname">${a.author}</div><div class="art-adate">${a.date}</div></div>
+      </div>
+      ${artBlocks(a.blocks)}
+      ${related ? `<div class="art-rel"><div class="art-rel-h">Artículos relacionados</div>${related}</div>` : ''}
+      <div class="art-fb" id="artFb">
+        <div class="art-fb-q">¿Esta respuesta resolvió tu duda?</div>
+        <div class="art-fb-faces">
+          <button class="art-face" onclick="rateArticle('😞',this)">😞</button>
+          <button class="art-face" onclick="rateArticle('😐',this)">😐</button>
+          <button class="art-face" onclick="rateArticle('😃',this)">😃</button>
+        </div>
+      </div>
+    </div>`;
+  const sc = document.getElementById('artScroll'); if(sc) sc.scrollTop = 0;
+}
+function backToHome(){ drawerView='home'; renderDrawer(); const sc=document.querySelector('.obd-content'); if(sc) sc.scrollTop=0; }
+function rateArticle(face, el){
+  el.parentElement.parentElement.querySelectorAll('.art-face').forEach(f=>f.classList.remove('picked'));
+  el.classList.add('picked');
+  setTimeout(()=>{ const fb=document.getElementById('artFb'); if(fb) fb.innerHTML = `<div class="art-fb-thanks">${iconSvg('checkmark-filled',16,'var(--g6)')} ¡Gracias por tu respuesta!</div>`; }, 280);
+}
 
 /* ============ NEW-FEATURE ANNOUNCEMENT MODAL (auto on entry) ============ */
 function renderAnnounce(){
@@ -1394,7 +1574,7 @@ function showToast(msg){ const t=document.getElementById('toast'); t.innerHTML=`
 document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return;
   if(document.getElementById('lessonModal').classList.contains('open')) closeLesson();
   else if(document.getElementById('annModal').classList.contains('open')) closeAnnounce();
-  else if(document.getElementById('drawer').classList.contains('open')) closeDrawer(); });
+  else if(document.getElementById('drawer').classList.contains('open')){ if(drawerView==='article') backToHome(); else closeDrawer(); } });
 
 setEmpty(false);  // initial render + sets demo-toggle active state
 openAnnounce();   // a new feature is available → announcement appears automatically on entry
