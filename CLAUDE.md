@@ -199,6 +199,26 @@ Examples:
 
 ---
 
+## ⚠️ COMPONENT PROPAGATION RULE — MANDATORY
+
+> **When any DS component is updated, ALL instances must be updated in the same commit. No exceptions.**
+
+Known instances per component:
+
+| Component | Instances to update |
+|---|---|
+| **Topbar** (help dropdown, icons, slot) | `renderers.js` (tablepage, settingsShell, formShell) · `strategy-planner-PLANNER.html` · `Diego_Designs/ONBOARDING_help-center-video.html` · any new prototype with a topbar |
+| **Sidebar** | `renderers.js` (tablepage) · all prototypes using `.sbx` |
+| **Buttons / Inputs** | All prototypes that inline these tokens |
+
+**Process:**
+1. Update the component in `renderers.js` / JSON spec
+2. `grep -r "COMPONENT_IDENTIFIER" *.html **/*.html` to find all instances
+3. Update every instance before committing
+4. Commit message must list all updated files
+
+---
+
 ## DS review document standard
 
 Every ticket that produces new UI components must generate a `ds-new-components-[TICKET].html`.

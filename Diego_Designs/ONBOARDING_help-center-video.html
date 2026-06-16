@@ -787,7 +787,23 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
 <script src="../renderers.js"></script>
 
 <!-- DS interaction utils (injected verbatim from index.html) -->
-<script>function tblMenu(btn) {
+<script>
+function obToggleHelp(wrap) {
+  var dd = wrap.querySelector('.ob-help-dd');
+  if (!dd) return;
+  var open = dd.style.display !== 'none';
+  document.querySelectorAll('.ob-help-dd').forEach(function(d) { d.style.display = 'none'; });
+  if (!open) {
+    dd.style.display = 'block';
+    setTimeout(function() {
+      var close = function(e) {
+        if (!wrap.contains(e.target)) { dd.style.display = 'none'; document.removeEventListener('click', close); }
+      };
+      document.addEventListener('click', close);
+    }, 0);
+  }
+}
+function tblMenu(btn) {
   const existing = document.getElementById('tbl-drop');
   if (existing) { existing.remove(); if (existing._src === btn) return; }
   const acts = JSON.parse(btn.dataset.acts || '[]');
@@ -1114,7 +1130,18 @@ function renderPage(){
   document.getElementById('topbar').innerHTML =
     `<div class="tbar" style="border-radius:0;padding:0 0 0 22px">
       <img src="../sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
-      <div class="acts">${iconSvg('apps',18,'#fff')}<span style="cursor:pointer" onclick="openDrawer()" title="Centro de ayuda">${iconSvg('help',18,'#fff')}</span>${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
+      <div class="acts">${iconSvg('apps',18,'#fff')}
+        <div class="ob-help-wrap" style="position:relative;display:flex;align-items:center">
+          <span style="cursor:pointer;display:flex;align-items:center" onclick="obToggleHelp(this.parentElement)" title="Ayuda">${iconSvg('help',18,'#fff')}</span>
+          <div class="ob-help-dd" style="display:none;position:absolute;top:calc(100% + 14px);right:-8px;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 4px 16px rgba(19,32,69,.14);z-index:9999;min-width:210px;overflow:hidden">
+            <div style="font:700 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);padding:8px 16px 4px">Ayuda</div>
+            <div style="height:1px;background:var(--n3)"></div>
+            <div onclick="openDrawer()" onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('help',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">Help Center</span></div>
+            <div onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('code',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">API Documentation</span></div>
+            <div onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('education',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">Capacitaciones</span></div>
+          </div>
+        </div>
+        ${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
       <div class="slot">beetrack</div>
     </div>`;
 

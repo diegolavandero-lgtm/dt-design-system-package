@@ -146,6 +146,8 @@ const ICON_PATHS = {
   'plan':              '<path d="M24,4H8A2,2,0,0,0,6,6V26a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V6A2,2,0,0,0,24,4ZM8,26V6H24V26Z"/><path d="M11 9H21V11H11z"/><path d="M11 13H21V15H11z"/><path d="M11 17H21V19H11z"/><path d="M11 21H16V23H11z"/>',
   'recently-viewed':   '<path d="M16,4A12,12,0,0,0,6.34,8.34L4,6V12h6L7.75,9.75A10,10,0,1,1,16,26V28A12,12,0,0,0,16,4Z"/><polygon points="17 8 15 8 15 17 23 17 23 15 17 15 17 8"/>',
   'data-base':         '<path d="M16,4C8.27,4,2,6.69,2,10V22c0,3.31,6.27,6,14,6s14-2.69,14-6V10C30,6.69,23.73,4,16,4ZM28,22c0,1.86-5.23,4-12,4S4,23.86,4,22V18.74A21.59,21.59,0,0,0,16,21a21.59,21.59,0,0,0,12-2.26ZM28,16c0,1.86-5.23,4-12,4S4,17.86,4,16V12.74A21.59,21.59,0,0,0,16,15a21.59,21.59,0,0,0,12-2.26ZM16,13C9.23,13,4,10.86,4,9s5.23-4,12-4,12,2.14,12,4S22.77,13,16,13Z"/>',
+  'code':              '<path d="M19.46,22,18,20.55l3.52-3.53a1,1,0,0,0,0-1.39L18,12.09,19.46,10.6l4,4a3,3,0,0,1,0,4.27Z"/><path d="M12.56,22l-4-4a3,3,0,0,1,0-4.27l4-4L14,11.12,10.46,14.65a1,1,0,0,0,0,1.39L14,19.57Z"/><path d="M14.46,23.54,12,24l4.55-16h2.07Z"/>',
+  'education':         '<path d="M16,2,2,10l14,7,14-7Z"/><path d="M16,21.85L6,16.85V14l10,5,10-5v2.85Z"/><path d="M28,10H30V20H28Z"/><path d="M27,20H31V22H27Z"/>',
 
 };
 
@@ -4056,6 +4058,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
     const t = data.tokens || {};
 
     const icons = (data.iconOrder || []).map(name => {
+      if (name === 'help') return topbarHelpBtn();
       const isAlert = name === 'alerts';
       const wrap = isAlert ? `<div class="bell">` : '';
       const wrapEnd = isAlert ? `</div>` : '';
@@ -4081,6 +4084,7 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         const variantRows = variants.map(v => {
           const isMobile = v.breakpoint === 'mobile';
           const varIcons = v.icons.map(name => {
+            if (name === 'help') return topbarHelpBtn();
             const isAlert = name === 'alerts';
             const wrap = isAlert ? `<div class="bell">` : '';
             const wrapEnd = isAlert ? `</div>` : '';
@@ -4176,9 +4180,11 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
             <div style="background:#132045;height:52px;display:flex;align-items:center;padding:0 20px;border-radius:6px;gap:12px">
               <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" style="display:block" alt="logo" onerror="this.style.display='none'">
               <div style="margin-left:auto;display:flex;align-items:center;gap:22px">
-                ${(data.iconOrder || ['apps','alerts','messages','help','user']).map(n => n === 'alerts'
-                  ? `<div style="position:relative">${iconSvg(n,18,'#fff')}<div style="position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045"></div></div>`
-                  : iconSvg(n,18,'#fff')).join('')}
+                ${(data.iconOrder || ['apps','alerts','messages','help','user']).map(n => {
+                  if (n === 'help') return topbarHelpBtn();
+                  if (n === 'alerts') return `<div style="position:relative">${iconSvg(n,18,'#fff')}<div style="position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045"></div></div>`;
+                  return iconSvg(n,18,'#fff');
+                }).join('')}
               </div>
               <div style="width:88px;height:52px;background:#fff;border-radius:20px 0 0 0;display:flex;align-items:center;justify-content:center;font:700 11px var(--font-sans);color:#132045;flex-shrink:0">ACME CO</div>
             </div>
@@ -5555,7 +5561,7 @@ async function downloadAllPins() {
 
     const tbar = `<div class="tbar" style="border-radius:0;padding:0 0 0 22px">
       <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
-      <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
+      <div class="acts">${iconSvg('apps',18,'#fff')}${topbarHelpBtn()}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
       <div class="slot">ACME CO</div>
     </div>`;
 
@@ -5767,7 +5773,7 @@ async function downloadAllPins() {
       return `<div class="card flush" style="border-radius:8px;overflow:hidden">
         <div class="tbar" style="border-radius:0;padding:0 0 0 22px">
           <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
-          <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
+          <div class="acts">${iconSvg('apps',18,'#fff')}${topbarHelpBtn()}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
           <div class="slot">ACME CO</div>
         </div>
         <!-- buildSettingsSidebar is width:100% flex row: icon(52) + panel(224) + content(flex:1) -->
@@ -5780,7 +5786,7 @@ async function downloadAllPins() {
       <div class="card flush" style="border-radius:8px;overflow:hidden">
         <div class="tbar" style="border-radius:0;padding:0 0 0 22px">
           <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
-          <div class="acts">${iconSvg('apps',18,'#fff')}${iconSvg('help',18,'#fff')}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
+          <div class="acts">${iconSvg('apps',18,'#fff')}${topbarHelpBtn()}${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
           <div class="slot">ACME CO</div>
         </div>
         <div style="display:flex;min-height:600px">
@@ -6569,6 +6575,48 @@ function mToast(text, tone = 'success', close = true) {
     ${icon}
     <span style="flex:1;font:400 12px/1.4 var(--font-sans);color:#fff">${escHtml(text)}</span>
     ${right}
+  </div>`;
+}
+
+/* ── Topbar help dropdown ── */
+window.dtHelpToggle = function(el) {
+  var dd = el.parentElement.querySelector('.tbar-help-dd');
+  if (!dd) return;
+  var isOpen = dd.style.display !== 'none';
+  document.querySelectorAll('.tbar-help-dd').forEach(function(d) { d.style.display = 'none'; });
+  if (!isOpen) {
+    dd.style.display = 'block';
+    setTimeout(function() {
+      var close = function(e) {
+        if (!dd.contains(e.target) && !el.contains(e.target)) {
+          dd.style.display = 'none';
+          document.removeEventListener('click', close);
+        }
+      };
+      document.addEventListener('click', close);
+    }, 0);
+  }
+};
+
+function topbarHelpBtn() {
+  var item = function(icon, label) {
+    return `<div onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''"
+      style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">
+      <span style="display:flex;flex-shrink:0">${iconSvg(icon, 16, 'var(--n5)')}</span>
+      <span style="font:500 13px var(--font-sans);color:var(--n7)">${escHtml(label)}</span>
+    </div>`;
+  };
+  return `<div style="position:relative;display:flex;align-items:center">
+    <span onclick="dtHelpToggle(this)" style="cursor:pointer;display:flex;align-items:center" title="Ayuda">
+      ${iconSvg('help', 18, '#fff')}
+    </span>
+    <div class="tbar-help-dd" style="display:none;position:absolute;top:calc(100% + 14px);right:-8px;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 4px 16px rgba(19,32,69,.14);z-index:9999;min-width:210px;overflow:hidden">
+      <div style="font:700 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);padding:8px 16px 4px">Ayuda</div>
+      <div style="height:1px;background:var(--n3)"></div>
+      ${item('help', 'Help Center')}
+      ${item('code', 'API Documentation')}
+      ${item('education', 'Capacitaciones')}
+    </div>
   </div>`;
 }
 

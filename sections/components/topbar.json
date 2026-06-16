@@ -367,5 +367,16 @@
       ]
     }
   ],
-  "pageUsage": "Renderer : renderers.topbar(data)\nSource   : sections/components/topbar.json\nCSS class: .tbar  (defined in index.html)\n\nIn page templates — copy this block from tablepage renderer:\n  <div class=\"tbar\" style=\"border-radius:0;padding:0 0 0 22px\">\n    [logo] [.acts icons] [.slot]\n  </div>"
+  "helpDropdown": {
+    "trigger": "help icon (?) in .acts",
+    "items": [
+      { "label": "Help Center",       "icon": "help" },
+      { "label": "API Documentation", "icon": "code" },
+      { "label": "Capacitaciones",    "icon": "education" }
+    ],
+    "tokens": "bg #fff · border 1px var(--n3) · radius 8px · shadow 0 4px 16px rgba(19,32,69,.14) · min-width 210px",
+    "behavior": "toggle on click, close on outside click · rendered via topbarHelpBtn() in renderers.js"
+  },
+  "propagationRule": "ALWAYS update ALL instances when this component changes. Instances: renderers.js (tablepage, settingsShell, formShell), strategy-planner-PLANNER.html, Diego_Designs/ONBOARDING_help-center-video.html. New prototypes must also include the dropdown.",
+  "pageUsage": "Renderer : renderers.topbar(data)\nSource   : sections/components/topbar.json\nCSS class: .tbar  (defined in index.html)\n\nIn page templates — use topbarHelpBtn() for the help icon:\n  <div class=\"tbar\" style=\"border-radius:0;padding:0 0 0 22px\">\n    [logo]\n    <div class=\"acts\">\n      ${iconSvg('apps',18,'#fff')}\n      ${topbarHelpBtn()}   ← ALWAYS use this, never bare iconSvg('help',...)\n      ${iconSvg('messages',18,'#fff')}\n      <div class=\"bell\">${iconSvg('alerts',18,'#fff')}</div>\n      ${iconSvg('user',18,'#fff')}\n    </div>\n    [.slot]\n  </div>"
 }
