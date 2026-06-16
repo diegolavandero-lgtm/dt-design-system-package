@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T16:20:00.056Z",
+  "generated": "2026-06-16T16:51:57.998Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "c06ae9f",
+          "type": "update",
+          "section": "General",
+          "message": "feat(onboarding): section-scoped help drawer with video + comprehension quiz (Órdenes)",
+          "author": "Diego"
+        },
         {
           "hash": "fb6fc9b",
           "type": "fix",
