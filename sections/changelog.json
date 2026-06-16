@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T19:28:57.490Z",
+  "generated": "2026-06-16T20:14:05.640Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "8145b81",
+          "type": "feat",
+          "section": "General",
+          "message": "DES-828: box the info KPI tiles to match the outcome pills; more internal padding",
+          "author": "Carlos"
+        },
         {
           "hash": "05df679",
           "type": "update",
