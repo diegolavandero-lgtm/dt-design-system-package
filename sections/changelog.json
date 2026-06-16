@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T21:24:34.641Z",
+  "generated": "2026-06-16T21:34:46.278Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "b00d536",
+          "type": "feat",
+          "section": "Topbar",
+          "message": "feat(topbar): add help dropdown (Help Center / API Docs / Capacitaciones)",
+          "author": "Diego"
+        },
         {
           "hash": "5068a8a",
           "type": "feat",
