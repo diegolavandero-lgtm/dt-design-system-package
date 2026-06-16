@@ -1213,7 +1213,7 @@ function emptyStateHtml(){
     <div class="es-video">${videoThumb(SECTION.name, SECTION.videoDur, 'section')}</div>
     <div class="es-quiz">
       <div><div class="es-quiz-t">Pon a prueba lo que aprendiste</div><div class="es-quiz-d">3 preguntas para completar el aprendizaje de la sección.</div></div>
-      <button class="btn-sec" style="flex-shrink:0" onclick="openSectionQuiz()">Responder cuestionario</button>
+      <button class="btn-sec" style="flex-shrink:0" onclick="openSectionQuiz()">Probar lo aprendido</button>
     </div>
     <div class="es-cta">
       <button class="btn-pri" style="height:36px;padding:0 20px">${iconSvg('add',14,'#fff')}Crear primera orden</button>
@@ -1298,7 +1298,7 @@ function renderDrawer(){
         </div>
         ${ sectionDone
           ? `<div class="obp-foot" style="color:var(--g6);font-weight:600">✓ Completaste el aprendizaje de esta sección.</div>`
-          : `<button class="btn-pri" style="width:100%;justify-content:center" onclick="openSectionQuiz()">${iconSvg('task-complete',14,'#fff')}Completar aprendizaje de la sección</button>
+          : `<button class="btn-pri" style="width:100%;justify-content:center" onclick="openSectionQuiz()">${iconSvg('task-complete',14,'#fff')}Poner a prueba</button>
              <div class="obp-foot">Al aprobar el cuestionario, sumas esta sección a tu onboarding general.</div>` }
       </div>
 
@@ -1331,7 +1331,7 @@ function renderAnnounce(){
       <p class="ann-desc">${NEW_FEATURE.desc}</p>
     </div>
     <div class="ann-foot">
-      <button class="btn-sec" onclick="closeAnnounce();openFeatureQuiz()">${iconSvg('task-complete',14,'#4B82FA')}Hacer la comprobación</button>
+      <button class="btn-sec" onclick="closeAnnounce();openFeatureQuiz()">${iconSvg('task-complete',14,'#4B82FA')}Aceptar el reto</button>
       <button class="btn-pri" onclick="goToFeature()">Ir a ${NEW_FEATURE.name}${iconSvg('arrow-right',14,'#fff')}</button>
     </div>`;
 }
