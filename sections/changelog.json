@@ -2,8 +2,20 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-15T16:26:16.001Z",
+  "generated": "2026-06-16T15:10:35.466Z",
   "days": [
+    {
+      "date": "2026-06-16",
+      "entries": [
+        {
+          "hash": "912bbd0",
+          "type": "update",
+          "section": "Icons",
+          "message": "DES-828: visual + interactive KPI band — icon tiles, stacked delivery bar, clickable outcome filters",
+          "author": "Carlos"
+        }
+      ]
+    },
     {
       "date": "2026-06-15",
       "entries": [
