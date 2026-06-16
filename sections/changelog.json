@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T16:11:43.289Z",
+  "generated": "2026-06-16T16:20:00.056Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "fb6fc9b",
+          "type": "fix",
+          "section": "General",
+          "message": "DES-828: revert KPI band to pill version; labels on two lines",
+          "author": "Carlos"
+        },
         {
           "hash": "b440874",
           "type": "update",
