@@ -368,17 +368,10 @@
     }
     .dme-ver-opt:hover{background:var(--b1);color:var(--b7)}
     .dme-ver-opt input{width:14px;height:14px;accent-color:var(--b5);cursor:pointer;flex-shrink:0}
-    /* Lasso */
-    .dme-lasso-banner{
-      display:none;position:absolute;top:0;left:0;right:0;height:40px;background:var(--b6);
-      color:#fff;font:400 12px var(--font-sans);align-items:center;gap:10px;padding:0 16px;z-index:1001;
-    }
-    .dme-lasso-banner.on{display:flex}
-    .dme-lasso-banner b{font-weight:700;cursor:pointer;margin-left:auto;text-decoration:underline}
-    .dme-lasso-layer{display:none;position:absolute;inset:0;cursor:crosshair;z-index:999}
-    .dme-lasso-layer.on{display:block}
-    .dme-lasso-svg{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:998}
-    .dme-lasso-svg.on{display:block}
+    /* Botón "Encuadrar" — control Leaflet bajo el zoom */
+    .dme-fit a{display:flex!important;align-items:center;justify-content:center;color:var(--n7)}
+    .dme-fit a:hover{color:var(--b7)}
+    .dme-fit a svg{width:16px;height:16px}
     /* DS pin divIcon — name+plate tooltip on hover/selection */
     .dme-pin-tip{
       background:#132045;color:#fff;border:none;border-radius:4px;
@@ -622,22 +615,7 @@
               <label class="dme-ver-opt"><input type="checkbox" data-layer="dc" checked onchange="toggleLayer('dc',this.checked)"> Centro de distribución</label>
             </div>
           </div>
-          <button class="dme-btn" id="dme-btn-lasso-main" onclick="dmeToggleLasso('main')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7M7 18l3 3 3-3"/></svg>
-            Seleccionar con lazo
-          </button>
         </div>
-
-        <!-- Lasso mode (DS) -->
-        <div class="dme-lasso-banner" id="dme-banner-main">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><ellipse cx="10" cy="8" rx="7" ry="5" stroke-dasharray="2.5,1.5"/><path d="M10 13v7"/></svg>
-          <span>Estás en modo lazo. Dibuja alrededor de las paradas para seleccionarlas.</span>
-          <b onclick="dmeExitLasso('main')">Cancelar</b>
-        </div>
-        <svg class="dme-lasso-svg" id="dme-svg-main" xmlns="http://www.w3.org/2000/svg">
-          <path id="dme-path-main" fill="rgba(30,96,237,0.12)" stroke="#1F60ED" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" d=""></path>
-        </svg>
-        <div class="dme-lasso-layer" id="dme-layer-main" onmousedown="dmeLassoStart(event,'main')"></div>
 
         <!-- Empty overlay -->
         <div class="map-empty" id="map-empty">
@@ -940,6 +918,21 @@ function initFleetMap(){
   dcMarker = L.marker(DC_LATLNG, {icon:pinIcon('pin-distribution-center'), zIndexOffset:-100})
     .bindTooltip('Centro de distribución', {className:'dme-pin-tip', direction:'top', offset:[0,-44]});
   renderMarkers();
+
+  // Control "Encuadrar" — ajusta el viewport a todos los pines (debajo del zoom)
+  const FitControl = L.Control.extend({
+    options:{position:'topleft'},
+    onAdd:function(){
+      const c = L.DomUtil.create('div','leaflet-bar leaflet-control dme-fit');
+      const a = L.DomUtil.create('a','',c);
+      a.href='#'; a.title='Encuadrar'; a.setAttribute('role','button'); a.setAttribute('aria-label','Encuadrar');
+      a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/></svg>';
+      L.DomEvent.on(a,'click',function(e){ L.DomEvent.stop(e); fitFleet(); });
+      return c;
+    }
+  });
+  fleetMap.addControl(new FitControl());
+
   fitFleet();
 }
 
