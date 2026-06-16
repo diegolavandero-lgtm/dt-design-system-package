@@ -1366,13 +1366,13 @@ function renderQuestion(){
     <div class="quiz-q">${item.q}</div>
     <div>${item.opts.map((o,i)=>`<div class="quiz-opt" data-i="${i}" onclick="pickOpt(${i})"><span class="radio"></span><span>${o}</span></div>`).join('')}</div>
     <div class="quiz-fb" id="quizFb"></div>
-    <div class="lm-foot"><span></span><button class="btn-pri" id="quizNext" style="opacity:.5;pointer-events:none">Comprobar</button></div>`;
+    <div class="lm-foot"><span></span><button class="btn-pri" id="quizNext" style="opacity:.5;pointer-events:none">Verificar respuesta</button></div>`;
 }
 function pickOpt(i){
   if(qLocked) return; selected=i;
   document.querySelectorAll('.quiz-opt').forEach(el=>el.classList.remove('sel'));
   document.querySelector('.quiz-opt[data-i="'+i+'"]').classList.add('sel');
-  const b=document.getElementById('quizNext'); b.style.opacity='1'; b.style.pointerEvents='auto'; b.textContent='Comprobar'; b.onclick=checkAnswer;
+  const b=document.getElementById('quizNext'); b.style.opacity='1'; b.style.pointerEvents='auto'; b.textContent='Verificar respuesta'; b.onclick=checkAnswer;
 }
 function checkAnswer(){
   if(selected<0) return; qLocked=true;
