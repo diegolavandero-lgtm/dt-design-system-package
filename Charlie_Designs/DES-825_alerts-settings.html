@@ -332,6 +332,20 @@ input,select{font-family:inherit}
   margin-left:5px;vertical-align:middle;
 }
 
+/* Mark all as read bar */
+.mark-all-bar{
+  display:flex;align-items:center;justify-content:flex-end;
+  padding:6px 16px;border-bottom:1px solid #F0F2F5;
+  background:#fff;flex-shrink:0;
+}
+.mark-all-bar.hidden{display:none}
+.mark-all-btn{
+  font:400 12px 'DM Sans';color:#1F60ED;background:none;border:none;
+  padding:0;cursor:pointer;
+}
+.mark-all-btn:hover{text-decoration:underline}
+
+
 /* Content area */
 .drawer-content{flex:1;overflow-y:auto;padding:0}
 .drawer-content::-webkit-scrollbar{width:4px}
@@ -872,6 +886,11 @@ input,select{font-family:inherit}
     <div class="drawer-tab" id="tab-reports" onclick="switchTab('reports')">Reports</div>
   </div>
 
+
+  <!-- Mark all as read bar (hidden once all read) -->
+  <div class="mark-all-bar" id="markAllBar">
+    <button class="mark-all-btn" onclick="markAllRead()">Mark all as read</button>
+  </div>
   <!-- Content -->
   <div class="drawer-content">
 
@@ -1069,6 +1088,23 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function markAllRead() {
+  document.querySelectorAll('.alert-item.unread').forEach(function(item) {
+    item.classList.remove('unread');
+    var dot = item.querySelector('.alert-unread-dot');
+    if (dot) dot.style.display = 'none';
+  });
+  document.querySelectorAll('.notif-dot.unread').forEach(function(d) { d.classList.remove('unread'); });
+  document.querySelectorAll('.tab-badge').forEach(function(b) { b.style.display = 'none'; });
+  var bell = document.querySelector('.bell-badge');
+  if (bell) bell.style.display = 'none';
+  document.querySelectorAll('.section-label').forEach(function(lbl) {
+    if (/Unread/i.test(lbl.textContent)) lbl.textContent = lbl.textContent.replace(/Unread · \d+/, 'Read');
+  });
+  var bar = document.getElementById('markAllBar');
+  if (bar) bar.classList.add('hidden');
 }
 </script>
 
