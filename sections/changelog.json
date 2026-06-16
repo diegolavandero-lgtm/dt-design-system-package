@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T20:37:00.168Z",
+  "generated": "2026-06-16T20:45:48.276Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "e9745b1",
+          "type": "update",
+          "section": "Inputs",
+          "message": "DES-828: tighten workspace to a uniform 12px gap — module goes near-fullscreen",
+          "author": "Carlos"
+        },
         {
           "hash": "24c30e2",
           "type": "update",
