@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T20:35:11.346Z",
+  "generated": "2026-06-16T20:37:00.168Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "24c30e2",
+          "type": "update",
+          "section": "Badges",
+          "message": "DES-828: redesign KPI band (Opción B) — clean stat row + protagonist delivery progress bar + clickable outcome legend that filters the fleet",
+          "author": "Carlos"
+        },
         {
           "hash": "86fbd10",
           "type": "update",
