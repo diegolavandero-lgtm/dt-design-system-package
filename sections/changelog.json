@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T20:48:01.482Z",
+  "generated": "2026-06-16T20:52:50.170Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "0562aa0",
+          "type": "feat",
+          "section": "Buttons",
+          "message": "DES-828: remove lasso selection, add 'Encuadrar' (fit-to-bounds) control below the zoom buttons",
+          "author": "Carlos"
+        },
         {
           "hash": "ea4d159",
           "type": "feat",
