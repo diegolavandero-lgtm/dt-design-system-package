@@ -672,6 +672,34 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   .demo-toggle{position:fixed;left:16px;bottom:16px;z-index:160;display:flex;align-items:center;gap:6px;background:#fff;border:1px dashed var(--n4);border-radius:999px;padding:5px 8px 5px 12px;box-shadow:var(--shadow-sm,0 2px 4px rgba(19,32,69,.08));font:600 11px var(--font-sans);color:var(--n5)}
   .demo-toggle button{border:none;background:none;font:600 11px var(--font-sans);color:var(--n6);padding:5px 11px;border-radius:999px;cursor:pointer}
   .demo-toggle button.on{background:var(--b6);color:#fff}
+
+  /* inline video player — plays in its own frame, no modal */
+  .vf-stage{position:relative;cursor:pointer}
+  .vf-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.95);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:opacity .2s;padding:0}
+  .vf-btn svg{width:22px;height:22px;fill:var(--b6)}
+  .vf-stage.playing:not(.paused) .vf-btn{opacity:0}
+  .vf-stage.playing:not(.paused):hover .vf-btn{opacity:1}
+  .vf-progress{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.3);display:none}
+  .vf-stage.playing .vf-progress{display:block}
+  .vf-progress>i{display:block;height:100%;width:0;background:#fff}
+  .vf-stage.playing .vf-progress>i{animation:vfprog 14s linear forwards}
+  .vf-stage.playing.paused .vf-progress>i{animation-play-state:paused}
+  @keyframes vfprog{to{width:100%}}
+
+  /* new-feature announcement modal (auto on entry) */
+  .ann-scrim{position:fixed;inset:0;z-index:420;background:rgba(19,32,69,.45);display:none}
+  .ann-scrim.open{display:block}
+  .ann-modal{position:fixed;z-index:421;top:50%;left:50%;transform:translate(-50%,-48%);width:520px;max-width:calc(100vw - 32px);max-height:calc(100vh - 48px);background:#fff;border-radius:12px;box-shadow:0 24px 60px rgba(19,32,69,.35);display:none;flex-direction:column;overflow:hidden}
+  .ann-modal.open{display:flex}
+  .ann-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0}
+  .ann-badge{display:inline-flex;align-items:center;gap:6px;font:700 11px/1 var(--font-sans);letter-spacing:.05em;text-transform:uppercase;color:#fff;background:var(--b6);padding:6px 12px;border-radius:999px}
+  .ann-badge svg{fill:#fff}
+  .ann-body{padding:10px 20px 4px;overflow-y:auto}
+  .ann-title{font:700 20px/26px var(--font-sans);color:var(--n7);margin:4px 0 14px}
+  .ann-video{border-radius:10px;overflow:hidden;border:1px solid var(--n3)}
+  .ann-video .fv-thumb{aspect-ratio:16/9}
+  .ann-desc{font:400 14px/21px var(--font-sans);color:var(--n5);margin:14px 0 4px}
+  .ann-foot{display:flex;gap:12px;justify-content:flex-end;padding:16px 20px 20px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -689,6 +717,8 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   <span>Demo:</span>
   <button id="dtFull" onclick="setEmpty(false)">Con datos</button>
   <button id="dtEmpty" onclick="setEmpty(true)">Nuevo usuario (vacío)</button>
+  <span style="width:1px;height:16px;background:var(--n3);margin:0 2px"></span>
+  <button id="dtAnn" onclick="openAnnounce()">Anuncio función nueva</button>
 </div>
 
 <aside class="ob-drawer" id="drawer"></aside>
@@ -698,6 +728,9 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   <div class="obm-head"><h3 id="lmTitle"></h3><button class="obm-close" onclick="closeLesson()" id="lmClose"></button></div>
   <div class="obm-body" id="lmBody"></div>
 </div>
+
+<div class="ann-scrim" id="annScrim" onclick="closeAnnounce()"></div>
+<div class="ann-modal" id="annModal"></div>
 
 <div class="ob-toast" id="toast"></div>
 
@@ -1177,22 +1210,57 @@ function emptyStateHtml(){
     <div class="es-tag">${iconSvg('document-multiple',16,'var(--b6)')} ${SECTION.name}</div>
     <h2 class="es-title">Aún no tienes órdenes</h2>
     <p class="es-desc">${SECTION.desc} Mira el video, responde 3 preguntas y crea tu primera orden para empezar.</p>
-    <div class="es-video" onclick="openLesson()">
-      <div class="fv-thumb">
-        <div class="fv-tag">${SECTION.name}</div>
-        <div class="fv-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        <div class="fv-dur">${SECTION.videoDur}</div>
-      </div>
-    </div>
+    <div class="es-video">${videoThumb(SECTION.name, SECTION.videoDur, 'section')}</div>
     <div class="es-quiz">
       <div><div class="es-quiz-t">Pon a prueba lo que aprendiste</div><div class="es-quiz-d">3 preguntas para completar el aprendizaje de la sección.</div></div>
-      <button class="btn-sec" style="flex-shrink:0" onclick="openLesson()">Responder cuestionario</button>
+      <button class="btn-sec" style="flex-shrink:0" onclick="openSectionQuiz()">Responder cuestionario</button>
     </div>
     <div class="es-cta">
       <button class="btn-pri" style="height:36px;padding:0 20px">${iconSvg('add',14,'#fff')}Crear primera orden</button>
       <button class="btn-sec" style="height:36px;padding:0 20px">${iconSvg('document-import',14,'#4B82FA')}Importar órdenes</button>
     </div>
   </div></div>`;
+}
+
+/* ============ NEW FEATURE — announcement variant ============ */
+const NEW_FEATURE = {
+  name: 'Filtros guardados',
+  videoDur: '1:20',
+  desc: 'Ahora puedes guardar tus combinaciones de filtros más usadas en Órdenes/guías y volver a aplicarlas con un clic. Crea una vista, ponle nombre y reutilízala sin repetir la búsqueda cada vez.',
+  quiz: [
+    { q:'¿Para qué sirven los Filtros guardados?', opts:['Para reutilizar una búsqueda con un clic','Para eliminar órdenes en lote','Para cambiar el idioma de la app'], correct:0 },
+    { q:'¿Dónde aplicas un filtro guardado?', opts:['En el menú de Ajustes','En la barra de filtros de Órdenes/guías','Solo desde la app móvil'], correct:1 },
+  ],
+};
+let featureDone = false;
+
+/* ============ inline video — plays in its own frame (no modal) ============ */
+const VF_PLAY = `<svg viewBox="0 0 24 24" style="margin-left:3px"><path d="M8 5v14l11-7z"/></svg>`;
+const VF_PAUSE = `<svg viewBox="0 0 24 24"><path d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z"/></svg>`;
+function videoThumb(tag, dur, kind){
+  return `<div class="fv-thumb vf-stage" data-kind="${kind||'section'}" onclick="vfToggle(this)">
+    <div class="fv-tag">${tag}</div>
+    <button class="vf-btn">${VF_PLAY}</button>
+    <div class="fv-dur">${dur}</div>
+    <div class="vf-progress"><i></i></div>
+  </div>`;
+}
+function vfToggle(stage){
+  if(!stage.classList.contains('playing')){
+    stage.classList.add('playing'); stage.classList.remove('paused');
+    stage.querySelector('.vf-btn').innerHTML = VF_PAUSE;
+    if((stage.dataset.kind||'section')==='section') markSeen();
+  } else {
+    const paused = stage.classList.toggle('paused');
+    stage.querySelector('.vf-btn').innerHTML = paused ? VF_PLAY : VF_PAUSE;
+  }
+}
+function markSeen(){
+  if(videoSeen) return;
+  videoSeen = true;
+  const c = document.getElementById('stateChip'); if(c) c.innerHTML = stateChip();
+  const sv = document.getElementById('stepVideo');
+  if(sv){ sv.classList.add('done'); const ic = sv.querySelector('.ic'); if(ic) ic.innerHTML = iconSvg('checkmark-filled',18,'var(--g6)'); }
 }
 
 /* state chip via real DS badge */
@@ -1215,12 +1283,8 @@ function renderDrawer(){
     </div>
     <div class="obd-content">
       <div class="obd-lbl">Video de la sección</div>
-      <div class="fv" onclick="openLesson()">
-        <div class="fv-thumb">
-          <div class="fv-tag">${SECTION.name}</div>
-          <div class="fv-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-          <div class="fv-dur">${SECTION.videoDur}</div>
-        </div>
+      <div class="fv">
+        ${videoThumb(SECTION.name, SECTION.videoDur, 'section')}
         <div class="fv-body">
           <div class="fv-title"><span>${SECTION.videoTitle}</span><span id="stateChip">${stateChip()}</span></div>
           <div class="obd-desc">${SECTION.desc}</div>
@@ -1229,12 +1293,12 @@ function renderDrawer(){
 
       <div class="obd-prog">
         <div class="obp-steps">
-          <div class="obp-step ${videoSeen?'done':''}"><span class="ic">${videoSeen?okIco:pendIco}</span>Ver el video de la sección</div>
+          <div class="obp-step ${videoSeen?'done':''}" id="stepVideo"><span class="ic">${videoSeen?okIco:pendIco}</span>Ver el video de la sección</div>
           <div class="obp-step ${sectionDone?'done':''}"><span class="ic">${sectionDone?okIco:pendIco}</span>Responder el cuestionario (3 preguntas)</div>
         </div>
         ${ sectionDone
           ? `<div class="obp-foot" style="color:var(--g6);font-weight:600">✓ Completaste el aprendizaje de esta sección.</div>`
-          : `<button class="btn-pri" style="width:100%;justify-content:center" onclick="openLesson()">${iconSvg('task-complete',14,'#fff')}Completar aprendizaje de la sección</button>
+          : `<button class="btn-pri" style="width:100%;justify-content:center" onclick="openSectionQuiz()">${iconSvg('task-complete',14,'#fff')}Completar aprendizaje de la sección</button>
              <div class="obp-foot">Al aprobar el cuestionario, sumas esta sección a tu onboarding general.</div>` }
       </div>
 
@@ -1254,28 +1318,51 @@ function renderDrawer(){
 function openDrawer(){ renderDrawer(); document.getElementById('drawer').classList.add('open'); document.getElementById('ob-main').classList.add('shifted'); }
 function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('ob-main').classList.remove('shifted'); }
 
-/* ============ LESSON MODAL: player → quiz → done ============ */
-let qIndex=0, selected=-1, qLocked=false;
-function openLesson(){ document.getElementById('modalScrim').classList.add('open'); document.getElementById('lessonModal').classList.add('open'); renderPlayer(); }
-function closeLesson(){ document.getElementById('modalScrim').classList.remove('open'); document.getElementById('lessonModal').classList.remove('open'); }
-
-function renderPlayer(){
-  document.getElementById('lmTitle').textContent = SECTION.videoTitle;
-  document.getElementById('lmBody').innerHTML = `
-    <div class="lm-player"><div class="fv-play"><svg viewBox="0 0 24 24" fill="#1F60ED"><path d="M8 5v14l11-7z"/></svg></div><div class="lm-caption">CC · Subtítulos disponibles</div></div>
-    <div class="lm-foot">
-      <span class="lm-note">Mira el video de la sección y responde 3 preguntas para completarla.</span>
-      <button class="btn-pri" style="white-space:nowrap" onclick="markSeen();startQuiz()">Continuar a las preguntas</button>
+/* ============ NEW-FEATURE ANNOUNCEMENT MODAL (auto on entry) ============ */
+function renderAnnounce(){
+  document.getElementById('annModal').innerHTML = `
+    <div class="ann-head">
+      <span class="ann-badge">${iconSvg('notification',12,'#fff')} Nueva función</span>
+      <button class="obm-close" onclick="closeAnnounce()">${dsCloseIcon(18,'var(--n5)')}</button>
+    </div>
+    <div class="ann-body">
+      <h3 class="ann-title">${NEW_FEATURE.name}</h3>
+      <div class="ann-video">${videoThumb(NEW_FEATURE.name, NEW_FEATURE.videoDur, 'feature')}</div>
+      <p class="ann-desc">${NEW_FEATURE.desc}</p>
+    </div>
+    <div class="ann-foot">
+      <button class="btn-sec" onclick="closeAnnounce();openFeatureQuiz()">${iconSvg('task-complete',14,'#4B82FA')}Hacer la comprobación</button>
+      <button class="btn-pri" onclick="goToFeature()">Ir a ${NEW_FEATURE.name}${iconSvg('arrow-right',14,'#fff')}</button>
     </div>`;
 }
-function markSeen(){ if(!videoSeen){ videoSeen=true; const c=document.getElementById('stateChip'); if(c) c.innerHTML=stateChip(); } }
-function startQuiz(){ qIndex=0; selected=-1; renderQuestion(); }
+function openAnnounce(){ renderAnnounce(); document.getElementById('annScrim').classList.add('open'); document.getElementById('annModal').classList.add('open'); }
+function closeAnnounce(){ document.getElementById('annScrim').classList.remove('open'); document.getElementById('annModal').classList.remove('open'); }
+function goToFeature(){ closeAnnounce(); showToast('Te llevamos a ' + NEW_FEATURE.name); }
+
+/* ============ QUIZ MODAL — opens ONLY for the questionnaire ============ */
+let QZ=null, qIndex=0, selected=-1, qLocked=false;
+function openSectionQuiz(){
+  QZ = { quiz: SECTION.quiz, title:'Pon a prueba lo que aprendiste',
+    onDone(){ if(!sectionDone){ sectionDone=true; const c=document.getElementById('stateChip'); if(c) c.innerHTML=stateChip(); } },
+    done:()=>doneScreen('¡Completaste la sección '+SECTION.name+'!','Esta sección quedó marcada como aprendida y suma a tu onboarding general. Puedes volver al video desde el Centro de ayuda.','Volver al Centro de ayuda'),
+    after(){ renderDrawer(); showToast('Sección '+SECTION.name+' completada'); } };
+  runQuiz();
+}
+function openFeatureQuiz(){
+  QZ = { quiz: NEW_FEATURE.quiz, title:'Comprobación · '+NEW_FEATURE.name,
+    onDone(){ featureDone=true; },
+    done:()=>doneScreen('¡Listo! Ya conoces '+NEW_FEATURE.name,'Marcamos esta función nueva como aprendida.','Entendido'),
+    after(){ showToast('Función nueva: '+NEW_FEATURE.name+' — comprobada'); } };
+  runQuiz();
+}
+function runQuiz(){ qIndex=0; selected=-1; document.getElementById('modalScrim').classList.add('open'); document.getElementById('lessonModal').classList.add('open'); renderQuestion(); }
+function closeLesson(){ document.getElementById('modalScrim').classList.remove('open'); document.getElementById('lessonModal').classList.remove('open'); }
 
 function renderQuestion(){
-  qLocked=false; const item=SECTION.quiz[qIndex]; const pct=Math.round((qIndex/SECTION.quiz.length)*100);
-  document.getElementById('lmTitle').textContent='Pon a prueba lo que aprendiste';
+  qLocked=false; const Q=QZ.quiz, item=Q[qIndex], pct=Math.round(qIndex/Q.length*100);
+  document.getElementById('lmTitle').textContent=QZ.title;
   document.getElementById('lmBody').innerHTML = `
-    <div class="quiz-meta"><span class="quiz-count">Pregunta ${qIndex+1} de ${SECTION.quiz.length}</span><span class="quiz-bar"><i style="width:${pct}%"></i></span></div>
+    <div class="quiz-meta"><span class="quiz-count">Pregunta ${qIndex+1} de ${Q.length}</span><span class="quiz-bar"><i style="width:${pct}%"></i></span></div>
     <div class="quiz-q">${item.q}</div>
     <div>${item.opts.map((o,i)=>`<div class="quiz-opt" data-i="${i}" onclick="pickOpt(${i})"><span class="radio"></span><span>${o}</span></div>`).join('')}</div>
     <div class="quiz-fb" id="quizFb"></div>
@@ -1289,23 +1376,15 @@ function pickOpt(i){
 }
 function checkAnswer(){
   if(selected<0) return; qLocked=true;
-  const item=SECTION.quiz[qIndex]; const opts=document.querySelectorAll('.quiz-opt'); const fb=document.getElementById('quizFb');
-  const ok=selected===item.correct; const last=qIndex===SECTION.quiz.length-1; const b=document.getElementById('quizNext');
+  const Q=QZ.quiz, item=Q[qIndex], opts=document.querySelectorAll('.quiz-opt'), fb=document.getElementById('quizFb'), b=document.getElementById('quizNext');
+  const ok=selected===item.correct, last=qIndex===Q.length-1;
   if(ok){ opts[selected].classList.add('correct'); fb.className='quiz-fb ok'; fb.textContent='¡Correcto!'; b.textContent=last?'Finalizar':'Siguiente'; b.onclick=nextQuestion; }
   else { opts[selected].classList.add('wrong'); opts[item.correct].classList.add('correct'); fb.className='quiz-fb no'; fb.textContent='No exactamente. Repasa este punto.'; b.textContent='Intentar de nuevo'; b.onclick=()=>{selected=-1;renderQuestion();}; }
 }
-function nextQuestion(){ if(qIndex<SECTION.quiz.length-1){ qIndex++; selected=-1; renderQuestion(); } else finishLesson(); }
-function finishLesson(){
-  if(!sectionDone){ sectionDone=true; const c=document.getElementById('stateChip'); if(c) c.innerHTML=stateChip(); }
-  document.getElementById('lmTitle').textContent='Sección completada';
-  document.getElementById('lmBody').innerHTML = `
-    <div class="lm-done">
-      <div class="ring">${iconSvg('checkmark-filled',32,'var(--g6)')}</div>
-      <h4>¡Completaste la sección ${SECTION.name}!</h4>
-      <p>Esta sección quedó marcada como aprendida y suma a tu onboarding general. Puedes volver al video cuando quieras desde el Centro de ayuda.</p>
-      <button class="btn-pri" style="margin:0 auto" onclick="closeLesson();renderDrawer();showToast('Sección ${SECTION.name} completada')">Volver al Centro de ayuda</button>
-    </div>`;
-}
+function nextQuestion(){ if(qIndex<QZ.quiz.length-1){ qIndex++; selected=-1; renderQuestion(); } else finishQuiz(); }
+function finishQuiz(){ if(QZ.onDone) QZ.onDone(); document.getElementById('lmTitle').textContent='Completado'; document.getElementById('lmBody').innerHTML=QZ.done(); }
+function doneScreen(h4,p,btn){ return `<div class="lm-done"><div class="ring">${iconSvg('checkmark-filled',32,'var(--g6)')}</div><h4>${h4}</h4><p>${p}</p><button class="btn-pri" style="margin:0 auto" onclick="quizDoneClick()">${btn}</button></div>`; }
+function quizDoneClick(){ closeLesson(); if(QZ&&QZ.after) QZ.after(); }
 
 /* toast */
 let toastT;
@@ -1314,9 +1393,11 @@ function showToast(msg){ const t=document.getElementById('toast'); t.innerHTML=`
 /* esc closes top-most layer */
 document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return;
   if(document.getElementById('lessonModal').classList.contains('open')) closeLesson();
+  else if(document.getElementById('annModal').classList.contains('open')) closeAnnounce();
   else if(document.getElementById('drawer').classList.contains('open')) closeDrawer(); });
 
-setEmpty(false); // initial render + sets demo-toggle active state
+setEmpty(false);  // initial render + sets demo-toggle active state
+openAnnounce();   // a new feature is available → announcement appears automatically on entry
 </script>
 </body>
 </html>
