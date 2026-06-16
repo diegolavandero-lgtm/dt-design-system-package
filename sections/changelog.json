@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T20:14:05.640Z",
+  "generated": "2026-06-16T20:35:11.346Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "86fbd10",
+          "type": "update",
+          "section": "General",
+          "message": "feat(onboarding): open help-center articles inline in the drawer",
+          "author": "Diego"
+        },
         {
           "hash": "8145b81",
           "type": "feat",
