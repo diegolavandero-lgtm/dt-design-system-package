@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T15:57:04.361Z",
+  "generated": "2026-06-16T16:11:43.289Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "b440874",
+          "type": "update",
+          "section": "General",
+          "message": "DES-828: unify delivery KPIs into a segmented control (proportion bar + 3 clickable segments)",
+          "author": "Carlos"
+        },
         {
           "hash": "fef45ac",
           "type": "feat",
