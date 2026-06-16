@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T18:45:49.175Z",
+  "generated": "2026-06-16T19:22:57.089Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "25b5f33",
+          "type": "update",
+          "section": "General",
+          "message": "ux-copy(onboarding): replace quiz CTAs with challenge-framing copy",
+          "author": "Diego"
+        },
         {
           "hash": "f88fe6d",
           "type": "update",
