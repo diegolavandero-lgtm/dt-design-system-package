@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T20:52:50.170Z",
+  "generated": "2026-06-16T20:55:33.372Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "9ac8eb3",
+          "type": "feat",
+          "section": "Icons",
+          "message": "DES-828: add phone icon next to the driver's number in list cards for clarity",
+          "author": "Carlos"
+        },
         {
           "hash": "0562aa0",
           "type": "feat",
