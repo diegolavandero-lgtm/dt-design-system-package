@@ -250,17 +250,37 @@
     .drv-actions{display:flex;gap:8px}
 
     /* ════════════════════════
-       FLEET SUMMARY STRIP — totales del día (legacy: barra superior del mapa)
+       FLEET SUMMARY STRIP — KPIs visuales + filtros de entrega clicables
     ════════════════════════ */
     .fleet-stats{
       background:#fff;border-bottom:1px solid var(--n3);
-      padding:10px 24px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;flex-shrink:0;
+      padding:9px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex-shrink:0;
     }
-    .fs-item{display:flex;align-items:baseline;gap:6px}
-    .fs-num{font:700 16px/1 var(--font-sans);color:var(--n7)}
-    .fs-lbl{font:400 12px var(--font-sans);color:var(--n5)}
-    .fs-sep{width:1px;height:20px;background:var(--n3);align-self:center}
-    .fs-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;align-self:center}
+    /* info tile con ícono */
+    .fs-tile{display:flex;align-items:center;gap:9px}
+    .fs-ico{width:32px;height:32px;border-radius:8px;background:var(--n2);display:flex;align-items:center;justify-content:center;color:var(--n5);flex-shrink:0}
+    .fs-ico svg{width:17px;height:17px;fill:currentColor}
+    .fs-txt{display:flex;flex-direction:column;line-height:1.1}
+    .fs-num{font:700 17px/1.1 var(--font-sans);color:var(--n7)}
+    .fs-lbl{font:400 11px var(--font-sans);color:var(--n5);margin-top:2px;white-space:nowrap}
+    .fs-sep{width:1px;height:32px;background:var(--n3)}
+    /* stacked delivery bar */
+    .fs-bar{display:flex;height:8px;width:118px;border-radius:5px;overflow:hidden;background:var(--n2);flex-shrink:0}
+    .fs-bar i{display:block;height:100%;transition:width .3s}
+    /* outcome KPI — clicable, filtra la flota */
+    .fs-kpi{
+      display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 12px;
+      border-radius:8px;border:1px solid var(--n3);background:#fff;cursor:pointer;
+      transition:background .12s,border-color .12s,box-shadow .12s;font-family:var(--font-sans);
+    }
+    .fs-kpi:hover{background:var(--n1);border-color:var(--n4)}
+    .fs-kpi:focus-visible{outline:2px solid var(--b6);outline-offset:2px}
+    .fs-kdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .fs-kpct{font:700 16px/1 var(--font-sans);color:var(--n7)}
+    .fs-klbl{font:400 11px var(--font-sans);color:var(--n5);margin-top:2px;white-space:nowrap}
+    .fs-kcount{font:700 11px/1 var(--font-sans);padding:2px 7px;border-radius:10px;background:var(--n2);color:var(--n6)}
+    .fs-kpi[aria-pressed="true"]{box-shadow:inset 0 0 0 1px currentColor}
+    .fs-kpi[aria-pressed="true"] .fs-kpct{color:inherit}
 
     /* ════════════════════════
        DRIVER DETAIL — ruta activa + timeline de paradas (legacy: panel de detalle)
@@ -712,6 +732,7 @@ const STATUS_ORDER = ['all','ruta','prog','fin','disp','nodisp'];
 const STATUS_LABEL = {all:'Todos los estados', ruta:'En ruta', prog:'Programado', fin:'Finalizado', disp:'Disponible', nodisp:'No disponible'};
 let stateFilter = 'all';
 let groupFilter = 'all';
+let kpiFilter = null;   // null | 'ent' | 'parc' | 'fail' — desde la banda de KPIs
 let selectedId = null;
 
 /* ════════════════════════ HELPERS ════════════════════════ */
@@ -723,6 +744,7 @@ function filteredDrivers(){
   return DRIVERS.filter(d =>
     (stateFilter==='all' || d.status===stateFilter) &&
     (groupFilter==='all' || d.group===groupFilter) &&
+    (kpiFilter===null || (d.total>0 && KPI_DEFS[kpiFilter].match(d))) &&
     (!q || d.name.toLowerCase().includes(q) || d.plate.toLowerCase().includes(q))
   );
 }
@@ -976,6 +998,13 @@ function drawRoute(){
 }
 
 /* ════════════════════════ FLEET SUMMARY — totales del día ════════════════════════ */
+/* outcome KPI definitions: matcher (driver has this outcome) + colors */
+const KPI_DEFS = {
+  ent:  {lbl:'Entregadas',    dot:'#36B37E', fg:'var(--g6)', bg:'var(--g1)', match:d=>(d.done-(d.parc||0)-(d.fail||0))>0},
+  parc: {lbl:'Parciales',     dot:'#FFAB00', fg:'var(--o7)', bg:'var(--o1)', match:d=>(d.parc||0)>0},
+  fail: {lbl:'No entregadas',  dot:'#FF5630', fg:'var(--r6)', bg:'var(--r1)', match:d=>(d.fail||0)>0}
+};
+
 function renderSummary(){
   const act = DRIVERS.filter(d=>d.total>0);
   const pend  = act.reduce((a,d)=>a+(d.total-d.done),0);
@@ -986,14 +1015,41 @@ function renderSummary(){
   const fail  = act.reduce((a,d)=>a+(d.fail||0),0);
   const ent   = done - parc - fail;
   const pct   = n => done ? Math.round(n/done*100) : 0;
-  document.getElementById('fleet-stats').innerHTML = `
-    <div class="fs-item"><span class="fs-num">${pend}</span><span class="fs-lbl">Órdenes pendientes</span></div>
-    <div class="fs-item"><span class="fs-num">${items}</span><span class="fs-lbl">Ítems en vehículos</span></div>
-    <div class="fs-sep"></div>
-    <div class="fs-item"><span class="fs-num">${asig}</span><span class="fs-lbl">Asignadas</span></div>
-    <div class="fs-item"><span class="fs-dot" style="background:var(--g5)"></span><span class="fs-num">${pct(ent)}%</span><span class="fs-lbl">Entregadas</span></div>
-    <div class="fs-item"><span class="fs-dot" style="background:var(--o5)"></span><span class="fs-num">${pct(parc)}%</span><span class="fs-lbl">Parciales</span></div>
-    <div class="fs-item"><span class="fs-dot" style="background:var(--r5)"></span><span class="fs-num">${pct(fail)}%</span><span class="fs-lbl">No entregadas</span></div>`;
+  const counts = {ent:ent, parc:parc, fail:fail};
+  const driverCount = key => DRIVERS.filter(d=>d.total>0 && KPI_DEFS[key].match(d)).length;
+
+  const tile = (ico, num, lbl) => `
+    <div class="fs-tile">
+      <div class="fs-ico">${ico}</div>
+      <div class="fs-txt"><span class="fs-num">${num}</span><span class="fs-lbl">${lbl}</span></div>
+    </div>`;
+
+  const ICO_PEND  = '<svg viewBox="0 0 32 32"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/><path d="M20.59,22,15,16.41V7h2v8.58l5,5.01Z"/></svg>';
+  const ICO_ITEMS = '<svg viewBox="0 0 32 32"><path d="M27,16V7a2,2,0,0,0-1.18-1.82l-9-4.09a2,2,0,0,0-1.66,0l-9,4.09A2,2,0,0,0,5,7V21a2,2,0,0,0,1.18,1.82l9,4.09a2,2,0,0,0,1.66,0L20,25.45V23.2l-4,1.82V15.66l9-4.09v4.43ZM16,3.27,23.81,7,16,10.5,8.19,7ZM7,8.76l8,3.66v9.34L7,18.07Z"/><path d="M30,24H24V22h6Zm0,4H24V26h6Z"/></svg>';
+  const ICO_ASIG  = '<svg viewBox="0 0 32 32"><path d="M26,4H22V2a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V4H6A2,2,0,0,0,4,6V28a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4ZM12,2h8V6H12ZM26,28H6V6h4V8H22V6h4Z"/><path d="M14.42 22L11 18.59 12.41 17.17 14.42 19.17 19.59 14 21 15.42 14.42 22z"/></svg>';
+
+  const kpi = (key) => {
+    const k = KPI_DEFS[key], active = kpiFilter===key, dc = driverCount(key);
+    const press = active ? `style="background:${k.bg};border-color:${k.fg};color:${k.fg}"` : '';
+    return `<button class="fs-kpi" aria-pressed="${active}" ${press}
+        title="${dc} conductor${dc===1?'':'es'} con ${k.lbl.toLowerCase()}" onclick="toggleKpi('${key}')">
+      <span class="fs-kdot" style="background:${k.dot}"></span>
+      <div class="fs-txt"><span class="fs-kpct">${pct(counts[key])}%</span><span class="fs-klbl">${k.lbl}</span></div>
+      <span class="fs-kcount">${dc}</span>
+    </button>`;
+  };
+
+  document.getElementById('fleet-stats').innerHTML =
+    tile(ICO_PEND, pend, 'Órdenes pendientes') +
+    tile(ICO_ITEMS, items, 'Ítems en vehículos') +
+    `<div class="fs-sep"></div>` +
+    tile(ICO_ASIG, asig, 'Órdenes asignadas') +
+    `<div class="fs-bar" title="${pct(ent)}% entregadas · ${pct(parc)}% parciales · ${pct(fail)}% no entregadas">
+      <i style="width:${pct(ent)}%;background:#36B37E"></i>
+      <i style="width:${pct(parc)}%;background:#FFAB00"></i>
+      <i style="width:${pct(fail)}%;background:#FF5630"></i>
+    </div>` +
+    kpi('ent') + kpi('parc') + kpi('fail');
 }
 
 function renderAll(){ renderSummary(); renderStatusMenu(); renderList(); renderMarkers(); }
@@ -1043,8 +1099,21 @@ function applyFilters(){
   showToast(`${n} conductor${n===1?'':'es'} tras aplicar filtros`);
 }
 
+/* KPI band → filtra la flota por resultado de entrega (toggle) */
+function toggleKpi(key){
+  kpiFilter = (kpiFilter===key) ? null : key;
+  selectedId = null;
+  renderAll();
+  if(kpiFilter){
+    const n = filteredDrivers().length;
+    showToast(`${n} conductor${n===1?'':'es'} con ${KPI_DEFS[key].lbl.toLowerCase()}`);
+  } else {
+    showToast('Filtro de entregas quitado');
+  }
+}
+
 function resetFilters(){
-  stateFilter='all'; groupFilter='all'; selectedId=null;
+  stateFilter='all'; groupFilter='all'; kpiFilter=null; selectedId=null;
   document.getElementById('f-search').value='';
   document.getElementById('group-label').textContent='Todos los grupos';
   document.querySelectorAll('#group-drop .dt-dopt').forEach((o,i)=>o.classList.toggle('selected',i===0));
