@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-16T19:22:57.089Z",
+  "generated": "2026-06-16T19:26:28.223Z",
   "days": [
     {
       "date": "2026-06-16",
       "entries": [
+        {
+          "hash": "c18ac41",
+          "type": "update",
+          "section": "General",
+          "message": "ux-copy(onboarding): rename quiz 'Comprobar' → 'Verificar respuesta'",
+          "author": "Diego"
+        },
         {
           "hash": "25b5f33",
           "type": "update",
