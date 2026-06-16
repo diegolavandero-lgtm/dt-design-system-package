@@ -794,6 +794,14 @@ function obToggleHelp(wrap) {
   var open = dd.style.display !== 'none';
   document.querySelectorAll('.ob-help-dd').forEach(function(d) { d.style.display = 'none'; });
   if (!open) {
+    var trigger = wrap.querySelector('span');
+    if (trigger) {
+      var rect = trigger.getBoundingClientRect();
+      dd.style.position = 'fixed';
+      dd.style.top = (rect.bottom + 8) + 'px';
+      dd.style.left = 'auto';
+      dd.style.right = (window.innerWidth - rect.right + 8) + 'px';
+    }
     dd.style.display = 'block';
     setTimeout(function() {
       var close = function(e) {

@@ -6676,6 +6676,11 @@ window.dtHelpToggle = function(el) {
   var isOpen = dd.style.display !== 'none';
   document.querySelectorAll('.tbar-help-dd').forEach(function(d) { d.style.display = 'none'; });
   if (!isOpen) {
+    var rect = el.getBoundingClientRect();
+    dd.style.position = 'fixed';
+    dd.style.top  = (rect.bottom + 8) + 'px';
+    dd.style.left = 'auto';
+    dd.style.right = (window.innerWidth - rect.right + 8) + 'px';
     dd.style.display = 'block';
     setTimeout(function() {
       var close = function(e) {
@@ -6701,7 +6706,7 @@ function topbarHelpBtn() {
     <span onclick="dtHelpToggle(this)" style="cursor:pointer;display:flex;align-items:center" title="Ayuda">
       ${iconSvg('help', 18, '#fff')}
     </span>
-    <div class="tbar-help-dd" style="display:none;position:absolute;top:calc(100% + 14px);right:-8px;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 4px 16px rgba(19,32,69,.14);z-index:9999;min-width:210px;overflow:hidden">
+    <div class="tbar-help-dd" style="display:none;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 4px 16px rgba(19,32,69,.14);z-index:9999;min-width:210px;overflow:hidden">
       <div style="font:700 10px var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);padding:8px 16px 4px">Ayuda</div>
       <div style="height:1px;background:var(--n3)"></div>
       ${item('help', 'Help Center')}

@@ -1839,6 +1839,12 @@ function toggleHelpDd(wrap){
   var open=dd.classList.contains('open');
   document.querySelectorAll('.help-dd.open').forEach(function(d){d.classList.remove('open');});
   if(!open){
+    var trigger=wrap.querySelector('.ti');
+    if(trigger){
+      var rect=trigger.getBoundingClientRect();
+      dd.style.position='fixed';dd.style.top=(rect.bottom+8)+'px';
+      dd.style.left='auto';dd.style.right=(window.innerWidth-rect.right+8)+'px';
+    }
     dd.classList.add('open');
     setTimeout(function(){
       var close=function(e){if(!wrap.contains(e.target)){dd.classList.remove('open');document.removeEventListener('click',close);}};
