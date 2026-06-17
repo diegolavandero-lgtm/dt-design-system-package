@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-17T14:42:33.683Z",
+  "generated": "2026-06-17T14:54:02.317Z",
   "days": [
     {
       "date": "2026-06-17",
       "entries": [
+        {
+          "hash": "7af407a",
+          "type": "update",
+          "section": "General",
+          "message": "feat(onboarding): rename Capacitaciones→Tutoriales and wire hat to catalog tutorial",
+          "author": "Diego"
+        },
         {
           "hash": "6caecb0",
           "type": "update",
