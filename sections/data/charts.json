@@ -1,0 +1,6 @@
+{
+  "title": "Charts",
+  "titleKey": "nav.charts",
+  "description": "Componentes de gráficos del DS: dona (donut), barras horizontales y columnas verticales. Tipografía DM Sans, colores de serie desde la paleta data-viz, y radios + elevación del sistema. Llamar dsDonutChart(), dsBarsChart() y dsColumnChart() — nunca recrear un gráfico a mano.",
+  "keywords": ["charts", "graphs", "donut", "dona", "bar", "barras", "column", "columnas", "dataviz", "graficos", "gráficos", "monitoreo", "dashboard", "kpi"]
+}

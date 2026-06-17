@@ -1179,6 +1179,8 @@ function renderPage(){
     { icon:'return', label:'Logística inversa' },{ icon:'white-paper', label:'Rendición de Documentos' },
     { icon:'store', label:'Retiro en tienda' },{ icon:'document-import', label:'Importar' },
     { divider:true },{ icon:'settings', label:'Ajustes' },
+    // Admin-only: tutorial-completion monitoring (last item). See MONITOR_tutorial-monitoring.html.
+    ...(window.IS_ADMIN!==false ? [{ icon:'education', label:'Monitoreo de tutoriales' }] : []),
   ].map(it => ({ ...it, sel: !it.divider && it.icon === 'document-multiple' }));
   document.getElementById('ob-sidebar').innerHTML = sbItems.map(it => {
     if (it.divider) return `<div class="sbx-sep"></div>`;

@@ -115,6 +115,13 @@
           "icon": "currency",
           "label": "Módulo de Costos (nuevo)",
           "state": "default"
+        },
+        {
+          "icon": "education",
+          "label": "Monitoreo de tutoriales",
+          "state": "default",
+          "admin": true,
+          "note": "Admin-only. Last item, below the divider + Ajustes. See Diego_Designs/MONITOR_tutorial-monitoring.html"
         }
       ],
       "settingsItems": [

@@ -522,6 +522,105 @@ function dsAlert(row, type) {
   </div>`;
 }
 
+/* ── MODULE-LEVEL: DS charts — donut, horizontal bars, vertical columns ──────
+   Canonical chart components. Built strictly with DS tokens: DM Sans type,
+   color tokens, --radius-* radii and --shadow-* elevation. Series colours
+   default to the ordered data-viz palette (sections/data/dataviz.json).
+   Use these everywhere a chart is needed — never recreate a chart by hand.
+
+     dsDonutChart({ segments:[{label,value,color}], size, thickness,
+                    centerValue, centerLabel, legend })
+     dsBarsChart({ items:[{label,value,color}], max, suffix, labelWidth })   // horizontal
+     dsColumnChart({ items:[{label,value,color}], max, suffix, height })     // vertical
+*/
+const DS_VIZ_PALETTE = ['#6E8DDE','#FFCC65','#57C2D6','#7EEABC','#FF8F76','#A59ADD','#5EBE95','#DED95D','#8DBCE7','#BF7B83','#DFA2F4'];
+
+function dsDonutChart(opts) {
+  opts = opts || {};
+  const segs = (opts.segments || []).map((s,i) => ({
+    label: s.label || '', value: Math.max(0, +s.value || 0),
+    color: s.color || DS_VIZ_PALETTE[i % DS_VIZ_PALETTE.length],
+  }));
+  const live  = segs.filter(s => s.value > 0);
+  const size  = opts.size || 188;
+  const thick = opts.thickness || 22;
+  const r  = (size - thick) / 2;
+  const cx = size / 2, cy = size / 2;
+  const C  = 2 * Math.PI * r;
+  const total  = segs.reduce((a,s) => a + s.value, 0);
+  const single = live.length <= 1;
+  const gapPx  = single ? 0 : 3;                       // even gap between segments
+
+  let ring = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--n2)" stroke-width="${thick}"/>`;
+  let offset = 0;
+  live.forEach(s => {
+    const seg = (s.value / total) * C;
+    const len = Math.max(0.001, seg - gapPx);
+    ring += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${s.color}" stroke-width="${thick}" stroke-linecap="${single?'butt':'round'}" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})" style="transition:stroke-dasharray .6s cubic-bezier(.4,0,.2,1)"/>`;
+    offset += seg;
+  });
+
+  const centerValue = opts.centerValue != null ? opts.centerValue : total;
+  const centerLabel = opts.centerLabel != null ? opts.centerLabel : 'Total';
+  const center = `<text x="${cx}" y="${cy-1}" text-anchor="middle" style="font:700 30px/1 var(--font-sans);fill:var(--n7)">${escHtml(String(centerValue))}</text>
+    <text x="${cx}" y="${cy+18}" text-anchor="middle" style="font:500 11px/1 var(--font-sans);fill:var(--n5);letter-spacing:.05em;text-transform:uppercase">${escHtml(centerLabel)}</text>`;
+  const chart = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="flex-shrink:0;overflow:visible">${ring}${center}</svg>`;
+
+  let legend = '';
+  if (opts.legend !== false) {
+    legend = `<div style="display:flex;flex-direction:column;gap:11px;min-width:0;flex:1">` + segs.map(s => {
+      const pct = total ? Math.round(s.value / total * 100) : 0;
+      return `<div style="display:flex;align-items:center;gap:9px;min-width:0">
+        <span style="width:10px;height:10px;border-radius:3px;background:${s.color};flex-shrink:0"></span>
+        <span style="flex:1;min-width:0;font:400 13px/1.3 var(--font-sans);color:var(--n6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.label)}</span>
+        <span style="flex-shrink:0;font:700 13px/1 var(--font-sans);color:var(--n7)">${s.value}</span>
+        <span style="flex-shrink:0;min-width:36px;text-align:right;font:400 12px/1 var(--font-sans);color:var(--n5)">${pct}%</span>
+      </div>`;
+    }).join('') + `</div>`;
+  }
+  return `<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">${chart}${legend}</div>`;
+}
+
+function dsBarsChart(opts) {
+  opts = opts || {};
+  const items = (opts.items || []).map((it,i) => ({
+    label: it.label || '', value: +it.value || 0,
+    color: it.color || DS_VIZ_PALETTE[i % DS_VIZ_PALETTE.length],
+  }));
+  const max = opts.max || Math.max(1, ...items.map(i => i.value));
+  const suffix = opts.suffix || '';
+  const labelW = opts.labelWidth || 150;
+  return `<div style="display:flex;flex-direction:column;gap:14px">` + items.map(it => {
+    const pct = Math.min(100, Math.round(it.value / max * 100));
+    return `<div style="display:flex;align-items:center;gap:12px">
+      <span style="width:${labelW}px;flex-shrink:0;text-align:right;font:500 12px/1.3 var(--font-sans);color:var(--n6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(it.label)}</span>
+      <div style="flex:1;min-width:0;height:14px;background:var(--n2);border-radius:999px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:${it.color};border-radius:999px;transition:width .6s cubic-bezier(.4,0,.2,1)"></div>
+      </div>
+      <span style="flex-shrink:0;min-width:30px;text-align:right;font:700 13px/1 var(--font-sans);color:var(--n7)">${it.value}${suffix}</span>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function dsColumnChart(opts) {
+  opts = opts || {};
+  const items = (opts.items || []).map((it,i) => ({
+    label: it.label || '', value: +it.value || 0,
+    color: it.color || DS_VIZ_PALETTE[i % DS_VIZ_PALETTE.length],
+  }));
+  const max = opts.max || Math.max(1, ...items.map(i => i.value));
+  const h = opts.height || 188;
+  const suffix = opts.suffix || '';
+  return `<div style="display:flex;align-items:flex-end;gap:18px;height:${h}px">` + items.map(it => {
+    const bh = Math.max(3, Math.round(it.value / max * (h - 34)));
+    return `<div style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px">
+      <span style="font:700 13px/1 var(--font-sans);color:var(--n7)">${it.value}${suffix}</span>
+      <div style="width:100%;max-width:56px;height:${bh}px;background:${it.color};border-radius:6px 6px 0 0;transition:height .6s cubic-bezier(.4,0,.2,1)"></div>
+      <span style="max-width:100%;font:500 11px/1.2 var(--font-sans);color:var(--n5);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(it.label)}</span>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
 /* ── MODULE-LEVEL: filter icon buttons — exact Figma SVGs, shared everywhere ──
    Used by filters() demo, tablepage(), and any future filter bar. */
 const FLT_SVG_ADD_DEF = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#1F60ED"/><g clip-path="url(#ml-add-c)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="ml-add-c"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;
@@ -4668,6 +4767,44 @@ async function downloadAllPins() {
   },
 
   /* ── DATAVIZ ── */
+  charts(data) {
+    const panel = (title, sub, body) => `<div class="card">
+      <div style="font:700 16px/1.2 var(--font-sans);color:var(--n7);margin:0 0 4px">${escHtml(title)}</div>
+      <div style="font:400 13px/1.5 var(--font-sans);color:var(--n5);margin:0 0 18px">${escHtml(sub)}</div>
+      ${body}</div>`;
+
+    const donut = dsDonutChart({ centerValue: 7, centerLabel: 'Usuarios', segments: [
+      { label: 'Completado',  value: 1, color: '#5EBE95' },
+      { label: 'En progreso', value: 3, color: '#6E8DDE' },
+      { label: 'Sin iniciar', value: 3, color: '#C5D2E7' },
+    ]});
+    const bars = dsBarsChart({ labelWidth: 180, items: [
+      { label: 'Intro: Qué es DT y LM', value: 6 },
+      { label: 'Usuarios web',          value: 5 },
+      { label: 'Notificaciones',        value: 4 },
+      { label: 'Vehículos',             value: 3 },
+      { label: 'Importador básico',     value: 2 },
+    ]});
+    const cols = dsColumnChart({ suffix: '%', items: [
+      { label: 'Nivel 100', value: 68 },
+      { label: 'Nivel 200', value: 32 },
+      { label: 'Nivel 300', value: 15 },
+    ]});
+
+    const usage = `dsDonutChart({\n  centerValue: 7, centerLabel: 'Usuarios',\n  segments: [\n    { label: 'Completado',  value: 1, color: '#5EBE95' },\n    { label: 'En progreso', value: 3, color: '#6E8DDE' },\n    { label: 'Sin iniciar', value: 3, color: '#C5D2E7' }\n  ]\n})\n\ndsBarsChart({ items: [ { label: 'Tutorial', value: 6 }, ... ] })\ndsColumnChart({ suffix: '%', items: [ { label: 'Nivel 100', value: 68 }, ... ] })`;
+
+    return `
+      ${sectionHeader(data)}
+      ${panel('Donut / dona', 'Distribución por categoría, con total al centro y leyenda con valor + porcentaje. Pista en --n2, segmentos con cap redondeado. dsDonutChart().', donut)}
+      ${panel('Barras horizontales', 'Ranking o comparación entre muchos ítems. Pista en --n2, barra pill con color de la paleta data-viz. dsBarsChart().', bars)}
+      ${panel('Columnas verticales', 'Comparación entre pocas categorías. Esquina superior redondeada (--radius-md). dsColumnChart().', cols)}
+      <div class="card" style="background:var(--n1)">
+        <div style="font:700 13px/1.4 var(--font-sans);color:var(--n7);margin-bottom:6px">Reglas</div>
+        <div style="font:400 13px/1.6 var(--font-sans);color:var(--n6)">Tipografía DM Sans en todo texto · colores de serie estrictamente desde la <b>paleta data-viz</b> (1 → 11, sin saltar) · radios y elevación del sistema (<code style="font-family:var(--font-mono)">--radius-*</code>, <code style="font-family:var(--font-mono)">--shadow-*</code>) · números tabulares para valores · nunca inventar colores fuera de la paleta.</div>
+      </div>
+      ${usageCard(usage)}`;
+  },
+
   dataviz(data) {
     const palette = data.palette || [];
     const numbers = palette.map((c, i) =>
@@ -5613,6 +5750,8 @@ async function downloadAllPins() {
       { icon:'document-import',   label:'Importar' },
       { divider:true },
       { icon:'settings',          label:'Ajustes' },
+      // Admin-only: tutorial-completion monitoring (last item). Pass data.isAdmin to show it.
+      ...(data.isAdmin ? [{ icon:'education', label:'Monitoreo de tutoriales' }] : []),
     ].map(it => ({ ...it, sel: !it.divider && it.icon === activeNav }));
 
     const sidebarHtml = sbItems.map(it => {
