@@ -602,19 +602,8 @@ const USERS = [
 ];
 const activeUsers = USERS.filter(u => u.cap);
 
-/* ── Tutorial-side demo data (Por tutorial tab) ── */
-const TOP_TUTORIALS = [
-  { label:'Intro: Qué es DT y LM',     value:6 },
-  { label:'Usuarios web',              value:5 },
-  { label:'Notificaciones',            value:4 },
-  { label:'Vehículos',                 value:3 },
-  { label:'Módulos monitoreo: Órdenes',value:2 },
-];
-const LEVEL_AVANCE = [
-  { label:'Nivel 100', value:68 },
-  { label:'Nivel 200', value:32 },
-  { label:'Nivel 300', value:15 },
-];
+/* ── Tutorial-side demo data (Por tutorial tab). The bar + column charts are
+   DERIVED from this list so the filters affect them too. ── */
 const TUTORIAL_STATS = [
   { name:'Intro: Qué es DT y LM',      level:'100', comp:6, prog:0, tasa:100, avance:100 },
   { name:'Usuarios web',               level:'100', comp:5, prog:1, tasa:92,  avance:88  },
@@ -629,6 +618,78 @@ const TUTORIAL_STATS = [
 const AVATAR_COLORS = ['#1F60ED','#8777D9','#00B8D9','#00875A','#FF8B00','#DE350B','#5243AA'];
 function avatarColor(name){ let h=0; for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0; return AVATAR_COLORS[h%AVATAR_COLORS.length]; }
 function clasVariant(c){ return c==='Completado'?'success': c==='En progreso'?'info':'neutral'; }
+function tutStatus(t){ return t.avance>=100?'Completado': t.avance>0?'En progreso':'Sin iniciar'; }
+
+/* ── filter state + selectors ── */
+let resumenF  = { user:'', cargo:'', onb:'', clas:'' };
+let tutorialF = { tut:'', nivel:'', estado:'' };
+function filteredUsers(){
+  return activeUsers.filter(u =>
+    (!resumenF.user  || u.name === resumenF.user) &&
+    (!resumenF.cargo || u.role === resumenF.cargo) &&
+    (!resumenF.onb   || (resumenF.onb === 'Activo' ? u.estado === 'Activo' : u.estado !== 'Activo')) &&
+    (!resumenF.clas  || u.clas === resumenF.clas)
+  );
+}
+function filteredTutorials(){
+  return TUTORIAL_STATS.filter(t =>
+    (!tutorialF.tut    || t.name === tutorialF.tut) &&
+    (!tutorialF.nivel  || ('Nivel ' + t.level) === tutorialF.nivel) &&
+    (!tutorialF.estado || tutStatus(t) === tutorialF.estado)
+  );
+}
+/* read each dropdown's data-val (set by renderFilterField on pick) in order */
+function readFilterVals(barId){
+  return [].slice.call(document.getElementById(barId).querySelectorAll('.dt-drop-wrap')).map(w => w.dataset.val || '');
+}
+/* restore every dropdown in a bar to its placeholder (DS reset pattern) */
+function clearFilterBar(barId){
+  document.getElementById(barId).querySelectorAll('.dt-drop-wrap').forEach(w => {
+    const l = w.querySelector('.dt-dlabel');
+    if (l) { l.textContent = l.dataset.ph || l.textContent; l.style.color = 'var(--n6)'; l.dataset.filled = ''; }
+    w.dataset.val = '';
+    if (typeof dtDropClose === 'function') dtDropClose(w);
+  });
+}
+
+/* ── DS dropdown interaction utils (verbatim from index.html — these power the
+   dt-drop-wrap inputs rendered by renderFilterField; not part of renderers.js) ── */
+function dtDrop(wrap) {
+  const menu = wrap.querySelector('.dt-dmenu');
+  const isOpen = wrap.classList.contains('dt-open');
+  document.querySelectorAll('.dt-drop-wrap.dt-open').forEach(w => dtDropClose(w));
+  if (!isOpen) {
+    wrap.classList.add('dt-open');
+    menu.style.display = 'block';
+    const t = wrap.querySelector('.dt-dtrigger');
+    t.style.border = '2px solid var(--b6)';
+    t.style.background = 'var(--b1)';
+    setTimeout(function() {
+      function h(e) { if (!wrap.contains(e.target)) { dtDropClose(wrap); document.removeEventListener('click', h); } }
+      document.addEventListener('click', h);
+    }, 0);
+  }
+}
+function dtDropClose(wrap) {
+  wrap.classList.remove('dt-open');
+  const menu = wrap.querySelector('.dt-dmenu');
+  if (menu) menu.style.display = 'none';
+  const t = wrap.querySelector('.dt-dtrigger');
+  if (!t) return;
+  const label = wrap.querySelector('.dt-dlabel');
+  const hasFill = label && label.dataset.filled === '1';
+  const isBorderless = t.dataset.theme === 'borderless';
+  t.style.border = isBorderless ? '1px solid transparent' : (hasFill ? '1px solid var(--n5)' : '1px solid var(--n3)');
+  t.style.background = hasFill ? '#fff' : (isBorderless ? 'transparent' : '#fff');
+}
+function dtPickOpt(optEl) {
+  const wrap  = optEl.closest('.dt-drop-wrap');
+  const label = wrap.querySelector('.dt-dlabel');
+  label.textContent    = optEl.dataset.val || optEl.textContent.trim();
+  label.style.color    = 'var(--n7)';
+  label.dataset.filled = '1';
+  dtDropClose(wrap);
+}
 
 /* ── topbar (DS .tbar — LastMile + beetrack slot) ── */
 function renderTopbar(){
@@ -681,22 +742,36 @@ function statCard(icon, color, tint, label, value){
   </div>`;
 }
 
-/* ── DS filter bar: renderFilterField inputs + Filtrar + add/reset buttons
-   (exact table-page pattern from renderers.js / ONBOARDING) ── */
-function filterRow(fields){
+/* ── DS filter bar: renderFilterField inputs + Filtrar (apply) + reset (clear).
+   The "agregar filtro" (+) button is a filter-builder control that doesn't apply
+   to this fixed-field dashboard, so it's omitted — every control here is live. ── */
+function filterRow(fields, applyFn, resetFn){
   return `<div style="display:flex;align-items:center;gap:8px">
     ${fields.map(renderFilterField).join('')}
-    <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'">Filtrar</button>
-    ${FLT_BTN_ADD}${FLT_BTN_RESET}
+    <button onclick="${applyFn}" style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'">Filtrar</button>
+    <span onclick="${resetFn}" title="Limpiar filtros" style="display:inline-flex;cursor:pointer">${FLT_BTN_RESET}</span>
   </div>`;
 }
 
-/* ── Resumen tab ── */
+/* ── Resumen tab — filter bar + re-renderable body (charts/stats/table all
+   recompute from the filtered user set) ── */
 function resumenPanel(){
-  const nActive   = activeUsers.length;
-  const nAccount  = activeUsers.filter(u => u.estado === 'Activo').length;
-  const nDone     = activeUsers.filter(u => u.avance >= 100).length;
-  const nNot      = activeUsers.filter(u => u.avance === 0).length;
+  const cargos = [...new Set(activeUsers.map(u => u.role))];
+  const filters = filterRow([
+    { type:'select', placeholder:'Todos los usuarios', options:activeUsers.map(u=>u.name) },
+    { type:'select', placeholder:'Todos los cargos', options:cargos },
+    { type:'select', placeholder:'Onboarding: Todos', options:['Activo','Inactivo'] },
+    { type:'select', placeholder:'Clasificación: Todas', options:['Completado','En progreso','Sin iniciar'] },
+  ], 'applyResumenFilters()', 'resetResumenFilters()');
+  return `<div id="resumenFilterBar">${filters}</div>
+    <div id="resumenBody" style="display:flex;flex-direction:column;gap:16px">${resumenBody(filteredUsers())}</div>`;
+}
+
+function resumenBody(users){
+  const nActive  = users.length;
+  const nAccount = users.filter(u => u.estado === 'Activo').length;
+  const nDone    = users.filter(u => u.avance >= 100).length;
+  const nNot     = users.filter(u => u.avance === 0).length;
 
   const stats = `<div class="mon-stats">
     ${statCard('education','var(--b6)','var(--b1)','Usuarios en capacitación', nActive)}
@@ -705,17 +780,14 @@ function resumenPanel(){
     ${statCard('time','var(--o7)','var(--o1)','Sin iniciar el programa', nNot)}
   </div>`;
 
-  // Donut 1 — estado de onboarding (Activo vs Inactivo)
-  const onbActivo  = activeUsers.filter(u => u.estado === 'Activo').length;
-  const onbInact   = nActive - onbActivo;
+  const onbActivo = nAccount, onbInact = nActive - nAccount;
   const donutOnb = dsDonutChart({ size:132, align:'center', centerValue:nActive, centerLabel:'Usuarios', segments:[
     { label:'Activo',   value:onbActivo, color:'#5EBE95' },
     { label:'Inactivo', value:onbInact,  color:'#FF8F76' },
   ]});
 
-  // Donut 2 — clasificación de avance
   const byClass = { 'Completado':0, 'En progreso':0, 'Sin iniciar':0 };
-  activeUsers.forEach(u => byClass[u.clas]++);
+  users.forEach(u => byClass[u.clas]++);
   const donutClas = dsDonutChart({ size:132, align:'center', centerValue:nActive, centerLabel:'Usuarios', segments:[
     { label:'Completado',  value:byClass['Completado'],  color:'#5EBE95' },
     { label:'En progreso', value:byClass['En progreso'], color:'#6E8DDE' },
@@ -728,9 +800,8 @@ function resumenPanel(){
     ${chartCard('Clasificación de avance', donutClas)}
   </div>`;
 
-  // Detail table — users with active capacitación. Many columns → horizontal
-  // scroll (DS .tbl-wrap). Digit columns are plain cells → left-aligned, flush
-  // under their header (not the right-aligned 'number' cell type).
+  // Detail table — many columns → horizontal scroll (.tbl-wrap). Digit columns
+  // are plain cells → left-aligned, flush under their header.
   const cols = [
     { label:'Usuario', sortable:true },{ label:'Onboarding status', sortable:true },{ label:'Cargo', sortable:true },
     { label:'Email', sortable:true },{ label:'Clasificación', sortable:true },
@@ -739,7 +810,7 @@ function resumenPanel(){
     { label:'Promedio notas', sortable:true },{ label:'Avance programa', sortable:true },
     { label:'Cumplimiento programa', sortable:true },{ label:'Cursos aprobados', sortable:true },
   ];
-  const rows = activeUsers.map(u => ({ cells:[
+  const rows = users.map(u => ({ cells:[
     { type:'avatar-text', value:u.name, color:avatarColor(u.name) },
     { type:'badge', value:u.estado==='Activo'?'Activo':'Inactivo', variant:u.estado==='Activo'?'success':'danger' },
     u.role,
@@ -754,33 +825,62 @@ function resumenPanel(){
     { type:'loading-bar', value:u.cumpl },
     String(u.aprob),
   ]}));
+  const tableInner = users.length
+    ? tblDemoTable({ columns:cols, rows })
+    : `<div style="padding:40px 16px;text-align:center;font:400 13px var(--font-sans);color:var(--n5)">Ningún usuario coincide con los filtros seleccionados.</div>`;
   const table = `<div class="card flush">
-    <div class="card-hdr"><span class="ttl">Detalle de avance por usuario</span><span class="meta">${activeUsers.length} registros</span></div>
-    ${tblDemoTable({ columns:cols, rows })}
+    <div class="card-hdr"><span class="ttl">Detalle de avance por usuario</span><span class="meta">${users.length} ${users.length===1?'registro':'registros'}</span></div>
+    ${tableInner}
   </div>`;
 
-  return `${filterRow([
-    { type:'select', placeholder:'Todos los usuarios', options:activeUsers.map(u=>u.name) },
-    { type:'select', placeholder:'Todos los cargos', options:['Admin Master','Admin 2','Planificador','QC','Personalizado'] },
-    { type:'select', placeholder:'Onboarding: Todos', options:['Activo','Inactivo'] },
-    { type:'select', placeholder:'Clasificación: Todas', options:['Completado','En progreso','Sin iniciar'] },
-  ])}${stats}${charts}${table}`;
+  return `${stats}${charts}${table}`;
 }
 
-/* ── Por tutorial tab ── */
+function applyResumenFilters(){
+  const v = readFilterVals('resumenFilterBar');
+  resumenF = { user:v[0]||'', cargo:v[1]||'', onb:v[2]||'', clas:v[3]||'' };
+  document.getElementById('resumenBody').innerHTML = resumenBody(filteredUsers());
+}
+function resetResumenFilters(){
+  resumenF = { user:'', cargo:'', onb:'', clas:'' };
+  clearFilterBar('resumenFilterBar');
+  document.getElementById('resumenBody').innerHTML = resumenBody(filteredUsers());
+}
+
+/* ── Por tutorial tab — filter bar + re-renderable body (bar + column charts
+   are derived from the filtered tutorial set) ── */
 function tutorialPanel(){
-  const bars = dsBarsChart({ labelWidth:185, items:TOP_TUTORIALS });
-  const cols = dsColumnChart({ suffix:'%', items:LEVEL_AVANCE });
+  const filters = filterRow([
+    { type:'select', placeholder:'Todos los tutoriales', options:TUTORIAL_STATS.map(t=>t.name) },
+    { type:'select', placeholder:'Todos los niveles', options:['Nivel 100','Nivel 200','Nivel 300'] },
+    { type:'select', placeholder:'Estado: Todos', options:['Completado','En progreso','Sin iniciar'] },
+  ], 'applyTutorialFilters()', 'resetTutorialFilters()');
+  return `<div id="tutorialFilterBar">${filters}</div>
+    <div id="tutorialBody" style="display:flex;flex-direction:column;gap:16px">${tutorialBody(filteredTutorials())}</div>`;
+}
+
+function tutorialBody(tuts){
+  // Bar — tutorials ranked by # of users who completed them (top 5 of the set)
+  const top = [...tuts].sort((a,b) => b.comp - a.comp).slice(0,5).map(t => ({ label:t.name, value:t.comp }));
+  const bars = dsBarsChart({ labelWidth:185, items:top });
+  // Column — average program progress per level present in the set
+  const levelItems = ['100','200','300'].map(lv => {
+    const arr = tuts.filter(t => t.level === lv);
+    return arr.length ? { label:'Nivel '+lv, value: Math.round(arr.reduce((s,t)=>s+t.avance,0)/arr.length) } : null;
+  }).filter(Boolean);
+  const cols = dsColumnChart({ suffix:'%', items:levelItems });
+
+  const empty = `<div style="padding:34px 0;text-align:center;font:400 13px var(--font-sans);color:var(--n5)">Sin datos para los filtros seleccionados.</div>`;
   const charts = `<div class="mon-charts2">
-    <div class="card"><div style="font:700 15px/1.2 var(--font-sans);color:var(--n7);margin-bottom:18px">Tutoriales más completados</div><div style="font:400 12px var(--font-sans);color:var(--n5);margin:-12px 0 18px">Cantidad de usuarios que completaron cada tutorial</div>${bars}</div>
-    <div class="card"><div style="font:700 15px/1.2 var(--font-sans);color:var(--n7);margin-bottom:18px">Avance promedio por nivel</div>${cols}</div>
+    <div class="card" style="padding:14px 16px"><div style="font:700 14px/1.2 var(--font-sans);color:var(--n7);margin-bottom:4px">Tutoriales más completados</div><div style="font:400 12px var(--font-sans);color:var(--n5);margin-bottom:16px">Cantidad de usuarios que completaron cada tutorial</div>${top.length?bars:empty}</div>
+    <div class="card" style="padding:14px 16px"><div style="font:700 14px/1.2 var(--font-sans);color:var(--n7);margin-bottom:16px">Avance promedio por nivel</div>${levelItems.length?cols:empty}</div>
   </div>`;
 
   const cols2 = [
     { label:'Tutorial', sortable:true },{ label:'Nivel', sortable:true },{ label:'Completados', sortable:true },
     { label:'En progreso', sortable:true },{ label:'Tasa de aprobación', sortable:true },{ label:'Avance', sortable:true },
   ];
-  const rows = TUTORIAL_STATS.map(t => ({ cells:[
+  const rows = tuts.map(t => ({ cells:[
     { type:'link', value:t.name },
     { type:'badge', value:'Nivel '+t.level, variant:'neutral' },
     String(t.comp),
@@ -788,16 +888,26 @@ function tutorialPanel(){
     t.tasa+'%',
     { type:'loading-bar', value:t.avance },
   ]}));
+  const tableInner = tuts.length
+    ? tblDemoTable({ columns:cols2, rows })
+    : `<div style="padding:40px 16px;text-align:center;font:400 13px var(--font-sans);color:var(--n5)">Ningún tutorial coincide con los filtros seleccionados.</div>`;
   const table = `<div class="card flush">
-    <div class="card-hdr"><span class="ttl">Estado por tutorial</span><span class="meta">${TUTORIAL_STATS.length} registros</span></div>
-    ${tblDemoTable({ columns:cols2, rows })}
+    <div class="card-hdr"><span class="ttl">Estado por tutorial</span><span class="meta">${tuts.length} ${tuts.length===1?'registro':'registros'}</span></div>
+    ${tableInner}
   </div>`;
 
-  return `${filterRow([
-    { type:'select', placeholder:'Todos los tutoriales', options:TUTORIAL_STATS.map(t=>t.name) },
-    { type:'select', placeholder:'Todos los niveles', options:['Nivel 100','Nivel 200','Nivel 300'] },
-    { type:'select', placeholder:'Estado: Todos', options:['Completado','En progreso','Sin iniciar'] },
-  ])}${charts}${table}`;
+  return `${charts}${table}`;
+}
+
+function applyTutorialFilters(){
+  const v = readFilterVals('tutorialFilterBar');
+  tutorialF = { tut:v[0]||'', nivel:v[1]||'', estado:v[2]||'' };
+  document.getElementById('tutorialBody').innerHTML = tutorialBody(filteredTutorials());
+}
+function resetTutorialFilters(){
+  tutorialF = { tut:'', nivel:'', estado:'' };
+  clearFilterBar('tutorialFilterBar');
+  document.getElementById('tutorialBody').innerHTML = tutorialBody(filteredTutorials());
 }
 
 /* ── full dashboard (admin) ── */
