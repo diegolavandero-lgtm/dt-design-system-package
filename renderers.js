@@ -4253,6 +4253,26 @@ ${tokenCode.split('\n').map(l => `<span class="tg">${escHtml(l.split(':')[0])}</
         </div>` : ''}
         ${productColors ? `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">${productColors}</div>` : ''}
       </div>
+      <!-- Variant — Topbar with Capacitaciones chip -->
+      <div style="margin-top:24px">
+        <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:4px;display:flex;align-items:center;gap:8px">
+          ${iconSvg('education', 14, 'var(--b6)')}
+          Variante — Topbar con Capacitaciones
+        </div>
+        <p style="font:400 13px var(--font-sans);color:var(--n5);margin-bottom:16px;line-height:1.6">
+          Mueve <strong style="color:var(--n7)">Capacitaciones</strong> fuera del menú de ayuda a un chip propio en la barra,
+          con el <strong style="color:var(--n7)">total de tutoriales</strong> y el <strong style="color:var(--n7)">porcentaje de avance</strong>.
+          Al hacer clic abre el centro de capacitaciones. El conteo y el porcentaje son dinámicos: si se agrega un tutorial,
+          el total sube y el porcentaje baja (incluso desde 100%).
+        </p>
+        <div class="card" style="background:var(--n2)">
+          <div class="tbar">
+            <img src="sections/assets/logos/lastmile-desktop-white.svg" height="18" style="display:block;flex-shrink:0" alt="Last Mile" onerror="this.style.display='none'">
+            <div class="acts">${topbarCapacitacionesChip(49, 13)}${iconSvg('apps', 18, '#fff')}${topbarHelpBtn(false)}${iconSvg('messages', 18, '#fff')}<div class="bell">${iconSvg('alerts', 18, '#fff')}</div>${iconSvg('user', 18, '#fff')}</div>
+            <div class="slot">ACME CO</div>
+          </div>
+        </div>
+      </div>
       <!-- Mobile topbar section -->
       <div style="margin-top:24px">
         <div style="font:700 15px var(--font-sans);color:var(--n7);margin-bottom:4px;display:flex;align-items:center;gap:8px">
@@ -6694,7 +6714,8 @@ window.dtHelpToggle = function(el) {
   }
 };
 
-function topbarHelpBtn() {
+function topbarHelpBtn(includeCapacitaciones) {
+  if (includeCapacitaciones === undefined) includeCapacitaciones = true;
   var item = function(icon, label) {
     return `<div onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''"
       style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">
@@ -6711,9 +6732,26 @@ function topbarHelpBtn() {
       <div style="height:1px;background:var(--n3)"></div>
       ${item('help', 'Help Center')}
       ${item('code', 'API Documentation')}
-      ${item('education', 'Capacitaciones')}
+      ${includeCapacitaciones ? item('education', 'Capacitaciones') : ''}
     </div>
   </div>`;
+}
+
+/* Topbar variant — Capacitaciones chip.
+   Moves Capacitaciones out of the help menu into its own topbar pill that shows
+   the total number of tutorials and the completion percentage. Clicking it opens
+   the Capacitaciones center. Total and % are dynamic: adding a tutorial raises the
+   total and lowers the percentage (even from 100%). DS tokens only. */
+function topbarCapacitacionesChip(total, pct, onclick) {
+  if (total == null) total = 49;
+  if (pct == null) pct = 13;
+  var click = onclick ? ` onclick="${onclick}"` : '';
+  return `<button${click} title="Capacitaciones"
+    style="display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 13px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font:700 12px/1 var(--font-sans);cursor:pointer;flex-shrink:0"
+    onmouseenter="this.style.background='rgba(255,255,255,.2)'" onmouseleave="this.style.background='rgba(255,255,255,.1)'">
+    <span style="display:flex;flex-shrink:0">${iconSvg('education', 16, '#fff')}</span>
+    <span>${total} tutoriales · ${pct}%</span>
+  </button>`;
 }
 
 /* ── Login functional helpers (módulo-level para que los inline onclick funcionen) ── */

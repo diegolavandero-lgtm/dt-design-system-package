@@ -777,8 +777,6 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   <div class="ob-main" id="ob-main"></div>
 </div>
 
-<button class="ob-fab" onclick="openDrawer()" id="obFab"></button>
-
 <!-- prototype-only: switch between populated and empty (new user) states -->
 <div class="demo-toggle">
   <span>Demo:</span>
@@ -786,6 +784,7 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   <button id="dtEmpty" onclick="setEmpty(true)">Nuevo usuario (vacío)</button>
   <span style="width:1px;height:16px;background:var(--n3);margin:0 2px"></span>
   <button id="dtAnn" onclick="openAnnounce()">Anuncio función nueva</button>
+  <button id="dtNewTut" onclick="addNewTutorial()">+ Tutorial nuevo</button>
 </div>
 
 <aside class="ob-drawer" id="drawer"></aside>
@@ -1156,7 +1155,7 @@ function renderPage(){
   document.getElementById('topbar').innerHTML =
     `<div class="tbar" style="border-radius:0;padding:0 0 0 22px">
       <img src="../sections/assets/logos/lastmile-desktop-white.svg" height="18" class="logo" alt="LastMile">
-      <div class="acts">${iconSvg('apps',18,'#fff')}
+      <div class="acts">${capChipHtml()}${iconSvg('apps',18,'#fff')}
         <div class="ob-help-wrap" style="position:relative;display:flex;align-items:center">
           <span style="cursor:pointer;display:flex;align-items:center" onclick="obToggleHelp(this.parentElement)" title="Ayuda">${iconSvg('help',18,'#fff')}</span>
           <div class="ob-help-dd" style="display:none;position:absolute;top:calc(100% + 14px);right:-8px;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 4px 16px rgba(19,32,69,.14);z-index:9999;min-width:210px;overflow:hidden">
@@ -1164,7 +1163,6 @@ function renderPage(){
             <div style="height:1px;background:var(--n3)"></div>
             <div onclick="openDrawer()" onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('help',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">Help Center</span></div>
             <div onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('code',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">API Documentation</span></div>
-            <div onclick="openCatalog()" onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('education',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">Capacitaciones</span></div>
           </div>
         </div>
         ${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
@@ -1237,11 +1235,9 @@ function renderPage(){
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
         <div>
           <div style="font:700 22px/1 var(--font-sans);color:var(--n7)">Órdenes/guías</div>
-          <div class="ob-sub">Revisa el estado de las distintas órdenes y sus clientes.</div>
-          <div class="ob-links">
-            <button class="ob-link" onclick="openDrawer()">${iconSvg('recently-viewed',15,'var(--b7)')}Cómo empezar</button>
-            <button class="ob-link" onclick="openDrawer()">${iconSvg('plan',15,'var(--b7)')}Realiza el tour</button>
-            <button class="ob-link" onclick="openDrawer()">${iconSvg('document',15,'var(--b7)')}Revisa artículos de órdenes</button>
+          <div class="ob-sub" style="display:flex;align-items:center;gap:8px">
+            <span>Revisa el estado de las distintas órdenes y sus clientes.</span>
+            <button onclick="openDrawer()" title="Ver tutorial de Órdenes" aria-label="Ver tutorial de Órdenes" style="background:none;border:none;padding:0;margin:0;cursor:pointer;display:inline-flex;align-items:center;flex-shrink:0;line-height:0" onmouseenter="this.style.opacity='.7'" onmouseleave="this.style.opacity='1'">${iconSvg('education',18,'var(--b6)')}</button>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">${btnExport}${btnNew}</div>
@@ -1258,7 +1254,6 @@ function renderPage(){
       </div>` }
     </div>`;
 
-  document.getElementById('obFab').innerHTML = `${iconSvg('help',16,'#fff')}¿Tienes una duda?`;
   document.getElementById('lmClose').innerHTML = dsCloseIcon(18,'var(--n5)');
 }
 
@@ -1267,7 +1262,11 @@ const SECTION = {
   name: 'Órdenes/guías',
   videoTitle: 'Cómo trabajar con Órdenes/guías',
   videoDur: '2:40',
-  desc: 'La sección Órdenes/guías reúne todas tus órdenes y su estado de entrega. Desde aquí puedes filtrar, revisar el detalle de cada orden, exportarlas a Excel y crear nuevas órdenes.',
+  // Embed real video here. The folder you shared is private (Google login required), so I
+  // couldn't extract a playable file. Paste the file's "Anyone with the link" URL — I'll convert
+  // it to the embed form: https://drive.google.com/file/d/<FILE_ID>/preview
+  videoEmbed: '',
+  desc: 'Aprende cómo ingresar al módulo de Órdenes, revisar una orden en detalle y entender su historial paso a paso.',
   articles: [
     { id:'trazabilidad', t:'Trazabilidad de la guía', d:'Conoce el historial de una orden y todas las acciones relacionadas a ella.' },
     { id:'desasociar', t:'¿Cómo desasociar guías o pedidos de una ruta?', d:'Pasos para quitar guías no deseadas de una ruta existente.' },
@@ -1420,10 +1419,18 @@ function videoThumb(tag, dur, kind){
   </div>`;
 }
 function vfToggle(stage){
+  const k=(stage.dataset.kind||'section');
+  // Real embedded video (Google Drive iframe) — section tutorial only, when an embed URL is set.
+  if(k==='section' && SECTION.videoEmbed && !stage.dataset.embedded){
+    stage.dataset.embedded='1';
+    stage.classList.add('playing');
+    stage.innerHTML = `<iframe src="${SECTION.videoEmbed}" allow="autoplay; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:inherit"></iframe>`;
+    markSeen();
+    return;
+  }
   if(!stage.classList.contains('playing')){
     stage.classList.add('playing'); stage.classList.remove('paused');
     stage.querySelector('.vf-btn').innerHTML = VF_PAUSE;
-    const k=(stage.dataset.kind||'section');
     if(k==='section') markSeen(); else if(k==='tutorial') markTutSeen();
   } else {
     const paused = stage.classList.toggle('paused');
@@ -1553,6 +1560,39 @@ const CATALOG = [
 const TUT_BY_ID = {};
 CATALOG.forEach(l => l.tuts.forEach(t => { TUT_BY_ID[t.id] = t; t.level = l.level; }));
 let activeTut = null;
+
+/* topbar Capacitaciones chip — total tutorials + completion %, both live from CATALOG */
+function capChipHtml(){
+  const p = catalogProgress();
+  return `<button id="capChip" onclick="openCatalog()" title="Capacitaciones"
+    style="display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 13px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font:700 12px/1 var(--font-sans);cursor:pointer;flex-shrink:0"
+    onmouseenter="this.style.background='rgba(255,255,255,.2)'" onmouseleave="this.style.background='rgba(255,255,255,.1)'">
+    <span style="display:flex;flex-shrink:0">${iconSvg('education',16,'#fff')}</span>
+    <span id="capChipTxt">${p.total} tutoriales · ${p.pct}%</span>
+  </button>`;
+}
+function refreshCapChip(){
+  const el = document.getElementById('capChipTxt');
+  if(!el) return;
+  const p = catalogProgress();
+  el.textContent = p.total + ' tutoriales · ' + p.pct + '%';
+}
+
+/* Prototype demo: add a brand-new (pending) tutorial. Total goes up by 1 and the
+   completion % drops accordingly — even from 100% — for the topbar chip and the catalog. */
+let _newTutCount = 0;
+function addNewTutorial(){
+  _newTutCount++;
+  const lvl = CATALOG[0];
+  const id = 'extra-' + _newTutCount;
+  const t = { id, name:'Tutorial nuevo ' + _newTutCount, status:'pendiente', level: lvl.level };
+  const firstApp = lvl.tuts.findIndex(x => x.group==='app');
+  if(firstApp < 0) lvl.tuts.push(t); else lvl.tuts.splice(firstApp, 0, t);
+  TUT_BY_ID[id] = t;
+  refreshCapChip();
+  if(drawerView==='catalog') renderCatalog();
+  showToast('Se agregó un tutorial nuevo a Capacitaciones');
+}
 
 /* status → text badge (DS badgeHtml) */
 function tutStateChip(t){
@@ -1715,6 +1755,7 @@ function markTutSeen(){
   const c = document.getElementById('tutChip'); if(c) c.innerHTML = tutStateChip(activeTut);
   const sv = document.getElementById('tutStepVideo');
   if(sv){ sv.classList.add('done'); const ic = sv.querySelector('.ic'); if(ic) ic.innerHTML = iconSvg('checkmark-filled',18,'var(--g6)'); }
+  refreshCapChip();
 }
 
 /* ── in-drawer article reader for a tutorial (reuses .art-* classes) ── */
@@ -1761,7 +1802,7 @@ function openTutorialQuiz(id){
   QZ = { quiz: t.quiz || tutQuiz(t), title:'Pon a prueba lo que aprendiste · '+t.name,
     onDone(){ t.done=true; t.videoSeen=true; t.status='completado'; },
     done:()=>doneScreen('¡Completaste '+t.name+'!','Marcamos este tutorial como completado y suma a tu progreso de capacitaciones.','Volver al tutorial'),
-    after(){ renderTutorial(t.id); showToast('Tutorial completado: '+t.name); } };
+    after(){ renderTutorial(t.id); refreshCapChip(); showToast('Tutorial completado: '+t.name); } };
   runQuiz();
 }
 
