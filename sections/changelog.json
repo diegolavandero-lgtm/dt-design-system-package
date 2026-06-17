@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-17T13:29:51.367Z",
+  "generated": "2026-06-17T14:24:18.857Z",
   "days": [
     {
       "date": "2026-06-17",
       "entries": [
+        {
+          "hash": "64f4839",
+          "type": "update",
+          "section": "Topbar",
+          "message": "feat(onboarding): promote Capacitaciones to a topbar chip + section tutorial entry",
+          "author": "Diego"
+        },
         {
           "hash": "a74864d",
           "type": "feat",
