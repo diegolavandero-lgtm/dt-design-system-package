@@ -643,9 +643,6 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   .lm-done h4{font:700 20px/26px var(--font-sans);color:var(--n7);margin:0 0 6px}
   .lm-done p{font:400 14px/20px var(--font-sans);color:var(--n5);margin:0 0 20px}
 
-  .ob-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);z-index:500;background:var(--g6);color:#fff;font:600 14px var(--font-sans);padding:12px 18px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:9px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
-  .ob-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
   /* DS button tokens reused inline in JS; helper classes for the few hand-placed buttons */
   .btn-pri{height:32px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);background:var(--b6);color:#fff;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-sizing:border-box}
   .btn-pri:hover{background:var(--b7)}
@@ -801,7 +798,7 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
 <div class="ann-scrim" id="annScrim" onclick="closeAnnounce()"></div>
 <div class="ann-modal" id="annModal"></div>
 
-<div class="ob-toast" id="toast"></div>
+<div id="ds-alert-container" style="position:fixed;top:68px;right:16px;z-index:500;min-width:280px;max-width:360px"></div>
 
 <!-- Real DS renderers -->
 <script src="../renderers.js"></script>
@@ -1945,9 +1942,33 @@ function finishQuiz(){ if(QZ.onDone) QZ.onDone(); document.getElementById('lmTit
 function doneScreen(h4,p,btn){ return `<div class="lm-done"><div class="ring">${iconSvg('checkmark-filled',32,'var(--g6)')}</div><h4>${h4}</h4><p>${p}</p><button class="btn-pri" style="margin:0 auto" onclick="quizDoneClick()">${btn}</button></div>`; }
 function quizDoneClick(){ closeLesson(); if(QZ&&QZ.after) QZ.after(); }
 
-/* toast */
+/* DS alert — uses dsAlert() from renderers.js, never recreated */
 let toastT;
-function showToast(msg){ const t=document.getElementById('toast'); t.innerHTML=`${iconSvg('checkmark-filled',18,'#fff')}<span>${msg}</span>`; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3200); }
+function showToast(msg, type){
+  type = type || 'success';
+  const container = document.getElementById('ds-alert-container');
+  if(!container) return;
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'transition:opacity .18s,transform .18s;opacity:0;transform:translateY(-6px)';
+  wrapper.innerHTML = dsAlert({ text: msg, hasClose: true }, type);
+  const closeBtn = wrapper.querySelector('button[title="Dismiss"]');
+  if(closeBtn) closeBtn.style.pointerEvents = 'auto';
+  if(closeBtn) closeBtn.onclick = () => {
+    clearTimeout(toastT);
+    wrapper.style.opacity = '0'; wrapper.style.transform = 'translateY(-6px)';
+    setTimeout(() => { if(wrapper.parentNode) wrapper.remove(); }, 180);
+  };
+  container.innerHTML = '';
+  container.appendChild(wrapper);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    wrapper.style.opacity = '1'; wrapper.style.transform = 'translateY(0)';
+  }));
+  clearTimeout(toastT);
+  toastT = setTimeout(() => {
+    wrapper.style.opacity = '0'; wrapper.style.transform = 'translateY(-6px)';
+    setTimeout(() => { if(wrapper.parentNode) wrapper.remove(); }, 180);
+  }, 4000);
+}
 
 /* esc closes top-most layer */
 document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return;
