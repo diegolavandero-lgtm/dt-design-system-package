@@ -732,6 +732,47 @@ function renderFilterField(f) {
   </div>`;
 }
 
+/* ── MODULE-LEVEL: dropdown interaction utils ────────────────────────────────
+   Power the dt-drop-wrap inputs emitted by renderFilterField() (and dtSelect).
+   Defined here so any page/prototype that loads renderers.js gets working
+   dropdowns without re-copying these. index.html relies on these globals too. */
+function dtDrop(wrap) {
+  const menu = wrap.querySelector('.dt-dmenu');
+  const isOpen = wrap.classList.contains('dt-open');
+  document.querySelectorAll('.dt-drop-wrap.dt-open').forEach(w => dtDropClose(w));
+  if (!isOpen) {
+    wrap.classList.add('dt-open');
+    menu.style.display = 'block';
+    const t = wrap.querySelector('.dt-dtrigger');
+    t.style.border = '2px solid var(--b6)';
+    t.style.background = 'var(--b1)';
+    setTimeout(function() {
+      function h(e) { if (!wrap.contains(e.target)) { dtDropClose(wrap); document.removeEventListener('click', h); } }
+      document.addEventListener('click', h);
+    }, 0);
+  }
+}
+function dtDropClose(wrap) {
+  wrap.classList.remove('dt-open');
+  const menu = wrap.querySelector('.dt-dmenu');
+  if (menu) menu.style.display = 'none';
+  const t = wrap.querySelector('.dt-dtrigger');
+  if (!t) return;
+  const label = wrap.querySelector('.dt-dlabel');
+  const hasFill = label && label.dataset.filled === '1';
+  const isBorderless = t.dataset.theme === 'borderless';
+  t.style.border = isBorderless ? '1px solid transparent' : (hasFill ? '1px solid var(--n5)' : '1px solid var(--n3)');
+  t.style.background = hasFill ? '#fff' : (isBorderless ? 'transparent' : '#fff');
+}
+function dtPickOpt(optEl) {
+  const wrap  = optEl.closest('.dt-drop-wrap');
+  const label = wrap.querySelector('.dt-dlabel');
+  label.textContent    = optEl.dataset.val || optEl.textContent.trim();
+  label.style.color    = 'var(--n7)';
+  label.dataset.filled = '1';
+  dtDropClose(wrap);
+}
+
 const renderers = {
 
   /* ── OVERVIEW ── */
