@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-17T18:37:56.655Z",
+  "generated": "2026-06-17T18:50:34.140Z",
   "days": [
     {
       "date": "2026-06-17",
       "entries": [
+        {
+          "hash": "539818d",
+          "type": "update",
+          "section": "Tables",
+          "message": "refactor(monitoring): tighten chart density to surface the table",
+          "author": "Diego"
+        },
         {
           "hash": "21fd507",
           "type": "update",
