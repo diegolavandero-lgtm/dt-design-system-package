@@ -749,6 +749,24 @@ input.dt-inp:focus::placeholder{color:var(--n8)}</style>
   .art-face:hover{transform:scale(1.12);border-color:var(--b5);background:var(--b1)}
   .art-face.picked{border-color:var(--b6);background:var(--b1);transform:scale(1.12)}
   .art-fb-thanks{font:600 13px/18px var(--font-sans);color:var(--g6);display:flex;align-items:center;justify-content:center;gap:7px}
+
+  /* ===== CAPACITACIONES CATALOG (tutorial list inside the drawer — DS tokens only) ===== */
+  .cat-intro{font:400 13px/19px var(--font-sans);color:var(--n6);margin:2px 0 6px}
+  .cat-lvl-hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 0 8px}
+  .cat-lvl-hdr:first-of-type{margin-top:6px}
+  .cat-lvl-ttl{font:700 15px/1 var(--font-sans);color:var(--n7)}
+  .cat-lvl-pct{font:600 11px/1 var(--font-sans);color:var(--n5);white-space:nowrap;flex-shrink:0}
+  .cat-sub{display:flex;align-items:center;gap:8px;margin:14px 0 6px;padding:0 2px}
+  .cat-sub span:first-child{font:700 10px/1 var(--font-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--n5);white-space:nowrap}
+  .cat-sub-line{flex:1;height:1px;background:var(--n3)}
+  .cat-item{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:8px;cursor:pointer;transition:background .12s}
+  .cat-item:hover{background:var(--n1)}
+  .cat-ic{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .cat-nm{flex:1;min-width:0;font:500 13px/18px var(--font-sans);color:var(--n7)}
+  .cat-st{flex-shrink:0}
+  .cat-ch{flex-shrink:0;display:flex;color:var(--n45)}
+  .cat-item:hover .cat-nm{color:var(--b7)}
+  .cat-item:hover .cat-ch{color:var(--b6)}
 </style>
 </head>
 <body>
@@ -1146,7 +1164,7 @@ function renderPage(){
             <div style="height:1px;background:var(--n3)"></div>
             <div onclick="openDrawer()" onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('help',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">Help Center</span></div>
             <div onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('code',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">API Documentation</span></div>
-            <div onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('education',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">Capacitaciones</span></div>
+            <div onclick="openCatalog()" onmouseenter="this.style.background='var(--n1)'" onmouseleave="this.style.background=''" style="display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer">${iconSvg('education',16,'var(--n5)')}<span style="font:500 13px var(--font-sans);color:var(--n7)">Capacitaciones</span></div>
           </div>
         </div>
         ${iconSvg('messages',18,'#fff')}<div class="bell">${iconSvg('alerts',18,'#fff')}</div>${iconSvg('user',18,'#fff')}</div>
@@ -1405,7 +1423,8 @@ function vfToggle(stage){
   if(!stage.classList.contains('playing')){
     stage.classList.add('playing'); stage.classList.remove('paused');
     stage.querySelector('.vf-btn').innerHTML = VF_PAUSE;
-    if((stage.dataset.kind||'section')==='section') markSeen();
+    const k=(stage.dataset.kind||'section');
+    if(k==='section') markSeen(); else if(k==='tutorial') markTutSeen();
   } else {
     const paused = stage.classList.toggle('paused');
     stage.querySelector('.vf-btn').innerHTML = paused ? VF_PLAY : VF_PAUSE;
@@ -1468,6 +1487,282 @@ function renderDrawer(){
         <div class="obd-li"><span class="ic">${iconSvg('message',16,'var(--n5)')}</span>Chatea con alguien</div>
       </div>
     </div>`;
+}
+
+/* ============ CAPACITACIONES — full tutorial catalog (Niveles 100/200/300) ============ */
+/* Opens in the SAME help-center drawer. Lists every tutorial with its status
+   (Pendiente · En progreso · Completado). Clicking one opens the tutorial detail
+   (video + progreso/cuestionario + artículos) — the same layout as the section help. */
+const CATALOG = [
+  { name:'Nivel 100', level:'100', tuts:[
+    { id:'n1-intro',          name:'Intro: Qué es DT y LM',                 status:'completado' },
+    { id:'n1-usuarios-web',   name:'Usuarios web',                          status:'completado' },
+    { id:'n1-usuarios-mov',   name:'Usuarios móviles',                      status:'completado' },
+    { id:'n1-vehiculos',      name:'Vehículos',                             status:'en-progreso' },
+    { id:'n1-centros',        name:'Centros de distribución',               status:'pendiente' },
+    { id:'n1-subestados',     name:'Subestados y Pruebas de entrega',       status:'pendiente' },
+    { id:'n1-agrupaciones',   name:'Agrupaciones',                          status:'pendiente' },
+    { id:'n1-notificaciones', name:'Notificaciones',                        status:'completado' },
+    { id:'n1-importador',     name:'Importador básico',                     status:'pendiente' },
+    { id:'n1-mon-actividad',  name:'Módulos monitoreo: Actividad',          status:'en-progreso' },
+    { id:'n1-mon-rutas',      name:'Módulos monitoreo: Rutas',              status:'pendiente' },
+    { id:'n1-mon-ordenes',    name:'Módulos monitoreo: Órdenes',            status:'pendiente' },
+    { id:'n1-mon-alertas',    name:'Módulos monitoreo: Alertas',            status:'pendiente' },
+    { id:'n1-app-login',      name:'Inicio de sesión',                      status:'completado', group:'app' },
+    { id:'n1-app-inicio',     name:'Inicio de ruta',                        status:'pendiente',  group:'app' },
+    { id:'n1-app-gestion',    name:'Gestión de las órdenes',                status:'pendiente',  group:'app' },
+    { id:'n1-app-fin',        name:'Finalización de ruta',                  status:'pendiente',  group:'app' },
+  ]},
+  { name:'Nivel 200', level:'200', tuts:[
+    { id:'n2-copiloto',       name:'Copiloto',                                          status:'en-progreso' },
+    { id:'n2-config-cuenta',  name:'Configuración de la cuenta',                        status:'pendiente' },
+    { id:'n2-seguridad',      name:'Seguridad',                                         status:'pendiente' },
+    { id:'n2-campos',         name:'Configuración avanzada (Campos personalizados)',    status:'pendiente' },
+    { id:'n2-widget',         name:'Widget',                                            status:'pendiente' },
+    { id:'n2-form-ruta',      name:'Formularios de Ruta',                               status:'pendiente' },
+    { id:'n2-operacion',      name:'Configuración de operación (hitos, ítems, emergencia)', status:'pendiente' },
+    { id:'n2-webhooks',       name:'Webhooks',                                          status:'pendiente' },
+    { id:'n2-api',            name:'Configuración avanzada (Llaves API)',               status:'pendiente' },
+    { id:'n2-mon',            name:'Módulos monitoreo (Estadística, Flota, Clientes)',  status:'pendiente' },
+    { id:'n2-importador',     name:'Importador pickup y troncales',                     status:'pendiente' },
+    { id:'n2-app-copiloto',   name:'Copiloto (traspaso y gestión de guías)',            status:'pendiente', group:'app' },
+    { id:'n2-app-sync',       name:'Tipos de sincronización',                           status:'pendiente', group:'app' },
+    { id:'n2-app-emergencia', name:'Contactos y mensajes de emergencia',                status:'pendiente', group:'app' },
+    { id:'n2-app-mapas',      name:'Waze y Google Maps',                                status:'pendiente', group:'app' },
+    { id:'n2-app-pickup',     name:'Pickup y Troncales',                                status:'pendiente', group:'app' },
+    { id:'n2-app-masiva',     name:'Gestión masiva',                                    status:'pendiente', group:'app' },
+    { id:'n2-app-ordenes',    name:'Agregar / Eliminar órdenes de ruta',                status:'pendiente', group:'app' },
+    { id:'n2-app-form',       name:'Formularios',                                       status:'pendiente', group:'app' },
+    { id:'n2-app-reordenar',  name:'Reordenar ruta',                                    status:'pendiente', group:'app' },
+  ]},
+  { name:'Nivel 300', level:'300', tuts:[
+    { id:'n3-reporteria',     name:'Reportería',                    status:'pendiente' },
+    { id:'n3-costos',         name:'Módulo de costos',              status:'pendiente' },
+    { id:'n3-pin',            name:'Pin',                           status:'pendiente' },
+    { id:'n3-doble-medida',   name:'Doble medida',                  status:'pendiente' },
+    { id:'n3-documentos',     name:'Módulo de documentos',          status:'pendiente' },
+    { id:'n3-cod',            name:'Cash on delivery',              status:'pendiente' },
+    { id:'n3-retiro',         name:'Retiro en tienda',              status:'pendiente' },
+    { id:'n3-app-agrupacion', name:'Agrupación / Filtro de órdenes', status:'pendiente', group:'app' },
+    { id:'n3-app-items',      name:'Escaneo de ítems',              status:'pendiente', group:'app' },
+    { id:'n3-app-validacion', name:'Validación de carga',           status:'pendiente', group:'app' },
+    { id:'n3-app-doc',        name:'Escaneo de documentos',         status:'pendiente', group:'app' },
+    { id:'n3-app-llegue',     name:'Botón "Llegué"',                status:'pendiente', group:'app' },
+  ]},
+];
+const TUT_BY_ID = {};
+CATALOG.forEach(l => l.tuts.forEach(t => { TUT_BY_ID[t.id] = t; t.level = l.level; }));
+let activeTut = null;
+
+/* status → text badge (DS badgeHtml) */
+function tutStateChip(t){
+  if(t.status==='completado' || t.done)      return badgeHtml('Completado','success');
+  if(t.status==='en-progreso' || t.videoSeen) return badgeHtml('En progreso','info');
+  return badgeHtml('Pendiente','neutral');
+}
+/* status → left indicator (mirrors the obp-step ring idiom) */
+function statusIndicator(status){
+  if(status==='completado') return iconSvg('checkmark-filled',18,'var(--g6)');
+  if(status==='en-progreso') return `<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="var(--n3)" stroke-width="2"/><circle cx="8" cy="8" r="6" fill="none" stroke="var(--b6)" stroke-width="2" stroke-linecap="round" stroke-dasharray="37.7" stroke-dashoffset="18.85" transform="rotate(-90 8 8)"/></svg>`;
+  return `<span style="width:14px;height:14px;border:2px solid var(--n4);border-radius:50%;display:inline-block"></span>`;
+}
+/* overall progress across every tutorial — completado=1, en-progreso=0.5 */
+function catalogProgress(){
+  const all = CATALOG.flatMap(l=>l.tuts);
+  const score = all.reduce((s,t)=> s + (t.status==='completado'?1: t.status==='en-progreso'?0.5:0), 0);
+  return { done: all.filter(t=>t.status==='completado').length, total: all.length, pct: Math.round(score/all.length*100) };
+}
+function catalogCounterHtml(){
+  const p = catalogProgress(), C = 2*Math.PI*10, off = C*(1 - p.pct/100);
+  return `<span class="obd-counter" title="${p.done} de ${p.total} tutoriales completados">
+    <svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="var(--n3)" stroke-width="3"/><circle cx="12" cy="12" r="10" fill="none" stroke="var(--b6)" stroke-width="3" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 12 12)"/></svg>
+    <span class="obd-counter-txt">${p.done}/${p.total} · ${p.pct}%</span>
+  </span>`;
+}
+
+/* generic, templated content per tutorial (prototype) */
+function tutArticles(t){
+  return [
+    { t:`Cómo configurar ${t.name}`,             d:`Pasos para dejar ${t.name} listo para operar.` },
+    { t:`Preguntas frecuentes sobre ${t.name}`,  d:`Resuelve las dudas más comunes de ${t.name}.` },
+  ];
+}
+function tutQuiz(t){
+  return [
+    { q:`¿Dónde encuentras la configuración de ${t.name} en DispatchTrack?`,
+      opts:['En el menú principal de la plataforma','Solo escribiendo a soporte','No es configurable'], correct:0 },
+    { q:`¿Quién puede gestionar ${t.name}?`,
+      opts:['Cualquier visitante anónimo','Usuarios con los permisos correspondientes','Solo el conductor desde la app'], correct:1 },
+    { q:'¿Qué deberías hacer al terminar este tutorial?',
+      opts:['Aplicar lo aprendido en tu operación','Reiniciar la plataforma','Nada, no aplica'], correct:0 },
+  ];
+}
+function genArticleBlocks(t,a){
+  return `
+    <p class="art-p">En este artículo aprenderás a trabajar con <b>${t.name}</b> dentro de DispatchTrack: para qué sirve, cómo se configura y cómo aprovecharlo en tu operación diaria.</p>
+    <h4 class="art-h">Antes de empezar</h4>
+    <p class="art-p">Asegúrate de contar con los permisos necesarios y de haber revisado el video del tutorial de <b>${t.name}</b>.</p>
+    <h4 class="art-h">Pasos</h4>
+    <ol class="art-ol">
+      <li>Ingresa al módulo correspondiente desde el menú principal.</li>
+      <li>Ubica la sección de <b>${t.name}</b> y abre su configuración.</li>
+      <li>Completa los campos requeridos y guarda los cambios.</li>
+    </ol>
+    <div class="art-shot"><div class="art-shot-bar"><i></i><i></i><i></i></div><div class="art-shot-body">${iconSvg('image',28,'var(--n45)')}<div class="art-shot-cap">Pantalla de ${t.name} en DispatchTrack</div></div></div>
+    <h4 class="art-h">Recomendaciones</h4>
+    <p class="art-p">Revisa periódicamente la configuración de <b>${t.name}</b> para mantenerla alineada con tu operación.</p>`;
+}
+
+/* ── catalog (list) view ── */
+function renderCatalog(){
+  drawerView = 'catalog';
+  document.getElementById('drawer').innerHTML = `
+    <div class="obd-head">
+      <div style="min-width:0">
+        <div class="obd-title-row"><span class="obd-title">Capacitaciones</span>${catalogCounterHtml()}</div>
+        <div class="obd-ctx">Tu progreso de aprendizaje en DispatchTrack</div>
+      </div>
+      <button class="obd-close" onclick="closeDrawer()">${dsCloseIcon(18,'var(--n5)')}</button>
+    </div>
+    <div class="obd-content" id="catScroll">
+      <p class="cat-intro">Avanza por los niveles a tu ritmo. Cada tutorial incluye un video corto y un cuestionario para reforzar lo aprendido.</p>
+      ${CATALOG.map(renderLevel).join('')}
+    </div>`;
+  const sc = document.getElementById('catScroll'); if(sc) sc.scrollTop = 0;
+}
+function renderLevel(lvl){
+  const web = lvl.tuts.filter(t=>t.group!=='app');
+  const app = lvl.tuts.filter(t=>t.group==='app');
+  const done = lvl.tuts.filter(t=>t.status==='completado').length;
+  return `
+    <div class="cat-lvl-hdr">
+      <span class="cat-lvl-ttl">${lvl.name}</span>
+      <span class="cat-lvl-pct">${done}/${lvl.tuts.length} completados</span>
+    </div>
+    ${web.map(catItem).join('')}
+    ${app.length ? `<div class="cat-sub"><span>App móvil</span><span class="cat-sub-line"></span></div>${app.map(catItem).join('')}` : ''}`;
+}
+function catItem(t){
+  return `<div class="cat-item" onclick="openTutorial('${t.id}')">
+    <span class="cat-ic">${statusIndicator(t.status)}</span>
+    <span class="cat-nm">${t.name}</span>
+    <span class="cat-st">${tutStateChip(t)}</span>
+    <span class="cat-ch">${iconSvg('chevron--right',16,'currentColor')}</span>
+  </div>`;
+}
+function openCatalog(){
+  document.querySelectorAll('.ob-help-dd').forEach(d=>d.style.display='none');
+  renderCatalog();
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('ob-main').classList.add('shifted');
+}
+
+/* ── tutorial detail view (same layout as the section help: video + progreso + artículos) ── */
+function openTutorial(id){
+  if(!document.getElementById('drawer').classList.contains('open')) openCatalog();
+  renderTutorial(id);
+}
+function renderTutorial(id){
+  const t = TUT_BY_ID[id]; if(!t) return;
+  activeTut = t; drawerView = 'tutorial';
+  const okIco = iconSvg('checkmark-filled',18,'var(--g6)');
+  const pendIco = `<span style="width:14px;height:14px;border:2px solid var(--n4);border-radius:50%;display:inline-block"></span>`;
+  const arts = tutArticles(t);
+  const desc = `Aprende a usar ${t.name} en DispatchTrack: para qué sirve, cómo se configura y cómo aprovecharlo en tu operación diaria.`;
+  document.getElementById('drawer').innerHTML = `
+    <div class="art-head">
+      <button class="art-back" onclick="backToCatalog()">${iconSvg('arrow-left',16,'var(--b7)')}Capacitaciones</button>
+      <button class="obd-close" onclick="closeDrawer()">${dsCloseIcon(18,'var(--n5)')}</button>
+    </div>
+    <div class="obd-content" id="tutScroll">
+      <div class="art-crumb"><span>Capacitaciones</span><span class="sep">›</span><span>${t.level==='100'?'Nivel 100':t.level==='200'?'Nivel 200':'Nivel 300'}</span><span class="sep">›</span><span class="cur">${t.name}</span></div>
+      <div class="obd-lbl" style="margin-top:4px">Video del tutorial</div>
+      <div class="fv">
+        ${videoThumb(t.name, t.videoDur||'2:30', 'tutorial')}
+        <div class="fv-body">
+          <div class="fv-title"><span>Cómo trabajar con ${t.name}</span><span id="tutChip">${tutStateChip(t)}</span></div>
+          <div class="obd-desc">${desc}</div>
+        </div>
+      </div>
+
+      <div class="obd-prog">
+        <div class="obp-steps">
+          <div class="obp-step ${t.videoSeen?'done':''}" id="tutStepVideo"><span class="ic">${t.videoSeen?okIco:pendIco}</span>Ver el video del tutorial</div>
+          <div class="obp-step ${t.done?'done':''}"><span class="ic">${t.done?okIco:pendIco}</span>Responder el cuestionario (3 preguntas)</div>
+        </div>
+        ${ t.done
+          ? `<div class="obp-foot" style="color:var(--g6);font-weight:600">✓ Completaste este tutorial.</div>`
+          : `<button class="btn-pri" style="width:100%;justify-content:center" onclick="openTutorialQuiz('${t.id}')">${iconSvg('task-complete',14,'#fff')}Poner a prueba</button>
+             <div class="obp-foot">Al aprobar el cuestionario, este tutorial suma a tu progreso de capacitaciones.</div>` }
+      </div>
+
+      <div class="obd-lbl">Artículos relacionados</div>
+      ${arts.map((a,idx)=>`<div class="ac" onclick="openTutArticle('${t.id}',${idx})"><div class="ac-b"><div class="ac-t">${a.t}</div><div class="ac-d">${a.d}</div></div><span class="ac-a">${iconSvg('arrow-right',14,'var(--n45)')}</span></div>`).join('')}
+
+      <div class="obd-ll">
+        <div class="obd-li"><span class="ic">${iconSvg('document-text',16,'var(--n5)')}</span>Visita nuestro centro de soporte</div>
+        <div class="obd-li"><span class="ic">${iconSvg('help',16,'var(--n5)')}</span>Preguntas frecuentes</div>
+        <div class="obd-li"><span class="ic">${iconSvg('message',16,'var(--n5)')}</span>Chatea con alguien</div>
+      </div>
+    </div>`;
+  const sc = document.getElementById('tutScroll'); if(sc) sc.scrollTop = 0;
+}
+function backToCatalog(){ renderCatalog(); }
+function markTutSeen(){
+  if(!activeTut || activeTut.videoSeen) return;
+  activeTut.videoSeen = true;
+  if(activeTut.status==='pendiente') activeTut.status = 'en-progreso';
+  const c = document.getElementById('tutChip'); if(c) c.innerHTML = tutStateChip(activeTut);
+  const sv = document.getElementById('tutStepVideo');
+  if(sv){ sv.classList.add('done'); const ic = sv.querySelector('.ic'); if(ic) ic.innerHTML = iconSvg('checkmark-filled',18,'var(--g6)'); }
+}
+
+/* ── in-drawer article reader for a tutorial (reuses .art-* classes) ── */
+function openTutArticle(tutId, idx){
+  const t = TUT_BY_ID[tutId]; if(!t) return;
+  activeTut = t; drawerView = 'tut-article';
+  const arts = tutArticles(t), a = arts[idx];
+  const author = 'Equipo DispatchTrack', date = 'Actualizado recientemente';
+  document.getElementById('drawer').innerHTML = `
+    <div class="art-head">
+      <button class="art-back" onclick="backToTutorial()">${iconSvg('arrow-left',16,'var(--b7)')}${t.name}</button>
+      <button class="obd-close" onclick="closeDrawer()">${dsCloseIcon(18,'var(--n5)')}</button>
+    </div>
+    <div class="obd-content" id="tutArtScroll">
+      <div class="art-crumb"><span>Capacitaciones</span><span class="sep">›</span><span>${t.name}</span><span class="sep">›</span><span class="cur">${a.t}</span></div>
+      <h2 class="art-title">${a.t}</h2>
+      <p class="art-sub">${a.d}</p>
+      <div class="art-author">
+        <span class="art-avatar" style="background:${authorColor(author)}">DT</span>
+        <div><div class="art-aname">${author}</div><div class="art-adate">${date}</div></div>
+      </div>
+      ${genArticleBlocks(t,a)}
+      <div class="art-rel"><div class="art-rel-h">Más sobre ${t.name}</div>
+        ${arts.map((x,i)=> i===idx?'':`<div class="art-rel-item" onclick="openTutArticle('${t.id}',${i})"><span>${x.t}</span><span class="ch">${iconSvg('chevron--right',16,'currentColor')}</span></div>`).join('')}
+        <div class="art-rel-item" onclick="backToTutorial()"><span>Volver al video del tutorial</span><span class="ch">${iconSvg('chevron--right',16,'currentColor')}</span></div>
+      </div>
+      <div class="art-fb" id="artFb">
+        <div class="art-fb-q">¿Esta respuesta resolvió tu duda?</div>
+        <div class="art-fb-faces">
+          <button class="art-face" onclick="rateArticle('😞',this)">😞</button>
+          <button class="art-face" onclick="rateArticle('😐',this)">😐</button>
+          <button class="art-face" onclick="rateArticle('😃',this)">😃</button>
+        </div>
+      </div>
+    </div>`;
+  const sc = document.getElementById('tutArtScroll'); if(sc) sc.scrollTop = 0;
+}
+function backToTutorial(){ if(activeTut) renderTutorial(activeTut.id); }
+
+/* ── tutorial quiz (reuses the shared quiz engine) ── */
+function openTutorialQuiz(id){
+  const t = TUT_BY_ID[id]; if(!t) return;
+  activeTut = t;
+  QZ = { quiz: t.quiz || tutQuiz(t), title:'Pon a prueba lo que aprendiste · '+t.name,
+    onDone(){ t.done=true; t.videoSeen=true; t.status='completado'; },
+    done:()=>doneScreen('¡Completaste '+t.name+'!','Marcamos este tutorial como completado y suma a tu progreso de capacitaciones.','Volver al tutorial'),
+    after(){ renderTutorial(t.id); showToast('Tutorial completado: '+t.name); } };
+  runQuiz();
 }
 
 /* ============ DRAWER (overlay, non-interfering) ============ */
@@ -1609,7 +1904,12 @@ function showToast(msg){ const t=document.getElementById('toast'); t.innerHTML=`
 document.addEventListener('keydown', e=>{ if(e.key!=='Escape') return;
   if(document.getElementById('lessonModal').classList.contains('open')) closeLesson();
   else if(document.getElementById('annModal').classList.contains('open')) closeAnnounce();
-  else if(document.getElementById('drawer').classList.contains('open')){ if(drawerView==='article') backToHome(); else closeDrawer(); } });
+  else if(document.getElementById('drawer').classList.contains('open')){
+    if(drawerView==='article') backToHome();
+    else if(drawerView==='tut-article') backToTutorial();
+    else if(drawerView==='tutorial') backToCatalog();
+    else closeDrawer();
+  } });
 
 setEmpty(false);  // initial render + sets demo-toggle active state
 openAnnounce();   // a new feature is available → announcement appears automatically on entry
