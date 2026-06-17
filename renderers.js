@@ -621,6 +621,49 @@ function dsColumnChart(opts) {
   }).join('') + `</div>`;
 }
 
+/* ── MODULE-LEVEL: DS Tabs — pill-shaped segment switcher ─────────────────────
+   Canonical tabs component (the one documented in the Tabs section). Renders the
+   n2 track + sliding white pill. Self-contained inline onclick (innerHTML-safe,
+   no init needed). Equal-width pills auto-sized to the longest label.
+
+     dtTabsHtml(labels, activeIndex, opts)
+       opts.icons  : [iconName, ...]   one Carbon icon per tab (optional)
+       opts.badge  : [n, ...]          numeric badge per tab (optional)
+       opts.panels : 'containerId'     toggle that container's children on select
+       opts.tabWidth / opts.minWidth   override pill sizing
+   Never write the container + pill markup by hand — call this. */
+let _dtTabsN = 0;
+function dtTabsHtml(labels, activeIndex, opts) {
+  opts = opts || {};
+  activeIndex = activeIndex | 0;
+  labels = labels || [];
+  const icons  = opts.icons || [];
+  const badges = Array.isArray(opts.badge) ? opts.badge : null;
+  const hasIcons = icons.some(Boolean);
+  const gap = 4;
+  const w = opts.tabWidth || Math.max(
+    opts.minWidth || 74,
+    Math.max(0, ...labels.map(l => String(l).length)) * 7 + (hasIcons ? 22 : 0) + 30
+  );
+  const gid = opts.id || ('dttabs-' + (++_dtTabsN));
+  const onclick = `(function(b){var c=b.closest('[data-dttabs]'),p=document.getElementById(c.id+'-pill'),ts=[].slice.call(c.querySelectorAll('.dt-tab')),wv=+c.dataset.w,gv=+c.dataset.gap,i=ts.indexOf(b);p.style.left=(4+i*(wv+gv))+'px';c.dataset.active=String(i);ts.forEach(function(t,j){t.style.color=j===i?'var(--n7)':'var(--n6)';});var pg=c.getAttribute('data-panels');if(pg){var box=document.getElementById(pg);if(box){[].slice.call(box.children).forEach(function(pp,j){pp.style.display=j===i?'':'none';});}}})(this)`;
+  const tabsHtml = labels.map((lbl, i) => {
+    const ic = icons[i] ? iconSvg(icons[i], 15, 'currentColor') : '';
+    const bd = badges && badges[i] != null
+      ? `<span style="position:absolute;top:-8px;right:-5px;min-width:16px;height:16px;border-radius:8px;background:var(--r6);color:#fff;font:700 9px/1 var(--font-sans);display:flex;align-items:center;justify-content:center;padding:0 4px;box-sizing:border-box;z-index:3">${badges[i]}</span>`
+      : '';
+    return `<button class="dt-tab" onclick="${onclick}"
+      style="position:relative;z-index:1;width:${w}px;height:26px;border-radius:13px;background:transparent;border:none;font:700 12px/1 var(--font-sans);color:${i===activeIndex?'var(--n7)':'var(--n6)'};cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;white-space:nowrap"
+      onmouseenter="if(${i}!==+this.closest('[data-dttabs]').dataset.active)this.style.background='rgba(193,205,225,.45)'" onmouseleave="this.style.background='transparent'">${ic}<span>${escHtml(lbl)}</span>${bd}</button>`;
+  }).join('');
+  const pillX = 4 + activeIndex * (w + gap);
+  return `<div id="${gid}" data-dttabs data-active="${activeIndex}" data-w="${w}" data-gap="${gap}"${opts.panels ? ` data-panels="${opts.panels}"` : ''}
+    style="display:inline-flex;gap:${gap}px;background:var(--n2);border-radius:16px;padding:4px;position:relative;user-select:none">
+    <div id="${gid}-pill" style="position:absolute;top:4px;left:${pillX}px;width:${w}px;height:26px;border-radius:13px;background:#fff;box-shadow:0 1px 3px rgba(19,32,69,.1);transition:left .2s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none"></div>
+    ${tabsHtml}
+  </div>`;
+}
+
 /* ── MODULE-LEVEL: filter icon buttons — exact Figma SVGs, shared everywhere ──
    Used by filters() demo, tablepage(), and any future filter bar. */
 const FLT_SVG_ADD_DEF = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#1F60ED"/><g clip-path="url(#ml-add-c)"><path d="M21 8.5C21.6875 8.5 22.25 9.0625 22.25 9.75V11H21V9.75H8.5V11.75L13.5 16.75V22.25H16V21H17.25V22.25C17.25 22.9375 16.6875 23.5 16 23.5H13.5C12.8125 23.5 12.25 22.9375 12.25 22.25V17.25L7.625 12.625C7.375 12.375 7.25 12.0625 7.25 11.75V9.75C7.25 9.0625 7.8125 8.5 8.5 8.5H21ZM20.5 12.375V16.4375H24.5625V17.6875H20.5V21.75H19.25V17.6875H15.25V16.4375H19.25V12.375H20.5Z" fill="#1F60ED"/></g><defs><clipPath id="ml-add-c"><rect width="20" height="20" fill="white" transform="translate(6 6)"/></clipPath></defs></svg>`;

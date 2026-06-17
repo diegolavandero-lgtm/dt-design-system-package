@@ -542,20 +542,10 @@ input.dt-inp:focus::placeholder{color:var(--n8)}
   .pg-main{flex:1;min-width:0}
   .mon-wrap{padding:20px 24px 48px;display:flex;flex-direction:column;gap:20px}
 
-  /* DS content tabs (.t-tab pattern, copied verbatim from the DS) */
-  .tabs{display:flex;border-bottom:1px solid var(--n3);background:#fff}
-  .t-tab{padding:12px 18px;font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;border-bottom:2px solid transparent;display:inline-flex;align-items:center;gap:7px}
-  .t-tab:hover{color:var(--n7)}
-  .t-tab.on{color:var(--n7);font-weight:700;border-bottom-color:var(--b5)}
-  .tp{display:none}
-  .tp.on{display:block}
-
+  /* Tabs are the DS component (dtTabsHtml). Panels toggled by its inline onclick. */
   .mon-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
   .mon-charts2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   @media(max-width:900px){.mon-stats{grid-template-columns:1fr 1fr}.mon-charts2{grid-template-columns:1fr}}
-
-  .mon-filters{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:4px}
-  @media(max-width:900px){.mon-filters{grid-template-columns:1fr 1fr}}
 
   .admin-pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;background:var(--b1);color:var(--b7);font:700 10px/1 var(--font-sans);letter-spacing:.05em;text-transform:uppercase;flex-shrink:0}
 
@@ -599,16 +589,16 @@ let isAdmin = true;
    cap === true  → active capacitación (these are the rows shown in the table).
    clas: 'Completado' | 'En progreso' | 'Sin iniciar'   ·   avance: program % ── */
 const USERS = [
-  { id:'u1', name:'Maya Jonson',    estado:'Activo',    role:'Admin Master',  cap:true,  reg:8,  comp:6,  exam:5,  prom:88, avance:75,  clas:'En progreso' },
-  { id:'u3', name:'Liam Smith',     estado:'Activo',    role:'Admin 2',       cap:true,  reg:12, comp:12, exam:10, prom:94, avance:100, clas:'Completado'  },
-  { id:'u5', name:'Tommy Nguyen',   estado:'Activo',    role:'Planificador',  cap:true,  reg:5,  comp:2,  exam:2,  prom:71, avance:40,  clas:'En progreso' },
-  { id:'u2', name:'Lucas Martinez', estado:'Bloqueado', role:'Personalizado', cap:true,  reg:3,  comp:1,  exam:1,  prom:65, avance:20,  clas:'En progreso' },
-  { id:'u7', name:'Rajesh Kumar',   estado:'Activo',    role:'Planificador',  cap:true,  reg:0,  comp:0,  exam:0,  prom:0,  avance:0,   clas:'Sin iniciar' },
-  { id:'u6', name:'Clara Lopez',    estado:'Activo',    role:'QC',            cap:true,  reg:0,  comp:0,  exam:0,  prom:0,  avance:0,   clas:'Sin iniciar' },
+  { id:'u1', name:'Maya Jonson',    email:'maya.jonson@dispatchtrack.com',    estado:'Activo',    role:'Admin Master',  cap:true,  reg:8,  comp:6,  exam:5,  pub:'—', prom:88, avance:75,  cumpl:60,  aprob:5,  clas:'En progreso' },
+  { id:'u3', name:'Liam Smith',     email:'liam.smith@dispatchtrack.com',     estado:'Activo',    role:'Admin 2',       cap:true,  reg:12, comp:12, exam:10, pub:'—', prom:94, avance:100, cumpl:100, aprob:10, clas:'Completado'  },
+  { id:'u5', name:'Tommy Nguyen',   email:'tommy.nguyen@metricstudio.cl',     estado:'Activo',    role:'Planificador',  cap:true,  reg:5,  comp:2,  exam:2,  pub:'—', prom:71, avance:40,  cumpl:25,  aprob:2,  clas:'En progreso' },
+  { id:'u2', name:'Lucas Martinez', email:'lucas.martinez@dispatchtrack.com', estado:'Bloqueado', role:'Personalizado', cap:true,  reg:3,  comp:1,  exam:1,  pub:'—', prom:65, avance:20,  cumpl:10,  aprob:1,  clas:'En progreso' },
+  { id:'u7', name:'Rajesh Kumar',   email:'rajesh.kumar@metricstudio.cl',     estado:'Activo',    role:'Planificador',  cap:true,  reg:0,  comp:0,  exam:0,  pub:'—', prom:0,  avance:0,   cumpl:0,   aprob:0,  clas:'Sin iniciar' },
+  { id:'u6', name:'Clara Lopez',    email:'clara.lopez@metricstudio.cl',      estado:'Activo',    role:'QC',            cap:true,  reg:0,  comp:0,  exam:0,  pub:'—', prom:0,  avance:0,   cumpl:0,   aprob:0,  clas:'Sin iniciar' },
   // cap:false → not in capacitación (excluded from the table):
-  { id:'u4', name:'Aisha Patel',    estado:'Bloqueado', role:'QC',            cap:false, reg:0,  comp:0,  exam:0,  prom:0,  avance:0,   clas:'Sin iniciar' },
-  { id:'u8', name:'Sofia Garcia',   estado:'Bloqueado', role:'QC',            cap:false, reg:0,  comp:0,  exam:0,  prom:0,  avance:0,   clas:'Sin iniciar' },
-  { id:'u9', name:'Kevin Brown',    estado:'Activo',    role:'Planificador',  cap:false, reg:0,  comp:0,  exam:0,  prom:0,  avance:0,   clas:'Sin iniciar' },
+  { id:'u4', name:'Aisha Patel',    email:'aisha.patel@dispatchtrack.com',    estado:'Bloqueado', role:'QC',            cap:false, reg:0,  comp:0,  exam:0,  pub:'—', prom:0,  avance:0,   cumpl:0,   aprob:0,  clas:'Sin iniciar' },
+  { id:'u8', name:'Sofia Garcia',   email:'sofia.garcia@dispatchtrack.com',   estado:'Bloqueado', role:'QC',            cap:false, reg:0,  comp:0,  exam:0,  pub:'—', prom:0,  avance:0,   cumpl:0,   aprob:0,  clas:'Sin iniciar' },
+  { id:'u9', name:'Kevin Brown',    email:'kevin.brown@metricstudio.cl',      estado:'Activo',    role:'Planificador',  cap:false, reg:0,  comp:0,  exam:0,  pub:'—', prom:0,  avance:0,   cumpl:0,   aprob:0,  clas:'Sin iniciar' },
 ];
 const activeUsers = USERS.filter(u => u.cap);
 
@@ -692,9 +682,14 @@ function statCard(icon, color, tint, label, value){
   </div>`;
 }
 
-/* ── filter row (DS renderFilterField selects) ── */
+/* ── DS filter bar: renderFilterField inputs + Filtrar + add/reset buttons
+   (exact table-page pattern from renderers.js / ONBOARDING) ── */
 function filterRow(fields){
-  return `<div class="mon-filters">${fields.map(renderFilterField).join('')}</div>`;
+  return `<div style="display:flex;align-items:center;gap:8px">
+    ${fields.map(renderFilterField).join('')}
+    <button style="background:#fff;color:#4B82FA;border:1px solid #1F60ED;font:700 14px/20px var(--font-sans);height:32px;padding:0 16px;border-radius:50px;min-width:64px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-sizing:border-box" onmouseenter="this.style.background='#EDF5FF'" onmouseleave="this.style.background='#fff'">Filtrar</button>
+    ${FLT_BTN_ADD}${FLT_BTN_RESET}
+  </div>`;
 }
 
 /* ── Resumen tab ── */
@@ -733,22 +728,31 @@ function resumenPanel(){
     <div class="card"><div style="font:700 15px/1.2 var(--font-sans);color:var(--n7);margin-bottom:18px">Clasificación de avance</div>${donutClas}</div>
   </div>`;
 
-  // Detail table — users with active capacitación
+  // Detail table — users with active capacitación. Many columns → horizontal
+  // scroll (DS .tbl-wrap). Digit columns are plain cells → left-aligned, flush
+  // under their header (not the right-aligned 'number' cell type).
   const cols = [
-    { label:'Usuario', sortable:true },{ label:'Estado', sortable:true },{ label:'Rol', sortable:true },
-    { label:'Clasificación', sortable:true },{ label:'Inscritos', sortable:true },{ label:'Completados', sortable:true },
-    { label:'Exámenes rendidos', sortable:true },{ label:'Promedio', sortable:true },{ label:'Avance del programa', sortable:true },
+    { label:'Usuario', sortable:true },{ label:'Onboarding status', sortable:true },{ label:'Cargo', sortable:true },
+    { label:'Email', sortable:true },{ label:'Clasificación', sortable:true },
+    { label:'Cursos registrados', sortable:true },{ label:'Cursos completados', sortable:true },
+    { label:'Cursos con examen rendido', sortable:true },{ label:'Total cursos publicados', sortable:true },
+    { label:'Promedio notas', sortable:true },{ label:'Avance programa', sortable:true },
+    { label:'Cumplimiento programa', sortable:true },{ label:'Cursos aprobados', sortable:true },
   ];
   const rows = activeUsers.map(u => ({ cells:[
     { type:'avatar-text', value:u.name, color:avatarColor(u.name) },
-    { type:'badge', value:u.estado, variant:u.estado==='Activo'?'success':'danger' },
+    { type:'badge', value:u.estado==='Activo'?'Activo':'Inactivo', variant:u.estado==='Activo'?'success':'danger' },
     u.role,
+    { type:'text-secondary', value:u.email },
     { type:'badge', value:u.clas, variant:clasVariant(u.clas) },
-    { type:'number', value:u.reg },
-    { type:'number', value:u.comp },
-    { type:'number', value:u.exam },
-    { type:'number', value:u.prom ? u.prom : '—' },
+    String(u.reg),
+    String(u.comp),
+    String(u.exam),
+    String(u.pub),
+    u.prom ? String(u.prom) : '—',
     { type:'loading-bar', value:u.avance },
+    { type:'loading-bar', value:u.cumpl },
+    String(u.aprob),
   ]}));
   const table = `<div class="card flush">
     <div class="card-hdr"><span class="ttl">Detalle de avance por usuario</span><span class="meta">${activeUsers.length} registros</span></div>
@@ -779,9 +783,9 @@ function tutorialPanel(){
   const rows = TUTORIAL_STATS.map(t => ({ cells:[
     { type:'link', value:t.name },
     { type:'badge', value:'Nivel '+t.level, variant:'neutral' },
-    { type:'number', value:t.comp },
-    { type:'number', value:t.prog },
-    { type:'number', value:t.tasa+'%' },
+    String(t.comp),
+    String(t.prog),
+    t.tasa+'%',
     { type:'loading-bar', value:t.avance },
   ]}));
   const table = `<div class="card flush">
@@ -812,12 +816,13 @@ function renderDashboard(){
       </div>
 
       <div class="card flush">
-        <div class="tabs">
-          <div class="t-tab on" onclick="switchTab(this)">${iconSvg('report-data',15,'currentColor')}Resumen</div>
-          <div class="t-tab" onclick="switchTab(this)">${iconSvg('education',15,'currentColor')}Por tutorial</div>
+        <div style="padding:12px 16px;border-bottom:1px solid var(--n3)">
+          ${dtTabsHtml(['Resumen','Por tutorial'], 0, { icons:['report-data','education'], panels:'monPanels' })}
         </div>
-        <div class="tp on"><div style="padding:20px;display:flex;flex-direction:column;gap:20px;background:var(--n2)">${resumenPanel()}</div></div>
-        <div class="tp"><div style="padding:20px;display:flex;flex-direction:column;gap:20px;background:var(--n2)">${tutorialPanel()}</div></div>
+        <div id="monPanels">
+          <div><div style="padding:20px;display:flex;flex-direction:column;gap:20px;background:var(--n2)">${resumenPanel()}</div></div>
+          <div style="display:none"><div style="padding:20px;display:flex;flex-direction:column;gap:20px;background:var(--n2)">${tutorialPanel()}</div></div>
+        </div>
       </div>
     </div>`;
 }
@@ -836,16 +841,7 @@ function renderNoAccess(){
 
 function renderMain(){ isAdmin ? renderDashboard() : renderNoAccess(); }
 
-/* ── DS content-tabs toggle (copied from DS switchTab) ── */
-function switchTab(el){
-  const card = el.closest('.card.flush');
-  if(!card) return;
-  const tabs = card.querySelectorAll('.t-tab');
-  const panels = card.querySelectorAll('.tp');
-  const idx = Array.from(tabs).indexOf(el);
-  tabs.forEach((t,i)=>t.classList.toggle('on', i===idx));
-  panels.forEach((p,i)=>p.classList.toggle('on', i===idx));
-}
+/* tab switching is handled by dtTabsHtml's self-contained inline onclick */
 
 /* ── admin demo toggle ── */
 function setAdmin(v){
