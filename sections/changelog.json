@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-17T19:53:47.632Z",
+  "generated": "2026-06-17T20:06:51.550Z",
   "days": [
     {
       "date": "2026-06-17",
       "entries": [
+        {
+          "hash": "5530bd0",
+          "type": "update",
+          "section": "General",
+          "message": "chore(orders): rename CIC_orders-list-improved.html -> CIC_orders-columns.html",
+          "author": "Carlos"
+        },
         {
           "hash": "42ec2f7",
           "type": "feat",
