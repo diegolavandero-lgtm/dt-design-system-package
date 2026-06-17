@@ -542,8 +542,8 @@ function dsDonutChart(opts) {
     color: s.color || DS_VIZ_PALETTE[i % DS_VIZ_PALETTE.length],
   }));
   const live  = segs.filter(s => s.value > 0);
-  const size  = opts.size || 188;
-  const thick = opts.thickness || 22;
+  const size  = opts.size || 150;
+  const thick = opts.thickness || 18;
   const r  = (size - thick) / 2;
   const cx = size / 2, cy = size / 2;
   const C  = 2 * Math.PI * r;
@@ -562,23 +562,27 @@ function dsDonutChart(opts) {
 
   const centerValue = opts.centerValue != null ? opts.centerValue : total;
   const centerLabel = opts.centerLabel != null ? opts.centerLabel : 'Total';
-  const center = `<text x="${cx}" y="${cy-1}" text-anchor="middle" style="font:700 30px/1 var(--font-sans);fill:var(--n7)">${escHtml(String(centerValue))}</text>
-    <text x="${cx}" y="${cy+18}" text-anchor="middle" style="font:500 11px/1 var(--font-sans);fill:var(--n5);letter-spacing:.05em;text-transform:uppercase">${escHtml(centerLabel)}</text>`;
+  const center = `<text x="${cx}" y="${cy-1}" text-anchor="middle" style="font:700 26px/1 var(--font-sans);fill:var(--n7)">${escHtml(String(centerValue))}</text>
+    <text x="${cx}" y="${cy+15}" text-anchor="middle" style="font:500 10px/1 var(--font-sans);fill:var(--n5);letter-spacing:.05em;text-transform:uppercase">${escHtml(centerLabel)}</text>`;
   const chart = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="flex-shrink:0;overflow:visible">${ring}${center}</svg>`;
 
+  // Compact, column-aligned legend (label · value · %) — minimal gaps, no full-width stretch
   let legend = '';
   if (opts.legend !== false) {
-    legend = `<div style="display:flex;flex-direction:column;gap:11px;min-width:0;flex:1">` + segs.map(s => {
+    const lblW = opts.legendLabelWidth || 84;
+    legend = `<div style="display:flex;flex-direction:column;gap:8px">` + segs.map(s => {
       const pct = total ? Math.round(s.value / total * 100) : 0;
-      return `<div style="display:flex;align-items:center;gap:9px;min-width:0">
+      return `<div style="display:flex;align-items:center;gap:8px;white-space:nowrap">
         <span style="width:10px;height:10px;border-radius:3px;background:${s.color};flex-shrink:0"></span>
-        <span style="flex:1;min-width:0;font:400 13px/1.3 var(--font-sans);color:var(--n6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.label)}</span>
-        <span style="flex-shrink:0;font:700 13px/1 var(--font-sans);color:var(--n7)">${s.value}</span>
-        <span style="flex-shrink:0;min-width:36px;text-align:right;font:400 12px/1 var(--font-sans);color:var(--n5)">${pct}%</span>
+        <span style="min-width:${lblW}px;font:400 13px/1.3 var(--font-sans);color:var(--n6)">${escHtml(s.label)}</span>
+        <span style="min-width:18px;text-align:right;font:700 13px/1 var(--font-sans);color:var(--n7)">${s.value}</span>
+        <span style="min-width:34px;text-align:right;font:400 12px/1 var(--font-sans);color:var(--n5)">${pct}%</span>
       </div>`;
     }).join('') + `</div>`;
   }
-  return `<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">${chart}${legend}</div>`;
+  const justify = opts.align === 'center' ? 'center' : 'flex-start';
+  const gap = opts.gap || 20;
+  return `<div style="display:flex;align-items:center;justify-content:${justify};gap:${gap}px;flex-wrap:wrap">${chart}${legend}</div>`;
 }
 
 function dsBarsChart(opts) {

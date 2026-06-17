@@ -540,11 +540,11 @@ input.dt-inp:focus::placeholder{color:var(--n8)}
   html,body{margin:0;background:var(--n2);font-family:var(--font-sans);color:var(--n7)}
   .pg-shell{display:flex;min-height:calc(100vh - 52px)}
   .pg-main{flex:1;min-width:0}
-  .mon-wrap{padding:20px 24px 48px;display:flex;flex-direction:column;gap:20px}
+  .mon-wrap{padding:18px 24px 40px;display:flex;flex-direction:column;gap:16px}
 
   /* Tabs are the DS component (dtTabsHtml). Panels toggled by its inline onclick. */
   .mon-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-  .mon-charts2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .mon-charts2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:900px){.mon-stats{grid-template-columns:1fr 1fr}.mon-charts2{grid-template-columns:1fr}}
 
   .admin-pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;background:var(--b1);color:var(--b7);font:700 10px/1 var(--font-sans);letter-spacing:.05em;text-transform:uppercase;flex-shrink:0}
@@ -673,12 +673,12 @@ function injectSidebarCss(){
 
 /* ── KPI stat card (reuses DS .dash-stat) ── */
 function statCard(icon, color, tint, label, value){
-  return `<div class="dash-stat">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <span style="width:26px;height:26px;border-radius:7px;background:${tint};display:flex;align-items:center;justify-content:center;flex-shrink:0">${iconSvg(icon,15,color)}</span>
+  return `<div class="dash-stat" style="padding:13px 16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <span style="width:24px;height:24px;border-radius:7px;background:${tint};display:flex;align-items:center;justify-content:center;flex-shrink:0">${iconSvg(icon,14,color)}</span>
       <span class="ds-lbl" style="margin:0">${label}</span>
     </div>
-    <div class="ds-val">${value}</div>
+    <div class="ds-val" style="font-size:26px">${value}</div>
   </div>`;
 }
 
@@ -709,7 +709,7 @@ function resumenPanel(){
   // Donut 1 — estado de onboarding (Activo vs Inactivo)
   const onbActivo  = activeUsers.filter(u => u.estado === 'Activo').length;
   const onbInact   = nActive - onbActivo;
-  const donutOnb = dsDonutChart({ centerValue:nActive, centerLabel:'Usuarios', segments:[
+  const donutOnb = dsDonutChart({ size:132, align:'center', centerValue:nActive, centerLabel:'Usuarios', segments:[
     { label:'Activo',   value:onbActivo, color:'#5EBE95' },
     { label:'Inactivo', value:onbInact,  color:'#FF8F76' },
   ]});
@@ -717,15 +717,16 @@ function resumenPanel(){
   // Donut 2 — clasificación de avance
   const byClass = { 'Completado':0, 'En progreso':0, 'Sin iniciar':0 };
   activeUsers.forEach(u => byClass[u.clas]++);
-  const donutClas = dsDonutChart({ centerValue:nActive, centerLabel:'Usuarios', segments:[
+  const donutClas = dsDonutChart({ size:132, align:'center', centerValue:nActive, centerLabel:'Usuarios', segments:[
     { label:'Completado',  value:byClass['Completado'],  color:'#5EBE95' },
     { label:'En progreso', value:byClass['En progreso'], color:'#6E8DDE' },
     { label:'Sin iniciar', value:byClass['Sin iniciar'], color:'#C5D2E7' },
   ]});
 
+  const chartCard = (title, body) => `<div class="card" style="padding:14px 16px"><div style="font:700 14px/1.2 var(--font-sans);color:var(--n7);margin-bottom:12px">${title}</div>${body}</div>`;
   const charts = `<div class="mon-charts2">
-    <div class="card"><div style="font:700 15px/1.2 var(--font-sans);color:var(--n7);margin-bottom:18px">Estado de onboarding</div>${donutOnb}</div>
-    <div class="card"><div style="font:700 15px/1.2 var(--font-sans);color:var(--n7);margin-bottom:18px">Clasificación de avance</div>${donutClas}</div>
+    ${chartCard('Estado de onboarding', donutOnb)}
+    ${chartCard('Clasificación de avance', donutClas)}
   </div>`;
 
   // Detail table — users with active capacitación. Many columns → horizontal
@@ -820,8 +821,8 @@ function renderDashboard(){
           ${dtTabsHtml(['Resumen','Por tutorial'], 0, { icons:['report-data','education'], panels:'monPanels' })}
         </div>
         <div id="monPanels">
-          <div><div style="padding:20px;display:flex;flex-direction:column;gap:20px;background:var(--n2)">${resumenPanel()}</div></div>
-          <div style="display:none"><div style="padding:20px;display:flex;flex-direction:column;gap:20px;background:var(--n2)">${tutorialPanel()}</div></div>
+          <div><div style="padding:16px 20px;display:flex;flex-direction:column;gap:16px;background:var(--n2)">${resumenPanel()}</div></div>
+          <div style="display:none"><div style="padding:16px 20px;display:flex;flex-direction:column;gap:16px;background:var(--n2)">${tutorialPanel()}</div></div>
         </div>
       </div>
     </div>`;
