@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Órdenes — Gestor de columnas — DispatchTrack Last Mile</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --indigo:#132045;
+      --n1:#F5F6FA; --n2:#F0F2F5; --n3:#E1E6ED; --n4:#C5D2E7; --n45:#8FA0BA;
+      --n5:#67768D; --n6:#4B5564; --n7:#39414D;
+      --b1:#EDF5FF; --b2:#D1E0FF; --b5:#4B82FA; --b6:#1F60ED; --b7:#0052CC;
+      --g1:#E3FCEF; --g3:#79F2C0; --g5:#36B37E; --g6:#00875A; --g7:#006844;
+      --r1:#FFEBE6; --r3:#FFBDAD; --r5:#FF5630; --r6:#DE350B;
+      --o1:#FFFAE6; --o3:#FFE380; --o5:#FFAB00; --o7:#FF8B00;
+      --p1:#F0EDFF; --p3:#C0B6F2; --p6:#6554C0;
+      --lm:#FF6A1F;
+      --font-sans:'DM Sans',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:var(--font-sans);color:var(--n7);background:var(--n2);font-size:14px;line-height:1.5}
+
+    /* ════════ TOPBAR (cloned 1:1 from new-notification) ════════ */
+    .topbar{position:sticky;top:0;z-index:200;height:52px;background:#132045;display:flex;align-items:center;padding:0 0 0 16px;flex-shrink:0}
+    .topbar-logo{display:flex;align-items:center;height:20px;text-decoration:none}
+    .topbar-logo img{height:20px;width:auto;display:block}
+    .topbar-icons{margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px}
+    .topbar-icons svg{width:18px;height:18px;color:rgba(255,255,255,.85);display:block;cursor:pointer;transition:color .12s;flex-shrink:0}
+    .topbar-icons svg:hover{color:#fff}
+    .bell-wrap{position:relative}
+    .bell-wrap::after{content:'';position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045}
+    .topbar-slot{height:52px;width:100px;background:#fff;border-radius:25px 0 0 0;display:flex;align-items:center;justify-content:center;color:#132045;font-size:13px;font-weight:700;flex-shrink:0;margin-left:8px}
+
+    /* ════════ SHELL + SIDEBAR (cloned 1:1 from new-notification) ════════ */
+    .shell{display:flex;height:calc(100vh - 52px)}
+    .pg-sidenav{width:52px;background:#fff;border-right:1px solid #E1E6ED;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden}
+    .pg-sidenav .psn-it{width:36px;height:36px;border-radius:30px;display:flex;align-items:center;justify-content:center;color:#0052CC;cursor:pointer;position:relative;flex-shrink:0}
+    .pg-sidenav .psn-it:hover{background:#EDF5FF}
+    .pg-sidenav .psn-it.psn-sel{background:#EDF5FF;border-radius:0 30px 30px 0;width:47px;align-self:flex-end}
+    .pg-sidenav .psn-it.psn-sel::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;background:#4B82FA;border-radius:0 3px 3px 0}
+    .pg-sidenav .psn-it svg{width:16px;height:16px;fill:currentColor;stroke:none;flex-shrink:0}
+    .pg-sidenav .psn-sep{width:26px;border-top:1px solid #E1E6ED;margin:5px 0;flex-shrink:0}
+
+    /* ════════ MAIN (Fleet-style header + filter bars, scrollable content) ════════ */
+    .main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+    .page-header{background:#fff;border-bottom:1px solid #E1E6ED;padding:14px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+    .page-header h1{font:700 22px/1 var(--font-sans);color:var(--n7);flex:1;margin:0;letter-spacing:-.01em}
+    .page-actions{display:flex;align-items:center;gap:12px}
+    .btn{height:36px;padding:0 18px;border-radius:50px;font:700 14px/1 var(--font-sans);display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-sizing:border-box;border:1px solid transparent;transition:background .12s,border-color .12s;white-space:nowrap}
+    .btn.outline{background:#fff;color:var(--b6);border:1px solid var(--b6)}
+    .btn.outline:hover{background:var(--b1)}
+    .btn.primary{background:var(--b6);color:#fff;border-color:var(--b6)}
+    .btn.primary:hover{background:var(--b7);border-color:var(--b7)}
+    .btn.ghost{background:#fff;color:var(--n6);border:1px solid var(--n3)}
+    .btn.ghost:hover{background:var(--n1);border-color:var(--n4)}
+    .btn svg{flex-shrink:0}
+
+    .content{flex:1;min-width:0;overflow:auto;background:var(--n2);padding:20px 24px 24px;display:flex;flex-direction:column;gap:16px}
+
+    /* filter bar */
+    .panel{background:#fff;border:1px solid var(--n3);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:14px}
+    .filter-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:10px;align-items:center}
+    @media (max-width:1180px){.filter-grid{grid-template-columns:repeat(3,minmax(0,1fr)) auto}}
+    .inp-wrap{display:flex;align-items:center;gap:8px;border:1px solid var(--n3);border-radius:6px;background:#fff;padding:0 10px;height:34px;box-sizing:border-box;min-width:0}
+    .inp-wrap:focus-within{border:2px solid var(--b6);padding:0 9px;background:var(--b1)}
+    .inp-wrap svg{flex-shrink:0;color:var(--n5)}
+    .inp-wrap input{border:0;outline:0;flex:1;min-width:0;font:400 14px var(--font-sans);color:var(--n7);background:transparent}
+    .inp-wrap input::placeholder{color:var(--n45)}
+    .dt-drop-wrap{position:relative;min-width:0}
+    .dt-dtrigger{display:flex;align-items:center;height:34px;padding:0 10px;border:1px solid var(--n3);border-radius:6px;background:#fff;cursor:pointer;gap:6px;font:400 14px var(--font-sans);color:var(--n7);box-sizing:border-box}
+    .dt-dtrigger:hover{background:var(--n1)}
+    .dt-drop-wrap.open .dt-dtrigger{border:2px solid var(--b6);padding:0 9px}
+    .dt-dlabel{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--n5)}
+    .dt-dmenu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:500;padding:4px 0}
+    .dt-drop-wrap.open .dt-dmenu{display:block}
+    .dt-dopt{height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer}
+    .dt-dopt:hover{background:var(--b1);color:var(--b7)}
+    .filt-actions{display:flex;align-items:center;gap:8px}
+    .btn-sm{height:34px;padding:0 16px;border-radius:50px;font:700 14px/1 var(--font-sans);background:var(--b6);color:#fff;border:1px solid var(--b6);cursor:pointer}
+    .btn-sm:hover{background:var(--b7)}
+    .ico-btn{width:34px;height:34px;border-radius:6px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:1px solid var(--r6)}
+    .ico-btn:hover{background:var(--r1)}
+    .cbx{width:16px;height:16px;accent-color:var(--b6);cursor:pointer;flex-shrink:0}
+
+    /* table toolbar (count + columns button) */
+    .tbl-toolbar{display:flex;align-items:center;gap:12px}
+    .tbl-count{font:400 13px var(--font-sans);color:var(--n5)}
+    .tbl-count b{color:var(--n7);font-weight:700}
+    .toolbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;position:relative}
+    .col-btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:6px;border:1px solid var(--n3);background:#fff;color:var(--n6);font:600 13px var(--font-sans);cursor:pointer}
+    .col-btn:hover{background:var(--n1);border-color:var(--n4)}
+    .col-btn svg{flex-shrink:0;color:var(--n5)}
+    .col-btn.active{border-color:var(--b6);color:var(--b7);background:var(--b1)}
+    .col-btn.active svg{color:var(--b6)}
+
+    /* active custom-field filter chip bar */
+    .cf-filter-bar{display:none;align-items:center;gap:8px;font:400 12px var(--font-sans);color:var(--n6)}
+    .cf-link{background:none;border:none;font:600 13px var(--font-sans);color:var(--b7);cursor:pointer;padding:0}
+    .cf-link:hover{text-decoration:underline}
+
+    /* table */
+    .tbl-wrap{border:1px solid var(--n3);border-radius:6px;overflow:auto}
+    .tbl{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color:var(--n7)}
+    .tbl thead th{background:var(--n2);font:700 13px var(--font-sans);text-align:left;padding:11px 14px;border-bottom:1px solid var(--n4);color:var(--n7);white-space:nowrap;position:relative}
+    .tbl td{padding:10px 14px;border-bottom:1px solid var(--n3);vertical-align:middle;white-space:nowrap}
+    .tbl tbody tr:last-child td{border-bottom:0}
+    .tbl tbody tr:hover td{background:var(--n1)}
+    .tbl .col-cb{width:44px;text-align:center}
+    .tbl .col-acts{width:64px;text-align:center}
+    .tbl .lnk{color:var(--b7);font-weight:400;text-decoration:none;cursor:pointer}
+    .tbl .lnk:hover{text-decoration:underline}
+    .cell-date{display:flex;flex-direction:column;line-height:1.3}
+    .cell-date .date-sub{font-size:11px;color:var(--n5)}
+    .cell-empty{color:var(--n45)}
+    .kebab{width:28px;height:28px;border-radius:6px;background:none;border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--n5)}
+    .kebab:hover{background:var(--n2);color:var(--n7)}
+
+    /* custom-field column header */
+    .th-cf{background:var(--p1) !important}
+    .th-inner{display:flex;align-items:center;gap:6px}
+    .th-tools{display:inline-flex;align-items:center;gap:2px;margin-left:2px}
+    .th-btn{width:22px;height:22px;border-radius:4px;border:none;background:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--n5);flex-shrink:0}
+    .th-btn:hover{background:var(--n3);color:var(--n7)}
+    .th-btn.active{color:var(--b6);background:#fff}
+    .sort-ico{display:flex;flex-direction:column;line-height:0}
+    .sort-ico svg{width:9px;height:9px;display:block}
+    .cf-pop{display:none;position:absolute;top:calc(100% + 2px);left:8px;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 8px 24px rgba(19,32,69,.18);z-index:600;width:230px;padding:8px 0;font-weight:400}
+    .cf-pop.open{display:block}
+    .cf-pop-hd{padding:6px 14px 8px;font:700 12px/1 var(--font-sans);color:var(--n7);border-bottom:1px solid var(--n3);margin-bottom:4px}
+    .cf-opt{display:flex;align-items:center;gap:9px;padding:7px 14px;cursor:pointer;font:400 13px var(--font-sans);color:var(--n7)}
+    .cf-opt:hover{background:var(--n1)}
+    .cf-pop-ft{display:flex;justify-content:space-between;gap:8px;padding:8px 14px 4px;border-top:1px solid var(--n3);margin-top:4px}
+
+    /* pills — rounded outline (initial style), weight 500 */
+    .pill{display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;font:500 12px/1 var(--font-sans);white-space:nowrap;background:#fff;border:1px solid}
+    .pill.ok{border-color:var(--g6);color:var(--g6)}
+    .pill.neutral{border-color:var(--n4);color:var(--n5)}
+    .pill.warn{border-color:var(--o5);color:var(--o7)}
+    .pill.danger{border-color:var(--r6);color:var(--r6)}
+
+    .pager{display:flex;justify-content:flex-end;align-items:center;gap:4px}
+    .pg-btn{min-width:28px;height:28px;padding:0 6px;border-radius:4px;border:1px solid var(--n3);background:#fff;color:var(--n6);font:500 13px/1 var(--font-sans);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+    .pg-btn:hover{background:var(--n2)}
+    .pg-btn.active{background:var(--b6);border-color:var(--b6);color:#fff}
+    .pg-btn:disabled{opacity:.45;cursor:default}
+
+    /* ════════ COLUMN MANAGER POPOVER (ref: Jira) ════════ */
+    .colmgr{display:none;position:absolute;top:calc(100% + 6px);right:0;width:320px;background:#fff;border:1px solid var(--n3);border-radius:10px;box-shadow:0 12px 36px rgba(19,32,69,.22);z-index:900;overflow:hidden}
+    .colmgr.open{display:block}
+    .cm-head{display:flex;align-items:center;gap:8px;padding:12px 10px 12px 14px;border-bottom:1px solid var(--n3)}
+    .cm-head .cm-title{font:700 14px/1 var(--font-sans);color:var(--n7);flex:1}
+    .cm-refresh{width:30px;height:30px;border-radius:6px;border:none;background:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--n5)}
+    .cm-refresh:hover{background:var(--n1);color:var(--b7)}
+    .cm-search{padding:10px 12px 6px}
+    .cm-search .inp-wrap{height:36px}
+    .cm-list{max-height:330px;overflow-y:auto;padding:4px 6px 6px}
+    .cm-group-label{padding:10px 8px 6px;font:700 10px/1 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--n45)}
+    .cm-item{display:flex;align-items:center;gap:10px;padding:11px 8px;border-radius:6px;cursor:default;border:1px solid transparent}
+    .cm-item:hover{background:var(--n1)}
+    .cm-item.dragging{opacity:.4}
+    .cm-item.drag-over{box-shadow:inset 0 2px 0 var(--b6)}
+    .cm-grip{color:var(--n4);cursor:grab;display:flex;flex-shrink:0;padding:2px}
+    .cm-grip:hover{color:var(--n45)}
+    .cm-grip:active{cursor:grabbing}
+    .cm-cbx{width:16px;height:16px;accent-color:var(--b6);cursor:pointer;flex-shrink:0}
+    .cm-label{font:400 13px/1.3 var(--font-sans);color:var(--n7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .cm-cf{display:inline-flex;align-items:center;gap:4px;margin-left:auto;font:600 10px/1 var(--font-sans);color:var(--p6);background:var(--p1);border:1px solid var(--p3);border-radius:4px;padding:3px 7px;flex-shrink:0}
+    .cm-cf svg{width:10px;height:10px;flex-shrink:0}
+    .cm-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:10px 14px;border-top:1px solid var(--n3)}
+    .cm-count{font:400 12px var(--font-sans);color:var(--n5)}
+
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--n7);color:#fff;padding:10px 18px;border-radius:8px;font:500 13px var(--font-sans);box-shadow:0 8px 24px rgba(19,32,69,.24);opacity:0;transition:opacity .2s,transform .2s;z-index:5000;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+
+<!-- ══ TOPBAR (cloned 1:1 from new-notification) ══ -->
+<header class="topbar">
+  <a class="topbar-logo" href="#" aria-label="DispatchTrack Last Mile">
+    <img src="../sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <div class="bell-wrap" style="cursor:pointer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<div class="shell">
+  <!-- ══ SIDEBAR (cloned 1:1 from new-notification) ══ -->
+  <aside class="pg-sidenav">
+    <div class="psn-it" title="Resumen"><svg viewBox="0 0 32 32" fill="currentColor"><rect x="15" y="20" width="2" height="4"/><rect x="20" y="18" width="2" height="6"/><rect x="10" y="14" width="2" height="10"/><path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"/></svg></div>
+    <div class="psn-it" title="Actividad"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></div>
+    <div class="psn-it" title="Rutas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M30,30H22V22h8Zm-6-2h4V24H24Z"/><path d="M20,27H8A6,6,0,0,1,8,15h2v2H8a4,4,0,0,0,0,8H20Z"/><path d="M20,20H12V12h8Zm-6-2h4V14H14Z"/><path d="M24,17H22V15h2a4,4,0,0,0,0-8H12V5H24a6,6,0,0,1,0,12Z"/><path d="M10,10H2V2h8ZM4,8H8V4H4Z"/></svg></div>
+    <div class="psn-it psn-sel" title="Órdenes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,6H20V4H6A2,2,0,0,0,4,6V22H6V6H20V8h2V6ZM26,10H10A2,2,0,0,0,8,12V28A2,2,0,0,0,10,30H26A2,2,0,0,0,28,28V12A2,2,0,0,0,26,10Zm0,18H10V12H26Z"/></svg></div>
+    <div class="psn-it" title="Flota"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4 16H16V18H4z"/><path d="M2 11H12V13H2z"/><path d="M29.9189,16.6064l-3-7A.9985.9985,0,0,0,26,9H23V7a1,1,0,0,0-1-1H6V8H21V20.5562A3.9924,3.9924,0,0,0,19.1421,23H12.8579a4,4,0,1,0,0,2h6.2842a3.9806,3.9806,0,0,0,7.7158,0H29a1,1,0,0,0,1-1V17A.9965.9965,0,0,0,29.9189,16.6064ZM9,26a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,9,26ZM23,11h2.3408l2.1431,5H23Zm0,15a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,23,26Zm5-3H26.8579A3.9954,3.9954,0,0,0,23,20V18h5Z"/></svg></div>
+    <div class="psn-it" title="Estadísticas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg></div>
+    <div class="psn-it" title="Alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+    <div class="psn-it" title="Clientes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></div>
+    <div class="psn-it" title="Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg></div>
+    <div class="psn-it" title="Módulo de Costos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+    <div class="psn-it" title="Logística inversa"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,8v2c2.2061,0,4,1.7944,4,4s-1.7939,4-4,4H10v-5l-6,6,6,6v-5H22c3.3086,0,6-2.6914,6-6S25.3086,8,22,8Z"/></svg></div>
+    <div class="psn-it" title="Rendición de Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></div>
+    <div class="psn-it" title="Retiro en tienda"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M28,4H4A2,2,0,0,0,2,6V12a2,2,0,0,0,1,1.72V28a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V13.72A2,2,0,0,0,30,12V6A2,2,0,0,0,28,4ZM4,6H28v6H4ZM18,28H14V22h4Zm9,0H20V22a2,2,0,0,0-2-2H14a2,2,0,0,0-2,2v6H5V14H27Z"/></svg></div>
+    <div class="psn-it" title="Importar"><svg viewBox="0 0 32 32" fill="currentColor"><polygon points="28 19 14.83 19 17.41 16.41 16 15 11 20 16 25 17.41 23.59 14.83 21 28 21 28 19"/><path d="M24,14V10a1,1,0,0,0-.29-.71l-7-7A1,1,0,0,0,16,2H6A2,2,0,0,0,4,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V26H22v2H6V4h8v6a2,2,0,0,0,2,2h6v2Zm-8-4V4.41L21.59,10Z"/></svg></div>
+    <div class="psn-it" title="Módulo de Costos (nuevo)"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+    <div class="psn-sep"></div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+    <!-- Fleet-style header hosting the page title -->
+    <div class="page-header">
+      <h1>Órdenes</h1>
+      <div class="page-actions">
+        <button class="btn outline" onclick="showToast('Exportando a Excel…')">Exportar a excel</button>
+        <button class="btn primary" onclick="showToast('Nueva orden')">
+          <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg>
+          Nueva orden
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="panel">
+        <!-- filter bar -->
+        <div class="filter-grid">
+          <div class="dt-drop-wrap" onclick="dtDrop(this)">
+            <div class="dt-dtrigger"><span class="dt-dlabel">Código de orden</span><svg width="14" height="14" viewBox="0 0 32 32" fill="var(--n5)"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg></div>
+            <div class="dt-dmenu"><div class="dt-dopt">Contiene</div><div class="dt-dopt">Es igual a</div><div class="dt-dopt">Empieza con</div></div>
+          </div>
+          <div class="dt-drop-wrap" onclick="dtDrop(this)">
+            <div class="dt-dtrigger"><span class="dt-dlabel">Tipo de fecha</span><svg width="14" height="14" viewBox="0 0 32 32" fill="var(--n5)"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg></div>
+            <div class="dt-dmenu"><div class="dt-dopt">Fecha de ruta</div><div class="dt-dopt">Fecha de creación</div><div class="dt-dopt">Fecha de entrega</div></div>
+          </div>
+          <div class="inp-wrap" style="cursor:pointer" onclick="showToast('Selector de fecha')">
+            <span style="flex:1;color:var(--n45);font:400 14px var(--font-sans)">Seleccionar fecha</span>
+            <svg width="15" height="15" viewBox="0 0 32 32" fill="var(--n5)"><path d="M26,4H22V2H20V4H12V2H10V4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4ZM6,26V6h4V8h2V6h8V8h2V6h4V10H6Zm0,0V12H26V26Z"/></svg>
+          </div>
+          <div class="inp-wrap"><input type="text" placeholder="Estado"></div>
+          <div class="filt-actions">
+            <button class="btn-sm" onclick="showToast('Filtros aplicados')">Filtrar</button>
+            <button class="ico-btn" title="Limpiar filtros" onclick="showToast('Filtros limpiados')"><svg width="20" height="20" viewBox="0 0 32 32" fill="var(--r6)"><path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="22,12 17,16 22,20 22,18 27,18 27,14 22,14"/></svg></button>
+          </div>
+        </div>
+
+        <!-- table toolbar: count + active filter chips + Columnas button -->
+        <div class="tbl-toolbar">
+          <span class="tbl-count"><b>7</b> órdenes</span>
+          <div class="toolbar-right">
+            <button class="col-btn" id="col-btn" onclick="toggleColMgr(event)" aria-haspopup="true">
+              <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM12,26H4V6h8Zm2,0V6h4V26Zm14,0H20V6h8Z"/></svg>
+              Columnas
+            </button>
+            <!-- Column manager popover (ref: Jira) -->
+            <div class="colmgr" id="colmgr" onclick="event.stopPropagation()">
+              <div class="cm-head">
+                <span class="cm-title">Columnas</span>
+                <button class="cm-refresh" title="Volver a la configuración inicial" onclick="cmRestore()"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg></button>
+              </div>
+              <div class="cm-search"><div class="inp-wrap"><svg width="15" height="15" viewBox="0 0 32 32" fill="var(--n45)"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.0103,9.0103,0,0,1,4,13Z"/></svg><input type="text" id="cm-search-inp" placeholder="Buscar columnas" oninput="renderColList()"></div></div>
+              <div class="cm-list" id="cm-list"></div>
+              <div class="cm-foot">
+                <span class="cm-count" id="cm-count"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- table -->
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr id="thead-row"></tr></thead>
+            <tbody id="orders-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="pager">
+        <button class="pg-btn" disabled>‹</button>
+        <button class="pg-btn active">1</button>
+        <button class="pg-btn">2</button>
+        <button class="pg-btn">3</button>
+        <button class="pg-btn">›</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ══ COLUMN MODEL ══ */
+  // sys = standard column · custom = CIC custom field (API tags) · locked = always visible
+  const DEFAULT_COLS = [
+    // ── estándar ──
+    {key:'orden',     label:'Orden',             vis:true,  custom:false},
+    {key:'estado',    label:'Estado',            vis:true,  custom:false},
+    {key:'subestado', label:'Subestado',         vis:true,  custom:false},
+    {key:'vehiculo',  label:'Vehículo',          vis:true,  custom:false},
+    {key:'cliente',   label:'Cliente',           vis:true,  custom:false},
+    {key:'fecha',     label:'Fecha de ruta',     vis:true,  custom:false},
+    {key:'creacion',  label:'Fecha de creación', vis:false, custom:false},
+    {key:'entrega',   label:'Fecha de entrega',  vis:false, custom:false},
+    {key:'rut',       label:'RUT contacto',      vis:false, custom:false},
+    {key:'telefono',  label:'Teléfono',          vis:false, custom:false},
+    {key:'direccion', label:'Dirección',         vis:false, custom:false},
+    {key:'comuna',    label:'Comuna',            vis:false, custom:false},
+    // ── campos personalizados ──
+    {key:'transporte',label:'Transporte',        vis:true,  custom:true, sortable:true, filterable:true},
+    {key:'prioridad', label:'Prioridad',         vis:false, custom:true},
+  ];
+  let COLS = clone(DEFAULT_COLS);
+  function clone(a){ return a.map(o=>Object.assign({},o)); }
+
+  /* ══ ROW DATA ══ */
+  const ROWS = [
+    {orden:'238382190381', estado:['Entregado','ok'],       subestado:['Exitoso','ok'],      vehiculo:'C10001', cliente:'John Doe',   fecha:['07-12-26','Hace 9h'],  transporte:'Transportes Andinos', creacion:['07-11-26','Hace 1d'], entrega:['07-12-26','Hace 8h'],  rut:'12.345.678-9', telefono:'+56 9 1111 1111', direccion:'Av. Siempre Viva 123', comuna:'Las Condes', prioridad:'Alta'},
+    {orden:'238382190382', estado:['Pendiente','neutral'],  subestado:['Pendiente 1','neutral'], vehiculo:'C10012', cliente:'Kine Action',fecha:['07-11-26','Hace 10h'], transporte:'TransSur',           creacion:['07-10-26','Hace 2d'], entrega:['','—'],                rut:'9.876.543-2',  telefono:'+56 9 2222 2222', direccion:'Los Olivos 45',        comuna:'Maipú',      prioridad:'Media'},
+    {orden:'238382190383', estado:['Entrega parcial','warn'],subestado:['Item faltante','warn'],vehiculo:'C10023', cliente:'Coca Cola',  fecha:['07-12-26','Hace 10h'], transporte:'Transportes Andinos', creacion:['07-11-26','Hace 1d'], entrega:['07-12-26','Hace 9h'],  rut:'76.111.222-3', telefono:'+56 2 3333 3333', direccion:'Parque Industrial 9',  comuna:'Pudahuel',   prioridad:'Alta'},
+    {orden:'238382190384', estado:['No entregado','danger'],subestado:['Nadie en casa','danger'],vehiculo:'C10054',cliente:'Walmart',    fecha:['07-12-26','Hace 20h'], transporte:'Blue Express',       creacion:['07-10-26','Hace 2d'], entrega:['','—'],                rut:'88.444.555-6', telefono:'+56 2 4444 4444', direccion:'Bodega Central 100',   comuna:'Quilicura',  prioridad:'Baja'},
+    {orden:'238382190385', estado:['No entregado','danger'],subestado:['Nadie en casa','danger'],vehiculo:'C10054',cliente:'Walmart',    fecha:['07-12-26','Hace 20h'], transporte:'Blue Express',       creacion:['07-10-26','Hace 2d'], entrega:['','—'],                rut:'88.444.555-6', telefono:'+56 2 4444 4444', direccion:'Bodega Central 100',   comuna:'Quilicura',  prioridad:'Baja'},
+    {orden:'238382190386', estado:['No entregado','danger'],subestado:['Nadie en casa','danger'],vehiculo:'C10054',cliente:'Walmart',    fecha:['07-12-26','Hace 20h'], transporte:'',                   creacion:['07-10-26','Hace 2d'], entrega:['','—'],                rut:'88.444.555-6', telefono:'+56 2 4444 4444', direccion:'Bodega Central 100',   comuna:'Quilicura',  prioridad:''},
+    {orden:'238382190387', estado:['No entregado','danger'],subestado:['Nadie en casa','danger'],vehiculo:'C10054',cliente:'Walmart',    fecha:['07-12-26','Hace 20h'], transporte:'TransSur',           creacion:['07-10-26','Hace 2d'], entrega:['','—'],                rut:'88.444.555-6', telefono:'+56 2 4444 4444', direccion:'Bodega Central 100',   comuna:'Quilicura',  prioridad:'Media'},
+  ];
+
+  /* ══ CELL RENDERERS ══ */
+  function cellHTML(col, row){
+    const v = row[col.key];
+    if(col.key==='orden')   return `<a class="lnk">${v}</a>`;
+    if(col.key==='estado'||col.key==='subestado') return `<span class="pill ${v[1]}">${v[0]}</span>`;
+    if(col.key==='fecha'||col.key==='creacion'||col.key==='entrega'){
+      if(!v||!v[0]) return `<span class="cell-empty">—</span>`;
+      return `<div class="cell-date"><span class="date-main">${v[0]}</span><span class="date-sub">${v[1]}</span></div>`;
+    }
+    if(!v) return `<span class="cell-empty">—</span>`;
+    return v;
+  }
+
+  /* ══ RENDER TABLE ══ */
+  function renderTable(){
+    const visible = COLS.filter(c=>c.vis);
+    // header
+    const head = document.getElementById('thead-row');
+    head.innerHTML =
+      `<th class="col-cb"><input type="checkbox" class="cbx" onclick="toggleAll(this)"></th>` +
+      visible.map(c=>{
+        if(c.custom){
+          // custom fields: sort only (asc/desc), no filter funnel
+          const on = sortKey===c.key;
+          const ico = (on && sortDir===1)
+            ? '<svg viewBox="0 0 32 32" fill="var(--b6)"><path d="M16,8l8,8H8Z"/></svg>'
+            : (on && sortDir===2)
+            ? '<svg viewBox="0 0 32 32" fill="var(--b6)"><path d="M16,24,8,16H24Z"/></svg>'
+            : '<svg viewBox="0 0 32 32" fill="currentColor"><path d="M16,8l8,8H8Z"/></svg><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16,24,8,16H24Z"/></svg>';
+          const tools = `<span class="th-tools">
+              <button class="th-btn ${on?'active':''}" title="Ordenar" onclick="cycleSort('${c.key}')" aria-label="Ordenar por ${c.label}">
+                <span class="sort-ico">${ico}</span>
+              </button>
+            </span>`;
+          return `<th class="th-cf" id="th-${c.key}"><div class="th-inner"><span>${c.label}</span>${tools}</div></th>`;
+        }
+        return `<th>${c.label}</th>`;
+      }).join('') +
+      `<th class="col-acts">Acciones</th>`;
+    // body — display order respects active sort (empties always last)
+    let order = ROWS.map((r,i)=>i);
+    if(sortKey){
+      order.sort((ia,ib)=>{
+        const av=sortVal(ROWS[ia][sortKey]), bv=sortVal(ROWS[ib][sortKey]);
+        if(av===''&&bv==='') return ia-ib;
+        if(av==='') return 1; if(bv==='') return -1;
+        const cmp=av.localeCompare(bv,'es',{numeric:true});
+        return sortDir===2 ? -cmp : cmp;
+      });
+    }
+    const body = document.getElementById('orders-body');
+    body.innerHTML = order.map(i=>{
+      const row=ROWS[i];
+      const cells = visible.map(c=>{
+        const cls = c.custom ? ' style="background:rgba(101,84,192,.04)"' : '';
+        return `<td${cls}>${cellHTML(c,row)}</td>`;
+      }).join('');
+      return `<tr data-idx="${i}">
+        <td class="col-cb"><input type="checkbox" class="cbx row-cb"></td>
+        ${cells}
+        <td class="col-acts"><button class="kebab"><svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/></svg></button></td>
+      </tr>`;
+    }).join('');
+  }
+  // normalize a cell value for sorting (arrays → first element)
+  function sortVal(v){ if(Array.isArray(v)) return v[0]||''; return v==null?'':String(v); }
+
+  /* ══ COLUMN MANAGER ══ */
+  function toggleColMgr(e){ e.stopPropagation(); const m=document.getElementById('colmgr'); const o=m.classList.contains('open'); closeAllPops(); if(!o){ m.classList.add('open'); document.getElementById('col-btn').classList.add('active'); renderColList(); } }
+  function closeColMgr(){ document.getElementById('colmgr').classList.remove('open'); document.getElementById('col-btn').classList.remove('active'); }
+  function cmItemHTML(c){
+    const cf = c.custom ? `<span class="cm-cf" title="Campo personalizado"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16,2,4,8V24l12,6,12-6V8ZM6,9.3l9,4.5v13.4L6,22.7ZM26,22.7l-9,4.5V13.8l9-4.5Z"/></svg>Personalizado</span>` : '';
+    return `<div class="cm-item" draggable="true" data-key="${c.key}">
+      <span class="cm-grip" title="Arrastrar para reordenar"><svg width="15" height="15" viewBox="0 0 32 32" fill="currentColor"><circle cx="12" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="12" cy="16" r="2"/><circle cx="20" cy="16" r="2"/><circle cx="12" cy="26" r="2"/><circle cx="20" cy="26" r="2"/></svg></span>
+      <input type="checkbox" class="cm-cbx" ${c.vis?'checked':''} onchange="toggleColVis('${c.key}',this.checked)">
+      <span class="cm-label">${c.label}</span>
+      ${cf}
+    </div>`;
+  }
+  function renderColList(){
+    const q = (document.getElementById('cm-search-inp').value||'').toLowerCase();
+    const rows = COLS.filter(c => !q || c.label.toLowerCase().includes(q));
+    const list = document.getElementById('cm-list');
+    list.innerHTML = rows.length ? rows.map(cmItemHTML).join('') : `<div class="cm-group-label">Sin resultados</div>`;
+    list.querySelectorAll('.cm-item').forEach(bindColDrag);
+    const vis = COLS.filter(c=>c.vis).length;
+    document.getElementById('cm-count').textContent = `${vis} de ${COLS.length}`;
+  }
+  function toggleColVis(key,on){
+    const c = COLS.find(c=>c.key===key); if(!c) return;
+    c.vis = on;
+    renderTable(); renderColList();
+    showToast(on?`Columna “${c.label}” visible`:`Columna “${c.label}” oculta`);
+  }
+  function cmRestore(){ COLS = clone(DEFAULT_COLS); renderTable(); renderColList(); showToast('Configuración restaurada a los valores predeterminados'); }
+
+  /* column drag reorder */
+  let cmDrag=null;
+  function bindColDrag(item){
+    item.addEventListener('dragstart',e=>{ cmDrag=item; item.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+    item.addEventListener('dragend',()=>{ item.classList.remove('dragging'); document.querySelectorAll('.cm-item.drag-over').forEach(x=>x.classList.remove('drag-over')); });
+    item.addEventListener('dragover',e=>{ e.preventDefault(); if(item!==cmDrag) item.classList.add('drag-over'); });
+    item.addEventListener('dragleave',()=>item.classList.remove('drag-over'));
+    item.addEventListener('drop',e=>{
+      e.preventDefault(); item.classList.remove('drag-over');
+      if(!cmDrag||cmDrag===item) return;
+      const from=COLS.findIndex(c=>c.key===cmDrag.dataset.key);
+      const to=COLS.findIndex(c=>c.key===item.dataset.key);
+      const [m]=COLS.splice(from,1); COLS.splice(to,0,m);
+      renderTable(); renderColList(); showToast('Orden de columnas actualizado');
+    });
+  }
+
+  /* ══ SORT (custom fields only — asc/desc, empties always last) ══ */
+  let sortKey=null, sortDir=0; // 0 none · 1 asc · 2 desc
+  function cycleSort(key){
+    if(sortKey!==key){ sortKey=key; sortDir=1; }
+    else { sortDir=(sortDir+1)%3; if(sortDir===0) sortKey=null; }
+    renderTable();
+  }
+
+  /* ══ misc ══ */
+  function toggleAll(m){ document.querySelectorAll('#orders-body .row-cb').forEach(cb=>cb.checked=m.checked); }
+  function dtDrop(el){ const o=el.classList.contains('open'); document.querySelectorAll('.dt-drop-wrap.open').forEach(d=>d.classList.remove('open')); if(!o)el.classList.add('open'); }
+  function closeAllPops(){ document.getElementById('colmgr').classList.remove('open'); document.getElementById('col-btn').classList.remove('active'); const p=document.getElementById('cf-pop'); if(p)p.classList.remove('open'); }
+  let toastTimer;
+  function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2400); }
+
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.dt-drop-wrap')) document.querySelectorAll('.dt-drop-wrap.open').forEach(d=>d.classList.remove('open'));
+    if(!e.target.closest('#colmgr')&&!e.target.closest('#col-btn')) closeColMgr();
+    if(!e.target.closest('[id^="th-"]')){ const p=document.getElementById('cf-pop'); if(p)p.classList.remove('open'); }
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeColMgr(); const p=document.getElementById('cf-pop'); if(p)p.classList.remove('open'); } });
+  document.querySelectorAll('.dt-dopt').forEach(opt=>opt.addEventListener('click',function(e){ e.stopPropagation(); const w=this.closest('.dt-drop-wrap'); const l=w.querySelector('.dt-dlabel'); l.textContent=this.textContent; l.style.color='var(--n7)'; w.classList.remove('open'); }));
+
+  /* ══ init ══ */
+  renderTable();
+</script>
+</body>
+</html>

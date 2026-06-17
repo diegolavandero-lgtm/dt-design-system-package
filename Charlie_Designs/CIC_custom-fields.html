@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Campos personalizados — DispatchTrack Last Mile</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --indigo:#132045;
+      --n1:#F5F6FA; --n2:#F0F2F5; --n3:#E1E6ED; --n4:#C5D2E7; --n45:#8FA0BA;
+      --n5:#67768D; --n6:#4B5564; --n7:#39414D;
+      --b1:#EDF5FF; --b2:#D1E0FF; --b5:#4B82FA; --b6:#1F60ED; --b7:#0052CC;
+      --g1:#E3FCEF; --g3:#79F2C0; --g5:#36B37E; --g6:#00875A; --g7:#006844;
+      --r1:#FFEBE6; --r3:#FFBDAD; --r5:#FF5630; --r6:#DE350B;
+      --o1:#FFFAE6; --o3:#FFE380; --o5:#FFAB00; --o7:#FF8B00;
+      --p1:#F0EDFF; --p3:#C0B6F2; --p6:#6554C0;
+      --lm:#FF6A1F;
+      --font-sans:'DM Sans',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:var(--font-sans);color:var(--n7);background:var(--n2);font-size:14px;line-height:1.5}
+
+    /* ════════ TOPBAR ════════ */
+    .topbar{position:sticky;top:0;z-index:200;height:52px;background:#132045;display:flex;align-items:center;padding:0 0 0 16px;flex-shrink:0}
+    .topbar-logo{display:flex;align-items:center;height:20px;text-decoration:none}
+    .topbar-logo img{height:20px;width:auto;display:block}
+    .topbar-icons{margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px}
+    .topbar-icons svg{width:18px;height:18px;color:rgba(255,255,255,.85);display:block;cursor:pointer;transition:color .12s;flex-shrink:0}
+    .topbar-icons svg:hover{color:#fff}
+    .topbar-icons .ico-apps{color:var(--lm)}
+    .bell-wrap{position:relative}
+    .bell-wrap::after{content:'';position:absolute;top:-2px;right:-2px;width:7px;height:7px;border-radius:50%;background:#FF5630;border:1.5px solid #132045}
+    .topbar-slot{height:52px;width:100px;background:#fff;border-radius:25px 0 0 0;display:flex;align-items:center;justify-content:center;color:#132045;font-size:13px;font-weight:700;flex-shrink:0;margin-left:8px}
+    .user-menu-wrap{position:relative}
+    .user-menu-wrap .topbar-user-btn{cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;transition:background .15s}
+    .user-menu-wrap .topbar-user-btn:hover{background:rgba(255,255,255,.15)}
+
+    /* ════════ SHELL + SIDEBAR (cloned 1:1 from new-notification) ════════ */
+    .shell{display:flex;min-height:calc(100vh - 52px)}
+    .sidebar{display:flex;flex-shrink:0}
+    .pg-sidenav{width:52px;background:#fff;border-right:1px solid #E1E6ED;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden}
+    .pg-sidenav .psn-it{width:36px;height:36px;border-radius:30px;display:flex;align-items:center;justify-content:center;color:#0052CC;cursor:pointer;position:relative;flex-shrink:0}
+    .pg-sidenav .psn-it:hover{background:#EDF5FF}
+    .pg-sidenav .psn-it.psn-sel{background:#EDF5FF;border-radius:0 30px 30px 0;width:47px;align-self:flex-end}
+    .pg-sidenav .psn-it.psn-sel::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:3px;background:#4B82FA;border-radius:0 3px 3px 0}
+    .pg-sidenav .psn-it svg{width:16px;height:16px;fill:currentColor;stroke:none;flex-shrink:0}
+    .pg-sidenav .psn-sep{width:26px;border-top:1px solid #E1E6ED;margin:5px 0;flex-shrink:0}
+    .pg-sidenav .psn-bot{margin-top:auto}
+
+    /* ════════ SETTINGS SUB-NAV (matches new-notification) ════════ */
+    .sb-nav{width:212px;flex-shrink:0;background:#fff;border-right:1px solid #E1E6ED;overflow-y:auto;padding-bottom:24px}
+    .sb-nav::-webkit-scrollbar{width:4px}
+    .sb-nav::-webkit-scrollbar-thumb{background:#E1E6ED;border-radius:2px}
+    .sb-group{padding:16px 0 4px 16px;font-size:13px;font-weight:700;color:#39414D}
+    .sb-item{display:flex;align-items:center;justify-content:space-between;padding:7px 12px 7px 24px;font-size:13px;color:#4B5564;cursor:pointer;border-left:2px solid transparent;transition:color .1s,background .1s;line-height:1.3}
+    .sb-item:hover{color:#0052CC;background:#F5F6FA}
+    .sb-item.active{color:#0052CC;font-weight:700;background:#EDF5FF;border-left-color:#0052CC}
+    .sb-badge{font-size:11px;font-weight:600;background:#EDF5FF;color:#0052CC;padding:1px 7px;border-radius:999px;margin-left:4px;flex-shrink:0}
+    .sb-ver{padding:16px 16px 6px;font:400 12px/1 var(--font-sans);color:var(--n45)}
+
+    /* ════════ CONTENT (full available width) ════════ */
+    .content{flex:1;min-width:0;overflow-y:auto;background:var(--n2);padding:24px 28px 48px}
+    .content-inner{display:flex;flex-direction:column;gap:18px}
+    .pg-title{font:700 26px/1.1 var(--font-sans);color:var(--n7);letter-spacing:-.01em}
+    .pg-desc{font:400 14px/1.5 var(--font-sans);color:var(--n5);max-width:780px}
+    .pg-desc a{color:var(--b7);font-weight:600;text-decoration:none}
+    .pg-desc a:hover{text-decoration:underline}
+
+    /* filter bar */
+    .cf-filterbar{display:flex;align-items:center;gap:12px}
+    .inp-wrap{display:flex;align-items:center;gap:8px;border:1px solid var(--n3);border-radius:8px;background:#fff;padding:0 12px;height:40px;box-sizing:border-box;min-width:0;flex:1}
+    .inp-wrap:focus-within{border:2px solid var(--b6);padding:0 11px}
+    .inp-wrap svg{flex-shrink:0;color:var(--n45)}
+    .inp-wrap input{border:0;outline:0;flex:1;min-width:0;font:400 14px var(--font-sans);color:var(--n7);background:transparent}
+    .inp-wrap input::placeholder{color:var(--n45)}
+    .dt-drop-wrap{position:relative;min-width:0;flex:1}
+    .dt-dtrigger{display:flex;align-items:center;height:40px;padding:0 12px;border:1px solid var(--n3);border-radius:8px;background:#fff;cursor:pointer;gap:6px;font:400 14px var(--font-sans);color:var(--n7);box-sizing:border-box}
+    .dt-dtrigger:hover{background:var(--n1)}
+    .dt-drop-wrap.open .dt-dtrigger{border:2px solid var(--b6);padding:0 11px}
+    .dt-dlabel{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--n5)}
+    .dt-dmenu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:500;padding:4px 0}
+    .dt-drop-wrap.open .dt-dmenu{display:block}
+    .dt-dopt{height:36px;padding:0 12px;display:flex;align-items:center;font:400 14px var(--font-sans);color:var(--n7);cursor:pointer}
+    .dt-dopt:hover{background:var(--b1);color:var(--b7)}
+    .btn{height:40px;padding:0 22px;border-radius:50px;font:700 14px/1 var(--font-sans);display:inline-flex;align-items:center;gap:6px;cursor:pointer;box-sizing:border-box;border:1px solid transparent;transition:background .12s,border-color .12s;white-space:nowrap}
+    .btn.primary{background:var(--b6);color:#fff;border-color:var(--b6)}
+    .btn.primary:hover{background:var(--b7);border-color:var(--b7)}
+    .btn.outline{background:#fff;color:var(--b6);border:1px solid var(--b6)}
+    .btn.outline:hover{background:var(--b1)}
+    .btn.warn{background:var(--o5);color:var(--n7);border-color:var(--o5)}
+    .btn.warn:hover{background:var(--o7);border-color:var(--o7)}
+    .btn.sm{height:36px;padding:0 18px;font-size:13px}
+    .btn svg{flex-shrink:0}
+    .ico-btn{width:40px;height:40px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:1px solid var(--r6)}
+    .ico-btn:hover{background:var(--r1)}
+
+    /* ════════ CATEGORY ACCORDION ════════ */
+    .cat{background:#fff;border:1px solid var(--n3);border-radius:10px;overflow:hidden}
+    .cat-head{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer}
+    .cat-head:hover{background:var(--n1)}
+    .cat-titlewrap{display:flex;align-items:center;gap:12px;min-width:0}
+    .cat-title{font:700 20px/1.1 var(--font-sans);color:var(--n7)}
+    .cat-count{display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;border:1px solid var(--n4);color:var(--n5);font:600 12px/1 var(--font-sans);white-space:nowrap}
+    .cat-actions{margin-left:auto;display:flex;align-items:center;gap:18px}
+    .cat-add{display:inline-flex;align-items:center;gap:6px;font:700 14px/1 var(--font-sans);color:var(--b6);cursor:pointer;background:none;border:none}
+    .cat-add:hover{color:var(--b7)}
+    .cat-chev{width:22px;height:22px;color:var(--n5);transition:transform .18s;flex-shrink:0}
+    .cat.open .cat-chev{transform:rotate(180deg)}
+    .cat-body{display:none;padding:0 20px 18px;flex-direction:column;gap:12px}
+    .cat.open .cat-body{display:flex}
+    .cat-empty{padding:18px 20px;text-align:center;color:var(--n45);font:400 13px var(--font-sans);border:1px dashed var(--n4);border-radius:8px}
+
+    /* ════════ FIELD CARD ════════ */
+    .fc{position:relative;border:1px solid var(--n3);border-radius:8px;background:#fff;padding:14px 16px 18px}
+    .fc.dragging{opacity:.4}
+    .fc.drag-over{box-shadow:inset 0 3px 0 var(--b6)}
+    .fc-top{display:flex;align-items:flex-start;gap:14px}
+    .fc-main{min-width:0;flex:1}
+    .fc-name{font:700 16px/1.2 var(--font-sans);color:var(--n7);margin-bottom:8px}
+    .fc-icons{display:flex;align-items:center;gap:12px}
+    .fc-ico{width:18px;height:18px;color:var(--n4)}
+    .fc-ico.on{color:var(--b6)}
+    .fc-ico.star.on{color:var(--o5)}
+    .fc-ico.col.on{color:var(--b6)}
+    .fc-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .fc-tags-count{display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;border:1px solid var(--n4);color:var(--n5);font:600 12px/1 var(--font-sans);white-space:nowrap}
+    .fc-kebab{width:30px;height:30px;border-radius:6px;background:none;border:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--n5)}
+    .fc-kebab:hover{background:var(--n2);color:var(--n7)}
+    .fc-drag{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);color:var(--n4);cursor:grab;display:flex}
+    .fc-drag:hover{color:var(--n45)}
+    .fc-drag:active{cursor:grabbing}
+    /* label chips row — light, uniform, single color */
+    .fc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    .chip-lbl{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:6px;font:500 12px/1 var(--font-sans);color:var(--n6);background:var(--n2);border:1px solid var(--n3)}
+
+    /* row action menu */
+    .fc-menu-wrap{position:relative}
+    .fc-menu{display:none;position:absolute;top:calc(100% + 2px);right:0;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 8px 24px rgba(19,32,69,.18);z-index:600;min-width:170px;padding:4px 0}
+    .fc-menu.open{display:block}
+    .fc-menu-item{display:flex;align-items:center;gap:9px;height:38px;padding:0 14px;cursor:pointer;font:400 13px var(--font-sans);color:var(--n7);white-space:nowrap}
+    .fc-menu-item:hover{background:var(--n1)}
+    .fc-menu-item svg{width:15px;height:15px;flex-shrink:0;color:var(--n5)}
+    .fc-menu-item.danger{color:var(--r6)}
+    .fc-menu-item.danger:hover{background:var(--r1)}
+    .fc-menu-item.danger svg{color:var(--r6)}
+
+    /* ════════ EDIT FORM (inline) ════════ */
+    .fe{border:1px solid var(--b5);border-radius:8px;background:#fff;padding:20px;display:flex;flex-direction:column;gap:18px;box-shadow:0 2px 12px rgba(31,96,237,.08)}
+    .fe-req{font:400 12px/1 var(--font-sans);color:var(--n5)}
+    .fe-req b{color:var(--r6)}
+    .fld{display:flex;flex-direction:column;gap:6px}
+    .fld>label{font:600 13px/1 var(--font-sans);color:var(--n7)}
+    .fld>label .req{color:var(--r6)}
+    .fld input.ti{height:42px;border:1px solid var(--n3);border-radius:8px;padding:0 14px;font:400 14px var(--font-sans);color:var(--n7);background:#fff;outline:none;width:100%}
+    .fld input.ti:focus{border:2px solid var(--b6);padding:0 13px}
+    .fld input.ti.err{border-color:var(--r6)}
+    .fe-sec-title{font:700 18px/1.1 var(--font-sans);color:var(--n7)}
+    .fe-sec-desc{font:400 13px/1.5 var(--font-sans);color:var(--n5);margin-top:-8px}
+    .fe-divider{height:1px;background:var(--n3);margin:2px 0}
+
+    /* etiqueta rows */
+    .etq-row{display:flex;align-items:flex-end;gap:12px}
+    .etq-name{flex:1;display:flex;flex-direction:column;gap:5px}
+    .etq-name label{font:400 11px/1 var(--font-sans);color:var(--n5)}
+    .etq-name input{height:42px;border:1px solid var(--n3);border-radius:8px;padding:0 38px 0 14px;font:400 14px var(--font-sans);color:var(--n7);outline:none;width:100%}
+    .etq-name{position:relative}
+    .etq-name .clear-x{position:absolute;right:12px;bottom:11px;width:18px;height:18px;color:var(--n45);cursor:pointer}
+    .etq-color{display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+    .etq-color label{font:400 11px/1 var(--font-sans);color:var(--n5)}
+    .swatch{width:42px;height:42px;border-radius:8px;border:1px solid var(--n3);cursor:pointer;position:relative}
+    .swatch-pop{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:50;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 8px 24px rgba(19,32,69,.18);padding:8px;grid-template-columns:repeat(5,22px);gap:6px}
+    .swatch-pop.open{display:grid}
+    .swatch-opt{width:22px;height:22px;border-radius:5px;cursor:pointer;border:2px solid transparent}
+    .swatch-opt:hover{border-color:var(--n4)}
+    .etq-del{width:42px;height:42px;border-radius:8px;border:1px solid var(--r3);background:#fff;color:var(--r6);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+    .etq-del:hover{background:var(--r1)}
+    .add-etq{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 16px;border:1px solid var(--n3);border-radius:50px;background:#fff;color:var(--n6);font:600 13px var(--font-sans);cursor:pointer}
+    .add-etq:hover{background:var(--n1);border-color:var(--n4)}
+
+    /* toggle rows */
+    .tg-row{display:flex;align-items:center;gap:10px}
+    .tg-row .tg-lbl{font:400 14px/1.3 var(--font-sans);color:var(--n7)}
+    .tg-row.improved .tg-lbl{font-weight:600}
+    .info-i{position:relative;width:16px;height:16px;border-radius:50%;background:var(--b6);color:#fff;display:inline-flex;align-items:center;justify-content:center;font:700 10px/1 var(--font-sans);cursor:help;flex-shrink:0}
+    .info-i:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);background:var(--n7);color:#fff;padding:9px 11px;border-radius:6px;font:400 12px/1.45 var(--font-sans);width:250px;white-space:normal;text-align:left;box-shadow:0 4px 14px rgba(19,32,69,.24);z-index:200;pointer-events:none}
+    .info-i:hover::before{content:'';position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--n7);z-index:200}
+    .new-tag{display:inline-flex;align-items:center;font:700 9px/1 var(--font-sans);letter-spacing:.04em;color:var(--g7);background:var(--g1);border:1px solid var(--g3);border-radius:3px;padding:3px 5px;text-transform:uppercase}
+    .swt{position:relative;width:38px;height:20px;border-radius:999px;background:var(--n4);cursor:pointer;transition:background .15s;flex-shrink:0;display:inline-block}
+    .swt.on{background:var(--b6)}
+    .swt::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(19,32,69,.2)}
+    .swt.on::after{left:20px}
+    .swt:focus-visible{outline:2px solid var(--b6);outline-offset:2px}
+    .fe-footer{display:flex;align-items:center;gap:10px;padding-top:4px}
+    .fe-footer .spacer{flex:1}
+
+    /* ════════ MODAL ════════ */
+    .modal-ov{display:none;position:fixed;inset:0;background:rgba(19,32,69,.42);z-index:4000;align-items:center;justify-content:center;padding:24px}
+    .modal-ov.open{display:flex}
+    .modal{background:#fff;border:1px solid var(--n5);border-radius:12px;box-shadow:0 16px 48px rgba(19,32,69,.28);width:500px;max-width:100%;padding:24px}
+    .modal-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .modal-hd h2{font:700 20px/1.25 var(--font-sans);color:var(--n7);margin:0}
+    .modal-x{width:28px;height:28px;border-radius:6px;border:none;background:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--n5);flex-shrink:0}
+    .modal-x:hover{background:var(--n2);color:var(--n7)}
+    .modal-bd{font:400 14px/1.5 var(--font-sans);color:var(--n6);margin:14px 0 22px}
+    .modal-ft{display:flex;justify-content:flex-end;gap:10px}
+
+    /* ════════ SNACKBAR ════════ */
+    .snack{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--n4);border-left:4px solid var(--g6);color:var(--n7);padding:12px 18px;border-radius:8px;font:500 13px var(--font-sans);box-shadow:0 8px 24px rgba(19,32,69,.24);opacity:0;transition:opacity .2s,transform .2s;z-index:5000;pointer-events:none;max-width:90vw}
+    .snack.info{border-left-color:var(--b6)}
+    .snack svg{flex-shrink:0}
+    .snack.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+
+<!-- ══ TOPBAR (cloned 1:1 from new-notification) ══ -->
+<header class="topbar">
+  <a class="topbar-logo" href="#" aria-label="DispatchTrack Last Mile">
+    <img src="../sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <div class="bell-wrap" style="cursor:pointer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<div class="shell">
+  <!-- ══ SIDEBAR (cloned 1:1 from new-notification) ══ -->
+  <aside class="sidebar">
+  <div class="pg-sidenav">
+  <div class="psn-it" title="Resumen"><svg viewBox="0 0 32 32" fill="currentColor"><rect x="15" y="20" width="2" height="4"/><rect x="20" y="18" width="2" height="6"/><rect x="10" y="14" width="2" height="10"/><path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"/></svg></div>
+  <div class="psn-it" title="Actividad"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></div>
+  <div class="psn-it" title="Rutas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M30,30H22V22h8Zm-6-2h4V24H24Z"/><path d="M20,27H8A6,6,0,0,1,8,15h2v2H8a4,4,0,0,0,0,8H20Z"/><path d="M20,20H12V12h8Zm-6-2h4V14H14Z"/><path d="M24,17H22V15h2a4,4,0,0,0,0-8H12V5H24a6,6,0,0,1,0,12Z"/><path d="M10,10H2V2h8ZM4,8H8V4H4Z"/></svg></div>
+  <div class="psn-it" title="Órdenes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,6H20V4H6A2,2,0,0,0,4,6V22H6V6H20V8h2V6ZM26,10H10A2,2,0,0,0,8,12V28A2,2,0,0,0,10,30H26A2,2,0,0,0,28,28V12A2,2,0,0,0,26,10Zm0,18H10V12H26Z"/></svg></div>
+  <div class="psn-it" title="Flota"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4 16H16V18H4z"/><path d="M2 11H12V13H2z"/><path d="M29.9189,16.6064l-3-7A.9985.9985,0,0,0,26,9H23V7a1,1,0,0,0-1-1H6V8H21V20.5562A3.9924,3.9924,0,0,0,19.1421,23H12.8579a4,4,0,1,0,0,2h6.2842a3.9806,3.9806,0,0,0,7.7158,0H29a1,1,0,0,0,1-1V17A.9965.9965,0,0,0,29.9189,16.6064ZM9,26a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,9,26ZM23,11h2.3408l2.1431,5H23Zm0,15a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,23,26Zm5-3H26.8579A3.9954,3.9954,0,0,0,23,20V18h5Z"/></svg></div>
+  <div class="psn-it" title="Estadísticas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg></div>
+  <div class="psn-it" title="Alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+  <div class="psn-it" title="Clientes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></div>
+  <div class="psn-it" title="Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-it" title="Logística inversa"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,8v2c2.2061,0,4,1.7944,4,4s-1.7939,4-4,4H10v-5l-6,6,6,6v-5H22c3.3086,0,6-2.6914,6-6S25.3086,8,22,8Z"/></svg></div>
+  <div class="psn-it" title="Rendición de Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></div>
+  <div class="psn-it" title="Retiro en tienda"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M28,4H4A2,2,0,0,0,2,6V12a2,2,0,0,0,1,1.72V28a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V13.72A2,2,0,0,0,30,12V6A2,2,0,0,0,28,4ZM4,6H28v6H4ZM18,28H14V22h4Zm9,0H20V22a2,2,0,0,0-2-2H14a2,2,0,0,0-2,2v6H5V14H27Z"/></svg></div>
+  <div class="psn-it" title="Importar"><svg viewBox="0 0 32 32" fill="currentColor"><polygon points="28 19 14.83 19 17.41 16.41 16 15 11 20 16 25 17.41 23.59 14.83 21 28 21 28 19"/><path d="M24,14V10a1,1,0,0,0-.29-.71l-7-7A1,1,0,0,0,16,2H6A2,2,0,0,0,4,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V26H22v2H6V4h8v6a2,2,0,0,0,2,2h6v2Zm-8-4V4.41L21.59,10Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos (nuevo)"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-sep"></div>
+</div>
+
+    <nav class="sb-nav">
+      <div class="sb-group">Cuentas</div>
+      <div class="sb-item">Configuración inicial</div>
+      <div class="sb-group">Usuarios</div>
+      <div class="sb-item">Usuarios web <span class="sb-badge">20</span></div>
+      <div class="sb-item">Usuarios móviles <span class="sb-badge">9</span></div>
+      <div class="sb-group">Gestionar</div>
+      <div class="sb-item">Vehículos</div>
+      <div class="sb-item">Subestados</div>
+      <div class="sb-item">Pruebas de entrega</div>
+      <div class="sb-item">Formularios de ruta</div>
+      <div class="sb-item">Geocercas</div>
+      <div class="sb-item">Agrupaciones</div>
+      <div class="sb-item">Alertas</div>
+      <div class="sb-item">Notificaciones</div>
+      <div class="sb-item">Operación</div>
+      <div class="sb-group">Configuración avanzada</div>
+      <div class="sb-item">Importar órdenes</div>
+      <div class="sb-item active">Campos personalizados</div>
+      <div class="sb-item">Llaves API</div>
+      <div class="sb-item">Webhooks</div>
+      <div class="sb-item">Etiquetas de órdenes</div>
+      <div class="sb-item">Seguridad</div>
+      <div class="sb-group">Widget</div>
+      <div class="sb-item">Seguimiento de órdenes</div>
+      <div class="sb-ver">Versión 2.323.431</div>
+    </nav>
+  </aside>
+
+  <!-- ══ CONTENT ══ -->
+  <main class="content">
+      <div class="content-inner">
+        <div>
+          <div class="pg-title">Campos personalizados</div>
+        </div>
+        <div class="pg-desc">Los campos personalizados te permiten agregar información extra en tus órdenes, ítems, usuarios y más. Revisa nuestro <a href="#">Centro de soporte</a> para más información.</div>
+
+        <!-- filter bar -->
+        <div class="cf-filterbar">
+          <div class="inp-wrap">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="var(--n45)"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.0103,9.0103,0,0,1,4,13Z"/></svg>
+            <input type="text" placeholder="Nombre de campo">
+          </div>
+          <div class="dt-drop-wrap" onclick="dtDrop(this)">
+            <div class="dt-dtrigger"><span class="dt-dlabel">Disponibilidad</span><svg width="14" height="14" viewBox="0 0 32 32" fill="var(--n5)"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg></div>
+            <div class="dt-dmenu"><div class="dt-dopt">Mostrar en web</div><div class="dt-dopt">Mostrar en móvil</div><div class="dt-dopt">Mostrar como columna</div><div class="dt-dopt">Campos destacados</div></div>
+          </div>
+          <button class="btn primary" onclick="snack('Filtros aplicados')">Filtrar</button>
+          <button class="ico-btn" title="Limpiar filtros" onclick="snack('Filtros limpiados','info')"><svg width="20" height="20" viewBox="0 0 32 32" fill="var(--r6)"><path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/><polygon points="22,12 17,16 22,20 22,18 27,18 27,14 22,14"/></svg></button>
+        </div>
+
+        <!-- ══ CATEGORY: ÓRDENES (expanded) ══ -->
+        <section class="cat open" id="cat-ordenes">
+          <div class="cat-head" onclick="toggleCat('cat-ordenes',event)">
+            <div class="cat-titlewrap">
+              <span class="cat-title">Órdenes</span>
+              <span class="cat-count" data-count>4 campos personalizados</span>
+            </div>
+            <div class="cat-actions">
+              <button class="cat-add" onclick="addField('cat-ordenes',event)"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg>Añadir campos personalizados</button>
+              <svg class="cat-chev" viewBox="0 0 32 32" fill="currentColor"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg>
+            </div>
+          </div>
+          <div class="cat-body" id="body-ordenes">
+            <!-- field cards injected by JS -->
+          </div>
+        </section>
+
+        <!-- ══ CATEGORY: ITEMS (empty) ══ -->
+        <section class="cat" id="cat-items">
+          <div class="cat-head" onclick="toggleCat('cat-items',event)">
+            <div class="cat-titlewrap"><span class="cat-title">Items</span><span class="cat-count">0 campos personalizados</span></div>
+            <div class="cat-actions">
+              <button class="cat-add" onclick="snack('Añadir campo a Items')"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg>Añadir campos personalizados</button>
+              <svg class="cat-chev" viewBox="0 0 32 32" fill="currentColor"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg>
+            </div>
+          </div>
+          <div class="cat-body"><div class="cat-empty">Aún no hay campos personalizados en esta categoría.</div></div>
+        </section>
+
+        <!-- ══ CATEGORY: USUARIOS WEB ══ -->
+        <section class="cat" id="cat-uweb">
+          <div class="cat-head" onclick="toggleCat('cat-uweb',event)">
+            <div class="cat-titlewrap"><span class="cat-title">Usuarios web</span><span class="cat-count">12 campos personalizados</span></div>
+            <div class="cat-actions">
+              <button class="cat-add" onclick="snack('Añadir campo a Usuarios web')"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg>Añadir campos personalizados</button>
+              <svg class="cat-chev" viewBox="0 0 32 32" fill="currentColor"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg>
+            </div>
+          </div>
+          <div class="cat-body"><div class="cat-empty">12 campos — expande para gestionarlos (demo enfocada en Órdenes).</div></div>
+        </section>
+
+        <!-- ══ CATEGORY: USUARIOS MÓVILES ══ -->
+        <section class="cat" id="cat-umov">
+          <div class="cat-head" onclick="toggleCat('cat-umov',event)">
+            <div class="cat-titlewrap"><span class="cat-title">Usuarios móviles</span><span class="cat-count">0 campos personalizados</span></div>
+            <div class="cat-actions">
+              <button class="cat-add" onclick="snack('Añadir campo a Usuarios móviles')"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg>Añadir campos personalizados</button>
+              <svg class="cat-chev" viewBox="0 0 32 32" fill="currentColor"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg>
+            </div>
+          </div>
+          <div class="cat-body"><div class="cat-empty">Aún no hay campos personalizados en esta categoría.</div></div>
+        </section>
+
+        <!-- ══ CATEGORY: GPS ══ -->
+        <section class="cat" id="cat-gps">
+          <div class="cat-head" onclick="toggleCat('cat-gps',event)">
+            <div class="cat-titlewrap"><span class="cat-title">GPS</span><span class="cat-count">2 campos personalizados</span></div>
+            <div class="cat-actions">
+              <button class="cat-add" onclick="snack('Añadir campo a GPS')"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg>Añadir campos personalizados</button>
+              <svg class="cat-chev" viewBox="0 0 32 32" fill="currentColor"><path d="M16,22,6,12l1.4-1.4,8.6,8.6,8.6-8.6L26,12Z"/></svg>
+            </div>
+          </div>
+          <div class="cat-body"><div class="cat-empty">2 campos — expande para gestionarlos (demo enfocada en Órdenes).</div></div>
+        </section>
+
+      </div>
+    </main>
+</div>
+
+<!-- ══ WARNING MODAL ══ -->
+<div class="modal-ov" id="warn-modal" onclick="if(event.target===this)closeWarn()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="warn-title">
+    <div class="modal-hd">
+      <h2 id="warn-title">Olvidaste activar la opción de visualización</h2>
+      <button class="modal-x" onclick="closeWarn()" aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"/></svg></button>
+    </div>
+    <div class="modal-bd">¡Las etiquetas solo se visualizan en la aplicación móvil! Creaste etiquetas sin activar la opción de visualización, vuelve a editar y activa esta opción.</div>
+    <div class="modal-ft">
+      <button class="btn outline sm" onclick="saveAnyway()">Guardar de todos modos</button>
+      <button class="btn warn sm" onclick="closeWarn()">Volver a editar</button>
+    </div>
+  </div>
+</div>
+
+<div class="snack" id="snack"></div>
+
+<script>
+  /* ── color palette for etiquetas ── */
+  const PALETTE = ['#6554C0','#4B5564','#00875A','#1F60ED','#DE350B','#FFAB00','#FF6A1F','#6B778C','#0052CC','#36B37E'];
+
+  /* ── seed data for Órdenes ── */
+  let SEED = [
+    {name:'Estados',      web:true,  mob:false, multi:true,  asig:true,  dest:false, col:true,  labels:[{t:'Retiro',c:'#6554C0'},{t:'Entrega',c:'#4B5564'}]},
+    {name:'Temperatura',  web:true,  mob:true,  multi:false, asig:true,  dest:true,  col:false, labels:[{t:'Refrigerado',c:'#1F60ED'}]},
+    {name:'Peso',         web:true,  mob:false, multi:false, asig:false, dest:false, col:false, labels:[]},
+    {name:'Resistencia',  web:true,  mob:true,  multi:true,  asig:false, dest:false, col:false, labels:[{t:'Alta',c:'#DE350B'},{t:'Media',c:'#FFAB00'},{t:'Baja',c:'#36B37E'},{t:'N/A',c:'#6B778C'},{t:'Especial',c:'#6554C0'}]},
+  ];
+
+  /* ── icons ── */
+  const IC = {
+    web:'<path d="M28,4H4A2,2,0,0,0,2,6V24a2,2,0,0,0,2,2h8v2H8v2H24V28H20V26h8a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H28V20H4Z"/>',
+    mob:'<path d="M22,2H10A2,2,0,0,0,8,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V4A2,2,0,0,0,22,2ZM10,4H22V24H10ZM10,28V26H22v2Z"/>',
+    multi:'<path d="M12 8H30V10H12zM12 16H30V18H12zM12 24H30V26H12z"/><path d="M4 7H8V11H4zM4 15H8V19H4zM4 23H8V27H4z"/>',
+    asig:'<path d="M27,22.1413V19a3.0033,3.0033,0,0,0-3-3H17V13h2a2.0023,2.0023,0,0,0,2-2V5a2.0023,2.0023,0,0,0-2-2H13a2.0023,2.0023,0,0,0-2,2v6a2.0023,2.0023,0,0,0,2,2h2v3H8a3.0033,3.0033,0,0,0-3,3v3.1413a4,4,0,1,0,2,0V19a1.0009,1.0009,0,0,1,1-1h7v4.1413a4,4,0,1,0,2,0V18h7a1.0009,1.0009,0,0,1,1,1v3.1413a4,4,0,1,0,2,0ZM13,5h6v6H13ZM8,28a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,8,28Zm8,0a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,16,28Zm10,0a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,26,28Z"/>',
+    star:'<path d="M16,2l3.71,9.86L30,12.49l-8,6.92L24.51,30,16,24.13,7.49,30,10,19.41l-8-6.92,10.29-.63Z"/>',
+    col:'<path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM12,26H4V6h8Zm2,0V6h4V26Zm14,0H20V6h8Z"/>'
+  };
+  function svg(name, cls){ return `<svg class="fc-ico ${cls}" viewBox="0 0 32 32" fill="currentColor">${IC[name]}</svg>`; }
+
+  /* ── render a collapsed field card ── */
+  function fieldCardHTML(f, idx){
+    const chips = f.labels.length
+      ? `<div class="fc-chips">${f.labels.map(l=>`<span class="chip-lbl">${l.t}</span>`).join('')}</div>` : '';
+    return `
+      <div class="fc" draggable="true" data-idx="${idx}">
+        <div class="fc-top">
+          <div class="fc-main">
+            <div class="fc-name">${f.name}</div>
+            <div class="fc-icons">
+              ${svg('web', f.web?'on':'')}
+              ${svg('mob', f.mob?'on':'')}
+              ${svg('multi', f.multi?'on':'')}
+              ${svg('asig', f.asig?'on':'')}
+              ${svg('star','star '+(f.dest?'on':''))}
+              ${svg('col','col '+(f.col?'on':''))}
+            </div>
+          </div>
+          <div class="fc-right">
+            <span class="fc-tags-count">${f.labels.length} ${f.labels.length===1?'etiqueta':'etiquetas'}</span>
+            <div class="fc-menu-wrap">
+              <button class="fc-kebab" onclick="toggleFcMenu(event,this)" aria-label="Acciones de ${f.name}"><svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/></svg></button>
+              <div class="fc-menu">
+                <div class="fc-menu-item" onclick="editField(${idx})"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M2 26H30V28H2zM25.4 9c.8-.8.8-2 0-2.8l-3.6-3.6c-.8-.8-2-.8-2.8 0l-15 15V24h6.4L25.4 9zM20.4 4 24 7.6l-3 3L17.4 7 20.4 4zM6 22v-3.6l10-10 3.6 3.6-10 10H6z"/></svg>Editar campo</div>
+                <div class="fc-menu-item danger" onclick="removeField(${idx})"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M12 12H14V24H12zM18 12H20V24H18z"/><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"/></svg>Eliminar campo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        ${chips}
+        <span class="fc-drag" title="Arrastrar para reordenar"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><circle cx="12" cy="10" r="2"/><circle cx="20" cy="10" r="2"/><circle cx="12" cy="22" r="2"/><circle cx="20" cy="22" r="2"/></svg></span>
+      </div>`;
+  }
+
+  /* ── render edit form ── */
+  function editFormHTML(f, idx){
+    const isNew = idx<0;
+    const labelsHTML = (f.labels||[]).map((l,i)=>etqRowHTML(l,i)).join('');
+    return `
+      <div class="fe" data-edit="${idx}">
+        <div class="fe-req"><b>*</b> Indica que el campo es obligatorio</div>
+        <div class="fld">
+          <label>Nombre del campo personalizado <span class="req">*</span></label>
+          <input class="ti fe-name" type="text" value="${(f.name||'').replace(/"/g,'&quot;')}" placeholder="Ej: Estado" autocomplete="off">
+        </div>
+        <div class="fe-divider"></div>
+        <div class="fe-sec-title">Etiquetas</div>
+        <div class="fe-sec-desc">Permite, al ser agregadas, una mejor visualización para los transportistas al momento de interactuar con los campos personalizados y sus valores.</div>
+        <div class="fe-labels">${labelsHTML}</div>
+        <button class="add-etq" onclick="addEtq(this)"><svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M17 15L17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg>Agregar etiquetas</button>
+        <div class="fe-divider"></div>
+        <div class="tg-row"><span class="swt ${f.web?'on':''}" data-k="web" role="switch" tabindex="0" aria-checked="${!!f.web}" onclick="tgl(this)" onkeydown="swtKey(event,this)"></span><span class="tg-lbl">Mostrar en web</span></div>
+        <div class="tg-row"><span class="swt ${f.mob?'on':''}" data-k="mob" role="switch" tabindex="0" aria-checked="${!!f.mob}" onclick="tgl(this)" onkeydown="swtKey(event,this)"></span><span class="tg-lbl">Mostrar en móvil</span></div>
+        <div class="tg-row"><span class="swt ${f.multi?'on':''}" data-k="multi" role="switch" tabindex="0" aria-checked="${!!f.multi}" onclick="tgl(this)" onkeydown="swtKey(event,this)"></span><span class="tg-lbl">Múltiples valores</span><span class="info-i" data-tip="Permite asignar más de un valor a este campo personalizado.">i</span></div>
+        <div class="tg-row"><span class="swt ${f.asig?'on':''}" data-k="asig" role="switch" tabindex="0" aria-checked="${!!f.asig}" onclick="tgl(this)" onkeydown="swtKey(event,this)"></span><span class="tg-lbl">Mostrar en asignador</span><span class="info-i" data-tip="El campo será visible en el asignador de rutas.">i</span></div>
+        <div class="tg-row"><span class="swt ${f.dest?'on':''}" data-k="dest" role="switch" tabindex="0" aria-checked="${!!f.dest}" onclick="tgl(this)" onkeydown="swtKey(event,this)"></span><span class="tg-lbl">Campo personalizado destacado</span><span class="info-i" data-tip="Resalta este campo en las vistas para encontrarlo más rápido.">i</span></div>
+        <div class="tg-row"><span class="swt ${f.col?'on':''}" data-k="col" role="switch" tabindex="0" aria-checked="${!!f.col}" onclick="tgl(this)" onkeydown="swtKey(event,this)"></span><span class="tg-lbl">Mostrar como columna en el listado de Órdenes</span><span class="info-i" data-tip="La columna será ordenable y filtrable en el Listado de Órdenes. Se aplica a nivel de cuenta para todos los usuarios.">i</span><span class="new-tag">Nuevo</span></div>
+
+        <div class="fe-footer">
+          ${isNew?'':'<button class="btn outline sm" style="color:var(--r6);border-color:var(--r6)" onclick="deleteFromEdit('+idx+')">Eliminar</button>'}
+          <div class="spacer"></div>
+          <button class="btn outline sm" onclick="cancelEdit()">Cancelar</button>
+          <button class="btn primary sm" onclick="saveEdit(${idx})">Guardar</button>
+        </div>
+      </div>`;
+  }
+  function etqRowHTML(l, i){
+    return `
+      <div class="etq-row" style="margin-bottom:12px">
+        <div class="etq-name">
+          <label>Nombre de etiqueta</label>
+          <input type="text" value="${(l.t||'').replace(/"/g,'&quot;')}" placeholder="Ej: Retiro">
+          <svg class="clear-x" viewBox="0 0 32 32" fill="currentColor" onclick="this.previousElementSibling.value=''"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z"/></svg>
+        </div>
+        <button class="etq-del" title="Eliminar etiqueta" onclick="this.closest('.etq-row').remove()"><svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M12 12H14V24H12zM18 12H20V24H18z"/><path d="M4 6V8H6V28a2 2 0 002 2H24a2 2 0 002-2V8h2V6zM8 28V8H24V28zM12 2H20V4H12z"/></svg></button>
+      </div>`;
+  }
+
+  /* ── render Órdenes body ── */
+  function renderOrdenes(){
+    const body = document.getElementById('body-ordenes');
+    body.innerHTML = SEED.map((f,i)=>fieldCardHTML(f,i)).join('');
+    document.querySelector('#cat-ordenes [data-count]').textContent = `${SEED.length} ${SEED.length===1?'campo personalizado':'campos personalizados'}`;
+    body.querySelectorAll('.fc').forEach(bindDrag);
+  }
+
+  /* ── category accordion ── */
+  function toggleCat(id,e){ if(e.target.closest('.cat-add'))return; document.getElementById(id).classList.toggle('open'); }
+
+  /* ── field menu ── */
+  function toggleFcMenu(e,btn){ e.stopPropagation(); const m=btn.nextElementSibling; const o=m.classList.contains('open'); closeFcMenus(); if(!o)m.classList.add('open'); }
+  function closeFcMenus(){ document.querySelectorAll('.fc-menu.open').forEach(m=>m.classList.remove('open')); }
+
+  /* ── edit / add ── */
+  let editingIdx = null;
+  function editField(idx){ closeFcMenus(); openEdit(idx); }
+  function addField(catId,e){ if(e)e.stopPropagation(); const cat=document.getElementById(catId); cat.classList.add('open'); openEdit(-1); }
+  function openEdit(idx){
+    cancelEdit();
+    editingIdx = idx;
+    const f = idx<0 ? {name:'',web:true,mob:false,multi:false,asig:false,dest:false,col:false,labels:[]} : SEED[idx];
+    const body = document.getElementById('body-ordenes');
+    const wrap = document.createElement('div');
+    wrap.innerHTML = editFormHTML(f, idx);
+    const form = wrap.firstElementChild;
+    if(idx<0){ body.appendChild(form); }
+    else {
+      const card = body.querySelector(`.fc[data-idx="${idx}"]`);
+      card.style.display='none';
+      card.after(form);
+    }
+    form.scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(()=>form.querySelector('.fe-name').focus(),60);
+  }
+  function cancelEdit(){
+    const form = document.querySelector('.fe');
+    if(form){ const idx=form.dataset.edit; const card=document.querySelector(`.fc[data-idx="${idx}"]`); if(card)card.style.display=''; form.remove(); }
+    editingIdx=null;
+  }
+  function collectEdit(form){
+    const name = form.querySelector('.fe-name').value.trim();
+    const labels = [...form.querySelectorAll('.etq-row')].map(r=>({t:r.querySelector('.etq-name input').value.trim()})).filter(l=>l.t);
+    const get = k => form.querySelector(`.swt[data-k="${k}"]`).classList.contains('on');
+    return {name, labels, web:get('web'), mob:get('mob'), multi:get('multi'), asig:get('asig'), dest:get('dest'), col:get('col')};
+  }
+  let pendingSave = null;
+  function saveEdit(idx){
+    const form = document.querySelector('.fe');
+    const data = collectEdit(form);
+    const nameInput = form.querySelector('.fe-name');
+    if(!data.name){ nameInput.classList.add('err'); nameInput.focus(); return; }
+    nameInput.classList.remove('err');
+    // warning: labels created but not shown on mobile
+    if(data.labels.length && !data.mob){ pendingSave={idx,data}; openWarn(); return; }
+    commitSave(idx,data);
+  }
+  function commitSave(idx,data){
+    if(idx<0){ SEED.push(data); snack('El campo personalizado fue creado exitosamente.'); }
+    else { SEED[idx]=data; snack('Cambios guardados correctamente.'); }
+    editingIdx=null; renderOrdenes();
+  }
+  function deleteFromEdit(idx){
+    if(confirm(`¿Eliminar el campo personalizado “${SEED[idx].name}”?`)){ SEED.splice(idx,1); cancelEdit(); renderOrdenes(); snack('El campo personalizado ha sido eliminado.','info'); }
+  }
+  function removeField(idx){
+    closeFcMenus();
+    if(confirm(`¿Eliminar el campo personalizado “${SEED[idx].name}”?`)){ SEED.splice(idx,1); renderOrdenes(); snack('El campo personalizado ha sido eliminado.','info'); }
+  }
+
+  /* ── etiquetas ── */
+  function addEtq(btn){ const box=btn.previousElementSibling; const wrap=document.createElement('div'); wrap.innerHTML=etqRowHTML({t:''},box.children.length); box.appendChild(wrap.firstElementChild); }
+
+  /* ── toggles ── */
+  function tgl(el){ el.classList.toggle('on'); el.setAttribute('aria-checked', el.classList.contains('on')); }
+  function swtKey(e,el){ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); el.click(); } }
+
+  /* ── warning modal ── */
+  function openWarn(){ document.getElementById('warn-modal').classList.add('open'); }
+  function closeWarn(){ document.getElementById('warn-modal').classList.remove('open'); pendingSave=null; }
+  function saveAnyway(){ if(pendingSave){ commitSave(pendingSave.idx,pendingSave.data); } document.getElementById('warn-modal').classList.remove('open'); pendingSave=null; }
+
+  /* ── drag reorder ── */
+  let dragEl=null;
+  function bindDrag(card){
+    card.addEventListener('dragstart',e=>{ dragEl=card; card.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+    card.addEventListener('dragend',()=>{ card.classList.remove('dragging'); document.querySelectorAll('.fc.drag-over').forEach(c=>c.classList.remove('drag-over')); });
+    card.addEventListener('dragover',e=>{ e.preventDefault(); if(card!==dragEl)card.classList.add('drag-over'); });
+    card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));
+    card.addEventListener('drop',e=>{
+      e.preventDefault(); card.classList.remove('drag-over');
+      if(!dragEl||dragEl===card)return;
+      const from=+dragEl.dataset.idx, to=+card.dataset.idx;
+      const [moved]=SEED.splice(from,1); SEED.splice(to,0,moved);
+      renderOrdenes(); snack('Orden de campos actualizado');
+    });
+  }
+
+  /* ── misc ── */
+  function dtDrop(el){ const o=el.classList.contains('open'); document.querySelectorAll('.dt-drop-wrap.open').forEach(d=>d.classList.remove('open')); if(!o)el.classList.add('open'); }
+  let snackTimer;
+  function snack(msg,type){ const s=document.getElementById('snack'); s.className='snack'+(type==='info'?' info':''); s.innerHTML=(type==='info'
+      ? '<svg width="18" height="18" viewBox="0 0 32 32" fill="var(--b6)"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/><circle cx="16" cy="11" r="1.5"/><path d="M14 14h2v8h-2z"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 32 32" fill="var(--g6)"><path d="M14,21.414l-5-5L10.413,15,14,18.586,21.585,11,23,12.415Z"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/></svg>')
+      +`<span>${msg}</span>`; s.classList.add('show'); clearTimeout(snackTimer); snackTimer=setTimeout(()=>s.classList.remove('show'),2800); }
+
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.dt-drop-wrap')) document.querySelectorAll('.dt-drop-wrap.open').forEach(d=>d.classList.remove('open'));
+    if(!e.target.closest('.fc-menu-wrap')) closeFcMenus();
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeWarn(); closeFcMenus(); } });
+
+  /* ── init ── */
+  renderOrdenes();
+</script>
+</body>
+</html>
