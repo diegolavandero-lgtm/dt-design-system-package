@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-17T14:24:18.857Z",
+  "generated": "2026-06-17T14:42:33.683Z",
   "days": [
     {
       "date": "2026-06-17",
       "entries": [
+        {
+          "hash": "6caecb0",
+          "type": "update",
+          "section": "Sidebar",
+          "message": "feat(onboarding): unify drawer header template across all sidebar views",
+          "author": "Diego"
+        },
         {
           "hash": "64f4839",
           "type": "update",
