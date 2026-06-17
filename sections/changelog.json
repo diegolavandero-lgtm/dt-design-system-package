@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-17T15:38:57.883Z",
+  "generated": "2026-06-17T17:02:06.248Z",
   "days": [
     {
       "date": "2026-06-17",
       "entries": [
+        {
+          "hash": "b36d916",
+          "type": "update",
+          "section": "General",
+          "message": "feat(charts+monitoring): DS chart components + admin Monitoreo de tutoriales",
+          "author": "Diego"
+        },
         {
           "hash": "792517d",
           "type": "update",
