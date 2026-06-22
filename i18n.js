@@ -21,6 +21,8 @@
 
     "search.placeholder": { "es": "Buscar tokens, componentes…", "en": "Search tokens, components…" },
 
+    "dl.button": { "es": "Descargar para Claude", "en": "Download for Claude" },
+
     "changelog.title": { "es": "Cambios", "en": "Changelog" },
     "changelog.description": { "es": "Versiones publicadas. Los cambios incompatibles se marcan en rojo.", "en": "Versioned releases. Breaking changes flagged in red." },
     "changelog.search.placeholder": { "es": "Buscar en el changelog…", "en": "Search the changelog…" },

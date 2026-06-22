@@ -422,6 +422,10 @@ textarea.hp-text-field__input{resize:vertical;padding-top:0;align-self:auto;min-
     <button data-lang="es" class="active" aria-pressed="true">ES</button>
     <button data-lang="en" aria-pressed="false">EN</button>
   </div>
+  <button id="dl-ds" class="gh-action" title="Descarga un único archivo .md con todos los tokens, componentes, marca y voz para subir a Claude">
+    <svg id="dl-ds-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+    <span id="dl-ds-label" data-i18n="dl.button">Descargar para Claude</span>
+  </button>
   <button class="gh-action">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
     Star <span style="opacity:.6">·</span> 128
@@ -899,7 +903,95 @@ window.addEventListener('DOMContentLoaded', () => {
   buildNav();
   const hash = location.hash.replace('#', '') || 'overview';
   navigate(hash);
+  const dlBtn = document.getElementById('dl-ds');
+  if (dlBtn) dlBtn.addEventListener('click', downloadDesignSystemForClaude);
 });
+
+/* ================================================================
+   DOWNLOAD FOR CLAUDE
+   Bundles every section (tokens, components, brand, voice…) plus the
+   raw CSS variables into a single Markdown file you can drop into a
+   Claude Project so future designs follow the DispatchTrack system.
+================================================================ */
+async function downloadDesignSystemForClaude() {
+  const btn = document.getElementById('dl-ds');
+  const label = document.getElementById('dl-ds-label');
+  const prev = label ? label.textContent : '';
+  if (label) label.textContent = 'Generando…';
+  if (btn) btn.disabled = true;
+
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const parts = [];
+    parts.push('# DispatchTrack — Design System (paquete para Claude)');
+    parts.push('');
+    parts.push('> Sube este archivo a un Claude Project. Es la fuente de verdad del sistema de diseño de DispatchTrack: úsalo para que cualquier diseño, mockup o prototipo respete los tokens, componentes, marca y voz oficiales. No inventes colores, tipografías ni componentes fuera de este documento.');
+    parts.push('');
+    parts.push(`_Generado: ${today} · Fuente: design-system (main)_`);
+    parts.push('');
+
+    // Raw CSS design tokens — the canonical variable values.
+    try {
+      const cssRes = await fetch('colors_and_type.css');
+      if (cssRes.ok) {
+        const css = await cssRes.text();
+        parts.push('---');
+        parts.push('');
+        parts.push('## Tokens CSS (valores canónicos)');
+        parts.push('');
+        parts.push('```css');
+        parts.push(css.trim());
+        parts.push('```');
+        parts.push('');
+      }
+    } catch (e) { console.warn('CSS skipped:', e); }
+
+    // Every navigable section, grouped exactly as in the sidebar.
+    for (const group of NAV) {
+      parts.push('---');
+      parts.push('');
+      parts.push(`# ${group.group}`);
+      parts.push('');
+      for (const item of group.items) {
+        if (!item.path) continue;
+        parts.push(`## ${item.label}`);
+        parts.push('');
+        try {
+          let data = cache[item.id];
+          if (!data) {
+            const res = await fetch(item.path);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            data = await res.json();
+            cache[item.id] = data;
+          }
+          parts.push('```json');
+          parts.push(JSON.stringify(data, null, 2));
+          parts.push('```');
+        } catch (e) {
+          parts.push(`_No se pudo cargar (${item.path}): ${e.message}_`);
+        }
+        parts.push('');
+      }
+    }
+
+    const blob = new Blob([parts.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dispatchtrack-design-system-${today}.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (label) label.textContent = '¡Listo!';
+  } catch (e) {
+    console.error('Download failed:', e);
+    if (label) label.textContent = 'Error';
+  } finally {
+    if (btn) btn.disabled = false;
+    setTimeout(() => { if (label) label.textContent = prev; }, 1800);
+  }
+}
 
 window.addEventListener('hashchange', () => {
   navigate(location.hash.replace('#', '') || 'overview');
