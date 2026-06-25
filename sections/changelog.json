@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-25T20:37:26.321Z",
+  "generated": "2026-06-25T20:56:33.879Z",
   "days": [
     {
       "date": "2026-06-25",
       "entries": [
+        {
+          "hash": "27bcf25",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827 v2: align 2FA wizard steps 2-4 to exact production copy",
+          "author": "Carlos"
+        },
         {
           "hash": "128e3fe",
           "type": "feat",
