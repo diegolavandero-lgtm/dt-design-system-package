@@ -326,6 +326,14 @@
     .wz-code-inp:focus{border:2px solid var(--b6);background:var(--b1)}
     .wz-success-ico{width:64px;height:64px;border-radius:50%;background:var(--g1);color:var(--g6);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
     .wz-success-ico svg{width:34px;height:34px}
+    /* ── row kebab menu (⋮) ── */
+    .row-kebab{position:relative}
+    .row-menu{position:absolute;top:calc(100% - 4px);right:0;z-index:50;background:#fff;border:1px solid var(--n3);border-radius:8px;box-shadow:0 8px 24px rgba(19,32,69,.14);min-width:130px;padding:4px 0}
+    .row-menu-item{padding:9px 16px;font:400 13px var(--font-sans);color:var(--n7);cursor:pointer;white-space:nowrap}
+    .row-menu-item:hover{background:var(--b1);color:var(--b7)}
+    .row-menu-item.danger{color:var(--r6)}
+    .row-menu-item.danger:hover{background:var(--r1);color:var(--r6)}
+    .assoc-subttl{font:700 14px var(--font-sans);color:var(--n7);margin:0 0 12px}
     .toggle-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0}
     .toggle-row+.toggle-row{border-top:1px solid #E1E6ED}
     .toggle-lbl{font:600 13px var(--font-sans);color:var(--n7)}
@@ -848,62 +856,64 @@
       <!-- ══ TAB 1 — Usuarios asociados ══ -->
       <div class="panel" id="panel-1">
 
-        <div class="tab-grid" style="align-items:start">
+        <!-- Card A: ambas tablas -->
+        <div class="card">
+          <div class="card-body">
 
-          <!-- Left: user list -->
-          <div class="card" id="shared-users-card" style="min-height:var(--add-user-form-h,auto)">
-            <div class="card-hdr">
-              <span class="card-ttl">Usuarios asociados</span>
-            </div>
-            <div id="shared-users-empty" class="card-body flush" style="flex:1;display:flex;align-items:center;justify-content:center">
-              <div class="empty-state">
-                <div class="empty-icon">
-                  <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg>
-                </div>
-                <p class="empty-title">Sin usuarios asociados</p>
-                <p class="empty-desc">Usa el formulario para asociar un usuario existente a tu cuenta.</p>
+            <!-- Asociar usuarios -->
+            <p class="assoc-subttl">Asociar usuarios</p>
+            <div id="assoc-empty" class="empty-state" style="padding:24px;display:none">
+              <div class="empty-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg>
               </div>
+              <p class="empty-title">Sin usuarios asociados</p>
+              <p class="empty-desc">Usa el formulario de abajo para asociar un usuario existente a tu cuenta.</p>
             </div>
-            <div id="shared-users-table" class="card-body flush" style="display:none">
+            <div id="assoc-table-wrap">
               <table class="tbl">
-                <thead>
-                  <tr>
-                    <th>Usuario</th>
-                    <th>Estado</th>
-                    <th class="tbl-acts-col">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="shared-users-tbody"></tbody>
+                <thead><tr><th>Nombre</th><th>Correo electrónico</th><th class="tbl-acts-col"></th></tr></thead>
+                <tbody id="assoc-tbody"></tbody>
               </table>
             </div>
-          </div>
 
-          <!-- Right: add linked user form -->
-          <div class="card" id="add-user-form-card">
-            <div class="card-hdr"><span class="card-ttl">Agregar usuario asociado</span></div>
-            <div class="card-body">
-              <div class="bn in" style="margin-bottom:16px">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="#1F60ED"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                <span>Ingresa el nombre de usuario y su contraseña para asociar una cuenta existente a la tuya.</span>
+            <!-- Usuarios externos -->
+            <p class="assoc-subttl" style="margin-top:28px">Usuarios externos que han asociado su usuario</p>
+            <div id="ext-empty" class="empty-state" style="padding:24px;display:none">
+              <div class="empty-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg>
               </div>
-              <div class="form-grid">
-                <div class="form-row">
-                  <label class="lbl" for="add-user-username">Usuario <span class="req">*</span></label>
-                  <div class="inp-wrap"><input id="add-user-username" type="text" placeholder="Nombre de usuario"></div>
-                </div>
-                <div class="form-row">
-                  <label class="lbl" for="add-user-pw">Contraseña <span class="req">*</span></label>
-                  <div class="inp-wrap"><input id="add-user-pw" type="password" placeholder="Contraseña del usuario" autocomplete="off"></div>
-                  <p class="helper">La contraseña del usuario que quieres asociar.</p>
-                </div>
+              <p class="empty-title">Sin usuarios externos</p>
+              <p class="empty-desc">Aquí aparecerán los usuarios que asocien su cuenta a la tuya.</p>
+            </div>
+            <div id="ext-table-wrap">
+              <table class="tbl">
+                <thead><tr><th>Nombre</th><th>Correo electrónico</th><th class="tbl-acts-col"></th></tr></thead>
+                <tbody id="ext-tbody"></tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Card B: agregar usuario existente -->
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Agregar usuario existente</span></div>
+          <div class="card-body">
+            <div class="form-grid-2">
+              <div class="form-row">
+                <label class="lbl" for="add-user-username">Usuario <span class="req">*</span></label>
+                <div class="inp-wrap"><input id="add-user-username" type="text" placeholder="Nombre de usuario"></div>
               </div>
-              <div class="form-actions" style="justify-content:flex-end">
-                <button class="btn primary" onclick="saveSharedUser()">Agregar usuario</button>
+              <div class="form-row">
+                <label class="lbl" for="add-user-pw">Clave <span class="req">*</span></label>
+                <div class="inp-wrap"><input id="add-user-pw" type="password" placeholder="Clave del usuario" autocomplete="off"></div>
               </div>
             </div>
+            <div class="form-actions" style="justify-content:flex-end">
+              <button class="btn primary" onclick="saveSharedUser()">Agregar usuario</button>
+            </div>
           </div>
-
-        </div><!-- end 2-col grid -->
+        </div>
 
       </div>
 
@@ -1353,7 +1363,7 @@
     document.querySelector('.content').classList.toggle('wide', idx === 2);
     renderPageHeader(idx);
     renderHeaderActions(idx);
-    if (idx === 1) requestAnimationFrame(syncSharedUsersHeight);
+    if (idx === 1) refreshAssocEmpty();
   }
   function showFieldError(anchorId, msg) {
     const el = document.getElementById(anchorId);
@@ -1372,52 +1382,66 @@
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2800);
   }
-  function syncSharedUsersHeight() {
-    const formCard = document.getElementById('add-user-form-card');
-    const listCard = document.getElementById('shared-users-card');
-    if (formCard && listCard) listCard.style.minHeight = formCard.offsetHeight + 'px';
+  /* ── Usuarios asociados ── */
+  function kebabCell(canActivate) {
+    return `<td class="tbl-acts-col row-kebab">
+        <button class="tbl-act-btn" title="Acciones" onclick="toggleRowMenu(this)">
+          <svg viewBox="0 0 32 32" fill="currentColor" width="16" height="16"><circle cx="16" cy="8" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/></svg>
+        </button>
+        <div class="row-menu" style="display:none">
+          ${canActivate ? '<div class="row-menu-item" onclick="activateAssocRow(this)">Activar</div>' : ''}
+          <div class="row-menu-item danger" onclick="removeAssocRow(this)">Eliminar</div>
+        </div>
+      </td>`;
   }
-  function toggleAddUser() {
-    const f = document.getElementById('add-user-form');
-    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  function assocRow(nombre, correo, canActivate) {
+    return `<tr><td>${nombre}</td><td class="cell-muted">${correo}</td>${kebabCell(canActivate)}</tr>`;
+  }
+  function toggleRowMenu(btn) {
+    const menu = btn.parentElement.querySelector('.row-menu');
+    const isOpen = menu.style.display !== 'none';
+    document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none');
+    menu.style.display = isOpen ? 'none' : 'block';
+  }
+  function activateAssocRow(item) {
+    item.closest('.row-menu').style.display = 'none';
+    showToast('Usuario activado');
+  }
+  function removeAssocRow(item) {
+    item.closest('tr').remove();
+    refreshAssocEmpty();
+    showToast('Usuario eliminado');
+  }
+  function refreshAssocEmpty() {
+    const a = document.getElementById('assoc-tbody').children.length === 0;
+    document.getElementById('assoc-empty').style.display = a ? 'flex' : 'none';
+    document.getElementById('assoc-table-wrap').style.display = a ? 'none' : 'block';
+    const e = document.getElementById('ext-tbody').children.length === 0;
+    document.getElementById('ext-empty').style.display = e ? 'flex' : 'none';
+    document.getElementById('ext-table-wrap').style.display = e ? 'none' : 'block';
   }
   function saveSharedUser() {
     const userEl = document.getElementById('add-user-username');
     const pwEl   = document.getElementById('add-user-pw');
     const username = userEl ? userEl.value.trim() : '';
     const pw       = pwEl   ? pwEl.value.trim()   : '';
-    clearFieldErrors('add-user-form-card');
-    let hasUserErrors = false;
-    if (!username) { showFieldError('add-user-username', 'Este campo es requerido'); hasUserErrors = true; }
-    if (!pw)       { showFieldError('add-user-pw',       'Ingresa la contraseña');   hasUserErrors = true; }
-    if (hasUserErrors) return;
-    const tbody = document.getElementById('shared-users-tbody');
-    tbody.insertAdjacentHTML('beforeend', `
-      <tr>
-        <td>${username}</td>
-        <td><span class="badge success"><span class="dot"></span>Activo</span></td>
-        <td class="tbl-acts-col"><div class="tbl-acts">
-          <button class="tbl-act-btn" title="Eliminar" onclick="this.closest('tr').remove();checkSharedUsersEmpty()">
-            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg>
-          </button>
-        </div></td>
-      </tr>`);
-    document.getElementById('shared-users-empty').style.display = 'none';
-    document.getElementById('shared-users-table').style.display = 'block';
-    // Sync left card min-height to form height (once, on first add)
-    const formCard = document.getElementById('add-user-form-card');
-    const listCard = document.getElementById('shared-users-card');
-    if (formCard && listCard) listCard.style.minHeight = formCard.offsetHeight + 'px';
+    clearFieldErrors('panel-1');
+    let err = false;
+    if (!username) { showFieldError('add-user-username', 'Este campo es requerido'); err = true; }
+    if (!pw)       { showFieldError('add-user-pw',       'Ingresa la clave');        err = true; }
+    if (err) return;
+    const correo = username.toLowerCase().replace(/\s+/g, '') + '@dispatchtrack.com';
+    document.getElementById('assoc-tbody').insertAdjacentHTML('beforeend', assocRow(username, correo, true));
+    refreshAssocEmpty();
     if (userEl) userEl.value = '';
     if (pwEl)   pwEl.value   = '';
-    clearFieldErrors('add-user-form-card');
+    clearFieldErrors('panel-1');
     showToast('Usuario asociado correctamente');
   }
-  function checkSharedUsersEmpty() {
-    const empty = document.getElementById('shared-users-tbody').children.length === 0;
-    document.getElementById('shared-users-empty').style.display = empty ? 'block' : 'none';
-    document.getElementById('shared-users-table').style.display = empty ? 'none' : 'block';
-  }
+  // cerrar kebab al clicar fuera
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.row-kebab')) document.querySelectorAll('.row-menu').forEach(m => m.style.display = 'none');
+  });
   function updateStrength(input) {
     const v = input.value;
     const bars = ['bar1','bar2','bar3'].map(id => document.getElementById(id));
@@ -1782,6 +1806,11 @@
     if (btn) { btn.textContent = 'Habilitar Verificación'; btn.className = 'btn primary'; btn.setAttribute('onclick', 'openTwofaWizard()'); }
     showToast('Verificación en dos pasos deshabilitada');
   }
+
+  // Seed usuarios asociados (ejemplo, refleja producción)
+  document.getElementById('assoc-tbody').insertAdjacentHTML('beforeend', assocRow('Luis Cáceres', 'luis.caceres+testpj@dispatchtrack.com', true));
+  document.getElementById('ext-tbody').insertAdjacentHTML('beforeend', assocRow('Luis Cáceres', 'luis.caceres+testpj@dispatchtrack.com', false));
+  refreshAssocEmpty();
 
   // Initialize header actions for the default tab (tab 0)
   renderPageHeader(0);
