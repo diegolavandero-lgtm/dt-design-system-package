@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-25T20:09:58.679Z",
+  "generated": "2026-06-25T20:20:21.505Z",
   "days": [
     {
       "date": "2026-06-25",
       "entries": [
+        {
+          "hash": "3a4853b",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827 v2: rename MFA tab to \"Verificación en dos pasos\" (match production)",
+          "author": "Carlos"
+        },
         {
           "hash": "b817cf8",
           "type": "feat",
