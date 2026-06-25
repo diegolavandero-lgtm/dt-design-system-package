@@ -1025,48 +1025,61 @@
 
               <!-- Step 2 -->
               <div class="wz-panel" id="wz-2">
-                <h3>2. Descarga la App</h3>
-                <p>Descarga una app de autenticación en tu smartphone, como <strong>Google Authenticator</strong> o <strong>Authy</strong>. La usarás para generar los códigos de verificación.</p>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
-                  <a class="wz-store" href="#" onclick="return false">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.05 12.04c-.02-2.4 1.96-3.55 2.05-3.6-1.12-1.64-2.86-1.86-3.48-1.89-1.48-.15-2.89.87-3.64.87-.75 0-1.91-.85-3.14-.83-1.62.02-3.11.94-3.94 2.39-1.68 2.92-.43 7.24 1.21 9.61.8 1.16 1.76 2.46 3.01 2.42 1.21-.05 1.67-.78 3.13-.78 1.46 0 1.87.78 3.14.76 1.3-.02 2.12-1.18 2.92-2.35.92-1.35 1.3-2.65 1.32-2.72-.03-.01-2.54-.97-2.57-3.86zM14.62 4.84c.67-.81 1.12-1.94.99-3.06-.96.04-2.12.64-2.81 1.45-.62.72-1.16 1.87-1.01 2.97 1.07.08 2.16-.55 2.83-1.36z"/></svg>
-                    App Store
-                  </a>
-                  <a class="wz-store" href="#" onclick="return false">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3.6 2.3 13.4 12 3.6 21.7c-.3-.2-.5-.6-.5-1.1V3.4c0-.5.2-.9.5-1.1zm11 9.7 2.6-2.6 3.3 1.9c.8.5.8 1.6 0 2l-3.3 1.9-2.6-2.6zM4.9 1.7l8.9 5.1L11.4 9 4.9 1.7zm0 20.6L11.4 15l2.4 2.2-8.9 5.1z"/></svg>
-                    Google Play
-                  </a>
+                <div style="display:flex;gap:32px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+                  <div style="flex:1;min-width:280px">
+                    <h3>2. Descarga la App</h3>
+                    <p>Necesitarás usar una aplicación de verificación como Google Authenticator, Authy o Microsoft Authenticator. Descarga la app desde la tienda de aplicaciones en tu teléfono iOS o Android.</p>
+                    <p style="font:700 14px var(--font-sans);color:var(--n7);margin:0 0 8px">¿Tienes abierta la aplicación?</p>
+                    <p style="margin-bottom:0">Una vez que ya tengas la aplicación descargada y abierta puedes ir al próximo paso.</p>
+                  </div>
+                  <div style="display:flex;gap:18px;flex-shrink:0;padding-top:4px">
+                    <div style="text-align:center;width:92px">
+                      <div style="width:52px;height:52px;border-radius:50%;background:#e7e8eb;display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#5f6368" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5 19 19M19 5l-2.5 2.5M7.5 16.5 5 19"/><circle cx="12" cy="12" r="3"/></svg></div>
+                      <div style="font:400 12px/1.3 var(--font-sans);color:var(--n6)">Google Authenticator</div>
+                    </div>
+                    <div style="text-align:center;width:92px">
+                      <div style="width:52px;height:52px;border-radius:50%;background:#ec1c24;display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2.2"><path d="M12 3a9 9 0 1 0 9 9M12 8v4l3 2"/></svg></div>
+                      <div style="font:400 12px/1.3 var(--font-sans);color:var(--n6)">Authy</div>
+                    </div>
+                    <div style="text-align:center;width:92px">
+                      <div style="width:52px;height:52px;border-radius:8px;background:#0078d4;display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 3l7 3v5c0 4-3 7-7 8-4-1-7-4-7-8V6z"/><path d="M9.5 12l1.8 1.8 3.2-3.6"/></svg></div>
+                      <div style="font:400 12px/1.3 var(--font-sans);color:var(--n6)">Microsoft Authenticator</div>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-actions" style="margin-top:20px;gap:8px;justify-content:flex-start">
-                  <button class="btn" onclick="twofaStep(1)">Volver</button>
-                  <button class="btn primary" onclick="twofaStep(3)">Continuar</button>
+                <div class="form-actions" style="margin-top:24px;justify-content:flex-start">
+                  <button class="btn primary" onclick="twofaStep(3)">Ya descargué la app</button>
                 </div>
               </div>
 
               <!-- Step 3 -->
               <div class="wz-panel" id="wz-3">
-                <h3>3. Escanea el código QR e introduce el código</h3>
-                <p>Abre la app de autenticación, escanea este código QR y luego introduce el código de 6 dígitos que aparece en la app.</p>
-                <div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
-                  <div class="wz-qr">
-                    <svg viewBox="0 0 100 100" width="140" height="140" fill="var(--n7)"><path d="M0 0h40v40H0zM10 10v20h20V10zM60 0h40v40H60zM70 10v20h20V10zM0 60h40v40H0zM10 70v20h20V70z"/><path d="M50 0h8v8h-8zM50 16h8v8h-8zM50 50h8v8h-8zM66 50h8v8h-8zM82 50h8v8h-8zM50 66h8v8h-8zM66 66h8v8h-8zM50 82h8v8h-8zM82 82h8v8h-8zM66 82h8v8h-8z"/></svg>
+                <div style="display:flex;gap:32px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap">
+                  <div style="flex:1;min-width:300px">
+                    <h3>3. Escanea este código QR con tu aplicación de verificación</h3>
+                    <p>Cuando la aplicación lea el código QR, visualizarás tu código de 6 dígitos.</p>
+                    <p style="font:700 14px var(--font-sans);color:var(--n7);margin:0 0 8px">Ingresa el código de 6 dígitos</p>
+                    <p>Introduce el código de la aplicación en el campo para conectar tu teléfono y que el sistema lo recuerde cada vez que inicies sesión.</p>
+                    <div class="inp-wrap" style="max-width:220px"><input id="twofa-code" maxlength="6" inputmode="numeric" placeholder="Código de 6 dígitos" oninput="this.value=this.value.replace(/\D/g,'');document.getElementById('twofa-confirm-btn').disabled=this.value.length!==6"></div>
+                    <div class="form-actions" style="margin-top:24px;justify-content:flex-start">
+                      <button class="btn primary" id="twofa-confirm-btn" onclick="twofaStep(4)" disabled>Conecta el Teléfono</button>
+                    </div>
                   </div>
-                  <div>
-                    <label class="lbl" style="display:block;margin-bottom:6px">Código de verificación</label>
-                    <input class="wz-code-inp" id="twofa-code" maxlength="6" inputmode="numeric" placeholder="000000" oninput="this.value=this.value.replace(/\D/g,'');document.getElementById('twofa-confirm-btn').disabled=this.value.length!==6">
+                  <div style="flex-shrink:0;text-align:center">
+                    <div class="wz-qr">
+                      <svg viewBox="0 0 100 100" width="150" height="150" fill="var(--n7)"><path d="M0 0h40v40H0zM10 10v20h20V10zM60 0h40v40H60zM70 10v20h20V10zM0 60h40v40H0zM10 70v20h20V70z"/><path d="M50 0h8v8h-8zM50 16h8v8h-8zM50 50h8v8h-8zM66 50h8v8h-8zM82 50h8v8h-8zM50 66h8v8h-8zM66 66h8v8h-8zM50 82h8v8h-8zM82 82h8v8h-8zM66 82h8v8h-8z"/></svg>
+                    </div>
+                    <p style="font:400 12px var(--font-sans);color:var(--n5);margin:10px 0 0">¿No puedes escanear el código? <span style="display:inline-flex;width:15px;height:15px;border-radius:50%;background:var(--n3);color:var(--n6);align-items:center;justify-content:center;font:700 10px var(--font-sans);vertical-align:middle">?</span></p>
                   </div>
-                </div>
-                <div class="form-actions" style="margin-top:20px;gap:8px;justify-content:flex-start">
-                  <button class="btn" onclick="twofaStep(2)">Volver</button>
-                  <button class="btn primary" id="twofa-confirm-btn" onclick="twofaStep(4)" disabled>Validar código</button>
                 </div>
               </div>
 
               <!-- Step 4 -->
               <div class="wz-panel" id="wz-4" style="text-align:center;padding-top:12px">
                 <div class="wz-success-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <h3 style="text-align:center">Verificación configurada</h3>
-                <p style="margin:0 auto 18px">Tu cuenta ahora está protegida con verificación en dos pasos. Te pediremos un código cada vez que inicies sesión.</p>
+                <h3 style="text-align:center;color:var(--g6)">Verificación en dos pasos habilitada con éxito.</h3>
+                <div style="display:inline-flex;align-items:center;height:30px;padding:0 16px;border:1px solid var(--g6);border-radius:100px;color:var(--g6);font:600 13px var(--font-sans);margin:4px 0 16px">Habilitada</div>
+                <p style="margin:0 auto 22px;max-width:480px">A partir de este momento tu cuenta está más segura. Recuerda tener tu teléfono cerca cada vez que inicies sesión en la plataforma de DispatchTrack ya que te pediremos ingresar un código de verificación.</p>
                 <div class="form-actions" style="justify-content:center">
                   <button class="btn primary" onclick="finishTwofa()">Finalizar</button>
                 </div>
