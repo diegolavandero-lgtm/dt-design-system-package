@@ -1,0 +1,1687 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Profile Settings v2 — DispatchTrack</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo:#132045;
+      --n1:#F5F6FA; --n2:#F0F2F5; --n3:#E1E6ED; --n4:#C5D2E7; --n45:#8FA0BA;
+      --n5:#67768D; --n6:#4B5564; --n7:#39414D;
+      --b1:#EDF5FF; --b2:#D1E0FF; --b5:#4B82FA; --b6:#1F60ED; --b7:#0052CC;
+      --g1:#E3FCEF; --g5:#36B37E; --g6:#00875A;
+      --r1:#FFEBE6; --r3:#FFBDAD; --r5:#FF5630; --r6:#DE350B;
+      --o1:#FFFAE6; --o5:#FFAB00; --o7:#FF8B00;
+      --font-sans:'DM Sans',system-ui,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:var(--font-sans);color:var(--n7);background:var(--n2);font-size:14px;line-height:1.5}
+
+    /* ════════════════════════
+       TOPBAR — identical to DES-824
+    ════════════════════════ */
+    .topbar{
+      position:sticky;top:0;z-index:200;
+      height:52px;background:#132045;
+      display:flex;align-items:center;
+      padding:0 0 0 16px;
+      flex-shrink:0;
+    }
+    .topbar-logo{
+      display:flex;align-items:center;height:20px;text-decoration:none;
+    }
+    .topbar-logo img{height:20px;width:auto;display:block}
+    .topbar-logo-text{
+      font:700 15px/1 var(--font-sans);color:#fff;letter-spacing:-.02em;
+      display:flex;align-items:center;gap:8px;
+    }
+    .topbar-logo-text span{
+      font-size:12px;font-weight:600;color:#FF6A1F;
+      padding:2px 8px;border-radius:999px;background:rgba(255,106,31,.18);
+    }
+    .topbar-icons{
+      margin-left:auto;display:flex;align-items:center;gap:20px;padding:0 12px;
+    }
+    .topbar-icons svg{
+      width:18px;height:18px;color:rgba(255,255,255,.85);
+      display:block;cursor:pointer;transition:color .12s;flex-shrink:0;
+    }
+    .topbar-icons svg:hover{color:#fff}
+    .bell-wrap{position:relative}
+    .bell-wrap::after{
+      content:'';position:absolute;top:-2px;right:-2px;
+      width:7px;height:7px;border-radius:50%;
+      background:#FF5630;border:1.5px solid #132045;
+    }
+    .topbar-slot{
+      height:52px;width:100px;
+      background:#fff;border-radius:25px 0 0 0;
+      display:flex;align-items:center;justify-content:center;
+      color:#132045;font-size:13px;font-weight:700;
+      flex-shrink:0;margin-left:8px;
+      gap:6px;
+    }
+    .topbar-slot-avatar{
+      width:24px;height:24px;border-radius:50%;
+      background:linear-gradient(135deg,var(--b5),var(--b7));
+      display:flex;align-items:center;justify-content:center;
+      font:700 9px var(--font-sans);color:#fff;
+    }
+
+    /* ════════════════════════
+       LAYOUT SHELL
+    ════════════════════════ */
+    .shell{display:flex;min-height:calc(100vh - 52px)}
+
+    /* ════════════════════════
+       SIDEBAR — two-part (identical to DES-824)
+    ════════════════════════ */
+    .sidebar{display:flex;flex-shrink:0}
+
+    .pg-sidenav{
+      width:52px;background:#fff;border-right:1px solid #E1E6ED;
+      display:flex;flex-direction:column;align-items:center;
+      padding:10px 0 8px;flex-shrink:0;
+      position:sticky;top:52px;height:calc(100vh - 52px);overflow:hidden;
+    }
+    .pg-sidenav .psn-it{
+      width:36px;height:36px;border-radius:30px;
+      display:flex;align-items:center;justify-content:center;
+      color:#0052CC;cursor:pointer;position:relative;flex-shrink:0;
+    }
+    .pg-sidenav .psn-it:hover{background:#EDF5FF}
+    .pg-sidenav .psn-it.psn-sel{
+      background:#EDF5FF;border-radius:0 30px 30px 0;
+      width:47px;align-self:flex-end;
+    }
+    .pg-sidenav .psn-it.psn-sel::before{
+      content:"";position:absolute;left:0;top:5px;bottom:5px;
+      width:3px;background:#4B82FA;border-radius:0 3px 3px 0;
+    }
+    .pg-sidenav .psn-it svg{width:16px;height:16px;fill:currentColor;stroke:none;flex-shrink:0}
+    .pg-sidenav .psn-sep{width:26px;border-top:1px solid #E1E6ED;margin:5px 0;flex-shrink:0}
+    .pg-sidenav .psn-bot{margin-top:auto}
+
+    .sb-nav{
+      width:212px;flex-shrink:0;
+      background:#fff;border-right:1px solid #E1E6ED;
+      overflow-y:auto;padding-bottom:24px;
+    }
+    .sb-nav::-webkit-scrollbar{width:4px}
+    .sb-nav::-webkit-scrollbar-thumb{background:#E1E6ED;border-radius:2px}
+    .sb-group{padding:16px 0 4px 16px;font-size:13px;font-weight:700;color:#39414D}
+    .sb-item{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:7px 12px 7px 24px;font-size:13px;color:#4B5564;
+      cursor:pointer;border-left:2px solid transparent;
+      transition:color .1s,background .1s;line-height:1.3;
+    }
+    .sb-item:hover{color:#0052CC;background:#F5F6FA}
+    .sb-item.active{color:#0052CC;font-weight:700;background:#EDF5FF;border-left-color:#0052CC}
+
+    /* ════════════════════════
+       MAIN
+    ════════════════════════ */
+    .main{flex:1;min-width:0;overflow:auto;display:flex;flex-direction:column}
+
+    /* page header */
+    .page-header{
+      background:#fff;border-bottom:1px solid #E1E6ED;
+      padding:14px 24px;display:flex;align-items:center;gap:12px;
+    }
+    .page-header-avatar{
+      width:40px;height:40px;border-radius:50%;
+      background:linear-gradient(135deg,var(--b5),var(--b7));
+      display:flex;align-items:center;justify-content:center;
+      font:700 15px var(--font-sans);color:#fff;flex-shrink:0;
+    }
+    .page-header-info{flex:1}
+    .page-header-name{font:700 18px var(--font-sans);color:var(--n7)}
+    .page-header-email{font:400 12px var(--font-sans);color:var(--n5);margin-top:1px}
+    .page-header h1{font:700 20px var(--font-sans);color:var(--n7);flex:1;margin:0}
+
+    /* tabs */
+    .tabs-bar{
+      background:#fff;border-bottom:1px solid #E1E6ED;
+      padding:0 24px;display:flex;
+    }
+    .tab-item{
+      padding:10px 16px;font:500 14px var(--font-sans);color:var(--n5);
+      cursor:pointer;border:none;border-bottom:2px solid transparent;
+      background:transparent;transition:color .12s,border-color .12s;
+      white-space:nowrap;
+    }
+    .tab-item:hover{color:var(--n7)}
+    .tab-item.active{color:var(--b7);border-bottom-color:var(--b7);font-weight:700}
+
+    /* content */
+    .content{padding:20px 24px}
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* ════════════════════════
+       CARDS
+    ════════════════════════ */
+    .card{
+      background:#fff;border:1px solid #E1E6ED;
+      border-radius:8px;margin-bottom:16px;overflow:hidden;
+      display:flex;flex-direction:column;
+    }
+    .card-hdr{
+      padding:10px 20px;border-bottom:1px solid #E1E6ED;
+      background:#FAFBFD;display:flex;align-items:center;justify-content:space-between;
+    }
+    .card-ttl{font:700 13px var(--font-sans);color:var(--n7)}
+    .card-body{padding:20px}
+    .card-body.flush{padding:0}
+
+    /* ════════════════════════
+       FORM — alineado DS
+       .form-row = field wrapper (.fld en DS)
+       .form-grid = two-column grid
+    ════════════════════════ */
+    .form-row{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
+    .form-row:last-of-type{margin-bottom:0}
+    /* Two-column grid — patrón DS: grid-template-columns:1fr 1fr, gap:14px 20px */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
+    .form-grid .form-row.full{grid-column:1/-1}
+    .lbl{font:700 13px var(--font-sans);color:var(--n7)}
+    .lbl .req,.req{color:var(--r5);margin-left:2px}
+    /* inputs — DS tokens: h:32px · radius:6px · font:14px · focus: 2px solid var(--b6) */
+    .inp-wrap{
+      display:flex;align-items:center;gap:8px;
+      border:1px solid var(--n3);border-radius:6px;
+      background:#fff;padding:0 10px;height:32px;
+      width:100%;box-sizing:border-box;min-width:0;
+    }
+    .inp-wrap:focus-within{border:2px solid var(--b6);padding:0 9px}
+    .inp-wrap input{
+      border:0;outline:0;flex:1;min-width:0;
+      font:400 14px var(--font-sans);color:var(--n7);background:transparent;
+    }
+    .inp-wrap input::placeholder{color:var(--n45)}
+    .inp-wrap input:disabled{color:var(--n5);cursor:not-allowed}
+    /* input directo (contraseñas, etc.) */
+    .inp{
+      width:100%;height:32px;
+      border:1px solid var(--n3);border-radius:6px;
+      background:#fff;padding:0 10px;
+      font:400 14px var(--font-sans);color:var(--n7);
+      outline:none;box-sizing:border-box;
+    }
+    .inp:focus{border:2px solid var(--b6)}
+    .inp::placeholder{color:var(--n45)}
+    .inp:disabled{background:var(--n1);color:var(--n5);cursor:not-allowed}
+    /* dt-drop-wrap — DS dropdown (reemplaza <select>) */
+    .dt-drop-wrap{position:relative}
+    .dt-dtrigger{
+      display:flex;align-items:center;height:32px;padding:0 10px;
+      border:1px solid var(--n3);border-radius:6px;background:#fff;
+      cursor:pointer;gap:6px;font:400 14px var(--font-sans);color:var(--n7);
+    }
+    .dt-dtrigger:hover{background:var(--n2)}
+    .dt-drop-wrap.open .dt-dtrigger{border:2px solid var(--b6);padding:0 9px}
+    .dt-dlabel{flex:1}
+    .dt-dmenu{
+      display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;
+      background:#fff;border:1px solid var(--n3);border-radius:6px;
+      box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:100;padding:4px 0;
+    }
+    .dt-drop-wrap.open .dt-dmenu{display:block}
+    .dt-dopt{
+      height:36px;padding:0 12px;display:flex;align-items:center;
+      font:400 14px var(--font-sans);color:var(--n7);cursor:pointer;
+    }
+    .dt-dopt:hover{background:var(--b1);color:var(--b7)}
+    .dt-dopt.selected{font-weight:700;color:var(--b7)}
+    .helper{font:400 11px var(--font-sans);color:var(--n5)}
+    .form-actions{
+      display:flex;gap:8px;justify-content:flex-end;
+      padding-top:16px;border-top:1px solid #E1E6ED;margin-top:16px;
+    }
+
+    /* ════════════════════════
+       BUTTONS — from DES-824
+    ════════════════════════ */
+    .btn{
+      font-size:14px;font-weight:700;font-family:inherit;
+      padding:0 16px;border-radius:50px;height:32px;
+      border:1px solid #1F60ED;background:#fff;color:#1F60ED;
+      cursor:pointer;transition:background .12s,color .12s,border-color .12s;
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:6px;white-space:nowrap;line-height:1;
+    }
+    .btn:hover{background:#EDF5FF}
+    .btn.primary{background:#4B82FA;color:#fff;border-color:#4B82FA}
+    .btn.primary:hover{background:#1F60ED;border-color:#1F60ED}
+    .btn.primary:active{background:#0052CC;border-color:#0052CC}
+    .btn.primary:disabled{background:#A8C3FD;border-color:#A8C3FD;cursor:not-allowed;pointer-events:none;opacity:1}
+    .btn.ghost{background:transparent;border-color:var(--n3);color:var(--n6)}
+    .btn.ghost:hover{background:var(--n2);border-color:var(--n4)}
+    .btn.danger{background:#fff;color:var(--r6);border-color:var(--r6)}
+    .btn.danger:hover{background:var(--r1)}
+
+    /* ════════════════════════
+       BADGES
+    ════════════════════════ */
+    .badge{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:2px 9px;border-radius:999px;
+      font:600 11px var(--font-sans);
+    }
+    .badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+    .badge.success{background:var(--g1);color:var(--g6)}
+    .badge.neutral{background:var(--n2);color:var(--n6)}
+
+    /* ════════════════════════
+       SWITCH — from DES-824
+    ════════════════════════ */
+    .swt{
+      width:34px;height:20px;border-radius:999px;background:#C5D2E7;
+      position:relative;cursor:pointer;flex-shrink:0;transition:background .15s;
+    }
+    .swt.on{background:#0052CC}
+    .swt::after{
+      content:'';position:absolute;top:2px;left:2px;
+      width:16px;height:16px;border-radius:50%;
+      background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2);
+    }
+    .swt.on::after{left:16px}
+    .swt:focus-visible{outline:2px solid var(--b6);outline-offset:2px}
+    .field-error{font:400 11px/1 var(--font-sans);color:var(--r6);margin-top:4px}
+    /* day-of-week picker */
+    .days-row{display:flex;gap:6px;flex-wrap:wrap}
+    .day-pill{width:38px;height:32px;border-radius:6px;border:1px solid var(--n3);background:#fff;
+      font:600 12px var(--font-sans);color:var(--n6);cursor:pointer;display:inline-flex;
+      align-items:center;justify-content:center;transition:background .12s,border-color .12s,color .12s;user-select:none}
+    .day-pill:hover{background:var(--n2);border-color:var(--n4)}
+    .day-pill.on{background:var(--b6);border-color:var(--b6);color:#fff}
+    .day-pill:focus-visible{outline:2px solid var(--b6);outline-offset:2px}
+    /* confirmed-email inline badge */
+    .mail-status{display:inline-flex;align-items:center;gap:4px;font:600 11px var(--font-sans);margin-top:6px}
+    .mail-status.ok{color:var(--g6)}
+    .mail-status.no{color:var(--o5)}
+    .mail-status svg{width:13px;height:13px;fill:currentColor}
+    .toggle-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0}
+    .toggle-row+.toggle-row{border-top:1px solid #E1E6ED}
+    .toggle-lbl{font:600 13px var(--font-sans);color:var(--n7)}
+    .toggle-desc{font:400 12px var(--font-sans);color:var(--n5);margin-top:2px}
+
+    /* ════════════════════════
+       PHOTO
+    ════════════════════════ */
+    /* ════════════════════════
+       PHOTO UPLOAD — centrado moderno
+    ════════════════════════ */
+    .photo-upload{
+      display:flex;flex-direction:column;align-items:center;
+      gap:12px;padding:24px 20px;background:var(--n2);
+      border-radius:8px;border:1px solid var(--n3);
+      transition:border-color .15s,background .15s;
+    }
+    .photo-upload.drag-over{border-color:var(--b5);background:var(--b1)}
+    .photo-circle-wrap{
+      position:relative;width:88px;height:88px;
+      border-radius:50%;cursor:pointer;flex-shrink:0;
+    }
+    .photo-circle{
+      width:88px;height:88px;border-radius:50%;
+      background:var(--n3);display:flex;align-items:center;
+      justify-content:center;color:var(--n5);overflow:hidden;
+      background-size:cover;background-position:center;
+    }
+    .photo-circle-overlay{
+      position:absolute;inset:0;border-radius:50%;
+      background:rgba(19,32,69,.6);
+      display:flex;flex-direction:column;align-items:center;
+      justify-content:center;gap:3px;color:#fff;
+      font:600 10px var(--font-sans);letter-spacing:.03em;
+      opacity:0;transition:opacity .18s;pointer-events:none;
+    }
+    .photo-circle-wrap:hover .photo-circle-overlay{opacity:1}
+    .photo-av{
+      width:88px;height:88px;border-radius:50%;
+      background:var(--n3);display:flex;align-items:center;
+      justify-content:center;color:var(--n5);flex-shrink:0;
+      font:700 26px var(--font-sans);
+    }
+    .photo-replace-btn{
+      display:inline-flex;align-items:center;gap:5px;
+      background:none;border:none;cursor:pointer;padding:0;
+      font:600 13px var(--font-sans);color:var(--b6);
+      transition:color .12s;
+    }
+    .photo-replace-btn:hover{color:var(--b7)}
+    .photo-hint-txt{font:400 11px var(--font-sans);color:var(--n5)}
+    .photo-preview-wrap{position:relative;flex-shrink:0}
+
+    /* ════════════════════════
+       PW STRENGTH
+    ════════════════════════ */
+    .pw-bars{display:flex;gap:4px;margin-top:6px}
+    .pw-bar{height:3px;flex:1;border-radius:2px;background:#E1E6ED;transition:background .2s}
+    .pw-bar.weak{background:var(--r5)}
+    .pw-bar.med{background:var(--o5)}
+    .pw-bar.strong{background:var(--g5)}
+
+    /* ════════════════════════
+       INFO BANNER
+    ════════════════════════ */
+    .bn{display:flex;gap:9px;padding:9px 12px;border-radius:4px;align-items:flex-start;font:400 12px/1.4 var(--font-sans);color:var(--n7)}
+    .bn svg{flex-shrink:0;margin-top:1px}
+    .bn.ok{background:var(--g1);border-left:3px solid var(--g6)}
+    .bn.wr{background:var(--o1);border-left:3px solid var(--o5)}
+    .bn.er{background:var(--r1);border-left:3px solid var(--r6)}
+    .bn.in{background:var(--b1);border-left:3px solid var(--b6)}
+
+    /* 2FA info card */
+    .twofa-body{display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;gap:20px;padding:32px 24px;flex:1}
+    .twofa-icon-lg{width:64px;height:64px;border-radius:16px;background:var(--b1);border:1px solid var(--b2);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .twofa-icon-lg svg{width:30px;height:30px;stroke:#1F60ED;fill:none}
+    .twofa-body h3{font:700 15px var(--font-sans);color:var(--n7);margin:0}
+    .twofa-body p{font:400 13px var(--font-sans);color:var(--n5);line-height:1.6;margin:0;max-width:280px}
+
+    /* ════════════════════════
+       TABLE
+    ════════════════════════ */
+    .dt-table{width:100%;border-collapse:collapse}
+    .dt-table th{
+      font:700 10px var(--font-sans);color:var(--n5);
+      text-align:left;padding:8px 16px;
+      border-bottom:1px solid #E1E6ED;
+      text-transform:uppercase;letter-spacing:.05em;
+    }
+    .dt-table td{
+      font:400 13px var(--font-sans);color:var(--n7);
+      padding:10px 16px;border-bottom:1px solid #F0F2F5;
+    }
+    .dt-table tr:last-child td{border-bottom:none}
+    .dt-table tbody tr:hover td{background:var(--n1)}
+    .user-cell{display:flex;align-items:center;gap:8px}
+    .user-av-sm{
+      width:26px;height:26px;border-radius:50%;
+      background:var(--b1);display:flex;align-items:center;justify-content:center;
+      font:700 10px var(--font-sans);color:var(--b7);flex-shrink:0;
+    }
+    .tbl-footer{
+      padding:10px 16px;border-top:1px solid #E1E6ED;
+      font:400 12px var(--font-sans);color:var(--n5);
+    }
+
+    /* ════════════════════════
+       EMPTY STATE
+    ════════════════════════ */
+    .empty-state{
+      padding:48px 24px;text-align:center;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+    }
+    .empty-icon{
+      width:44px;height:44px;border-radius:8px;background:var(--n2);
+      display:flex;align-items:center;justify-content:center;color:var(--n45);
+    }
+    .empty-icon svg{width:22px;height:22px;fill:currentColor;stroke:none}
+    .empty-title{font:700 14px var(--font-sans);color:var(--n7)}
+    .empty-desc{font:400 13px var(--font-sans);color:var(--n5);max-width:260px;line-height:1.5}
+
+    /* divider */
+    .divider{height:1px;background:#E1E6ED;margin:16px 0}
+
+    /* ════════════════════════
+       TOAST
+    ════════════════════════ */
+    .toast{
+      position:fixed;bottom:24px;right:24px;
+      background:var(--n7);color:#fff;
+      padding:10px 18px;border-radius:6px;
+      font:500 13px var(--font-sans);
+      display:flex;align-items:center;gap:8px;
+      box-shadow:0 4px 12px rgba(19,32,69,.18);
+      opacity:0;transform:translateY(8px);
+      transition:opacity .2s,transform .2s;
+      pointer-events:none;z-index:999;
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
+    .toast svg{width:15px;height:15px;stroke:var(--g5);fill:none;flex-shrink:0}
+
+    /* ════════════════════════
+       DS TABLE — tokens from table.json
+       cellHeight:44px · headerBg:N3 · rowHover:N2 · radius:8px
+    ════════════════════════ */
+    /* ── DS TABLE (from index.html) ── */
+    .tbl{width:100%;border-collapse:collapse;font:400 13px var(--font-sans);color:var(--n7)}
+    .tbl-wrap>.tbl{width:auto;min-width:100%}
+    .tbl thead th{background:var(--n3);font:700 13px var(--font-sans);text-align:left;padding:10px 16px;border-bottom:1px solid var(--n4);color:var(--n7);white-space:nowrap;min-width:110px}
+    .tbl td{padding:10px 16px;border-bottom:1px solid var(--n3);vertical-align:middle;min-width:110px;white-space:nowrap}
+    .tbl tr:last-child td{border-bottom:0}
+    .tbl tr:hover td{background:var(--n2)}
+    .tbl tr.sel td{background:var(--b1)}
+    .tbl .lnk,.tbl td.cell-lnk{color:var(--b7);font-weight:600;cursor:pointer}
+    .tbl td.cell-num{text-align:right;font-variant-numeric:tabular-nums}
+    .tbl td.cell-muted{color:var(--n5)}
+    .tbl .tbl-acts{display:flex;align-items:center;gap:1px;justify-content:center}
+    .tbl .tbl-act-btn{width:26px;height:26px;border:none;background:none;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n5);padding:0}
+    .tbl .tbl-act-btn:hover{background:var(--n2);color:var(--n7)}
+    .tbl th .tbl-sort{margin-left:5px;vertical-align:middle;opacity:.55}
+    .tbl-outer{position:relative}
+    .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tbl-wrap::-webkit-scrollbar{height:5px}
+    .tbl-wrap::-webkit-scrollbar-track{background:transparent}
+    .tbl-wrap::-webkit-scrollbar-thumb{background:transparent;border-radius:3px}
+    .tbl-outer:hover .tbl-wrap::-webkit-scrollbar-track{background:var(--n2)}
+    .tbl-outer:hover .tbl-wrap::-webkit-scrollbar-thumb{background:var(--n4);border-radius:3px}
+    .tbl th.tbl-acts-col{position:sticky;right:0;z-index:2;width:82px;min-width:82px;max-width:82px;background:var(--n3);box-shadow:-6px 0 12px -6px rgba(0,0,0,.14);text-align:center;padding:10px 4px}
+    .tbl td.tbl-acts-col{position:sticky;right:0;z-index:1;width:82px;min-width:82px;max-width:82px;background:#fff;box-shadow:-6px 0 12px -6px rgba(0,0,0,.10);text-align:center}
+    .tbl th.tbl-acts-col::before,.tbl td.tbl-acts-col::before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:1px;pointer-events:none}
+    .tbl th.tbl-acts-col::before{background:var(--n4)}
+    .tbl td.tbl-acts-col::before{background:var(--n3)}
+
+    /* ── EDIT REPORT PAGE ── */
+    .pg-back-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;
+      border-radius:50px;border:1px solid var(--n3);background:#fff;
+      font:500 13px var(--font-sans);color:var(--n5);cursor:pointer;transition:all .12s}
+    .pg-back-btn:hover{border-color:var(--b5);color:var(--b6);background:var(--b1)}
+    .pg-back-btn svg{flex-shrink:0}
+    .pg-edit-hdr{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .pg-edit-title{font:700 18px/1 var(--font-sans);color:var(--n7)}
+    .pg-edit-sub{font:400 13px var(--font-sans);color:var(--n5);margin-top:2px}
+    .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-grid-full{grid-column:1/-1}
+
+    /* ════ Two-column card layout ════ */
+    .tab-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+    /* Form grids inside tab-grid cards are always single column —
+       a half-viewport card never has enough room for two input columns. */
+    .tab-grid .form-grid,
+    .tab-grid .form-grid-2{grid-template-columns:1fr}
+    .tab-grid .form-grid .form-row.full{grid-column:1}
+
+    /* ════ Responsive — desktop breakpoint ════
+       Chrome fijo: sidebar 52px + subnav 212px + padding 48px = 312px
+       Below 960px the side-by-side cards get too narrow. */
+    @media (max-width:960px){
+      .tab-grid{grid-template-columns:1fr}
+      .form-grid,.form-grid-2{grid-template-columns:1fr}
+      .form-grid .form-row.full{grid-column:1}
+    }
+    .danger-zone{border:1px solid var(--r3);border-radius:8px;overflow:hidden;margin-top:20px}
+    .danger-zone-hdr{padding:12px 20px;background:var(--r1);border-bottom:1px solid var(--r3);
+      display:flex;align-items:center;justify-content:space-between}
+    .danger-zone-ttl{font:700 13px var(--font-sans);color:var(--r6)}
+    .danger-zone-body{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .danger-zone-desc{font:400 13px var(--font-sans);color:var(--n6)}
+
+    /* ── USER DROPDOWN MENU ── */
+    .user-menu-wrap{position:relative}
+    .user-menu-wrap .topbar-user-btn{cursor:pointer;display:flex;align-items:center;justify-content:center;
+      width:32px;height:32px;border-radius:50%;transition:background .15s}
+    .user-menu-wrap .topbar-user-btn:hover{background:rgba(255,255,255,.15)}
+    .user-menu-wrap .topbar-user-btn.active{background:rgba(255,255,255,.20)}
+    .user-dropdown{display:none;position:absolute;top:calc(100% + 10px);right:0;
+      background:#fff;border:1px solid var(--n3);border-radius:10px;
+      box-shadow:0 8px 24px rgba(19,32,69,.18);z-index:3000;min-width:220px;overflow:hidden}
+    .user-dropdown.open{display:block}
+    .user-dropdown-hdr{padding:14px 16px;border-bottom:1px solid var(--n3);
+      display:flex;align-items:center;gap:10px}
+    .user-dropdown-avatar{width:36px;height:36px;border-radius:50%;background:var(--b6);
+      color:#fff;font:700 14px/1 var(--font-sans);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .user-dropdown-name{font:600 13px/1.3 var(--font-sans);color:var(--n7)}
+    .user-dropdown-email{font:400 12px/1.3 var(--font-sans);color:var(--n5);margin-top:2px}
+    .user-dropdown-divider{height:1px;background:var(--n3)}
+    .user-dropdown-item{display:flex;align-items:center;gap:10px;height:40px;padding:0 16px;
+      cursor:pointer;font:400 14px/1 var(--font-sans);color:var(--n7);transition:background .12s;
+      text-decoration:none}
+    .user-dropdown-item:hover{background:var(--n2)}
+    .user-dropdown-item svg{width:16px;height:16px;flex-shrink:0;color:var(--n5)}
+    .user-dropdown-item.danger{color:var(--r6)}
+    .user-dropdown-item.danger:hover{background:var(--r1)}
+    .user-dropdown-item.danger svg{color:var(--r6)}
+
+    /* ════════════════════════
+       MODAL — DS pattern
+    ════════════════════════ */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(19,32,69,.45);
+      display:flex;align-items:center;justify-content:center;
+      z-index:2000;opacity:0;pointer-events:none;transition:opacity .2s;
+    }
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal{
+      background:#fff;border-radius:4px;width:560px;max-width:calc(100vw - 48px);
+      box-shadow:0 8px 32px rgba(19,32,69,.18);
+      transform:translateY(12px);transition:transform .2s;
+      max-height:calc(100vh - 80px);overflow-y:auto;
+    }
+    .modal-overlay.open .modal{transform:translateY(0)}
+    .modal-hdr{
+      padding:18px 24px 16px;border-bottom:1px solid var(--n3);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .modal-title{font:700 16px var(--font-sans);color:var(--n7)}
+    .modal-close{
+      width:28px;height:28px;border-radius:4px;border:none;background:none;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      color:var(--n5);transition:background .1s,color .1s;
+    }
+    .modal-close:hover{background:var(--n2);color:var(--n7)}
+    .modal-close svg{width:16px;height:16px;stroke:currentColor;fill:none}
+    .modal-body{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+    .modal-footer{
+      padding:14px 24px;border-top:1px solid var(--n3);
+      display:flex;justify-content:flex-end;gap:8px;
+    }
+    /* recipient chips inside input */
+    .chip-input-wrap{
+      min-height:32px;border:1px solid var(--n3);border-radius:6px;background:#fff;
+      padding:4px 8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;cursor:text;
+    }
+    .chip-input-wrap:focus-within{border:2px solid var(--b6);padding:3px 7px}
+    .chip-input-wrap input{
+      border:none;outline:none;font:400 14px var(--font-sans);color:var(--n7);
+      background:transparent;min-width:140px;flex:1;height:24px;
+    }
+    .chip-input-wrap input::placeholder{color:var(--n45)}
+    .email-chip{
+      display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;
+      background:var(--b1);border:1px solid var(--b3);border-radius:4px;
+      font:400 12px var(--font-sans);color:var(--b7);white-space:nowrap;
+    }
+    .email-chip button{
+      background:none;border:none;cursor:pointer;padding:0;
+      display:flex;align-items:center;color:var(--b5);line-height:1;font-size:14px;
+    }
+    .email-chip button:hover{color:var(--r6)}
+  </style>
+</head>
+<body>
+
+<!-- ══ TOPBAR — copiado literal de DES-824 ══ -->
+<header class="topbar">
+  <a class="topbar-logo" href="#" aria-label="DispatchTrack Last Mile">
+    <img src="https://dt-design-system-package.pages.dev/sections/assets/logos/lastmile-desktop-white.svg" alt="DispatchTrack Last Mile">
+  </a>
+  <div class="topbar-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <div class="bell-wrap" style="cursor:pointer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <div class="user-menu-wrap">
+      <div class="topbar-user-btn" id="topbar-user-btn" onclick="toggleUserMenu()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-dropdown" id="user-dropdown">
+        <div class="user-dropdown-hdr">
+          <div class="user-dropdown-avatar">SA</div>
+          <div>
+            <div class="user-dropdown-name">soporte+arsa</div>
+            <div class="user-dropdown-email">soporte+arsa@beettrack.com</div>
+          </div>
+        </div>
+        <div class="user-dropdown-divider"></div>
+        <div class="user-dropdown-item" onclick="goToProfileTab()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Configuración de perfil
+        </div>
+        <div class="user-dropdown-divider"></div>
+        <div class="user-dropdown-item danger" onclick="closeUserMenu();showToast('Sesión cerrada')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar sesión
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="topbar-slot">DT</div>
+</header>
+
+<!-- ══ SHELL ══ -->
+<div class="shell">
+
+<!-- ══ SIDEBAR — copiado literal de DES-824 ══ -->
+<aside class="sidebar">
+  <div class="pg-sidenav">
+  <div class="psn-it" title="Resumen"><svg viewBox="0 0 32 32" fill="currentColor"><rect x="15" y="20" width="2" height="4"/><rect x="20" y="18" width="2" height="6"/><rect x="10" y="14" width="2" height="10"/><path d="M25,5H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2H25a2,2,0,0,0,2-2V7A2,2,0,0,0,25,5ZM12,4h8V8H12ZM25,28H7V7h3v3H22V7h3Z"/></svg></div>
+  <div class="psn-it" title="Actividad"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></div>
+  <div class="psn-it" title="Rutas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M30,30H22V22h8Zm-6-2h4V24H24Z"/><path d="M20,27H8A6,6,0,0,1,8,15h2v2H8a4,4,0,0,0,0,8H20Z"/><path d="M20,20H12V12h8Zm-6-2h4V14H14Z"/><path d="M24,17H22V15h2a4,4,0,0,0,0-8H12V5H24a6,6,0,0,1,0,12Z"/><path d="M10,10H2V2h8ZM4,8H8V4H4Z"/></svg></div>
+  <div class="psn-it" title="Órdenes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,6H20V4H6A2,2,0,0,0,4,6V22H6V6H20V8h2V6ZM26,10H10A2,2,0,0,0,8,12V28A2,2,0,0,0,10,30H26A2,2,0,0,0,28,28V12A2,2,0,0,0,26,10Zm0,18H10V12H26Z"/></svg></div>
+  <div class="psn-it" title="Flota"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M4 16H16V18H4z"/><path d="M2 11H12V13H2z"/><path d="M29.9189,16.6064l-3-7A.9985.9985,0,0,0,26,9H23V7a1,1,0,0,0-1-1H6V8H21V20.5562A3.9924,3.9924,0,0,0,19.1421,23H12.8579a4,4,0,1,0,0,2h6.2842a3.9806,3.9806,0,0,0,7.7158,0H29a1,1,0,0,0,1-1V17A.9965.9965,0,0,0,29.9189,16.6064ZM9,26a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,9,26ZM23,11h2.3408l2.1431,5H23Zm0,15a2,2,0,1,1,2-2A2.0023,2.0023,0,0,1,23,26Zm5-3H26.8579A3.9954,3.9954,0,0,0,23,20V18h5Z"/></svg></div>
+  <div class="psn-it" title="Estadísticas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg></div>
+  <div class="psn-it" title="Alertas"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M28.7,24.9,26,20.4V14a10,10,0,1,0-20,0v6.4l-2.7,4.5A1,1,0,0,0,4,26H28A1,1,0,0,0,28.7,24.9ZM5.7,24l2.3-3.9V14a8,8,0,1,1,16,0v6.1L26.3,24ZM16,30a4,4,0,0,0,3.46-2H12.54A4,4,0,0,0,16,30Z"/></svg></div>
+  <div class="psn-it" title="Clientes"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></div>
+  <div class="psn-it" title="Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-it" title="Logística inversa"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M22,8v2c2.2061,0,4,1.7944,4,4s-1.7939,4-4,4H10v-5l-6,6,6,6v-5H22c3.3086,0,6-2.6914,6-6S25.3086,8,22,8Z"/></svg></div>
+  <div class="psn-it" title="Rendición de Documentos"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></div>
+  <div class="psn-it" title="Retiro en tienda"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M28,4H4A2,2,0,0,0,2,6V12a2,2,0,0,0,1,1.72V28a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2V13.72A2,2,0,0,0,30,12V6A2,2,0,0,0,28,4ZM4,6H28v6H4ZM18,28H14V22h4Zm9,0H20V22a2,2,0,0,0-2-2H14a2,2,0,0,0-2,2v6H5V14H27Z"/></svg></div>
+  <div class="psn-it" title="Importar"><svg viewBox="0 0 32 32" fill="currentColor"><polygon points="28 19 14.83 19 17.41 16.41 16 15 11 20 16 25 17.41 23.59 14.83 21 28 21 28 19"/><path d="M24,14V10a1,1,0,0,0-.29-.71l-7-7A1,1,0,0,0,16,2H6A2,2,0,0,0,4,4V28a2,2,0,0,0,2,2H22a2,2,0,0,0,2-2V26H22v2H6V4h8v6a2,2,0,0,0,2,2h6v2Zm-8-4V4.41L21.59,10Z"/></svg></div>
+  <div class="psn-it" title="Módulo de Costos (nuevo)"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M21,12V10H17V7H15v3H13a2.002,2.002,0,0,0-2,2v3a2.002,2.002,0,0,0,2,2h6v3H11v2h4v3h2V22h2a2.0023,2.0023,0,0,0,2-2V17a2.002,2.002,0,0,0-2-2H13V12Z"/><path d="M16,4A12,12,0,1,1,4,16,12.0353,12.0353,0,0,1,16,4m0-2A14,14,0,1,0,30,16,14.0412,14.0412,0,0,0,16,2Z"/></svg></div>
+  <div class="psn-sep"></div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-group">Configuración de perfil</div>
+    <div class="sb-item active" onclick="switchTab(0,this)">Perfil de usuario</div>
+    <div class="sb-item" onclick="switchTab(1,this)">Usuarios asociados</div>
+    <div class="sb-item" onclick="switchTab(2,this)">Reportes programados</div>
+    <div class="sb-item" onclick="switchTab(3,this)">Verificación multifactor</div>
+  </nav>
+
+</aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div id="page-header-left" style="display:contents"></div>
+      <div id="page-header-actions" style="display:flex;margin-left:auto;gap:8px;align-items:center"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ TAB 0 — Perfil de usuario ══ -->
+      <div class="panel active" id="panel-0">
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Foto de perfil</span></div>
+          <div class="card-body">
+            <div class="photo-upload" id="photo-upload-zone"
+                 ondragover="photoDragOver(event)"
+                 ondragleave="photoDragLeave(event)"
+                 ondrop="photoDrop(event)">
+              <!-- Circular avatar con hover overlay -->
+              <div class="photo-circle-wrap" onclick="document.getElementById('photo-input').click()">
+                <div class="photo-circle" id="photo-av">
+                  <!-- IBM Carbon: User avatar -->
+                  <svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>
+                </div>
+                <div class="photo-circle-overlay">
+                  <svg viewBox="0 0 32 32" fill="currentColor" width="18" height="18"><path d="M26,24H6a2,2,0,0,1-2-2V10A2,2,0,0,1,6,8h4l2-3h8l2,3h4a2,2,0,0,1,2,2V22A2,2,0,0,1,26,24ZM6,10V22H26V10ZM16,20a4,4,0,1,1,4-4A4,4,0,0,1,16,20Zm0-6a2,2,0,1,0,2,2A2,2,0,0,0,16,14Z"/></svg>
+                  Cambiar
+                </div>
+              </div>
+              <!-- Acción y hint -->
+              <button class="photo-replace-btn" onclick="document.getElementById('photo-input').click()">
+                <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg>
+                Reemplazar imagen
+              </button>
+              <p class="photo-hint-txt">Tamaño sugerido 224×224 px (PNG o JPG)</p>
+              <input type="file" id="photo-input" accept="image/jpeg,image/png" style="display:none" onchange="photoSelected(event)">
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-grid">
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Datos personales</span></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="lbl" for="t0-nombre">Nombre <span class="req">*</span></label>
+                <div class="inp-wrap"><input id="t0-nombre" type="text" value="soporte+arsa" oninput="checkTab0Dirty()"></div>
+              </div>
+              <div class="form-row">
+                <label class="lbl" for="t0-telefono">Teléfono</label>
+                <div class="inp-wrap"><input id="t0-telefono" type="tel" placeholder="+56 9 XXXX XXXX" oninput="checkTab0Dirty()"></div>
+              </div>
+              <div class="form-row full">
+                <label class="lbl" for="t0-correo">Correo electrónico <span class="req">*</span></label>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <div class="inp-wrap" style="flex:1"><input id="t0-correo" type="email" value="soporte+arsa@beettrack.com" oninput="checkTab0Dirty()"></div>
+                  <button class="btn" style="flex-shrink:0">Verificar email</button>
+                </div>
+                <span class="mail-status ok">
+                  <svg viewBox="0 0 32 32"><path d="M14 21.414l-5-5.001L10.413 15 14 18.586 21.585 11 23 12.415 14 21.414z"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"/></svg>
+                  Correo confirmado
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Cambiar contraseña</span></div>
+          <div class="card-body">
+            <div class="bn in" style="margin-bottom:16px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#1F60ED"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              <span>Para cambiar tu contraseña, primero confirma tu identidad con la contraseña actual.</span>
+            </div>
+            <div class="form-row">
+              <label class="lbl" for="t1-pw-current">Contraseña actual <span class="req">*</span></label>
+              <input id="t1-pw-current" class="inp" type="password" placeholder="Ingresa tu contraseña actual" autocomplete="current-password" oninput="checkTab0Dirty()">
+              <p class="helper">Requerida para confirmar que eres tú quien realiza el cambio.</p>
+            </div>
+            <div class="divider"></div>
+            <div class="form-row">
+              <label class="lbl" for="t1-pw-new">Nueva contraseña <span class="req">*</span></label>
+              <input id="t1-pw-new" class="inp" type="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" oninput="updateStrength(this);checkTab0Dirty()">
+              <div class="pw-bars">
+                <div class="pw-bar" id="bar1"></div>
+                <div class="pw-bar" id="bar2"></div>
+                <div class="pw-bar" id="bar3"></div>
+              </div>
+              <p class="helper">Usa letras, números y al menos un carácter especial.</p>
+            </div>
+            <div class="form-row">
+              <label class="lbl" for="t1-pw-confirm">Confirmar nueva contraseña <span class="req">*</span></label>
+              <input id="t1-pw-confirm" class="inp" type="password" placeholder="Repite la nueva contraseña" autocomplete="new-password" oninput="checkTab0Dirty()">
+            </div>
+          </div>
+        </div>
+
+        </div><!-- end 2-col grid -->
+
+        <!-- Preferencias (full width) -->
+        <div class="card">
+          <div class="card-hdr"><span class="card-ttl">Preferencias de la aplicación</span></div>
+          <div class="card-body">
+            <div class="form-row">
+              <label class="lbl">Tema de la interfaz</label>
+              <div class="dt-drop-wrap" id="theme-drop" style="max-width:360px">
+                <div class="dt-dtrigger" onclick="dtToggle('theme-drop')">
+                  <span class="dt-dlabel" id="theme-label">Claro</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="dt-dmenu">
+                  <div class="dt-dopt selected" onclick="dtPick('theme-drop','theme-label',this);checkTab0Dirty()">Claro</div>
+                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this);checkTab0Dirty()">Oscuro</div>
+                  <div class="dt-dopt" onclick="dtPick('theme-drop','theme-label',this);checkTab0Dirty()">Automático (según el sistema)</div>
+                </div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <p class="lbl" style="margin-bottom:4px">Chat</p>
+            <div class="toggle-row">
+              <div class="swt on" role="switch" tabindex="0" aria-checked="true"
+                onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()"
+                onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()}"></div>
+              <div>
+                <p class="toggle-lbl">Mostrar ventanas del chat</p>
+                <p class="toggle-desc">Muestra el widget de soporte en la esquina inferior de la pantalla.</p>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <p class="lbl" style="margin-bottom:4px">Reporte de gestión</p>
+            <div class="toggle-row">
+              <div class="swt" role="switch" tabindex="0" aria-checked="false"
+                onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()"
+                onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkTab0Dirty()}"></div>
+              <div>
+                <p class="toggle-lbl">Enviar resumen diario por correo</p>
+                <p class="toggle-desc">Recibirás un resumen de la actividad del día en <strong>soporte+arsa@beettrack.com</strong> todos los días a las 8:00 AM.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ TAB 1 — Usuarios asociados ══ -->
+      <div class="panel" id="panel-1">
+
+        <div class="tab-grid" style="align-items:start">
+
+          <!-- Left: user list -->
+          <div class="card" id="shared-users-card" style="min-height:var(--add-user-form-h,auto)">
+            <div class="card-hdr">
+              <span class="card-ttl">Usuarios asociados</span>
+            </div>
+            <div id="shared-users-empty" class="card-body flush" style="flex:1;display:flex;align-items:center;justify-content:center">
+              <div class="empty-state">
+                <div class="empty-icon">
+                  <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg>
+                </div>
+                <p class="empty-title">Sin usuarios asociados</p>
+                <p class="empty-desc">Usa el formulario para asociar un usuario existente a tu cuenta.</p>
+              </div>
+            </div>
+            <div id="shared-users-table" class="card-body flush" style="display:none">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th class="tbl-acts-col">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="shared-users-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right: add linked user form -->
+          <div class="card" id="add-user-form-card">
+            <div class="card-hdr"><span class="card-ttl">Agregar usuario asociado</span></div>
+            <div class="card-body">
+              <div class="bn in" style="margin-bottom:16px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#1F60ED"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <span>Ingresa el nombre de usuario y su contraseña para asociar una cuenta existente a la tuya.</span>
+              </div>
+              <div class="form-grid">
+                <div class="form-row">
+                  <label class="lbl" for="add-user-username">Usuario <span class="req">*</span></label>
+                  <div class="inp-wrap"><input id="add-user-username" type="text" placeholder="Nombre de usuario"></div>
+                </div>
+                <div class="form-row">
+                  <label class="lbl" for="add-user-pw">Contraseña <span class="req">*</span></label>
+                  <div class="inp-wrap"><input id="add-user-pw" type="password" placeholder="Contraseña del usuario" autocomplete="off"></div>
+                  <p class="helper">La contraseña del usuario que quieres asociar.</p>
+                </div>
+              </div>
+              <div class="form-actions" style="justify-content:flex-end">
+                <button class="btn primary" onclick="saveSharedUser()">Agregar usuario</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end 2-col grid -->
+
+      </div>
+
+      <!-- ══ TAB 2 — Reportes programados ══ -->
+      <div class="panel" id="panel-2">
+
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-ttl">Reportes programados</span>
+          </div>
+
+          <!-- EMPTY STATE (visible when no reports) -->
+          <div class="card-body flush" id="rpt-empty">
+            <div class="empty-state">
+              <div class="empty-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M26,16H6V4H26ZM26,28H6V18H26ZM4,2V30a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V2a2,2,0,0,0-2-2H6A2,2,0,0,0,4,2ZM9,7h2v4H9ZM9,21h2v4H9Z"/></svg>
+              </div>
+              <p class="empty-title">Sin reportes programados</p>
+              <p class="empty-desc">Crea un reporte programado para recibirlo automáticamente por correo los días que elijas.</p>
+              <button class="btn primary" onclick="openReportModal()">Crear primer reporte</button>
+            </div>
+          </div>
+
+          <!-- TABLE (hidden until first report added) -->
+          <div id="rpt-table-wrap" style="display:none;border-top:1px solid var(--n3)">
+            <div class="tbl-outer">
+              <div class="tbl-wrap">
+                <table class="tbl">
+                  <thead>
+                    <tr>
+                      <th>Rango del reporte</th>
+                      <th>Días de envío</th>
+                      <th>Hora</th>
+                      <th>Formato</th>
+                      <th>Destinatarios</th>
+                      <th>Próximo envío <svg class="tbl-sort" width="9" height="9" viewBox="0 0 32 32" fill="currentColor"><path d="M16 4L6 16h20L16 4zm0 24L6 16h20l-10 12z"/></svg></th>
+                      <th>Estado</th>
+                      <th class="tbl-acts-col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rpt-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div style="padding:8px 16px;border-top:1px solid var(--n3);font:400 12px var(--font-sans);color:var(--n5)" id="rpt-count"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ TAB 3 — Verificación multifactor (MFA) ══ -->
+      <div class="panel" id="panel-3">
+
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-ttl">Verificación multifactor (MFA)</span>
+            <span class="badge neutral" id="mfa-status"><span class="dot"></span>Deshabilitada</span>
+          </div>
+          <div class="card-body">
+            <div class="bn in" style="margin-bottom:20px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#1F60ED"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              <span><strong>¿Qué es la verificación multifactor?</strong> Es una forma de proteger tu cuenta agregando una capa extra de seguridad: un paso adicional al inicio de sesión. Solo necesitas un smartphone. Esta verificación se solicitará cada vez que inicies sesión en la plataforma.</span>
+            </div>
+            <div class="twofa-body" style="padding:24px 20px">
+              <div class="twofa-icon-lg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+                <h3>Agrega una capa extra de seguridad</h3>
+                <p>¿Quieres habilitar la verificación multifactor en tu cuenta?</p>
+              </div>
+              <button class="btn primary" onclick="showToast('Configuración MFA iniciada — revisa tu smartphone')">Habilitar MFA</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ EDIT REPORT PAGE ══ -->
+      <div class="panel" id="panel-edit-report" style="display:none">
+
+
+        <!-- Main form card -->
+        <div class="card">
+          <div class="card-hdr">
+            <div>
+              <span class="card-ttl" id="edit-page-title">Editar reporte programado</span>
+              <div class="pg-edit-sub" id="edit-page-sub"></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <input type="hidden" id="edit-idx">
+
+            <!-- 2-column row: Rango del reporte | Formato -->
+            <div class="form-grid-2" style="margin-bottom:16px">
+              <div>
+                <label class="lbl">Rango del reporte <span class="req">*</span></label>
+                <div class="dt-drop-wrap" id="dd-edit-rango" style="width:100%">
+                  <div class="dt-dtrigger" onclick="dtToggle('dd-edit-rango')">
+                    <span class="dt-dlabel" id="lbl-edit-rango" style="color:var(--n5)">Seleccionar</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="dt-dmenu">
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-rango','lbl-edit-rango',this)">Ayer</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-rango','lbl-edit-rango',this)">Hoy</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-rango','lbl-edit-rango',this)">Últimos 7 días</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-rango','lbl-edit-rango',this)">Mes anterior</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="lbl">Formato <span class="req">*</span></label>
+                <div class="dt-drop-wrap" id="dd-edit-formato" style="width:100%">
+                  <div class="dt-dtrigger" onclick="dtToggle('dd-edit-formato')">
+                    <span class="dt-dlabel" id="lbl-edit-formato" style="color:var(--n5)">Seleccionar</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="dt-dmenu">
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-formato','lbl-edit-formato',this)">CSV (.csv)</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-formato','lbl-edit-formato',this)">Excel (.xlsx)</div>
+                    <div class="dt-dopt" onclick="dtPickEdit('dd-edit-formato','lbl-edit-formato',this)">PDF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hora de envío -->
+            <div class="form-row">
+              <label class="lbl">Hora de envío <span class="req">*</span></label>
+              <div class="dt-drop-wrap" id="dd-edit-hora" style="max-width:200px">
+                <div class="dt-dtrigger" onclick="dtToggle('dd-edit-hora')">
+                  <span class="dt-dlabel" id="lbl-edit-hora" style="color:var(--n5)">Seleccionar</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="dt-dmenu">
+                  <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">06:00</div>
+                  <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">08:00</div>
+                  <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">10:30</div>
+                  <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">12:00</div>
+                  <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">17:00</div>
+                  <div class="dt-dopt" onclick="dtPickEdit('dd-edit-hora','lbl-edit-hora',this)">20:00</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Días de envío -->
+            <div class="form-row">
+              <label class="lbl">Días de envío <span class="req">*</span></label>
+              <div class="days-row" id="edit-days">
+                <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Lun" onclick="toggleDay(this);checkEditDirty()" onkeydown="dayKeydown(event,this);checkEditDirty()">L</div>
+                <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Mar" onclick="toggleDay(this);checkEditDirty()" onkeydown="dayKeydown(event,this);checkEditDirty()">M</div>
+                <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Mié" onclick="toggleDay(this);checkEditDirty()" onkeydown="dayKeydown(event,this);checkEditDirty()">X</div>
+                <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Jue" onclick="toggleDay(this);checkEditDirty()" onkeydown="dayKeydown(event,this);checkEditDirty()">J</div>
+                <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Vie" onclick="toggleDay(this);checkEditDirty()" onkeydown="dayKeydown(event,this);checkEditDirty()">V</div>
+                <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Sáb" onclick="toggleDay(this);checkEditDirty()" onkeydown="dayKeydown(event,this);checkEditDirty()">S</div>
+                <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Dom" onclick="toggleDay(this);checkEditDirty()" onkeydown="dayKeydown(event,this);checkEditDirty()">D</div>
+              </div>
+              <p class="helper">Selecciona los días de la semana en que se enviará el reporte.</p>
+            </div>
+
+            <!-- Destinatarios (full width) -->
+            <div class="form-row" style="margin-bottom:0">
+              <label class="lbl">Destinatarios</label>
+              <div class="chip-input-wrap" id="edit-chips" onclick="document.getElementById('edit-email-input').focus()">
+                <input id="edit-email-input" type="email" placeholder="Escribe un email y presiona Enter"
+                  onkeydown="editEmailKeydown(event)"
+                  style="flex:1;min-width:160px;border:none;outline:none;font:400 13px var(--font-sans);background:transparent;color:var(--n7)">
+              </div>
+              <span class="helper">Presiona Enter o coma para agregar cada dirección</span>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+</div><!-- /shell -->
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+  /* ── Photo upload ── */
+  function photoDragOver(e) {
+    e.preventDefault();
+    document.getElementById('photo-upload-zone').classList.add('drag-over');
+  }
+  function photoDragLeave(e) {
+    document.getElementById('photo-upload-zone').classList.remove('drag-over');
+  }
+  function photoDrop(e) {
+    e.preventDefault();
+    document.getElementById('photo-upload-zone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) applyPhoto(file);
+  }
+  function photoSelected(e) {
+    const file = e.target.files[0];
+    if (file) applyPhoto(file);
+  }
+  function applyPhoto(file) {
+    if (!file.type.match(/image\/(jpeg|png)/)) {
+      showToast('Solo se admiten archivos JPG o PNG'); return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('El archivo supera los 2 MB'); return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const av = document.getElementById('photo-av');
+      av.innerHTML = '';
+      av.style.backgroundImage = `url(${ev.target.result})`;
+      showToast('Foto cargada — recuerda guardar los cambios');
+    };
+    reader.readAsDataURL(file);
+  }
+  function removePhoto() {
+    const av = document.getElementById('photo-av');
+    av.style.backgroundImage = '';
+    av.innerHTML = `<svg viewBox="0 0 32 32" fill="currentColor" width="40" height="40"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5.0055,5.0055,0,0,0-5-5H13a5.0055,5.0055,0,0,0-5,5v5H6V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/></svg>`;
+    document.getElementById('photo-input').value = '';
+  }
+
+  function toggleUserMenu() {
+    const dd = document.getElementById('user-dropdown');
+    const btn = document.getElementById('topbar-user-btn');
+    const isOpen = dd.classList.contains('open');
+    if (isOpen) { dd.classList.remove('open'); btn.classList.remove('active'); }
+    else { dd.classList.add('open'); btn.classList.add('active'); }
+  }
+  function closeUserMenu() {
+    document.getElementById('user-dropdown').classList.remove('open');
+    document.getElementById('topbar-user-btn').classList.remove('active');
+  }
+  function goToProfileTab() {
+    closeUserMenu();
+    const first = document.querySelector('.sb-item');
+    if (first) switchTab(0, first);
+  }
+  document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.user-menu-wrap');
+    if (wrap && !wrap.contains(e.target)) closeUserMenu();
+  });
+
+  /* ── PAGE HEADER LEFT — per-tab ── */
+  const TAB_TITLES = ['', 'Usuarios asociados', 'Reportes programados', 'Verificación multifactor'];
+  function renderPageHeader(idx) {
+    const left = document.getElementById('page-header-left');
+    if (!left) return;
+    if (idx === 0) {
+      left.innerHTML = `
+        <div class="page-header-avatar">SA</div>
+        <div class="page-header-info">
+          <div class="page-header-name">soporte+arsa</div>
+          <div class="page-header-email">soporte+arsa@beettrack.com</div>
+        </div>`;
+    } else {
+      left.innerHTML = `<h1>${TAB_TITLES[idx]}</h1>`;
+    }
+  }
+
+  /* ── PAGE HEADER ACTIONS — per-tab ── */
+  function renderHeaderActions(idx) {
+    const ha = document.getElementById('page-header-actions');
+    if (!ha) return;
+    const actions = {
+      0: `<button class="btn" id="ph-cancel-0" onclick="cancelTab0()" disabled>Cancelar</button>
+          <button class="btn primary" id="ph-save-0" onclick="saveTab0()" disabled>Guardar cambios</button>`,
+      1: ``,
+      2: `<button class="btn primary" onclick="openReportModal()">Nuevo reporte</button>`,
+      3: ``,
+    };
+    ha.innerHTML = actions[idx] || '';
+  }
+
+  function checkTab0Dirty() {
+    const cancel = document.getElementById('ph-cancel-0');
+    const save   = document.getElementById('ph-save-0');
+    if (cancel) cancel.disabled = false;
+    if (save)   save.disabled   = false;
+  }
+  function resetTab0Buttons() {
+    const cancel = document.getElementById('ph-cancel-0');
+    const save   = document.getElementById('ph-save-0');
+    if (cancel) cancel.disabled = true;
+    if (save)   save.disabled   = true;
+  }
+  function clearTab0Passwords() {
+    document.querySelectorAll('#panel-0 input[type="password"]').forEach(i => i.value = '');
+    updateStrength({value:''});
+  }
+  function cancelTab0() {
+    clearTab0Passwords();
+    resetTab0Buttons();
+    showToast('Cambios descartados');
+  }
+  function saveTab0() {
+    clearTab0Passwords();
+    resetTab0Buttons();
+    showToast('Datos guardados correctamente');
+  }
+
+  function switchTab(idx, el) {
+    // Exit edit mode if active
+    document.getElementById('panel-edit-report').style.display = 'none';
+
+    document.querySelectorAll('.sb-item').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => { p.classList.remove('active'); p.style.display = ''; });
+    el.classList.add('active');
+    document.getElementById('panel-' + idx).classList.add('active');
+    document.querySelector('.content').classList.toggle('wide', idx === 2);
+    renderPageHeader(idx);
+    renderHeaderActions(idx);
+    if (idx === 1) requestAnimationFrame(syncSharedUsersHeight);
+  }
+  function showFieldError(anchorId, msg) {
+    const el = document.getElementById(anchorId);
+    if (!el) return;
+    const parent = el.closest('.form-row') || el.parentElement;
+    let err = parent.querySelector('.field-error');
+    if (!err) { err = document.createElement('p'); err.className = 'field-error'; parent.appendChild(err); }
+    err.textContent = msg;
+  }
+  function clearFieldErrors(scopeId) {
+    document.querySelectorAll('#' + scopeId + ' .field-error').forEach(e => e.remove());
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function syncSharedUsersHeight() {
+    const formCard = document.getElementById('add-user-form-card');
+    const listCard = document.getElementById('shared-users-card');
+    if (formCard && listCard) listCard.style.minHeight = formCard.offsetHeight + 'px';
+  }
+  function toggleAddUser() {
+    const f = document.getElementById('add-user-form');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  }
+  function saveSharedUser() {
+    const userEl = document.getElementById('add-user-username');
+    const pwEl   = document.getElementById('add-user-pw');
+    const username = userEl ? userEl.value.trim() : '';
+    const pw       = pwEl   ? pwEl.value.trim()   : '';
+    clearFieldErrors('add-user-form-card');
+    let hasUserErrors = false;
+    if (!username) { showFieldError('add-user-username', 'Este campo es requerido'); hasUserErrors = true; }
+    if (!pw)       { showFieldError('add-user-pw',       'Ingresa la contraseña');   hasUserErrors = true; }
+    if (hasUserErrors) return;
+    const tbody = document.getElementById('shared-users-tbody');
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${username}</td>
+        <td><span class="badge success"><span class="dot"></span>Activo</span></td>
+        <td class="tbl-acts-col"><div class="tbl-acts">
+          <button class="tbl-act-btn" title="Eliminar" onclick="this.closest('tr').remove();checkSharedUsersEmpty()">
+            <svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg>
+          </button>
+        </div></td>
+      </tr>`);
+    document.getElementById('shared-users-empty').style.display = 'none';
+    document.getElementById('shared-users-table').style.display = 'block';
+    // Sync left card min-height to form height (once, on first add)
+    const formCard = document.getElementById('add-user-form-card');
+    const listCard = document.getElementById('shared-users-card');
+    if (formCard && listCard) listCard.style.minHeight = formCard.offsetHeight + 'px';
+    if (userEl) userEl.value = '';
+    if (pwEl)   pwEl.value   = '';
+    clearFieldErrors('add-user-form-card');
+    showToast('Usuario asociado correctamente');
+  }
+  function checkSharedUsersEmpty() {
+    const empty = document.getElementById('shared-users-tbody').children.length === 0;
+    document.getElementById('shared-users-empty').style.display = empty ? 'block' : 'none';
+    document.getElementById('shared-users-table').style.display = empty ? 'none' : 'block';
+  }
+  function updateStrength(input) {
+    const v = input.value;
+    const bars = ['bar1','bar2','bar3'].map(id => document.getElementById(id));
+    bars.forEach(b => b.className = 'pw-bar');
+    if (v.length >= 3) bars[0].classList.add('weak');
+    if (v.length >= 6) bars[1].classList.add('med');
+    if (v.length >= 10 && /[0-9!@#$]/.test(v)) bars[2].classList.add('strong');
+  }
+  // dt-drop-wrap helpers
+  function dtToggle(id) {
+    const wrap = document.getElementById(id);
+    const isOpen = wrap.classList.contains('open');
+    document.querySelectorAll('.dt-drop-wrap.open').forEach(w => w.classList.remove('open'));
+    if (!isOpen) wrap.classList.add('open');
+  }
+  function dtPick(dropId, labelId, el) {
+    const lbl = document.getElementById(labelId);
+    lbl.textContent = el.textContent.trim();
+    lbl.style.color = 'var(--n7)';
+    el.closest('.dt-dmenu').querySelectorAll('.dt-dopt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(dropId).classList.remove('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.dt-drop-wrap')) {
+      document.querySelectorAll('.dt-drop-wrap.open').forEach(w => w.classList.remove('open'));
+    }
+  });
+
+  /* ── Day-of-week picker helpers ── */
+  const DAY_ORDER = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  function toggleDay(el) {
+    el.classList.toggle('on');
+    el.setAttribute('aria-checked', el.classList.contains('on'));
+  }
+  function dayKeydown(e, el) {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleDay(el); }
+  }
+  function getSelectedDays(containerId) {
+    return [...document.querySelectorAll('#' + containerId + ' .day-pill.on')].map(p => p.dataset.day);
+  }
+  function setSelectedDays(containerId, days) {
+    document.querySelectorAll('#' + containerId + ' .day-pill').forEach(p => {
+      const on = days.includes(p.dataset.day);
+      p.classList.toggle('on', on);
+      p.setAttribute('aria-checked', on);
+    });
+  }
+  function clearDays(containerId) {
+    document.querySelectorAll('#' + containerId + ' .day-pill').forEach(p => {
+      p.classList.remove('on'); p.setAttribute('aria-checked', 'false');
+    });
+  }
+  function daysLabel(days) {
+    const sorted = DAY_ORDER.filter(d => days.includes(d));
+    if (sorted.length === 7) return 'Todos los días';
+    if (sorted.length === 5 && !days.includes('Sáb') && !days.includes('Dom')) return 'Lun a Vie';
+    return sorted.join(', ') || '—';
+  }
+  function nextSend(days) {
+    const first = DAY_ORDER.find(d => days.includes(d));
+    return first ? 'Próximo ' + first : '—';
+  }
+
+  /* ── Scheduled Reports modal ── */
+  let reportRows = [];
+
+  function openReportModal() {
+    clearReportForm();
+    document.getElementById('rpt-modal').classList.add('open');
+  }
+  function closeReportModal() {
+    clearFieldErrors('rpt-modal');
+    document.getElementById('rpt-modal').classList.remove('open');
+  }
+  function clearReportForm() {
+    ['lbl-rpt-rango','lbl-rpt-formato','lbl-rpt-hora'].forEach(id => {
+      const lbl = document.getElementById(id);
+      lbl.textContent = 'Seleccionar';
+      lbl.style.color = 'var(--n5)';
+    });
+    document.querySelectorAll('#dd-rpt-rango .dt-dopt,#dd-rpt-formato .dt-dopt,#dd-rpt-hora .dt-dopt').forEach(o => o.classList.remove('selected'));
+    clearDays('rpt-days');
+    document.getElementById('rpt-chips').querySelectorAll('.email-chip').forEach(c => c.remove());
+    document.getElementById('rpt-email-input').value = '';
+  }
+
+  /* chip email input */
+  function rptEmailKeydown(e) {
+    const inp = e.target;
+    if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) {
+      e.preventDefault();
+      addEmailChip(inp.value.trim());
+      inp.value = '';
+    }
+    if (e.key === 'Backspace' && inp.value === '') {
+      const chips = document.querySelectorAll('#rpt-chips .email-chip');
+      if (chips.length) chips[chips.length - 1].remove();
+    }
+  }
+  function addEmailChip(email) {
+    const wrap = document.getElementById('rpt-chips');
+    const inp = document.getElementById('rpt-email-input');
+    const chip = document.createElement('span');
+    chip.className = 'email-chip';
+    chip.innerHTML = `${email} <button type="button" onclick="this.parentElement.remove()">×</button>`;
+    wrap.insertBefore(chip, inp);
+  }
+
+  function submitReport() {
+    const rango   = document.getElementById('lbl-rpt-rango').textContent.trim();
+    const formato = document.getElementById('lbl-rpt-formato').textContent.trim();
+    const hora    = document.getElementById('lbl-rpt-hora').textContent.trim();
+    const dias    = getSelectedDays('rpt-days');
+    const chips   = [...document.querySelectorAll('#rpt-chips .email-chip')].map(c => c.textContent.replace('×','').trim());
+
+    clearFieldErrors('rpt-modal');
+    let hasErrors = false;
+    if (rango === 'Seleccionar')   { showFieldError('dd-rpt-rango', 'Selecciona un rango'); hasErrors = true; }
+    if (formato === 'Seleccionar') { showFieldError('dd-rpt-formato', 'Selecciona un formato'); hasErrors = true; }
+    if (hora === 'Seleccionar')    { showFieldError('dd-rpt-hora', 'Selecciona una hora de envío'); hasErrors = true; }
+    if (!dias.length)              { showFieldError('rpt-days', 'Selecciona al menos un día'); hasErrors = true; }
+    if (hasErrors) return;
+
+    const row = { rango, formato, hora, dias, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextSend(dias) };
+    reportRows.push(row);
+    renderReportTable();
+    closeReportModal();
+    showToast('Reporte programado creado correctamente');
+  }
+
+  const _badge = (label, bg, bd, fg) =>
+    `<span style="display:inline-flex;align-items:center;height:22px;padding:2px 8px;border-radius:4px;border:1px solid ${bd};background:${bg};color:${fg};font:600 11px/1 var(--font-sans);white-space:nowrap">${label}</span>`;
+  const _iconBtn = (title, paths, onclick) =>
+    `<button class="tbl-act-btn" title="${title}" onclick="${onclick}"><svg viewBox="0 0 32 32" fill="currentColor" width="14" height="14">${paths}</svg></button>`;
+
+  function renderReportTable() {
+    const EDIT_ICO  = '<path d="M2 26H30V28H2z"/><path d="M25.4,9c.8-.8.8-2,0-2.8l-3.6-3.6c-.8-.8-2-.8-2.8,0l-14,14V22h6.4L25.4,9zM20.4,4L24,7.6l-3,3L17.4,7zM6,22v-3.6l10-10,3.6,3.6-10,10H6z"/>';
+    const DEL_ICO   = '<path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/>';
+
+    const tbody = document.getElementById('rpt-tbody');
+    tbody.innerHTML = reportRows.map((r, i) => `
+      <tr>
+        <td><strong style="font-weight:600">${r.rango}</strong></td>
+        <td>${daysLabel(r.dias)}</td>
+        <td>${r.hora}</td>
+        <td>${r.formato}</td>
+        <td class="cell-muted" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${r.destinatarios}">${r.destinatarios}</td>
+        <td>${r.proximo}</td>
+        <td><span class="badge success"><span class="dot"></span>Activo</span></td>
+        <td class="tbl-acts-col">
+          <div class="tbl-acts">
+            ${_iconBtn('Editar', EDIT_ICO, `editReport(${i})`)}
+            ${_iconBtn('Eliminar', DEL_ICO, `deleteReport(${i})`)}
+          </div>
+        </td>
+      </tr>`).join('');
+
+    const count = reportRows.length;
+    document.getElementById('rpt-count').textContent = `${count} reporte${count !== 1 ? 's' : ''} programado${count !== 1 ? 's' : ''}`;
+    document.getElementById('rpt-empty').style.display = 'none';
+    document.getElementById('rpt-table-wrap').style.display = 'block';
+  }
+
+  function editReport(idx) {
+    const r = reportRows[idx];
+    if (!r) return;
+
+    // Populate fields
+    document.getElementById('edit-idx').value = idx;
+    document.getElementById('edit-page-title').textContent = 'Editar reporte programado';
+    document.getElementById('edit-page-sub').textContent = `${r.formato} · ${r.rango}`;
+
+    // Set dropdowns
+    const setDrop = (dropId, lblId, val) => {
+      const lbl = document.getElementById(lblId);
+      lbl.textContent = val;
+      lbl.style.color = 'var(--n7)';
+      document.querySelectorAll(`#${dropId} .dt-dopt`).forEach(o => {
+        o.classList.toggle('selected', o.textContent.trim() === val);
+      });
+    };
+    setDrop('dd-edit-rango',   'lbl-edit-rango',   r.rango);
+    setDrop('dd-edit-formato', 'lbl-edit-formato', r.formato);
+    setDrop('dd-edit-hora',    'lbl-edit-hora',    r.hora);
+    setSelectedDays('edit-days', r.dias || []);
+
+    // Populate email chips
+    const chipsWrap = document.getElementById('edit-chips');
+    chipsWrap.querySelectorAll('.email-chip').forEach(c => c.remove());
+    const inp = document.getElementById('edit-email-input');
+    if (r.destinatarios && r.destinatarios !== '—') {
+      r.destinatarios.split(',').map(e => e.trim()).filter(Boolean).forEach(email => {
+        const chip = document.createElement('span');
+        chip.className = 'email-chip';
+        chip.innerHTML = `${email} <button type="button" onclick="this.parentElement.remove()">×</button>`;
+        chipsWrap.insertBefore(chip, inp);
+      });
+    }
+
+    // Navigate to edit panel (no wide — default 820px max-width)
+    document.querySelector('.content').classList.remove('wide');
+    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+    document.getElementById('panel-edit-report').style.display = 'block';
+
+    // Show header actions for edit-report view
+    const ha = document.getElementById('page-header-actions');
+    if (ha) {
+      ha.innerHTML = `<button class="btn danger" onclick="confirmDeleteFromEdit()">Eliminar reporte</button>
+        <button class="btn" onclick="backToReports()">Cancelar</button>
+        <button id="edit-save-btn-top" class="btn primary" onclick="saveReport()" disabled>Guardar cambios</button>`;
+    }
+
+    // Disable save buttons until a change is detected
+    setEditSaveBtns(true);
+    _editOriginal = getEditSnapshot();
+  }
+
+  /* ── dirty-check helpers ── */
+  let _editOriginal = {};
+
+  function getEditSnapshot() {
+    const chips = [...document.querySelectorAll('#edit-chips .email-chip')]
+      .map(c => c.textContent.replace('×','').trim()).join(',');
+    return {
+      rango:     document.getElementById('lbl-edit-rango').textContent.trim(),
+      formato:   document.getElementById('lbl-edit-formato').textContent.trim(),
+      hora:      document.getElementById('lbl-edit-hora').textContent.trim(),
+      dias:      getSelectedDays('edit-days').join(','),
+      chips
+    };
+  }
+
+  function checkEditDirty() {
+    const cur = getEditSnapshot();
+    const dirty = Object.keys(_editOriginal).some(k => cur[k] !== _editOriginal[k]);
+    setEditSaveBtns(!dirty);
+  }
+
+  function setEditSaveBtns(disabled) {
+    ['edit-save-btn-top'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.disabled = disabled;
+    });
+  }
+
+  function dtPickEdit(dropId, lblId, el) {
+    dtPick(dropId, lblId, el);
+    checkEditDirty();
+  }
+
+  function backToReports() {
+    document.getElementById('panel-edit-report').style.display = 'none';
+    document.getElementById('panel-2').style.display = 'block';
+    document.querySelector('.content').classList.add('wide');
+    renderHeaderActions(2);
+  }
+
+  function editEmailKeydown(e) {
+    const inp = e.target;
+    if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) {
+      e.preventDefault();
+      const chip = document.createElement('span');
+      chip.className = 'email-chip';
+      chip.innerHTML = `${inp.value.trim()} <button type="button" onclick="this.parentElement.remove();checkEditDirty()">×</button>`;
+      document.getElementById('edit-chips').insertBefore(chip, inp);
+      inp.value = '';
+      checkEditDirty();
+    }
+    if (e.key === 'Backspace' && inp.value === '') {
+      const chips = document.querySelectorAll('#edit-chips .email-chip');
+      if (chips.length) { chips[chips.length - 1].remove(); checkEditDirty(); }
+    }
+  }
+
+  function saveReport() {
+    const idx     = parseInt(document.getElementById('edit-idx').value);
+    const rango   = document.getElementById('lbl-edit-rango').textContent.trim();
+    const formato = document.getElementById('lbl-edit-formato').textContent.trim();
+    const hora    = document.getElementById('lbl-edit-hora').textContent.trim();
+    const dias    = getSelectedDays('edit-days');
+    const chips   = [...document.querySelectorAll('#edit-chips .email-chip')].map(c => c.textContent.replace('×','').trim());
+
+    clearFieldErrors('panel-edit-report');
+    let hasEditErrors = false;
+    if (rango === 'Seleccionar')   { showFieldError('dd-edit-rango', 'Selecciona un rango'); hasEditErrors = true; }
+    if (formato === 'Seleccionar') { showFieldError('dd-edit-formato', 'Selecciona un formato'); hasEditErrors = true; }
+    if (hora === 'Seleccionar')    { showFieldError('dd-edit-hora', 'Selecciona una hora de envío'); hasEditErrors = true; }
+    if (!dias.length)              { showFieldError('edit-days', 'Selecciona al menos un día'); hasEditErrors = true; }
+    if (hasEditErrors) return;
+
+    reportRows[idx] = { rango, formato, hora, dias, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextSend(dias) };
+
+    renderReportTable();
+    backToReports();
+    showToast('Cambios guardados correctamente');
+  }
+
+  function confirmDeleteFromEdit() {
+    const idx = parseInt(document.getElementById('edit-idx').value);
+    deleteReport(idx);
+    backToReports();
+    showToast('Reporte eliminado');
+  }
+
+  function deleteReport(idx) {
+    reportRows.splice(idx, 1);
+    if (reportRows.length === 0) {
+      document.getElementById('rpt-empty').style.display = '';
+      document.getElementById('rpt-table-wrap').style.display = 'none';
+    } else {
+      renderReportTable();
+    }
+  }
+
+  // Initialize header actions for the default tab (tab 0)
+  renderPageHeader(0);
+  renderHeaderActions(0);
+</script>
+
+<!-- ══ MODAL: Nuevo reporte programado ══ -->
+<div class="modal-overlay" id="rpt-modal" onclick="if(event.target===this)closeReportModal()">
+  <div class="modal" style="width:520px">
+    <div class="modal-hdr">
+      <span>Nuevo reporte programado</span>
+      <button class="modal-close" onclick="closeReportModal()">
+        <svg viewBox="0 0 32 32" fill="currentColor" width="16" height="16"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Rango del reporte + Formato (2 col) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div>
+          <label class="lbl">Rango del reporte <span class="req">*</span></label>
+          <div class="dt-drop-wrap" id="dd-rpt-rango" style="width:100%">
+            <div class="dt-dtrigger" onclick="dtToggle('dd-rpt-rango')">
+              <span class="dt-dlabel" id="lbl-rpt-rango" style="color:var(--n5)">Seleccionar</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dt-dmenu">
+              <div class="dt-dopt" onclick="dtPick('dd-rpt-rango','lbl-rpt-rango',this)">Ayer</div>
+              <div class="dt-dopt" onclick="dtPick('dd-rpt-rango','lbl-rpt-rango',this)">Hoy</div>
+              <div class="dt-dopt" onclick="dtPick('dd-rpt-rango','lbl-rpt-rango',this)">Últimos 7 días</div>
+              <div class="dt-dopt" onclick="dtPick('dd-rpt-rango','lbl-rpt-rango',this)">Mes anterior</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="lbl">Formato <span class="req">*</span></label>
+          <div class="dt-drop-wrap" id="dd-rpt-formato" style="width:100%">
+            <div class="dt-dtrigger" onclick="dtToggle('dd-rpt-formato')">
+              <span class="dt-dlabel" id="lbl-rpt-formato" style="color:var(--n5)">Seleccionar</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="dt-dmenu">
+              <div class="dt-dopt" onclick="dtPick('dd-rpt-formato','lbl-rpt-formato',this)">CSV (.csv)</div>
+              <div class="dt-dopt" onclick="dtPick('dd-rpt-formato','lbl-rpt-formato',this)">Excel (.xlsx)</div>
+              <div class="dt-dopt" onclick="dtPick('dd-rpt-formato','lbl-rpt-formato',this)">PDF</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hora de envío -->
+      <div class="form-row">
+        <label class="lbl">Hora de envío <span class="req">*</span></label>
+        <div class="dt-drop-wrap" id="dd-rpt-hora" style="max-width:200px">
+          <div class="dt-dtrigger" onclick="dtToggle('dd-rpt-hora')">
+            <span class="dt-dlabel" id="lbl-rpt-hora" style="color:var(--n5)">Seleccionar</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="dt-dmenu">
+            <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">06:00</div>
+            <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">08:00</div>
+            <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">10:30</div>
+            <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">12:00</div>
+            <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">17:00</div>
+            <div class="dt-dopt" onclick="dtPick('dd-rpt-hora','lbl-rpt-hora',this)">20:00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Días de envío -->
+      <div class="form-row">
+        <label class="lbl">Días de envío <span class="req">*</span></label>
+        <div class="days-row" id="rpt-days">
+          <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Lun" onclick="toggleDay(this)" onkeydown="dayKeydown(event,this)">L</div>
+          <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Mar" onclick="toggleDay(this)" onkeydown="dayKeydown(event,this)">M</div>
+          <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Mié" onclick="toggleDay(this)" onkeydown="dayKeydown(event,this)">X</div>
+          <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Jue" onclick="toggleDay(this)" onkeydown="dayKeydown(event,this)">J</div>
+          <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Vie" onclick="toggleDay(this)" onkeydown="dayKeydown(event,this)">V</div>
+          <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Sáb" onclick="toggleDay(this)" onkeydown="dayKeydown(event,this)">S</div>
+          <div class="day-pill" role="checkbox" tabindex="0" aria-checked="false" data-day="Dom" onclick="toggleDay(this)" onkeydown="dayKeydown(event,this)">D</div>
+        </div>
+        <span class="helper">Selecciona los días de la semana en que se enviará el reporte.</span>
+      </div>
+
+      <!-- Destinatarios -->
+      <div class="form-row" style="margin-bottom:0">
+        <label class="lbl">Destinatarios</label>
+        <div class="chip-input-wrap" id="rpt-chips" onclick="document.getElementById('rpt-email-input').focus()">
+          <input id="rpt-email-input" type="email" placeholder="Escribe un email y presiona Enter" onkeydown="rptEmailKeydown(event)"
+            style="flex:1;min-width:160px;border:none;outline:none;font:400 13px var(--font-sans);background:transparent;color:var(--n7)">
+        </div>
+        <span class="helper">Presiona Enter o coma para agregar cada dirección</span>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn ghost" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn primary" onclick="submitReport()">Crear reporte</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
