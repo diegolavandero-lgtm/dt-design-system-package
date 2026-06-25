@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-25T20:20:21.505Z",
+  "generated": "2026-06-25T20:37:26.321Z",
   "days": [
     {
       "date": "2026-06-25",
       "entries": [
+        {
+          "hash": "128e3fe",
+          "type": "feat",
+          "section": "General",
+          "message": "DES-827 v2: add 2FA activation wizard (4-step flow) for production parity",
+          "author": "Carlos"
+        },
         {
           "hash": "3a4853b",
           "type": "update",
