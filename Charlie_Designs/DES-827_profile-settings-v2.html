@@ -1043,7 +1043,7 @@
             </div>
 
             <!-- Destinatarios (full width) -->
-            <div class="form-row" style="margin-bottom:0">
+            <div class="form-row">
               <label class="lbl">Destinatarios</label>
               <div class="chip-input-wrap" id="edit-chips" onclick="document.getElementById('edit-email-input').focus()">
                 <input id="edit-email-input" type="email" placeholder="Escribe un email y presiona Enter"
@@ -1051,6 +1051,26 @@
                   style="flex:1;min-width:160px;border:none;outline:none;font:400 13px var(--font-sans);background:transparent;color:var(--n7)">
               </div>
               <span class="helper">Presiona Enter o coma para agregar cada dirección</span>
+            </div>
+
+            <!-- Opciones del reporte -->
+            <div class="toggle-row">
+              <div class="swt on" id="edit-status" role="switch" tabindex="0" aria-checked="true"
+                onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkEditDirty()"
+                onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkEditDirty()}"></div>
+              <div>
+                <p class="toggle-lbl">Activar reporte</p>
+                <p class="toggle-desc">El reporte se enviará automáticamente según la programación.</p>
+              </div>
+            </div>
+            <div class="toggle-row">
+              <div class="swt" id="edit-itemflag" role="switch" tabindex="0" aria-checked="false"
+                onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkEditDirty()"
+                onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'));checkEditDirty()}"></div>
+              <div>
+                <p class="toggle-lbl">Incluir items</p>
+                <p class="toggle-desc">Agrega el detalle de items de cada orden al reporte.</p>
+              </div>
             </div>
           </div>
 
@@ -1330,6 +1350,9 @@
     const first = DAY_ORDER.find(d => days.includes(d));
     return first ? 'Próximo ' + first : '—';
   }
+  // toggle (.swt) read/write helpers
+  function getSwt(id) { const e = document.getElementById(id); return e ? e.classList.contains('on') : false; }
+  function setSwt(id, on) { const e = document.getElementById(id); if (!e) return; e.classList.toggle('on', !!on); e.setAttribute('aria-checked', !!on); }
 
   /* ── Scheduled Reports modal ── */
   let reportRows = [];
@@ -1352,6 +1375,8 @@
     clearDays('rpt-days');
     document.getElementById('rpt-chips').querySelectorAll('.email-chip').forEach(c => c.remove());
     document.getElementById('rpt-email-input').value = '';
+    setSwt('rpt-status', true);    // un reporte nuevo nace activo
+    setSwt('rpt-itemflag', false);
   }
 
   /* chip email input */
@@ -1391,7 +1416,7 @@
     if (!dias.length)              { showFieldError('rpt-days', 'Selecciona al menos un día'); hasErrors = true; }
     if (hasErrors) return;
 
-    const row = { rango, formato, hora, dias, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextSend(dias) };
+    const row = { rango, formato, hora, dias, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextSend(dias), status: getSwt('rpt-status'), itemFlag: getSwt('rpt-itemflag') };
     reportRows.push(row);
     renderReportTable();
     closeReportModal();
@@ -1415,8 +1440,10 @@
         <td>${r.hora}</td>
         <td>${r.formato}</td>
         <td class="cell-muted" style="max-width:200px;overflow:hidden;text-overflow:ellipsis" title="${r.destinatarios}">${r.destinatarios}</td>
-        <td>${r.proximo}</td>
-        <td><span class="badge success"><span class="dot"></span>Activo</span></td>
+        <td>${r.status === false ? '—' : r.proximo}</td>
+        <td>${r.status === false
+          ? '<span class="badge neutral"><span class="dot"></span>Inactivo</span>'
+          : '<span class="badge success"><span class="dot"></span>Activo</span>'}</td>
         <td class="tbl-acts-col">
           <div class="tbl-acts">
             ${_iconBtn('Editar', EDIT_ICO, `editReport(${i})`)}
@@ -1453,6 +1480,8 @@
     setDrop('dd-edit-formato', 'lbl-edit-formato', r.formato);
     setDrop('dd-edit-hora',    'lbl-edit-hora',    r.hora);
     setSelectedDays('edit-days', r.dias || []);
+    setSwt('edit-status', r.status !== false);
+    setSwt('edit-itemflag', !!r.itemFlag);
 
     // Populate email chips
     const chipsWrap = document.getElementById('edit-chips');
@@ -1496,6 +1525,8 @@
       formato:   document.getElementById('lbl-edit-formato').textContent.trim(),
       hora:      document.getElementById('lbl-edit-hora').textContent.trim(),
       dias:      getSelectedDays('edit-days').join(','),
+      status:    getSwt('edit-status'),
+      itemFlag:  getSwt('edit-itemflag'),
       chips
     };
   }
@@ -1558,7 +1589,7 @@
     if (!dias.length)              { showFieldError('edit-days', 'Selecciona al menos un día'); hasEditErrors = true; }
     if (hasEditErrors) return;
 
-    reportRows[idx] = { rango, formato, hora, dias, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextSend(dias) };
+    reportRows[idx] = { rango, formato, hora, dias, destinatarios: chips.length ? chips.join(', ') : '—', proximo: nextSend(dias), status: getSwt('edit-status'), itemFlag: getSwt('edit-itemflag') };
 
     renderReportTable();
     backToReports();
@@ -1666,13 +1697,33 @@
       </div>
 
       <!-- Destinatarios -->
-      <div class="form-row" style="margin-bottom:0">
+      <div class="form-row">
         <label class="lbl">Destinatarios</label>
         <div class="chip-input-wrap" id="rpt-chips" onclick="document.getElementById('rpt-email-input').focus()">
           <input id="rpt-email-input" type="email" placeholder="Escribe un email y presiona Enter" onkeydown="rptEmailKeydown(event)"
             style="flex:1;min-width:160px;border:none;outline:none;font:400 13px var(--font-sans);background:transparent;color:var(--n7)">
         </div>
         <span class="helper">Presiona Enter o coma para agregar cada dirección</span>
+      </div>
+
+      <!-- Opciones del reporte -->
+      <div class="toggle-row">
+        <div class="swt on" id="rpt-status" role="switch" tabindex="0" aria-checked="true"
+          onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'))"
+          onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'))}"></div>
+        <div>
+          <p class="toggle-lbl">Activar reporte</p>
+          <p class="toggle-desc">El reporte se enviará automáticamente según la programación.</p>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div class="swt" id="rpt-itemflag" role="switch" tabindex="0" aria-checked="false"
+          onclick="this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'))"
+          onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();this.classList.toggle('on');this.setAttribute('aria-checked',this.classList.contains('on'))}"></div>
+        <div>
+          <p class="toggle-lbl">Incluir items</p>
+          <p class="toggle-desc">Agrega el detalle de items de cada orden al reporte.</p>
+        </div>
       </div>
 
     </div>
