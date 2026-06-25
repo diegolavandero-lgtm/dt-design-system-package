@@ -2,11 +2,30 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-17T20:06:51.550Z",
+  "generated": "2026-06-25T19:39:24.732Z",
   "days": [
+    {
+      "date": "2026-06-25",
+      "entries": [
+        {
+          "hash": "cc2431b",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827 / LMW-2682: profile settings v2 — mirror production structure",
+          "author": "Carlos"
+        }
+      ]
+    },
     {
       "date": "2026-06-17",
       "entries": [
+        {
+          "hash": "e4ecc01",
+          "type": "update",
+          "section": "General",
+          "message": "chore: remove unused CIC prototypes (custom-fields, orders-list)",
+          "author": "Carlos"
+        },
         {
           "hash": "5530bd0",
           "type": "update",
