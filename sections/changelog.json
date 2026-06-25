@@ -2,11 +2,18 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-25T20:56:33.879Z",
+  "generated": "2026-06-25T21:07:54.762Z",
   "days": [
     {
       "date": "2026-06-25",
       "entries": [
+        {
+          "hash": "238a4a9",
+          "type": "update",
+          "section": "General",
+          "message": "DES-827 v2: rebuild Usuarios asociados to match production 1:1",
+          "author": "Carlos"
+        },
         {
           "hash": "27bcf25",
           "type": "update",
