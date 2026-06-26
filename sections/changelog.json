@@ -2,8 +2,20 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-25T21:07:54.762Z",
+  "generated": "2026-06-26T12:47:58.319Z",
   "days": [
+    {
+      "date": "2026-06-26",
+      "entries": [
+        {
+          "hash": "82ea6d9",
+          "type": "update",
+          "section": "Tables",
+          "message": "DES-827 v2: reports table 1:1 + Usuarios asociados empty-by-default",
+          "author": "Carlos"
+        }
+      ]
+    },
     {
       "date": "2026-06-25",
       "entries": [
