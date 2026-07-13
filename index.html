@@ -552,6 +552,10 @@ input.dt-inp:focus::placeholder{color:var(--n8)}
     <kbd id="gsearch-kbd">⌘K</kbd>
     <div id="gsearch-drop"></div>
   </div>
+  <button id="dl-ds" class="gh-action" style="margin-left:4px" data-i18n-attr="title:dl.title" title="Descarga un archivo .md con instrucciones + tokens, componentes, marca y voz para subir a un Claude Project">
+    <svg id="dl-ds-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+    <span id="dl-ds-label" data-i18n="dl.button">Usar en Claude</span>
+  </button>
   <div class="lang-switch" role="group" aria-label="Language">
     <button data-lang="es" class="active" aria-pressed="true">ES</button>
     <button data-lang="en" aria-pressed="false">EN</button>
@@ -2232,8 +2236,106 @@ async function initOverviewDashboard() {
 /* ================================================================
    INIT
 ================================================================ */
+/* ================================================================
+   USAR EN CLAUDE / USE IN CLAUDE
+   Bundles the raw CSS tokens plus every navigable section (tokens,
+   components, brand, voice…) into a single Markdown file — prefixed
+   with usage instructions — that you drop into a Claude Project so
+   every future design respects the DispatchTrack design system.
+================================================================ */
+async function downloadDesignSystemForClaude() {
+  const btn   = document.getElementById('dl-ds');
+  const label = document.getElementById('dl-ds-label');
+  const tt = (k, fb) => (window.DTi18n && window.DTi18n.t) ? window.DTi18n.t(k, fb) : fb;
+  const prev = label ? label.textContent : '';
+  if (label) label.textContent = tt('dl.generating', 'Generando…');
+  if (btn) btn.disabled = true;
+
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const parts = [];
+    parts.push('# DispatchTrack — Design System (paquete para Claude)');
+    parts.push('');
+    parts.push('## Cómo usar este archivo en Claude');
+    parts.push('');
+    parts.push('1. Crea (o abre) un **Claude Project** para diseño de producto de DispatchTrack.');
+    parts.push('2. Sube este archivo `.md` a los **Project knowledge** del proyecto.');
+    parts.push('3. Pídele a Claude que diseñe, maquete o prototipe cualquier pantalla, componente o vista.');
+    parts.push('');
+    parts.push('**Reglas para Claude:** este documento es la única fuente de verdad del sistema de diseño de DispatchTrack. Usa exclusivamente los tokens (colores, tipografía, espaciado, radios, sombras), los componentes y la voz definidos aquí. No inventes colores, fuentes, íconos ni componentes fuera de este documento. Ante la duda, prioriza los valores canónicos de la sección «Tokens CSS».');
+    parts.push('');
+    parts.push(`_Generado: ${today} · Fuente: design-system (main)_`);
+    parts.push('');
+
+    // Raw CSS design tokens — the canonical variable values.
+    try {
+      const cssRes = await fetch(dsUrl('colors_and_type.css'));
+      if (cssRes.ok) {
+        const css = await cssRes.text();
+        parts.push('---');
+        parts.push('');
+        parts.push('## Tokens CSS (valores canónicos)');
+        parts.push('');
+        parts.push('```css');
+        parts.push(css.trim());
+        parts.push('```');
+        parts.push('');
+      }
+    } catch (e) { console.warn('CSS skipped:', e); }
+
+    // Every navigable section, grouped exactly as in the sidebar.
+    for (const group of NAV) {
+      parts.push('---');
+      parts.push('');
+      parts.push(`# ${group.group}`);
+      parts.push('');
+      for (const item of group.items) {
+        if (!item.path) continue;
+        parts.push(`## ${item.label}`);
+        parts.push('');
+        try {
+          let data = cache[item.id];
+          if (!data) {
+            const res = await fetch(dsUrl(item.path));
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            data = await res.json();
+            cache[item.id] = data;
+          }
+          parts.push('```json');
+          parts.push(JSON.stringify(data, null, 2));
+          parts.push('```');
+        } catch (e) {
+          parts.push(`_No se pudo cargar (${item.path}): ${e.message}_`);
+        }
+        parts.push('');
+      }
+    }
+
+    const blob = new Blob([parts.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dispatchtrack-design-system-${today}.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (label) label.textContent = tt('dl.done', '¡Listo!');
+  } catch (e) {
+    console.error('Download failed:', e);
+    if (label) label.textContent = tt('dl.error', 'Error');
+  } finally {
+    if (btn) btn.disabled = false;
+    setTimeout(() => {
+      if (label) label.textContent = (window.DTi18n && window.DTi18n.t) ? window.DTi18n.t('dl.button', prev) : prev;
+    }, 1800);
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   buildNav();
+  const dlBtn = document.getElementById('dl-ds');
+  if (dlBtn) dlBtn.addEventListener('click', downloadDesignSystemForClaude);
   const hash = location.hash.replace('#', '') || 'overview';
   navigate(hash).then(() => {
     setTimeout(preIndexAllSections, 500);

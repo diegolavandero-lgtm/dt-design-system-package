@@ -23,6 +23,13 @@
     /* ── Búsqueda ── */
     "search.placeholder": { "es": "Buscar tokens, componentes…", "en": "Search tokens, components…" },
 
+    /* ── Descargar para Claude ── */
+    "dl.button":     { "es": "Usar en Claude", "en": "Use in Claude" },
+    "dl.title":      { "es": "Descarga un archivo .md con instrucciones + tokens, componentes, marca y voz para subir a un Claude Project", "en": "Download a .md file with instructions + tokens, components, brand and voice to upload to a Claude Project" },
+    "dl.generating": { "es": "Generando…", "en": "Generating…" },
+    "dl.done":       { "es": "¡Listo!", "en": "Done!" },
+    "dl.error":      { "es": "Error", "en": "Error" },
+
     /* ── Pestañas del DS (Escritorio / App móvil) ── */
     "tabs.desktop": { "es": "Escritorio", "en": "Desktop" },
     "tabs.mobile":  { "es": "App móvil", "en": "Mobile app" },
