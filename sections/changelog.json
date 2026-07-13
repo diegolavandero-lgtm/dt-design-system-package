@@ -2,8 +2,20 @@
   "title": "Changelog",
   "titleKey": "nav.changelog",
   "description": "Auto-generated from git history. Updated on every push to main.",
-  "generated": "2026-06-26T12:47:58.319Z",
+  "generated": "2026-07-13T21:49:17.252Z",
   "days": [
+    {
+      "date": "2026-07-13",
+      "entries": [
+        {
+          "hash": "c8342b6",
+          "type": "feat",
+          "section": "Topbar",
+          "message": "Add \"Usar en Claude\" button to top bar",
+          "author": "Cristina"
+        }
+      ]
+    },
     {
       "date": "2026-06-26",
       "entries": [
